@@ -22,3 +22,4 @@ https://nextjs.org/telemetry
  GET /admin 200 in 78ms (compile: 8ms, render: 70ms)
  GET /admin 200 in 93ms (compile: 10ms, render: 84ms)
  GET /admin 200 in 110ms (compile: 9ms, render: 101ms)
+ GET /admin 200 in 2.0s (compile: 874ms, render: 1162ms)

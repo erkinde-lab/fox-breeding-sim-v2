@@ -33,7 +33,6 @@ export default function AdminPanel() {
   const [addItemCount, setAddItemCount] = useState(1);
 
   // Genetics Lab State
-  const [spawnName, setSpawnName] = useState('Admin Fox');
   const [spawnGender, setSpawnGender] = useState<'Male' | 'Female'>('Male');
   const [spawnGenotype, setSpawnGenotype] = useState(getInitialGenotype());
 
@@ -61,7 +60,7 @@ export default function AdminPanel() {
   };
 
   const handleSpawn = () => {
-    adminSpawnFox(spawnName, spawnGender, spawnGenotype);
+    adminSpawnFox(getPhenotype(spawnGenotype).name, spawnGender, spawnGenotype);
     alert('Fox spawned successfully!');
   };
 
@@ -326,15 +325,6 @@ export default function AdminPanel() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase">Fox Name</label>
-                    <input 
-                      type="text" 
-                      value={spawnName} 
-                      onChange={e => setSpawnName(e.target.value)}
-                      className="w-full p-2 border border-earth-200 rounded-lg text-sm"
-                    />
-                  </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
                     <div className="flex gap-2">
