@@ -56,7 +56,7 @@ export const LOCI: Record<string, Locus> = {
     alleles: ['L', 'l'], 
   },
   BrC: {
-    name: 'Brown-Coat',
+    name: 'Brown',
     alleles: ['BRC', 'brc'], 
   },
   D: {
@@ -189,8 +189,8 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
     colorModifiers.push('Pastel');
   }
 
-  // Brown-Coat (brcbrc)
-  if (BrC === 'brcbrc') colorModifiers.push('Brown-Coat');
+  // Brown (brcbrc)
+  if (BrC === 'brcbrc') colorModifiers.push('Brown');
   
   // Dilute (dd)
   if (D === 'dd') colorModifiers.push('Dilute');
