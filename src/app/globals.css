@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-earth-900: #3d2b1f;
+  --color-earth-800: #4a3728;
+  --color-earth-700: #5c4a3c;
+  --color-earth-500: #8c6a4a;
+  --color-earth-200: #d9c5b2;
+  --color-earth-100: #f5f1ed;
+  --color-earth-50: #fdfaf6;
+
+  --color-fire-900: #7a2a1b;
+  --color-fire-700: #a63d28;
+  --color-fire-600: #c94c33;
+  --color-fire-500: #d96a4a;
+  --color-fire-400: #e68d5d;
+  
+  --color-moss-800: #3e4d2b;
+  --color-moss-600: #5d6d48;
+  --color-moss-400: #8c9d72;
+
+  --color-parchment: #fcf9f2;
+
+  --font-serif: "Georgia", "Times New Roman", serif;
+  --font-hand: "Comic Sans MS", cursive; /* Fallback for hand-drawn feel if no custom font */
+}
+
+:root {
+  --background: #fdfaf6;
+  --foreground: #3d2b1f;
+  --card: #ffffff;
+  --card-foreground: #3d2b1f;
+  --popover: #ffffff;
+  --popover-foreground: #3d2b1f;
+  --primary: #c94c33;
+  --primary-foreground: #ffffff;
+  --secondary: #8c6a4a;
+  --secondary-foreground: #ffffff;
+  --muted: #f5f1ed;
+  --muted-foreground: #5c4a3c;
+  --accent: #a63d28;
+  --accent-foreground: #ffffff;
+  --destructive: #7a2a1b;
+  --destructive-foreground: #ffffff;
+  --border: #d9c5b2;
+  --input: #d9c5b2;
+  --ring: #c94c33;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--color-earth-900);
+}
+
+.folk-card {
+  background-color: white;
+  border: 2px solid var(--color-earth-200);
+  border-radius: 1rem;
+  box-shadow: 4px 4px 0px var(--color-earth-200);
+  transition: all 0.2s ease;
+}
+
+.folk-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-earth-200);
+}
+
+.folk-button {
+  background-color: var(--color-fire-600);
+  color: white;
+  border: 2px solid var(--color-fire-900);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  box-shadow: 2px 2px 0px var(--color-fire-900);
+  transition: all 0.1s ease;
+}
+
+.folk-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--color-fire-900);
+}
