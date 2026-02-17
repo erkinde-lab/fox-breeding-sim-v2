@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useGameStore } from '@/lib/store';
-import { LOCI, getInitialGenotype, getPhenotype } from '@/lib/genetics';
+import { LOCI, getInitialGenotype, getPhenotype, Stats } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,16 +10,17 @@ import {
   Users, Trophy, Coins, Microscope, Settings, 
   AlertTriangle, Ban, Plus, Trash2, Save, 
   RefreshCw, FastForward, Heart, Info,
-  Search, ShieldCheck, UserX
+  Search, ShieldCheck, UserX, Activity, List,
+  ArrowUp, ArrowDown
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function AdminPanel() {
   const router = useRouter();
   const { 
-    isAdmin, members, gold, gems, inventory, foxes,
+    isAdmin, members, gold, gems, inventory, foxes, adminLogs,
     warnMember, banMember, adminSetCurrency, adminAddItem, 
-    adminSpawnFox, runShows, advanceTime, toggleAdminMode 
+    adminSpawnFox, adminUpdateFoxStats, runShows, advanceTime, toggleAdminMode 
   } = useGameStore();
 
   const [activeTab, setActiveTab] = useState('members');
@@ -35,6 +36,10 @@ export default function AdminPanel() {
   const [spawnName, setSpawnName] = useState('Admin Fox');
   const [spawnGender, setSpawnGender] = useState<'Male' | 'Female'>('Male');
   const [spawnGenotype, setSpawnGenotype] = useState(getInitialGenotype());
+
+  // Stat Modifier State
+  const [selectedFoxId, setSelectedFoxId] = useState('');
+  const [modStats, setModStats] = useState<Partial<Stats>>({});
 
   if (!isAdmin) {
     return (
@@ -65,6 +70,12 @@ export default function AdminPanel() {
     if (reason) warnMember(id, reason);
   };
 
+  const handleUpdateStats = () => {
+    if (!selectedFoxId) return;
+    adminUpdateFoxStats(selectedFoxId, modStats);
+    alert('Stats updated!');
+  };
+
   return (
     <div className="space-y-8 pb-20">
       <div className="flex justify-between items-center">
@@ -85,6 +96,7 @@ export default function AdminPanel() {
           { id: 'shows', label: 'Shows', icon: Trophy },
           { id: 'economy', label: 'Economy', icon: Coins },
           { id: 'genetics', label: 'Genetics Lab', icon: Microscope },
+          { id: 'logs', label: 'Activity Logs', icon: List },
           { id: 'system', label: 'System', icon: RefreshCw },
         ].map(tab => (
           <Button
@@ -306,72 +318,144 @@ export default function AdminPanel() {
       )}
 
       {activeTab === 'genetics' && (
-        <Card className="folk-card">
-          <CardHeader>
-            <CardTitle>Genetics Lab</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase">Fox Name</label>
-                  <input 
-                    type="text" 
-                    value={spawnName} 
-                    onChange={e => setSpawnName(e.target.value)}
-                    className="w-full p-2 border border-earth-200 rounded-lg text-sm"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant={spawnGender === 'Male' ? 'default' : 'outline'}
-                      onClick={() => setSpawnGender('Male')}
-                      className="flex-1"
-                    >Male</Button>
-                    <Button 
-                      variant={spawnGender === 'Female' ? 'default' : 'outline'}
-                      onClick={() => setSpawnGender('Female')}
-                      className="flex-1"
-                    >Female</Button>
+        <div className="space-y-6">
+          <Card className="folk-card">
+            <CardHeader>
+              <CardTitle>Genetics Lab: Spawn Fox</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase">Fox Name</label>
+                    <input 
+                      type="text" 
+                      value={spawnName} 
+                      onChange={e => setSpawnName(e.target.value)}
+                      className="w-full p-2 border border-earth-200 rounded-lg text-sm"
+                    />
                   </div>
-                </div>
-                <div className="p-4 bg-earth-50 rounded-xl border border-earth-200">
-                  <h5 className="text-sm font-bold mb-2">Predicted Outcome</h5>
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm font-medium">{getPhenotype(spawnGenotype).name}</div>
-                    <Badge variant="outline">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
-                  </div>
-                </div>
-                <Button onClick={handleSpawn} className="w-full gap-2 bg-fire-600 hover:bg-fire-700">
-                  <Plus size={16} /> Spawn Custom Fox
-                </Button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                {Object.entries(LOCI).map(([key, locus]) => (
-                  <div key={key} className="p-3 bg-white border border-earth-100 rounded-lg space-y-2 shadow-sm">
-                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locus.name}</div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
                     <div className="flex gap-2">
-                      <select 
-                        value={spawnGenotype[key][0]} 
-                        onChange={e => handleUpdateGenotype(key, 0, e.target.value)}
-                        className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
-                      >
-                        {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
-                      </select>
-                      <select 
-                        value={spawnGenotype[key][1]} 
-                        onChange={e => handleUpdateGenotype(key, 1, e.target.value)}
-                        className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
-                      >
-                        {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
-                      </select>
+                      <Button 
+                        variant={spawnGender === 'Male' ? 'default' : 'outline'}
+                        onClick={() => setSpawnGender('Male')}
+                        className="flex-1"
+                      >Male</Button>
+                      <Button 
+                        variant={spawnGender === 'Female' ? 'default' : 'outline'}
+                        onClick={() => setSpawnGender('Female')}
+                        className="flex-1"
+                      >Female</Button>
                     </div>
                   </div>
-                ))}
+                  <div className="p-4 bg-earth-50 rounded-xl border border-earth-200">
+                    <h5 className="text-sm font-bold mb-2">Predicted Outcome</h5>
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-medium">{getPhenotype(spawnGenotype).name}</div>
+                      <Badge variant="outline">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
+                    </div>
+                  </div>
+                  <Button onClick={handleSpawn} className="w-full gap-2 bg-fire-600 hover:bg-fire-700">
+                    <Plus size={16} /> Spawn Custom Fox
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  {Object.entries(LOCI).map(([key, locus]) => (
+                    <div key={key} className="p-3 bg-white border border-earth-100 rounded-lg space-y-2 shadow-sm">
+                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locus.name}</div>
+                      <div className="flex gap-2">
+                        <select 
+                          value={spawnGenotype[key][0]} 
+                          onChange={e => handleUpdateGenotype(key, 0, e.target.value)}
+                          className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
+                        >
+                          {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
+                        </select>
+                        <select 
+                          value={spawnGenotype[key][1]} 
+                          onChange={e => handleUpdateGenotype(key, 1, e.target.value)}
+                          className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
+                        >
+                          {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="folk-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="text-blue-600" size={18} /> Stat Modifier
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-400 uppercase">Select Fox</label>
+                  <select 
+                    value={selectedFoxId} 
+                    onChange={e => {
+                      const id = e.target.value;
+                      setSelectedFoxId(id);
+                      if (foxes[id]) setModStats(foxes[id].stats);
+                    }}
+                    className="w-full p-2 border border-earth-200 rounded-lg text-sm"
+                  >
+                    <option value="">-- Select a Fox --</option>
+                    {Object.values(foxes).map(f => (
+                      <option key={f.id} value={f.id}>{f.name} ({f.phenotype})</option>
+                    ))}
+                  </select>
+                </div>
+
+                {selectedFoxId && (
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                    {['head', 'topline', 'forequarters', 'hindquarters', 'tail', 'coatQuality', 'temperament', 'presence', 'luck', 'fertility'].map(stat => (
+                      <div key={stat} className="space-y-1">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase">{stat}</label>
+                        <input 
+                          type="number"
+                          value={modStats[stat as keyof Stats] || 0}
+                          onChange={e => setModStats({ ...modStats, [stat]: Number(e.target.value) })}
+                          className="w-full p-2 border border-earth-100 rounded bg-white text-sm font-bold"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full">Save Stat Changes</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === 'logs' && (
+        <Card className="folk-card">
+          <CardHeader>
+            <CardTitle>Admin Activity Log</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {adminLogs.length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
+              {adminLogs.map(log => (
+                <div key={log.id} className="p-3 bg-earth-50 border border-earth-100 rounded-lg text-sm flex justify-between items-start">
+                  <div>
+                    <div className="font-bold text-fire-700">{log.action}</div>
+                    <div className="text-slate-600 mt-1">{log.details}</div>
+                  </div>
+                  <div className="text-[10px] text-slate-400 font-mono">
+                    {new Date(log.timestamp).toLocaleTimeString()}
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
