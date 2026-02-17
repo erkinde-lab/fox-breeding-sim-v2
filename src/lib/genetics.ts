@@ -29,21 +29,13 @@ export const LOCI: Record<string, Locus> = {
     name: 'Pearl',
     alleles: ['P', 'p'], // p = Pearl (Recessive)
   },
-  MP: {
+  SS: {
     name: 'Mansfield Pearl',
-    alleles: ['MP', 'mp'], // mp = Mansfield Pearl (Recessive)
-  },
-  PA: {
-    name: 'Pastel',
-    alleles: ['PA', 'pa'], // pa = Pastel (Recessive)
-  },
-  S: {
-    name: 'Silver Factor',
-    alleles: ['s', 'S'], // S = Silver (Dominant)
+    alleles: ['S', 's'], // s = Mansfield Pearl (Recessive)
   },
   Fire: {
-    name: 'Colicott',
-    alleles: ['fi', 'Fi'], // Fi = Colicott (Dominant)
+    name: 'Fire',
+    alleles: ['fi', 'Fi'], // Fi = Fire (Dominant)
   },
   W: {
     name: 'White Series',
@@ -54,14 +46,10 @@ export const LOCI: Record<string, Locus> = {
     name: 'Leucistic',
     alleles: ['L', 'l'], 
   },
-  BrC: {
-    name: 'Brown',
-    alleles: ['BRC', 'brc'], 
-  },
   D: {
     name: 'Dilute',
-    alleles: ['D', 'd'], 
-  }
+    alleles: ['D', 'd'],
+  },
 };
 
 export function getInitialGenotype(): Genotype {
@@ -90,13 +78,10 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
   const G = [...genotype.G].sort().join('');
   const C = [...genotype.C].sort().join('');
   const P = [...genotype.P].sort().join('');
-  const MP = [...genotype.MP].sort().join('');
-  const PA = [...genotype.PA].sort().join('');
-  const S = [...genotype.S].sort().join('');
+  const SS = [...genotype.SS].sort().join('');
   const Fire = [...genotype.Fire].sort().join('');
   const W = [...genotype.W].sort();
   const L = [...genotype.L].sort().join('');
-  const BrC = [...genotype.BrC].sort().join('');
   const D = [...genotype.D].sort().join('');
 
   const healthIssues: string[] = [];
@@ -105,8 +90,8 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
   const wString = W.join('');
   if (LOCI.W.lethal?.includes(wString)) {
     return {
-        name: 'Stillborn',
-        baseColor: 'N/A',
+        name: 'Lethal White Combination',
+        baseColor: 'White',
         pattern: 'Lethal',
         eyeColor: 'N/A',
         geneticName: 'Lethal White Combination',
@@ -143,100 +128,98 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
     };
   }
 
-  // 1. Base Color Logic (A and B loci)
+  // 1. Base Color Logic
   let baseColorName = 'Red';
-  let isSilverBase = false;
+  let internalBaseColor = 'Red';
 
   if (a === 'AA' && b === 'BB') {
     baseColorName = 'Red';
+    internalBaseColor = 'Red';
   } else if (a === 'AA' && b === 'Bb') {
     baseColorName = 'Gold';
-  } else if (a === 'AA' && b === 'bb') {
-    baseColorName = 'Silver';
-    isSilverBase = true;
+    internalBaseColor = 'Gold';
   } else if (a === 'Aa' && b === 'BB') {
-    baseColorName = 'Cross';
+    baseColorName = 'Gold Cross';
+    internalBaseColor = 'Gold Cross';
   } else if (a === 'Aa' && b === 'Bb') {
     baseColorName = 'Silver Cross';
-  } else if (a === 'Aa' && b === 'bb') {
-    baseColorName = 'Silver Cross';
-  } else if (a === 'aa' && b === 'BB') {
-    baseColorName = 'Silver';
-    isSilverBase = true;
-  } else if (a === 'aa' && b === 'Bb') {
-    baseColorName = 'Silver Cross';
-  } else if (a === 'aa' && b === 'bb') {
-    baseColorName = 'Silver';
-    isSilverBase = true;
+    internalBaseColor = 'Silver Cross';
+  } else if (a === 'aa' && (b === 'BB' || b === 'Bb')) {
+    baseColorName = 'Silver'; // Player display
+    internalBaseColor = 'Alaskan Silver'; // In code
+  } else if ((a === 'AA' || a === 'Aa' || a === 'aa') && b === 'bb') {
+    baseColorName = 'Silver'; // Player display
+    internalBaseColor = 'Standard Silver'; // In code
   }
 
-  // 2. Color Mutations
-  const colorModifiers: string[] = [];
-  let isBurgundy = false;
-  let isPearl = false;
-  let isPastel = false;
+  // 2. Modifiers and Combinations
+  const isBurgundy = G === 'gg';
+  const isPearl = P === 'pp';
+  const isSS = SS === 'ss';
+  const isFireFiFi = Fire === 'FiFi';
+  const isFireAny = Fire.includes('Fi');
+  const isDilute = D === 'dd';
 
-  if (G === 'gg') {
-    colorModifiers.push('Burgundy');
-    isBurgundy = true;
-  }
-  if (P === 'pp') {
-    colorModifiers.push('Pearl');
-    isPearl = true;
-  }
-  if (MP === 'mpmp') {
-    colorModifiers.push('Mansfield Pearl');
-    isPearl = true;
-  }
-  if (PA === 'papa') {
-    colorModifiers.push('Pastel');
-    isPastel = true;
-  }
-  if (BrC === 'brcbrc') colorModifiers.push('Brown');
-  if (D === 'dd') colorModifiers.push('Dilute');
-  if (Fire.includes('Fi')) colorModifiers.push('Colicott');
+  let finalName = '';
+  let finalBaseColor = baseColorName;
 
-  // Silver Factor
-  if (S.includes('S')) {
-    // Silver Factor is masked by Burgundy, Pearl, Pastel, or if already Silver base
-    if (!isBurgundy && !isPearl && !isPastel && !isSilverBase && !baseColorName.includes('Silver')) {
-        colorModifiers.push('Silver');
+  // Named Combinations
+  if (isFireFiFi && isPearl && isBurgundy && (internalBaseColor === 'Red' || internalBaseColor === 'Gold')) {
+    finalName = 'Snow Glow';
+  } else if (isFireFiFi && isPearl && (internalBaseColor === 'Red' || internalBaseColor === 'Gold')) {
+    finalName = 'Snow Glow';
+  } else if (isFireFiFi && isPearl && isBurgundy) {
+    finalName = 'Autumn Fire';
+  } else if (isFireFiFi && isPearl && (internalBaseColor === 'Gold Cross' || internalBaseColor === 'Silver Cross')) {
+    finalName = 'Fire and Ice';
+  } else if (isFireFiFi && (internalBaseColor === 'Gold Cross' || internalBaseColor === 'Silver Cross')) {
+    finalName = 'Fire Cross';
+  } else if (isFireFiFi && internalBaseColor === 'Red') {
+    finalName = 'Wildfire';
+  } else if (isFireFiFi && internalBaseColor === 'Gold') {
+    finalName = 'Golden Sunrise';
+  } else if (isFireFiFi && isPearl) {
+    finalName = 'Fawn Glow';
+  } else if (isBurgundy && isPearl && isSS) {
+    finalName = 'Pearl Amber';
+    eyeColor = 'Green';
+  } else if (isPearl && isSS) {
+    finalName = 'Sapphire';
+  } else if (isBurgundy && isPearl) {
+    finalName = 'Amber';
+    eyeColor = 'Green';
+  }
+
+  // If no special name, build it
+  if (!finalName) {
+    const mods: string[] = [];
+    if (isBurgundy) mods.push('Burgundy');
+    if (isPearl) mods.push('Pearl');
+    if (isSS) mods.push('Mansfield Pearl');
+    if (isFireAny) mods.push('Fire');
+    if (isDilute) mods.push('Dilute');
+
+    // Silver is masked by Burgundy, Pearl
+    const masksSilver = isBurgundy || isPearl;
+    let baseToUse = baseColorName;
+    if (masksSilver && baseColorName === 'Silver') {
+      baseToUse = '';
+    } else if (masksSilver && baseColorName === 'Silver Cross') {
+      baseToUse = 'Cross';
+    }
+
+    if (mods.length > 0) {
+      if (baseToUse === 'Red') {
+        finalName = mods.join(' ');
+      } else {
+        finalName = `${mods.join(' ')} ${baseToUse}`.trim();
+      }
+    } else {
+      finalName = baseToUse;
     }
   }
 
-  // Silver is masked by Burgundy, Pearl, Pastel
-  let finalBaseColor = baseColorName;
-  const masksSilver = isBurgundy || isPearl || isPastel;
-
-  if (masksSilver && baseColorName === 'Silver') {
-    finalBaseColor = ''; // Remove 'Silver' from name
-  } else if (masksSilver && baseColorName === 'Silver Cross') {
-    finalBaseColor = 'Cross'; // 'Silver Cross' becomes 'Cross'
-  }
-
-  // 3. Named Color Combinations
-  const mods = colorModifiers.join(' ');
-  let combinedBase = finalBaseColor;
-
-  if (mods) {
-      if (finalBaseColor === 'Red' && !mods.includes('Silver')) {
-          combinedBase = mods;
-      } else if (finalBaseColor === 'Red' && mods === 'Silver') {
-          combinedBase = 'Silver Red';
-      } else {
-          combinedBase = `${mods} ${finalBaseColor}`.trim();
-      }
-  }
-
-  if (G === 'gg' && P === 'pp' && MP === 'mpmp') {
-    combinedBase = 'Pearl Amber';
-    eyeColor = 'Green';
-  } else if (G === 'gg' && P === 'pp') {
-    combinedBase = 'Amber';
-    eyeColor = 'Green';
-  }
-
-  // 4. Pattern Logic (White Series)
+  // Pattern Logic
   let patternName = 'None';
   const wmCount = W.filter(x => x === 'WM').length;
   const wpCount = W.filter(x => x === 'Wp').length;
@@ -255,24 +238,20 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
     patternName = 'White Mark';
   }
 
-  let finalName = '';
+  let displayName = '';
   if (patternName !== 'None') {
-      if (patternName === 'Marble Platinum' && combinedBase === 'Red') {
-          finalName = 'Marble Platinum Fox';
-      } else {
-          finalName = `${patternName} ${combinedBase} Fox`;
-      }
+    displayName = `${patternName} ${finalName} Fox`;
   } else {
-      finalName = `${combinedBase} Fox`;
+    displayName = `${finalName} Fox`;
   }
 
   return {
-    name: finalName,
-    baseColor: combinedBase,
+    name: displayName,
+    baseColor: finalName,
     pattern: patternName,
     eyeColor: eyeColor,
-    geneticName: finalName,
-    description: `A beautiful ${finalName} with ${eyeColor.toLowerCase()} eyes.`,
+    geneticName: displayName,
+    description: `A beautiful ${displayName} with ${eyeColor.toLowerCase()} eyes.`,
     isLethal: false,
     healthIssues,
   };
@@ -473,9 +452,9 @@ export function createFox(data: Partial<Fox>): Fox {
 export function createFoundationalFox(): Fox {
   const baseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'], B: ['B', 'B'] }, // Red
-    { A: ['a', 'a'], B: ['B', 'B'] }, // Standard Silver
-    { A: ['A', 'A'], B: ['b', 'b'] }, // Alaskan Silver
-    { A: ['A', 'a'], B: ['B', 'b'] }, // Cross
+    { A: ['a', 'a'], B: ['B', 'B'] }, // Alaskan Silver
+    { A: ['A', 'A'], B: ['b', 'b'] }, // Standard Silver
+    { A: ['A', 'a'], B: ['B', 'b'] }, // Silver Cross
   ];
 
   const base = baseGenotypes[Math.floor(Math.random() * baseGenotypes.length)];
@@ -483,7 +462,7 @@ export function createFoundationalFox(): Fox {
   Object.assign(genotype, base);
   
   // Possible rare recessive
-  const rareGenes = ['G', 'C', 'P', 'MP', 'PA', 'S', 'Fire', 'W', 'BrC', 'D'];
+  const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L', 'D'];
   if (Math.random() > 0.6) {
     const gene = rareGenes[Math.floor(Math.random() * rareGenes.length)];
     const locus = LOCI[gene];
