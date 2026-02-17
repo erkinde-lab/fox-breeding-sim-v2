@@ -139,6 +139,42 @@ interface GameState {
   checkAchievements: () => void;
 }
 
+
+export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'first-fox',
+    name: 'First Fox',
+    description: 'Adopt your first foundational fox.',
+    rewardText: '1,000 Gold',
+    reward: () => useGameStore.getState().addGold(1000),
+    condition: (state) => Object.keys(state.foxes).length >= 1
+  },
+  {
+    id: 'master-breeder',
+    name: 'Master Breeder',
+    description: 'Have 5 foxes in your kennel.',
+    rewardText: '50 Gems',
+    reward: () => useGameStore.getState().addGems(50),
+    condition: (state) => Object.keys(state.foxes).length >= 5
+  },
+  {
+    id: 'show-winner',
+    name: 'Show Winner',
+    description: 'Win a Best in Show award.',
+    rewardText: '5,000 Gold',
+    reward: () => useGameStore.getState().addGold(5000),
+    condition: (state) => state.bisWins >= 1
+  },
+  {
+    id: 'millionaire',
+    name: 'Gold Rush',
+    description: 'Accumulate 50,000 Gold.',
+    rewardText: '100 Gems',
+    reward: () => useGameStore.getState().addGems(100),
+    condition: (state) => state.gold >= 50000
+  }
+];
+
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
@@ -184,7 +220,13 @@ export const useGameStore = create<GameState>()(
       members: [],
 
       checkAchievements: () => {
-        // Achievement logic
+        const state = get();
+        ACHIEVEMENTS.forEach(ach => {
+          if (!state.unlockedAchievements.includes(ach.id) && ach.condition(state)) {
+            ach.reward();
+            set(s => ({ unlockedAchievements: [...s.unlockedAchievements, ach.id] }));
+          }
+        });
       },
 
       advanceTime: () => set((state) => {
