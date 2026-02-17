@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -53,6 +52,7 @@ export default function BreedingPage() {
     return {
         probabilities: Object.entries(counts)
             .map(([name, count]) => ({ name, percent: Math.round((count / trials) * 100) }))
+            .filter(item => item.percent >= 1)
             .sort((a, b) => b.percent - a.percent),
         predictedCOI
     };
@@ -90,7 +90,7 @@ export default function BreedingPage() {
                 )}
               >
                 <div className="font-bold text-sm">{m.name}</div>
-                <div className="text-xs text-slate-500">{m.phenotype}</div>
+                <div className="text-xs text-slate-500">{m.baseColor}{m.pattern !== "None" && ` with ${m.pattern} markings`}</div>
               </div>
             ))}
             {males.length === 0 && <p className="text-xs text-slate-400 italic">No eligible males</p>}
@@ -125,7 +125,7 @@ export default function BreedingPage() {
                 )}
               >
                 <div className="font-bold text-sm">{f.name}</div>
-                <div className="text-xs text-slate-500">{f.phenotype}</div>
+                <div className="text-xs text-slate-500">{f.baseColor}{f.pattern !== "None" && ` with ${f.pattern} markings`}</div>
               </div>
             ))}
             {females.length === 0 && <p className="text-xs text-slate-400 italic">No eligible females</p>}
@@ -171,6 +171,7 @@ export default function BreedingPage() {
                                 </div>
                             ))}
                         </div>
+                        <p className="text-[10px] text-slate-400 mt-4 italic">* Exceedingly rare results (&lt; 1%) are hidden but not impossible.</p>
                     </div>
                 </div>
             )}
