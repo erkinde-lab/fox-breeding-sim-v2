@@ -16,7 +16,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { gold, gems, year, season, advanceTime, initializeGame, isAdmin } = useGameStore();
+  const { gold, gems, year, season, advanceTime, initializeGame, isAdmin, adminAddCurrency } = useGameStore();
   
   const [isMainOpen, setIsMainOpen] = useState(false);
   const [isKennelOpen, setIsKennelOpen] = useState(false);
