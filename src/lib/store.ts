@@ -423,6 +423,16 @@ export const useGameStore = create<GameState>()(
         get().checkAchievements();
       },
 
+
+      buyFoundationalFox: () => set((state) => {
+        if (state.gold < 1000) return state;
+        const fox = createFoundationalFox();
+        return {
+          gold: state.gold - 1000,
+          foxes: { ...state.foxes, [fox.id]: fox }
+        };
+      }),
+
       initializeGame: () => {
         const { foxes, members } = get();
         if (Object.keys(foxes).length > 0) return;
