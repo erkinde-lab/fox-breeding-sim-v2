@@ -1,6 +1,7 @@
 'use client';
 
-import { useGameStore, ShowReport } from '@/lib/store';
+import { useGameStore } from '@/lib/store';
+import { ShowReport } from '@/lib/showing';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Trophy, Info, Heart, Star } from 'lucide-react';
@@ -131,7 +132,7 @@ export default function KennelPage() {
           <Link key={fox.id} href={`/fox/${fox.id}`}>
             <div className="folk-card overflow-hidden hover:shadow-md transition cursor-pointer">
               <div className="h-40 flex items-center justify-center relative">
-                <FoxIllustration phenotype={fox.phenotype} size={16} />
+                <FoxIllustration phenotype={fox.phenotype} baseColor={fox.baseColor} pattern={fox.pattern} eyeColor={fox.eyeColor} size={16} />
                 <div className="absolute top-2 right-2 flex gap-1">
                   {fox.isRetired && <Badge className="bg-earth-500">Retired</Badge>}
                   {fox.healthIssues.length > 0 && <Badge variant="destructive">Health</Badge>}
@@ -144,7 +145,7 @@ export default function KennelPage() {
                     Age {fox.age}
                   </span>
                 </div>
-                <p className="text-sm text-slate-600 mb-3">{fox.phenotype}</p>
+                <div className="text-sm text-slate-600 mb-3 font-medium">{fox.baseColor}{fox.pattern !== "None" && ` with ${fox.pattern} markings`}</div>
                 <div className="flex items-center gap-4 text-xs font-medium text-earth-500">
                   <span className="flex items-center gap-1">
                     <Trophy size={14} className="text-yellow-500" /> {fox.pointsLifetime} pts
