@@ -7,7 +7,7 @@ import {
   PawPrint, Home, ShoppingBag, Trophy, Heart, Calendar, 
   Coins, Diamond, MessageSquare, Shield, Menu, ChevronDown,
   Users, User, ShoppingCart, Info, Utensils, Star, Baby, UserPlus,
-  Package, Store, CheckSquare, HelpCircle, LifeBuoy, Layout, ExternalLink,
+  Package, Store, CheckSquare, HelpCircle, LifeBuoy, Layout, ExternalLink, Settings,
   Scale, Award
 } from 'lucide-react';
 
@@ -212,6 +212,7 @@ export default function RootLayout({
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Main</div>
                 <MobileNavLink href="/" icon={<Home size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/news" icon={<Info size={18} />} label="Game News" onClick={() => setIsMobileMenuOpen(false)} />
+                {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Kennel</div>
                 <MobileNavLink href="/" icon={<Home size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
