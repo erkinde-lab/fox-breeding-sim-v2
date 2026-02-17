@@ -174,7 +174,7 @@ export default function RootLayout({
             </div>
 
             {/* Right Side: Game Status & Mobile Menu Toggle */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1 sm:gap-3">
               <div className="hidden xl:flex items-center gap-3 text-sm text-earth-200 border-r border-earth-700 pr-4 mr-2 whitespace-nowrap font-mono">
                 <Calendar size={14} className="text-fire-600" /> Year {year}, {season}
                 {isAdmin && (
