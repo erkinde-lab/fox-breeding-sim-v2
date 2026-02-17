@@ -2,8 +2,8 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Fox, createFox, breed, getPhenotype, createFoundationalFox, getInitialGenotype, ShowLevel, Genotype } from './genetics';
-import { runShow, ShowReport } from './showing';
+import { Fox, createFox, breed, getPhenotype, createFoundationalFox, getInitialGenotype, Genotype, Stats } from './genetics';
+import { runShow, ShowReport, ShowLevel } from './showing';
 
 export interface ForumCategory {
   id: string;
@@ -58,7 +58,7 @@ export interface Pregnancy {
   motherId: string;
   fatherId: string;
   fatherGenotype: Genotype;
-  fatherStats: Record<string, number>;
+  fatherStats: Stats;
   fatherSilverIntensity: number;
   dueYear: number;
   dueSeason: string;
@@ -107,6 +107,7 @@ interface GameState {
   buyCustomFoundationalFox: (genotype: Genotype, gender: 'Male' | 'Female') => void;
   runShows: () => void;
   toggleAdminMode: () => void;
+  adminAddCurrency: (gold: number, gems: number) => void;
   toggleStudStatus: (foxId: string, fee: number) => void;
   hireGroomer: () => void;
   hireVeterinarian: () => void;
@@ -423,6 +424,7 @@ export const useGameStore = create<GameState>()(
       })),
 
       toggleAdminMode: () => set((state) => ({ isAdmin: !state.isAdmin })),
+      adminAddCurrency: (goldAmount, gemsAmount) => set((state) => ({ gold: state.gold + goldAmount, gems: state.gems + gemsAmount })),
 
       buyFoundationalFox: () => set((state) => {
         if (state.gold < 5000) return state;
