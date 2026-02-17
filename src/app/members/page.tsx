@@ -1,22 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { User, Trophy, Star, Calendar, Search } from 'lucide-react';
-
-const MEMBERS = [
-  { id: 1, name: 'RedFoxMaster', level: 45, joined: 'Spring, Year 1', points: 12500, avatarColor: 'bg-orange-500' },
-  { id: 2, name: 'SilverVixen', level: 38, joined: 'Summer, Year 1', points: 9800, avatarColor: 'bg-slate-400' },
-  { id: 3, name: 'ArcticBreeder', level: 32, joined: 'Autumn, Year 1', points: 7200, avatarColor: 'bg-blue-100' },
-  { id: 4, name: 'CrossFoxExpert', level: 29, joined: 'Winter, Year 1', points: 6500, avatarColor: 'bg-amber-700' },
-  { id: 5, name: 'GeneticsGuru', level: 25, joined: 'Spring, Year 2', points: 5100, avatarColor: 'bg-purple-500' },
-];
+import { User, Trophy, Star, Calendar, Search, AlertTriangle } from 'lucide-react';
 
 export default function MembersPage() {
+  const { members } = useGameStore();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredMembers = MEMBERS.filter(member => 
+  const filteredMembers = (members || []).filter(member => 
     member.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -41,7 +35,7 @@ export default function MembersPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredMembers.map((member) => (
-          <Card key={member.id} className="overflow-hidden hover:shadow-md transition-shadow folk-card">
+          <Card key={member.id} className={`overflow-hidden hover:shadow-md transition-shadow folk-card ${member.isBanned ? 'opacity-50 grayscale' : ''}`}>
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               <div className={`w-12 h-12 ${member.avatarColor} rounded-full flex items-center justify-center text-white border-2 border-white shadow-sm`}>
                 <User size={24} />
@@ -62,9 +56,19 @@ export default function MembersPage() {
                   <Trophy size={14} className="text-yellow-500" />
                   <span className="font-bold">{member.points.toLocaleString()} pts</span>
                 </div>
-                <div className="flex items-center gap-1 text-slate-400 text-xs">
-                  <Star size={12} className="text-orange-400 fill-orange-400" />
-                  Top 1%
+                <div className="flex gap-2 items-center">
+                  {member.warnings.length > 0 && (
+                    <div className="text-amber-500 flex items-center gap-1" title={`${member.warnings.length} Warnings`}>
+                      <AlertTriangle size={14} />
+                    </div>
+                  )}
+                  {member.isBanned && (
+                    <Badge variant="destructive" className="text-[8px] uppercase">Banned</Badge>
+                  )}
+                  <div className="flex items-center gap-1 text-slate-400 text-xs">
+                    <Star size={12} className="text-orange-400 fill-orange-400" />
+                    Top 1%
+                  </div>
                 </div>
               </div>
             </CardContent>
