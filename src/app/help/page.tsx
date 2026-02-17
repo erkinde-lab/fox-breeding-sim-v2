@@ -11,7 +11,7 @@ export default function HelpPage() {
         <h1 className="text-4xl font-black text-earth-900 tracking-tight flex items-center gap-3">
           <HelpCircle className="text-moss-600" /> Help Center
         </h1>
-        <p className="text-earth-500 mt-2">Learn the basics of breeding, showing, and managing your ranch.</p>
+        <p className="text-earth-500 mt-2">Learn the basics of breeding, showing, and managing your kennel.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
