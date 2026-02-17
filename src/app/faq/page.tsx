@@ -6,6 +6,14 @@ import { Info, HelpCircle } from 'lucide-react';
 
 const FAQS = [
   {
+    q: "How is Silver-marked different from the Cross coat?",
+    a: "Silver-marked (Ss) is a modifier that adds silver hairs to any base color. Cross (Aa Bb) is a specific base genotype resulting from the interaction of Standard and Alaskan Silver alleles, characterized by a dark 'cross' pattern over the shoulders."
+  },
+  {
+    q: "What does 'Brown' mean in the genetics?",
+    a: "The 'Brown' (formerly Brown-Coat) mutation (brcbrc) is a recessive trait that replaces black areas of the coat (ears, legs, tail tip) with rich brownish-red pigment."
+  },
+  {
     q: "Why can't I breed my foxes?",
     a: "Breeding is only available during the Winter season. Also, ensure both foxes are at least 2 years old and not retired."
   },
