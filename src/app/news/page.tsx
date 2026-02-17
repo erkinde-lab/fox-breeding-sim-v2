@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Megaphone, Calendar, ArrowRight } from 'lucide-react';
+import { Megaphone, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const NEWS_ITEMS = [
@@ -55,11 +55,6 @@ export default function NewsPage() {
               <p className="text-earth-700 leading-relaxed">
                 {item.content}
               </p>
-              <div className="mt-4 flex justify-end">
-                <button className="text-sm font-bold text-fire-600 flex items-center gap-1 hover:gap-2 transition-all">
-                  Read More <ArrowRight size={16} />
-                </button>
-              </div>
             </CardContent>
           </Card>
         ))}

@@ -155,7 +155,7 @@ export default function RootLayout({
                 >
                   <DropdownLink href="/forum" icon={<MessageSquare size={16} />} label="Forums" onClick={() => setIsCommunityOpen(false)} />
                   <DropdownLink href="/members" icon={<User size={16} />} label="Members" onClick={() => setIsCommunityOpen(false)} />
-                  <DropdownLink href="#" icon={<ExternalLink size={16} />} label="Discord Server" onClick={() => setIsCommunityOpen(false)} />
+                  <DropdownLink href="/coming-soon" icon={<ExternalLink size={16} />} label="Discord Server" onClick={() => setIsCommunityOpen(false)} />
                 </Dropdown>
 
                 {/* Support Dropdown */}
@@ -237,7 +237,7 @@ export default function RootLayout({
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Community</div>
                 <MobileNavLink href="/forum" icon={<MessageSquare size={18} />} label="Forums" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/members" icon={<User size={18} />} label="Members" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="#" icon={<ExternalLink size={18} />} label="Discord Server" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/coming-soon" icon={<ExternalLink size={18} />} label="Discord Server" onClick={() => setIsMobileMenuOpen(false)} />
 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Support</div>
                 <MobileNavLink href="/help" icon={<HelpCircle size={18} />} label="Help Center" onClick={() => setIsMobileMenuOpen(false)} />
@@ -272,9 +272,9 @@ export default function RootLayout({
       <footer className="bg-[#2A231C] text-earth-400 py-6 px-4 sm:px-6 lg:px-8 border-t border-earth-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest">
             <div className="flex items-center gap-6">
-                <span className="flex items-center gap-1.5"><Scale size={12} className="text-fire-600" /> Terms of Service</span>
-                <span className="flex items-center gap-1.5"><Shield size={12} className="text-moss-600" /> Privacy Policy</span>
-                <span className="flex items-center gap-1.5"><Award size={12} className="text-cyan-600" /> Game Credits</span>
+                <Link href="/tos" className="flex items-center gap-1.5 hover:text-fire-400 transition-colors"><Scale size={12} className="text-fire-600" /> Terms of Service</Link>
+                <Link href="/privacy" className="flex items-center gap-1.5 hover:text-fire-400 transition-colors"><Shield size={12} className="text-moss-600" /> Privacy Policy</Link>
+                <Link href="/credits" className="flex items-center gap-1.5 hover:text-fire-400 transition-colors"><Award size={12} className="text-cyan-600" /> Game Credits</Link>
             </div>
             <div className="text-earth-500">
                 &copy; {new Date().getFullYear()} Red Fox Breeding Simulator. All Rights Reserved. Inspired by Black Foxes UK.
