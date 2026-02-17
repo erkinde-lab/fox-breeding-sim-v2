@@ -70,6 +70,14 @@ export interface Pregnancy {
   dueSeason: string;
 }
 
+
+export interface AdminLog {
+  id: string;
+  action: string;
+  timestamp: string;
+  details: string;
+}
+
 export interface WhelpingReport {
   motherName: string;
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
@@ -102,6 +110,7 @@ interface GameState {
   hiredVeterinarian: boolean;
   hiredTrainer: boolean;
   members: Member[];
+  adminLogs: AdminLog[];
 
   // Actions
   advanceTime: () => void;
@@ -123,6 +132,8 @@ interface GameState {
   adminSetCurrency: (gold: number, gems: number) => void;
   adminAddItem: (itemId: string, count: number) => void;
   adminSpawnFox: (name: string, gender: 'Male' | 'Female', genotype: Genotype) => void;
+  adminUpdateFoxStats: (foxId: string, stats: Partial<Stats>) => void;
+  addAdminLog: (action: string, details: string) => void;
   warnMember: (memberId: string, reason: string) => void;
   banMember: (memberId: string) => void;
   toggleStudStatus: (foxId: string, fee: number) => void;
@@ -218,6 +229,7 @@ export const useGameStore = create<GameState>()(
       hiredVeterinarian: false,
       hiredTrainer: false,
       members: [],
+      adminLogs: [],
 
       checkAchievements: () => {
         const state = get();
@@ -343,9 +355,32 @@ export const useGameStore = create<GameState>()(
         foxes: { ...state.foxes, [id]: { ...state.foxes[id], ...updates } }
       })),
 
+
+      addAdminLog: (action: string, details: string) => set((state) => ({
+        adminLogs: [{ id: Math.random().toString(36).substring(2, 9), action, details, timestamp: new Date().toISOString() }, ...state.adminLogs].slice(0, 50)
+      })),
+
+      adminUpdateFoxStats: (foxId, statsUpdates) => {
+        const { foxes } = get();
+        if (!foxes[foxId]) return;
+        set((state) => ({
+          foxes: {
+            ...state.foxes,
+            [foxId]: {
+              ...state.foxes[foxId],
+              stats: { ...state.foxes[foxId].stats, ...statsUpdates }
+            }
+          }
+        }));
+        get().addAdminLog('Update Fox Stats', `Updated stats for fox ${foxes[foxId].name} (${foxId})`);
+      },
+
       toggleAdminMode: () => set((state) => ({ isAdmin: !state.isAdmin })),
       adminAddCurrency: (goldAmount, gemsAmount) => set((state) => ({ gold: state.gold + goldAmount, gems: state.gems + gemsAmount })),
-      adminSetCurrency: (gold, gems) => set({ gold, gems }),
+      adminSetCurrency: (gold, gems) => {
+        set({ gold, gems });
+        get().addAdminLog('Set Currency', `Gold: ${gold}, Gems: ${gems}`);
+      },
       adminAddItem: (itemId, count) => set((state) => ({ inventory: { ...state.inventory, [itemId]: (state.inventory[itemId] || 0) + count } })),
       adminSpawnFox: (name, gender, genotype) => set((state) => {
         const fox = createFox({ name, gender, genotype });
