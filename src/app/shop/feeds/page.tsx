@@ -4,7 +4,7 @@ import React from 'react';
 import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Coins, Sparkles, Zap, Shield, Wind, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, Coins, Sparkles, Zap, Shield, Wind, Sun, Moon, ShoppingCart } from 'lucide-react';
 
 export default function FeedsPage() {
   const { buyItem, gold, inventory } = useGameStore();
@@ -55,13 +55,23 @@ export default function FeedsPage() {
                     </span>
                   </div>
                </div>
-               <Button 
-                onClick={() => buyItem('supplies', 50, 'gold')}
-                disabled={gold < 50}
-                className="w-full h-12 text-lg bg-orange-600 hover:bg-orange-500"
-               >
-                 Purchase Bag
-               </Button>
+               <div className="grid grid-cols-2 gap-2">
+                  <Button 
+                    onClick={() => buyItem('supplies', 50, 'gold')}
+                    disabled={gold < 50}
+                    className="h-12 bg-orange-600 hover:bg-orange-500"
+                  >
+                    1 Bag
+                  </Button>
+                  <Button 
+                    onClick={() => buyItem('supplies', 450, 'gold', 10)}
+                    disabled={gold < 450}
+                    variant="outline"
+                    className="h-12 border-orange-200 text-orange-700 hover:bg-orange-50"
+                  >
+                    10 Bags (450)
+                  </Button>
+               </div>
             </CardContent>
           </Card>
         </div>
@@ -82,19 +92,30 @@ export default function FeedsPage() {
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Affects: {feed.stat}</p>
                 </div>
               </CardHeader>
-              <CardContent>
-                 <div className="flex justify-between items-center mb-4">
+              <CardContent className="space-y-4">
+                 <div className="flex justify-between items-center">
                     <span className="text-[10px] font-black text-slate-300 uppercase">Held: {inventory[feed.id] || 0}</span>
-                    <span className="font-bold text-yellow-600 flex items-center gap-0.5"><Coins size={14}/> 150</span>
+                    <span className="text-xs font-bold text-yellow-600 flex items-center gap-0.5"><Coins size={12}/> 150 / Bag</span>
                  </div>
-                 <Button 
-                  onClick={() => buyItem(feed.id, 150, 'gold')}
-                  disabled={gold < 150}
-                  size="sm"
-                  className={`w-full bg-${feed.color}-600 hover:bg-${feed.color}-500`}
-                 >
-                   Purchase
-                 </Button>
+                 <div className="space-y-2">
+                   <Button 
+                    onClick={() => buyItem(feed.id, 150, 'gold')}
+                    disabled={gold < 150}
+                    size="sm"
+                    variant="outline"
+                    className={`w-full border-${feed.color}-200 text-${feed.color}-700 hover:bg-${feed.color}-50`}
+                   >
+                     Buy 1
+                   </Button>
+                   <Button 
+                    onClick={() => buyItem(feed.id, 1000, 'gold', 10)}
+                    disabled={gold < 1000}
+                    size="sm"
+                    className={`w-full bg-${feed.color}-600 hover:bg-${feed.color}-500 flex items-center justify-center gap-2`}
+                   >
+                     <ShoppingCart size={14} /> Buy 10 (1000g)
+                   </Button>
+                 </div>
               </CardContent>
             </Card>
           ))}
