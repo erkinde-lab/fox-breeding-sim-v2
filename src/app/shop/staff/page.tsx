@@ -40,7 +40,7 @@ export default function StaffPage() {
     },
     {
       id: 'veterinarian',
-      name: 'Ranch Veterinarian',
+      name: 'Kennel Veterinarian',
       description: 'Ensure the structural integrity and health of your stock. Grants a permanent +1 bonus to all physical traits (Head, Topline, etc).',
       cost: 50,
       hired: hiredVeterinarian,
@@ -55,7 +55,7 @@ export default function StaffPage() {
     <div className="space-y-12">
       <div>
         <h1 className="text-4xl font-black text-slate-900 tracking-tight">Staff & Services</h1>
-        <p className="text-slate-500 mt-2">Hire professionals to improve your ranch and fox quality.</p>
+        <p className="text-slate-500 mt-2">Hire professionals to improve your kennel and fox quality.</p>
       </div>
 
       <section className="space-y-6">
