@@ -119,7 +119,7 @@ interface GameState {
   addGems: (amount: number) => void;
   addFox: (fox: Fox) => void;
   sellFox: (id: string) => void;
-  buyItem: (itemId: string, price: number, currency: 'gold' | 'gems') => void;
+  buyItem: (itemId: string, price: number, currency: 'gold' | 'gems', quantity?: number) => void;
   applyItem: (itemId: string, foxId: string) => void;
   renameFox: (id: string, newName: string) => void;
   updateFox: (id: string, updates: Partial<Fox>) => void;
@@ -323,13 +323,13 @@ export const useGameStore = create<GameState>()(
         return { foxes: newFoxes, gold: state.gold + 500 };
       }),
 
-      buyItem: (itemId, price, currency) => set((state) => {
+      buyItem: (itemId, price, currency, quantity = 1) => set((state) => {
         if (currency === 'gold' && state.gold < price) return state;
         if (currency === 'gems' && state.gems < price) return state;
         return {
           gold: currency === 'gold' ? state.gold - price : state.gold,
           gems: currency === 'gems' ? state.gems - price : state.gems,
-          inventory: { ...state.inventory, [itemId]: (state.inventory[itemId] || 0) + 1 }
+          inventory: { ...state.inventory, [itemId]: (state.inventory[itemId] || 0) + quantity }
         };
       }),
 
