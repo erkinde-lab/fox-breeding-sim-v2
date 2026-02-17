@@ -1,30 +1,36 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Star, Diamond, Check } from 'lucide-react';
-import { LOCI, Genotype } from '@/lib/genetics';
+import { LOCI, Genotype, getPhenotype } from '@/lib/genetics';
+import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function CustomFoxPage() {
   const { buyCustomFoundationalFox, gems, foxes, kennelCapacity } = useGameStore();
   const [customGenotype, setCustomGenotype] = useState<Record<string, string[]>>({});
   const [customGender, setCustomGender] = useState<'Male' | 'Female'>('Male');
+  const [foxName, setFoxName] = useState('Custom Designer Fox');
   const [showSuccess, setShowSuccess] = useState(false);
 
   const currentFoxCount = Object.keys(foxes).length;
 
-  const handleCustomBuy = () => {
-    // Fill in defaults for missing loci
-    const finalGenotype = { ...customGenotype };
-    Object.keys(LOCI).forEach(key => {
-        if (!finalGenotype[key]) {
-            finalGenotype[key] = [LOCI[key].alleles[0], LOCI[key].alleles[0]];
-        }
-    });
+  const currentGenotype = useMemo(() => {
+      const finalGenotype = { ...customGenotype };
+      Object.keys(LOCI).forEach(key => {
+          if (!finalGenotype[key]) {
+              finalGenotype[key] = [LOCI[key].alleles[0], LOCI[key].alleles[0]];
+          }
+      });
+      return finalGenotype as Genotype;
+  }, [customGenotype]);
 
-    buyCustomFoundationalFox(finalGenotype as Genotype, customGender);
+  const currentPhenotype = useMemo(() => getPhenotype(currentGenotype), [currentGenotype]);
+
+  const handleCustomBuy = () => {
+    buyCustomFoundationalFox(currentGenotype, customGender, foxName);
     setShowSuccess(true);
     setTimeout(() => setShowSuccess(false), 3000);
   };
@@ -48,6 +54,44 @@ export default function CustomFoxPage() {
             </div>
         </CardHeader>
         <CardContent className="p-8 space-y-8">
+            {/* Preview Section */}
+            <div className="flex flex-col lg:flex-row gap-8 items-start bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <div className="w-full lg:w-1/3 space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-xs font-black uppercase text-slate-500 tracking-widest">Fox Name</label>
+                        <input
+                            type="text"
+                            value={foxName}
+                            onChange={(e) => setFoxName(e.target.value)}
+                            placeholder="Enter fox name..."
+                            className="w-full bg-white border-2 border-slate-200 p-3 rounded-xl font-bold focus:border-cyan-500 focus:outline-none transition-colors"
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="text-xs font-black uppercase text-slate-500 tracking-widest">Current Appearance</label>
+                        <div className="text-sm font-bold text-cyan-700">{currentPhenotype.name}</div>
+                        <p className="text-xs text-slate-500 leading-relaxed italic">
+                            {currentPhenotype.description}
+                        </p>
+                    </div>
+                </div>
+
+                <div className="flex-1 flex flex-col items-center justify-center bg-white rounded-xl border border-slate-100 shadow-inner py-8 px-4 min-h-[200px]">
+                    <div className="relative group">
+                        <FoxIllustration
+                            phenotype={currentPhenotype.name}
+                            baseColor={currentPhenotype.baseColor}
+                            pattern={currentPhenotype.pattern}
+                            eyeColor={currentPhenotype.eyeColor}
+                            size={12}
+                        />
+                    </div>
+                    <div className="mt-4 text-center">
+                        <span className="text-xl font-black text-slate-900 tracking-tight uppercase underline decoration-cyan-500 decoration-4 underline-offset-4">{foxName}</span>
+                    </div>
+                </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div className="space-y-3">
                     <label className="text-xs font-black uppercase text-slate-500 tracking-widest">Selected Gender</label>
