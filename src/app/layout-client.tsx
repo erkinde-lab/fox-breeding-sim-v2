@@ -101,7 +101,7 @@ export default function RootLayout({
                   setIsOpen={setIsKennelOpen} 
                   dropdownRef={kennelRef}
                 >
-                  <DropdownLink href="/" icon={<Home size={16} />} label="Dashboard" onClick={() => setIsKennelOpen(false)} />
+                  <DropdownLink href="/kennel" icon={<PawPrint size={16} />} label="My Foxes" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/inventory" icon={<Package size={16} />} label="Inventory" onClick={() => setIsKennelOpen(false)} />
                 </Dropdown>
 
@@ -215,7 +215,7 @@ export default function RootLayout({
                 {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Kennel</div>
-                <MobileNavLink href="/" icon={<Home size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
                 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Breeding</div>
