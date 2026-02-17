@@ -13,7 +13,7 @@ export default function QuestsPage() {
     <div className="space-y-12">
       <div>
         <h1 className="text-4xl font-black text-earth-900 tracking-tight flex items-center gap-3">
-           <Medal className="text-fire-600" /> Ranch Achievements
+           <Medal className="text-fire-600" /> Kennel Achievements
         </h1>
         <p className="text-earth-500 mt-2">Earn rewards and recognition for your progress in the simulator.</p>
       </div>
