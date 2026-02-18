@@ -1,17 +1,16 @@
 export type Allele = string;
 export type Genotype = Record<string, Allele[]>;
 
-export const LOCI: Record<string, { name: string; alleles: Allele[] }> = {
+export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: string[] }> = {
   A: { name: 'Agouti', alleles: ['A', 'a'] },
   B: { name: 'Black', alleles: ['B', 'b'] },
   C: { name: 'Color', alleles: ['C', 'c'] }, // cc = Albino
-  G: { name: 'Amber', alleles: ['G', 'g'] }, // gg = Amber
+  G: { name: 'Burgundy', alleles: ['G', 'g'] }, // gg = Burgundy
   P: { name: 'Pearl', alleles: ['P', 'p'] }, // pp = Pearl
-  SS: { name: 'Burgundy', alleles: ['S', 's'] }, // ss = Burgundy (Mansfield Pearl)
+  SS: { name: 'Mansfield Pearl', alleles: ['S', 's'] }, // ss = Mansfield Pearl
   Fire: { name: 'Fire', alleles: ['FI', 'fi'] }, // fi = Fire (Recessive)
-  W: { name: 'White Markings', alleles: ['w', 'W', 'Wp', 'WM', 'WG'] },
+  W: { name: 'White Markings', alleles: ['w', 'W', 'Wp', 'WM', 'WG'], lethal: ['WW', 'WpWp', 'WMWM', 'WGWG'] },
   L: { name: 'Leucistic', alleles: ['L', 'l'] }, // ll = Leucistic
-  D: { name: 'Dilute', alleles: ['D', 'd'] }, // dd = Dilute
 };
 
 export function getInitialGenotype(): Genotype {
@@ -32,19 +31,30 @@ export function getPhenotype(genotype: Genotype) {
   const SS = genotype.SS || ['S', 'S'];
   const Fire = genotype.Fire || ['FI', 'FI'];
   const L = genotype.L || ['L', 'L'];
-  const D = genotype.D || ['D', 'D'];
   const W = [...(genotype.W || ['w', 'w'])].sort();
 
-  // Basic flags
-  const isAlbino = C.filter(x => x === 'c').length === 2;
-  const isLeucistic = L.filter(x => x === 'l').length === 2;
-  const isAmber = G.filter(x => x === 'g').length === 2;
-  const isPearl = P.filter(x => x === 'p').length === 2;
-  const isBurgundy = SS.filter(x => x === 's').length === 2;
-  const isDilute = D.filter(x => x === 'd').length === 2;
-  const isFirefifi = Fire.filter(x => x === 'fi').length === 2;
+  // Lethal check
+  let isLethal = false;
+  for (const locusKey in LOCI) {
+    const alleles = genotype[locusKey];
+    if (alleles && LOCI[locusKey].lethal) {
+        const combo = [...alleles].sort().join('');
+        if (LOCI[locusKey].lethal?.includes(combo)) {
+            isLethal = true;
+            break;
+        }
+    }
+  }
 
-  // Base Color Logic (A/B interaction)
+  // Basic flags
+  const hasC = C.filter(x => x === 'c').length === 2;
+  const hasL = L.filter(x => x === 'l').length === 2;
+  const hasG = G.filter(x => x === 'g').length === 2;
+  const hasP = P.filter(x => x === 'p').length === 2;
+  const hasSS = SS.filter(x => x === 's').length === 2;
+  const isFifi = Fire.filter(x => x === 'fi').length === 2;
+
+  // Base Color Logic
   let baseColorName = 'Red';
   const aCount = A.filter(x => x === 'a').length;
   const bCount = B.filter(x => x === 'b').length;
@@ -63,85 +73,85 @@ export function getPhenotype(genotype: Genotype) {
   let eyeColor = 'Brown';
   let healthIssues: string[] = [];
 
-  const isSilverBase = baseColorName === 'Standard Silver' || baseColorName === 'Alaskan Silver';
+  // Helper flags
+  const isAmber = hasG && hasP;
+  const isPearlAmber = hasG && hasP && hasSS;
+  const isSapphire = hasP && hasSS && !hasG;
+  const isBurgundy = hasG && !hasP;
+  const isPearl = hasP && !hasSS && !hasG;
+  const isMansfieldPearl = hasSS && !hasP && !hasG;
+
+  const isAA_Base = aCount === 2;
+  const isSilverExpressingBase = baseColorName === 'Alaskan Silver' || (baseColorName === 'Standard Silver' && isAA_Base);
   const isCrossBase = baseColorName === 'Gold Cross' || baseColorName === 'Silver Cross';
+  const isRedGoldBase = baseColorName === 'Red' || baseColorName === 'Gold';
+
+  // Fire Expression check
+  // Fire is masked by Mansfield Pearl (ss), Burgundy alone (gg alone), and AA/Aa Silvers.
+  // EXCEPTION: Pearl Amber (gg pp ss) does NOT mask Fire.
+  const canExpressFire = isFifi && (!hasSS || isPearlAmber) && !(hasG && !hasP) && (baseColorName !== 'Standard Silver' || isAA_Base);
 
   // Special Phenotypes (Priority Overrides)
-  if (isAlbino) {
+  if (hasC) {
     finalName = 'Albino';
     eyeColor = 'Red';
-  } else if (isLeucistic) {
+  } else if (hasL) {
     finalName = 'Leucistic';
     eyeColor = 'Blue';
-  } else if (isFirefifi) {
-    if (isPearl && isAmber) {
-      if (baseColorName === 'Gold' || isCrossBase) {
-        finalName = 'Autumn Fire';
-      } else { // Red or Silver bases
-        finalName = 'Snow Glow';
-      }
+  } else if (isPearlAmber) {
+    eyeColor = 'Green';
+  }
+
+  if (finalName) {
+    // Already set by Albino/Leucistic
+  } else if (canExpressFire) {
+    if (isAmber) {
+      if (isRedGoldBase) finalName = 'Autumn Fire';
+      else if (isCrossBase) finalName = 'Snow Glow';
+      else if (isSilverExpressingBase) finalName = 'Champagne';
     } else if (isPearl) {
-      if (baseColorName === 'Red' || baseColorName === 'Gold') {
-        finalName = 'Fire and Ice';
-      } else if (isCrossBase) {
-        finalName = 'Moon Glow';
-      } else { // Silver base
-        finalName = 'Fawn Glow';
-      }
+      if (isRedGoldBase) finalName = 'Fire and Ice';
+      else if (isCrossBase) finalName = 'Moon Glow';
+      else if (isSilverExpressingBase) finalName = 'Fawn Glow';
     } else {
       if (baseColorName === 'Red') finalName = 'Wildfire';
       else if (baseColorName === 'Gold') finalName = 'Golden Sunrise';
       else if (isCrossBase) finalName = 'Fire Cross';
-      else if (isSilverBase) finalName = 'Colicott';
+      else if (isSilverExpressingBase) finalName = 'Colicott';
     }
   }
 
-  // Handle remaining named recessives
+  // Handle named recessives if no Fire name assigned
   if (!finalName) {
-    if (isAmber && isPearl && isBurgundy) {
+    if (isPearlAmber) {
       finalName = 'Pearl Amber';
       eyeColor = 'Green';
-    } else if (isPearl && isBurgundy) {
+    } else if (isAmber) {
+      finalName = 'Amber';
+    } else if (isSapphire) {
       finalName = 'Sapphire';
-    } else if (isAmber && isPearl) {
-        finalName = 'Amber Pearl'; // Not a priority name, but likely outcome
+    } else if (isBurgundy) {
+      finalName = 'Burgundy';
+    } else if (isPearl) {
+      finalName = 'Pearl';
+    } else if (isMansfieldPearl) {
+      finalName = 'Mansfield Pearl';
     }
   }
 
-  // If no special name, build it
+  // If still no special name, use base color
   if (!finalName) {
-    const mods: string[] = [];
-    if (isAmber) mods.push('Amber');
-    if (isPearl) mods.push('Pearl');
-    if (isBurgundy) mods.push('Burgundy');
-    if (isDilute) mods.push('Dilute');
-
-    // Refined Masking Logic
     let baseToUse = baseColorName;
-
-    // Normalize Silver for user display
     if (baseToUse === 'Alaskan Silver' || baseToUse === 'Standard Silver') {
       baseToUse = 'Silver';
     }
-
-    if (isPearl || isBurgundy) {
-      // Pearl and Burgundy mask everything except the "Cross" nature
-      if (baseToUse === 'Red' || baseToUse === 'Gold' || baseToUse === 'Silver') {
-        baseToUse = '';
-      } else if (baseToUse.includes('Cross')) {
-        baseToUse = 'Cross';
-      }
-    } else if (isAmber) {
-      // Amber masks Red and Gold and the Red part of Cross, but not Silver
-      if (baseToUse === 'Red' || baseToUse === 'Gold') {
-        baseToUse = '';
-      } else if (baseToUse.includes('Cross')) {
-        baseToUse = 'Cross';
-      }
+    finalName = baseToUse;
+  } else {
+    // If a special name was chosen, check if it needs to be combined with "Cross"
+    const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic';
+    if (isCrossBase && !isMaskingPhenotype && !finalName.includes('Cross') && !finalName.includes('Glow') && !finalName.includes('Fire')) {
+        finalName = `${finalName} Cross`;
     }
-
-    const fullParts = [...mods, baseToUse].filter(Boolean);
-    finalName = fullParts.join(' ');
   }
 
   // Pattern Logic
@@ -163,12 +173,8 @@ export function getPhenotype(genotype: Genotype) {
     patternName = 'White Mark';
   }
 
-  let displayName = '';
-  if (patternName !== 'None') {
-    displayName = `${patternName} ${finalName} Fox`;
-  } else {
-    displayName = `${finalName} Fox`;
-  }
+  const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic';
+  let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
 
   return {
     name: displayName,
@@ -177,7 +183,7 @@ export function getPhenotype(genotype: Genotype) {
     eyeColor: eyeColor,
     geneticName: displayName,
     description: `A beautiful ${displayName} with ${eyeColor.toLowerCase()} eyes.`,
-    isLethal: false,
+    isLethal,
     healthIssues,
   };
 }
@@ -389,7 +395,7 @@ export function createFoundationalFox(): Fox {
   Object.assign(genotype, base);
   
   // Possible rare recessive
-  const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L', 'D'];
+  const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L'];
   if (Math.random() > 0.6) {
     const gene = rareGenes[Math.floor(Math.random() * rareGenes.length)];
     const locus = LOCI[gene];

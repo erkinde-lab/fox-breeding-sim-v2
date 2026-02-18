@@ -6,7 +6,7 @@ import { LOCI, getInitialGenotype, getPhenotype, Stats } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
 import { 
   Users, Trophy, Coins, Microscope, Settings, 
   AlertTriangle, Ban, Plus, Trash2, Save, 
@@ -57,7 +57,7 @@ export default function AdminPanel() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-center text-slate-400">Please enter the administrative override code to proceed.</p>
-            <Input
+            <input
               type="password"
               value={passcode}
               onChange={e => setPasscode(e.target.value)}
