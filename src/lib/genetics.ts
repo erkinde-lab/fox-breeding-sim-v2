@@ -88,11 +88,12 @@ export function getPhenotype(genotype: Genotype) {
 
   // Fire Expression check
   // Fire is masked by Mansfield Pearl (ss), Burgundy alone (gg alone), and AA/Aa Silvers.
-  // EXCEPTION: Pearl Amber (gg pp ss) does NOT mask Fire.
-  const canExpressFire = isFifi && (!hasSS || isPearlAmber) && !(hasG && !hasP) && (baseColorName !== 'Standard Silver' || isAA_Base);
+  const canExpressFire = isFifi && !hasSS && !(hasG && !hasP) && (baseColorName !== 'Standard Silver' || isAA_Base);
 
   // Special Phenotypes (Priority Overrides)
-  if (hasC) {
+  if (isLethal) {
+    finalName = 'Stillborn';
+  } else if (hasC) {
     finalName = 'Albino';
     eyeColor = 'Red';
   } else if (hasL) {
@@ -103,7 +104,7 @@ export function getPhenotype(genotype: Genotype) {
   }
 
   if (finalName) {
-    // Already set by Albino/Leucistic
+    // Already set by Albino/Leucistic/Stillborn
   } else if (canExpressFire) {
     if (isAmber) {
       if (isRedGoldBase) finalName = 'Autumn Fire';
@@ -146,7 +147,7 @@ export function getPhenotype(genotype: Genotype) {
       baseToUse = 'Silver';
     }
     finalName = baseToUse;
-  } else {
+  } else if (finalName !== 'Stillborn') {
     // If a special name was chosen, check if it needs to be combined with "Cross"
     const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic';
     if (isCrossBase && !isMaskingPhenotype && !finalName.includes('Cross') && !finalName.includes('Glow') && !finalName.includes('Fire')) {
@@ -173,7 +174,7 @@ export function getPhenotype(genotype: Genotype) {
     patternName = 'White Mark';
   }
 
-  const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic';
+  const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic' || finalName === 'Stillborn';
   let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
 
   return {
