@@ -7,10 +7,10 @@ const loci = {
   G: [['G', 'G'], ['g', 'g']],
   P: [['P', 'P'], ['p', 'p']],
   SS: [['S', 'S'], ['s', 's']],
-  Fire: [['fi', 'fi'], ['Fire', 'fi'], ['Fire', 'Fire']],
+  Fire: [['FI', 'FI'], ['FI', 'fi'], ['fi', 'fi']],
   L: [['L', 'L'], ['l', 'l']],
   D: [['D', 'D'], ['d', 'd']],
-  W: [['w', 'w'], ['W', 'w']] // Just two for simplicity, patterns are handled separately
+  W: [['w', 'w'], ['W', 'w']]
 };
 
 const uniqueNames = new Set<string>();
