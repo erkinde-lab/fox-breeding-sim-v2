@@ -125,7 +125,7 @@ interface GameState {
   updateFox: (id: string, updates: Partial<Fox>) => void;
   initializeGame: () => void;
   buyFoundationalFox: () => void;
-  buyCustomFoundationalFox: (genotype: Genotype, gender: 'Male' | 'Female') => void;
+  buyCustomFoundationalFox: (genotype: Genotype, gender: 'Male' | 'Female', name?: string) => void;
   runShows: () => void;
   toggleAdminMode: () => void;
   adminAddCurrency: (gold: number, gems: number) => void;
@@ -506,10 +506,10 @@ export const useGameStore = create<GameState>()(
         get().checkAchievements();
       },
 
-      buyCustomFoundationalFox: (genotype, gender) => set((state) => {
+      buyCustomFoundationalFox: (genotype, gender, name) => set((state) => {
         if (state.gems < 50) return state;
         const fox = createFox({
-          name: 'Custom Foundational',
+          name: name || 'Custom Foundational',
           genotype,
           gender,
           parents: [null, null]

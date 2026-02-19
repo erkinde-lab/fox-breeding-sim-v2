@@ -1,0 +1,19 @@
+
+> fox-sim@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
+
+✓ Starting...
+⨯ Unable to acquire lock at /app/.next/dev/lock, is another i○ Compiling /shop/custom ...
+ GET /shop/custom 200 in 4.9s (compile: 4.3s, render: 641ms)
+✓ Compiled in 811ms
+ GET /shop/custom 200 in 1492ms (compile: 774ms, render: 718ms)
+ GET /kennel 200 in 298ms (compile: 111ms, render: 187ms)
+ GET /kennel 200 in 99ms (compile: 5ms, render: 94ms)
+ GET /news 200 in 154ms (compile: 42ms, render: 112ms)
+ GET /shop/custom 200 in 131ms (compile: 6ms, render: 125ms)
+ GET / 200 in 436ms (compile: 165ms, render: 271ms)
