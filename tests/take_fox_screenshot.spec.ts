@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 
 test('take fox profile screenshot', async ({ page }) => {
-  await page.goto('http://localhost:3000');
+  await page.goto('http://localhost:3000/kennel');
   // Wait for the starter foxes to be initialized and rendered
   await page.waitForSelector('h3:has-text("Starter Male")');
   

@@ -6,14 +6,6 @@ import { Info, HelpCircle } from 'lucide-react';
 
 const FAQS = [
   {
-    q: "How is Silver-marked different from the Cross coat?",
-    a: "Silver-marked (Ss) is a modifier that adds silver hairs to any base color. Cross (Aa Bb) is a specific base genotype resulting from the interaction of Standard and Alaskan Silver alleles, characterized by a dark 'cross' pattern over the shoulders."
-  },
-  {
-    q: "What does 'Brown' mean in the genetics?",
-    a: "The 'Brown' (formerly Brown-Coat) mutation (brcbrc) is a recessive trait that replaces black areas of the coat (ears, legs, tail tip) with rich brownish-red pigment."
-  },
-  {
     q: "Why can't I breed my foxes?",
     a: "Breeding is only available during the Winter season. Also, ensure both foxes are at least 2 years old and not retired."
   },
@@ -33,25 +25,25 @@ const FAQS = [
 
 export default function FAQPage() {
   return (
-    <div className="space-y-8 max-w-3xl mx-auto">
-      <div className="text-center">
+    <div className="space-y-8 max-w-3xl mx-auto font-sans">
+      <div className="text-center space-y-2">
         <h1 className="text-4xl font-black text-earth-900 tracking-tight">Frequently Asked Questions</h1>
-        <p className="text-earth-500 mt-2">Quick answers to common questions about the simulation.</p>
+        <p className="text-earth-500 font-medium italic">Quick answers to common questions about the simulation.</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6 mt-12">
         {FAQS.map((faq, i) => (
-          <Card key={i} className="folk-card border-earth-200">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-start gap-3">
-                <HelpCircle className="text-fire-600 mt-1 flex-shrink-0" size={20} />
+          <Card key={i} className="folk-card border-earth-100 shadow-sm hover:shadow-md transition-shadow rounded-[32px] overflow-hidden">
+            <CardHeader className="pb-2 bg-earth-50/50">
+              <CardTitle className="text-xl font-black flex items-start gap-4 text-earth-900">
+                <HelpCircle className="text-fire-600 mt-1 flex-shrink-0" size={24} />
                 {faq.q}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex gap-3">
-                <Info className="text-moss-600 mt-1 flex-shrink-0" size={20} />
-                <p className="text-earth-700 leading-relaxed">{faq.a}</p>
+            <CardContent className="p-8">
+              <div className="flex gap-4">
+                <Info className="text-moss-600 mt-1 flex-shrink-0" size={24} />
+                <p className="text-earth-700 leading-relaxed font-medium text-lg">{faq.a}</p>
               </div>
             </CardContent>
           </Card>

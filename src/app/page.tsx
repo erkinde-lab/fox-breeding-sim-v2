@@ -1,125 +1,84 @@
 'use client';
 
-import { useGameStore } from '@/lib/store';
-import { ShowReport } from '@/lib/showing';
-import { Badge } from '@/components/ui/badge';
-import { Trophy, Heart, Star } from 'lucide-react';
+import React from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { PawPrint, Trophy, Heart, ShoppingBag } from 'lucide-react';
 
-export default function DashboardPage() {
-  const { foxes, bisWins, bestMaleWins, bestFemaleWins, totalShowPoints, whelpingReports, showReports } = useGameStore();
-
+export default function LandingPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-earth-900 tracking-tight">Dashboard</h2>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-4 rounded-xl border border-earth-200 shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-fire-100 rounded-lg text-fire-600">
-            <Trophy size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-earth-500 uppercase tracking-wider">Total Points</p>
-            <p className="text-xl font-bold text-earth-900">{totalShowPoints}</p>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-earth-200 shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-earth-100 rounded-lg text-earth-600">
-            <Trophy size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-earth-500 uppercase tracking-wider">Best in Show</p>
-            <p className="text-xl font-bold text-earth-900">{bisWins}</p>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-earth-200 shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-moss-100 rounded-lg text-moss-600">
-            <Trophy size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-earth-500 uppercase tracking-wider">Best Male</p>
-            <p className="text-xl font-bold text-earth-900">{bestMaleWins}</p>
-          </div>
-        </div>
-        <div className="bg-white p-4 rounded-xl border border-earth-200 shadow-sm flex items-center gap-4">
-          <div className="p-3 bg-fire-100 rounded-lg text-fire-600">
-            <Trophy size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-semibold text-earth-500 uppercase tracking-wider">Best Female</p>
-            <p className="text-xl font-bold text-earth-900">{bestFemaleWins}</p>
-          </div>
+    <div className="space-y-12 py-12">
+      <div className="text-center space-y-4">
+        <h1 className="text-5xl font-black text-earth-900 tracking-tight">
+          Welcome to <span className="text-fire-600">Red Fox</span> Breeding Simulator
+        </h1>
+        <p className="text-xl text-earth-600 max-w-2xl mx-auto font-medium">
+          Experience the art of fox genetics and competitive showing. Build your kennel,
+          master complex inheritance, and produce the next Best in Show champion.
+        </p>
+        <div className="pt-6 flex justify-center gap-4">
+          <Link href="/kennel">
+            <Button size="lg" className="bg-fire-600 hover:bg-fire-500 h-14 px-8 text-lg font-bold shadow-lg shadow-fire-200">
+              Enter My Kennel
+            </Button>
+          </Link>
+          <Link href="/help">
+            <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-earth-200">
+              How to Play
+            </Button>
+          </Link>
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <FeatureCard
+            icon={<PawPrint size={32} className="text-fire-600" />}
+            title="Genetic Simulation"
+            description="Complex Agouti, Black, Albino, Burgundy, Pearl, Mansfield Pearl, Fire, and White Markings loci interaction."
+        />
+        <FeatureCard
+            icon={<Trophy size={32} className="text-amber-500" />}
+            title="Competitive Shows"
+            description="Compete in Junior, Open, Senior, and Championship levels across multiple specialty classes."
+        />
+        <FeatureCard
+            icon={<Heart size={32} className="text-rose-500" />}
+            title="Breeding Center"
+            description="Strategic breeding with detailed COI tracking, health management, and genetic testing."
+        />
+        <FeatureCard
+            icon={<ShoppingBag size={32} className="text-emerald-600" />}
+            title="Economy & Staff"
+            description="Manage your gold and gems. Hire professional Staff to improve your kennel quality."
+        />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Latest Whelping */}
-        <div className="bg-white p-6 rounded-xl border border-earth-200 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <Heart className="text-rose-500" size={20} />
-            <h3 className="font-bold text-earth-900">Latest Whelping</h3>
+      <div className="bg-earth-900 rounded-[48px] p-12 text-white overflow-hidden relative">
+          <div className="relative z-10 max-w-xl">
+            <h2 className="text-3xl font-black mb-4">Ready to start your journey?</h2>
+            <p className="text-earth-300 text-lg mb-8">Join the community of breeders and start discovering rare color morphs today.</p>
+            <Link href="/shop/adoption">
+                <Button className="bg-white text-earth-900 hover:bg-earth-100 h-12 px-6 font-bold">
+                    Adopt Your First Fox
+                </Button>
+            </Link>
           </div>
-          {whelpingReports.length > 0 ? (
-            <div>
-              <p className="text-sm font-medium text-slate-700 mb-2">
-                {whelpingReports[0].motherName}&apos;s Litter ({whelpingReports[0].kits.length} kits)
-              </p>
-              <div className="space-y-2">
-                {whelpingReports[0].kits.map((kit, i) => (
-                  <div key={i} className="flex justify-between items-center text-sm p-2 bg-earth-50 rounded">
-                    <span>{kit.name}</span>
-                    <Badge variant={kit.isStillborn ? "outline" : "secondary"}>
-                      {kit.phenotype}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-earth-500 italic">No recent whelping events.</p>
-          )}
-        </div>
-
-        {/* Latest Show Results */}
-        <div className="bg-white p-6 rounded-xl border border-earth-200 shadow-sm">
-          <div className="flex items-center gap-2 mb-4">
-            <Star className="text-amber-500" size={20} />
-            <h3 className="font-bold text-earth-900">Recent Show Highlights</h3>
+          <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
+              <PawPrint size={300} />
           </div>
-          {showReports.length > 0 ? (
-            <div className="space-y-4">
-              {showReports.slice(0, 1).map((report: ShowReport, idx: number) => (
-                <div key={idx}>
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">
-                    Year {report.year} {report.season} - {report.level} Show
-                  </p>
-                  <div className="space-y-2">
-                    {report.results.filter((r: { foxId: string; place: number; class: string }) => foxes[r.foxId]).slice(0, 3).map((res: { foxId: string; place: number; class: string }, i: number) => (
-                      <div key={i} className="flex justify-between items-center text-sm p-2 bg-earth-50 rounded">
-                        <span>{foxes[res.foxId]?.name}</span>
-                        <div className="flex gap-2">
-                            <Badge variant="outline">#{res.place}</Badge>
-                            <span className="text-xs text-slate-400">{res.class}</span>
-                        </div>
-                      </div>
-                    ))}
-                    {report.bestInShowFoxId && foxes[report.bestInShowFoxId] && (
-                        <div className="flex justify-between items-center text-sm p-2 bg-yellow-50 border border-yellow-100 rounded">
-                            <span className="font-bold text-yellow-800">Best In Show</span>
-                            <span className="font-bold text-yellow-800">{foxes[report.bestInShowFoxId].name}</span>
-                        </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-earth-500 italic">No recent show results.</p>
-          )}
-        </div>
       </div>
     </div>
   );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+    return (
+        <div className="bg-white p-8 rounded-[32px] border border-earth-100 shadow-sm space-y-4 hover:shadow-md transition-shadow">
+            <div className="p-4 bg-earth-50 rounded-2xl w-fit">
+                {icon}
+            </div>
+            <h3 className="font-bold text-xl text-earth-900">{title}</h3>
+            <p className="text-sm text-earth-600 leading-relaxed font-medium">{description}</p>
+        </div>
+    );
 }

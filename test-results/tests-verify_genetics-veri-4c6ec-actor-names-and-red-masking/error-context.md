@@ -1,0 +1,80 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - link "RED FOX Simulator" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img [ref=e9]
+            - generic [ref=e14]:
+              - generic [ref=e15]: RED FOX
+              - generic [ref=e16]: Simulator
+          - navigation [ref=e17]:
+            - button "Main" [ref=e19]:
+              - img [ref=e20]
+              - generic [ref=e23]: Main
+              - img [ref=e24]
+            - button "Kennel" [ref=e27]:
+              - img [ref=e28]
+              - generic [ref=e31]: Kennel
+              - img [ref=e32]
+            - button "Breeding" [ref=e35]:
+              - img [ref=e36]
+              - generic [ref=e38]: Breeding
+              - img [ref=e39]
+            - button "Shows" [ref=e42]:
+              - img [ref=e43]
+              - generic [ref=e49]: Shows
+              - img [ref=e50]
+            - button "Shops" [ref=e53]:
+              - img [ref=e54]
+              - generic [ref=e57]: Shops
+              - img [ref=e58]
+            - button "Community" [ref=e61]:
+              - img [ref=e62]
+              - generic [ref=e67]: Community
+              - img [ref=e68]
+            - button "Support" [ref=e71]:
+              - img [ref=e72]
+              - generic [ref=e79]: Support
+              - img [ref=e80]
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - img [ref=e84]
+            - text: Year 1, Summer
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - img [ref=e88]
+              - generic [ref=e93]: 10,000
+            - generic [ref=e94]:
+              - img [ref=e95]
+              - generic [ref=e97]: "100"
+    - main [ref=e98]:
+      - generic [ref=e99]:
+        - img [ref=e100]
+        - heading "Access Restricted" [level=1] [ref=e103]
+        - paragraph [ref=e104]: You must be an administrator to view this page.
+        - button "Return Home" [ref=e105]
+    - contentinfo [ref=e106]:
+      - generic [ref=e107]:
+        - generic [ref=e108]:
+          - link "Terms of Service" [ref=e109] [cursor=pointer]:
+            - /url: /tos
+            - img [ref=e110]
+            - text: Terms of Service
+          - link "Privacy Policy" [ref=e114] [cursor=pointer]:
+            - /url: /privacy
+            - img [ref=e115]
+            - text: Privacy Policy
+          - link "Game Credits" [ref=e117] [cursor=pointer]:
+            - /url: /credits
+            - img [ref=e118]
+            - text: Game Credits
+        - generic [ref=e121]: © 2026 Red Fox Breeding Simulator. All Rights Reserved.
+  - button "Open Next.js Dev Tools" [ref=e127] [cursor=pointer]:
+    - img [ref=e128]
+  - alert [ref=e131]
+```

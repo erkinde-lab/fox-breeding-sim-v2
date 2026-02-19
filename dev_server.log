@@ -2,18 +2,23 @@
 > fox-sim@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.2:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquire lock at /app/.next/dev/lock, is another i○ Compiling /shop/custom ...
- GET /shop/custom 200 in 4.9s (compile: 4.3s, render: 641ms)
-✓ Compiled in 811ms
- GET /shop/custom 200 in 1492ms (compile: 774ms, render: 718ms)
- GET /kennel 200 in 298ms (compile: 111ms, render: 187ms)
- GET /kennel 200 in 99ms (compile: 5ms, render: 94ms)
- GET /news 200 in 154ms (compile: 42ms, render: 112ms)
- GET /shop/custom 200 in 131ms (compile: 6ms, render: 125ms)
- GET / 200 in 436ms (compile: 165ms, render: 271ms)
+✓ Ready in 1117ms
+○ Compiling / ...
+ GET / 200 in 5.4s (compile: 4.9s, render: 484ms)
+ GET /kennel 200 in 942ms (compile: 795ms, render: 147ms)
+ GET /fox/s90douq 200 in 1738ms (compile: 1689ms, render: 48ms)
+ GET / 200 in 83ms (compile: 9ms, render: 74ms)
+ GET / 200 in 70ms (compile: 4ms, render: 66ms)
+ GET /shop/staff 200 in 765ms (compile: 604ms, render: 161ms)
+ GET /quests 200 in 596ms (compile: 488ms, render: 108ms)
+ GET /kennel 200 in 376ms (compile: 126ms, render: 249ms)
+ GET /kennel 200 in 82ms (compile: 6ms, render: 77ms)
+ GET /shop/staff 200 in 345ms (compile: 109ms, render: 236ms)
+ GET /quests 200 in 342ms (compile: 108ms, render: 233ms)
+ GET /admin 200 in 746ms (compile: 638ms, render: 108ms)
+ GET /admin 200 in 75ms (compile: 3ms, render: 72ms)

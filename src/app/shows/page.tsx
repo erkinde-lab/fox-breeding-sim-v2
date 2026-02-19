@@ -47,6 +47,7 @@ export default function ShowsPage() {
             <div className="space-y-2">
                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Specialty Classes</h4>
                <ul className="space-y-1 text-sm text-slate-600">
+                  <li>• Red Specialty</li>
                   <li>• Silver Specialty (Standard/Alaskan)</li>
                   <li>• Gold Specialty</li>
                   <li>• Cross Specialty</li>

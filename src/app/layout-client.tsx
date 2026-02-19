@@ -1,22 +1,19 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
+import Link from 'next/link';
 import { 
-  PawPrint, Home, ShoppingBag, Trophy, Heart, Calendar, 
-  Coins, Diamond, MessageSquare, Shield, Menu, ChevronDown,
-  Users, User, ShoppingCart, Info, Utensils, Star, Baby, UserPlus,
-  Package, Store, CheckSquare, HelpCircle, LifeBuoy, Layout, ExternalLink, Settings,
-  Scale, Award, Rocket
+  Menu, X, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
+  Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
+  Diamond, Calendar, Info, Microscope, Star, MessageSquare,
+  User, ExternalLink, HelpCircle, Rocket, UserPlus, Utensils,
+  Store, Baby, CheckSquare, Shield, Scale, Award
 } from 'lucide-react';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { gold, gems, year, season, advanceTime, initializeGame, isAdmin, adminAddCurrency } = useGameStore();
+export default function LayoutClient({ children }: { children: React.ReactNode }) {
+  const { gold, gems, year, season, advanceTime, initializeGame, isAdmin } = useGameStore();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const [isMainOpen, setIsMainOpen] = useState(false);
   const [isKennelOpen, setIsKennelOpen] = useState(false);
@@ -25,8 +22,7 @@ export default function RootLayout({
   const [isShopsOpen, setIsShopsOpen] = useState(false);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   const mainRef = useRef<HTMLDivElement>(null);
   const kennelRef = useRef<HTMLDivElement>(null);
   const breedingRef = useRef<HTMLDivElement>(null);
@@ -38,58 +34,51 @@ export default function RootLayout({
 
   useEffect(() => {
     initializeGame();
+
+    function handleClickOutside(event: MouseEvent) {
+      if (mainRef.current && !mainRef.current.contains(event.target as Node)) setIsMainOpen(false);
+      if (kennelRef.current && !kennelRef.current.contains(event.target as Node)) setIsKennelOpen(false);
+      if (breedingRef.current && !breedingRef.current.contains(event.target as Node)) setIsBreedingOpen(false);
+      if (showsRef.current && !showsRef.current.contains(event.target as Node)) setIsShowsOpen(false);
+      if (shopsRef.current && !shopsRef.current.contains(event.target as Node)) setIsShopsOpen(false);
+      if (communityRef.current && !communityRef.current.contains(event.target as Node)) setIsCommunityOpen(false);
+      if (supportRef.current && !supportRef.current.contains(event.target as Node)) setIsSupportOpen(false);
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+          // Keep mobile menu handling separate if needed
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [initializeGame]);
 
-  // Close menus when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as Node;
-      if (mainRef.current && !mainRef.current.contains(target)) setIsMainOpen(false);
-      if (kennelRef.current && !kennelRef.current.contains(target)) setIsKennelOpen(false);
-      if (breedingRef.current && !breedingRef.current.contains(target)) setIsBreedingOpen(false);
-      if (showsRef.current && !showsRef.current.contains(target)) setIsShowsOpen(false);
-      if (shopsRef.current && !shopsRef.current.contains(target)) setIsShopsOpen(false);
-      if (communityRef.current && !communityRef.current.contains(target)) setIsCommunityOpen(false);
-      if (supportRef.current && !supportRef.current.contains(target)) setIsSupportOpen(false);
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) setIsMobileMenuOpen(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-[#F8F4ED] flex flex-col font-serif">
-      {/* Banner Placeholder */}
-      <div className="w-full h-32 md:h-48 bg-[#E8E1D3] flex items-center justify-center border-b border-[#D8CFBC] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-cyan-500/10" />
-        <div className="z-10 flex flex-col items-center gap-2">
-            <PawPrint className="text-earth-200 w-12 h-12" />
-            <span className="text-earth-500 font-bold uppercase tracking-widest text-xs md:text-sm">Banner Image Area</span>
-        </div>
-      </div>
-
-      {/* Header Navigation */}
-      <header className="bg-[#3B3127] text-white sticky top-0 z-50 shadow-lg">
+    <div className="min-h-screen bg-earth-50 flex flex-col font-sans">
+      {/* Navigation Header */}
+      <header className="bg-[#1C1712] text-white sticky top-0 z-50 border-b-4 border-fire-600 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo and Desktop Nav */}
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="bg-fire-600 p-1.5 rounded-lg group-hover:bg-fire-500 transition-colors">
-                  <PawPrint size={20} className="text-white" />
+                <div className="p-2 bg-fire-600 rounded-xl group-hover:bg-fire-500 transition-colors shadow-lg shadow-fire-900/40">
+                    <PawPrint size={24} className="text-white" />
                 </div>
-                <span className="text-xl font-black tracking-tighter">FoxSim</span>
+                <div className="flex flex-col">
+                    <span className="text-lg font-black tracking-tighter leading-none italic">RED FOX</span>
+                    <span className="text-[10px] font-bold tracking-[0.2em] text-fire-500 uppercase leading-none">Simulator</span>
+                </div>
               </Link>
 
-              <nav className="hidden md:flex items-center gap-1 lg:gap-2 px-4">
+              <nav className="hidden md:flex items-center gap-1">
                 {/* Main Dropdown */}
                 <Dropdown 
                   label="Main" 
-                  icon={<Layout size={18} />} 
+                  icon={<Home size={18} />}
                   isOpen={isMainOpen} 
                   setIsOpen={setIsMainOpen} 
                   dropdownRef={mainRef}
                 >
-                  <DropdownLink href="/" icon={<Home size={16} />} label="Dashboard" onClick={() => setIsMainOpen(false)} />
                   <DropdownLink href="/news" icon={<Info size={16} />} label="Game News" onClick={() => setIsMainOpen(false)} />
                 </Dropdown>
 
@@ -101,6 +90,7 @@ export default function RootLayout({
                   setIsOpen={setIsKennelOpen} 
                   dropdownRef={kennelRef}
                 >
+                  <DropdownLink href="/kennel?tab=dashboard" icon={<Home size={16} />} label="Dashboard" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/kennel" icon={<PawPrint size={16} />} label="My Foxes" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/inventory" icon={<Package size={16} />} label="Inventory" onClick={() => setIsKennelOpen(false)} />
                 </Dropdown>
@@ -175,20 +165,26 @@ export default function RootLayout({
             </div>
 
             {/* Right Side: Game Status & Mobile Menu Toggle */}
-            <div className="flex items-center gap-1 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-4 shrink-0">
+              {isAdmin && (
+                <Link href="/admin" className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded-lg text-white font-bold text-xs transition-colors shadow-lg shadow-red-900/20">
+                    <Settings size={14} /> Admin Panel
+                </Link>
+              )}
+
               <div className="hidden xl:flex items-center gap-3 text-sm text-earth-200 border-r border-earth-700 pr-4 mr-2 whitespace-nowrap font-mono">
                 <Calendar size={14} className="text-fire-600" /> Year {year}, {season}
                 {isAdmin && (
                   <button 
                     onClick={() => advanceTime()}
-                    className="ml-2 px-2 py-1 bg-fire-600 hover:bg-fire-500 rounded text-xs transition text-white font-bold"
+                    className="ml-2 px-2 py-0.5 bg-fire-600 hover:bg-fire-500 rounded text-[10px] transition text-white font-bold uppercase tracking-widest"
                   >
                     Next
                   </button>
                 )}
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                 <div className="flex items-center gap-1.5 text-yellow-500 font-black text-xs sm:text-sm bg-[#2A231C] px-3 py-1.5 rounded-full border border-yellow-500/20 shadow-inner">
                   <Coins size={14} className="sm:w-4 sm:h-4" /> <span>{gold.toLocaleString()}</span>
                 </div>
@@ -211,11 +207,12 @@ export default function RootLayout({
             <div className="md:hidden border-t border-earth-800 pb-4 px-2 max-h-[80vh] overflow-y-auto" ref={mobileMenuRef}>
               <div className="flex flex-col gap-1 mt-2">
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Main</div>
-                <MobileNavLink href="/" icon={<Home size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/" icon={<Home size={18} />} label="Home" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/news" icon={<Info size={18} />} label="Game News" onClick={() => setIsMobileMenuOpen(false)} />
                 {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Kennel</div>
+                <MobileNavLink href="/kennel?tab=dashboard" icon={<Home size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
                 
@@ -238,22 +235,19 @@ export default function RootLayout({
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Community</div>
                 <MobileNavLink href="/forum" icon={<MessageSquare size={18} />} label="Forums" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/members" icon={<User size={18} />} label="Members" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/coming-soon" icon={<ExternalLink size={18} />} label="Discord Server" onClick={() => setIsMobileMenuOpen(false)} />
 
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Support</div>
                 <MobileNavLink href="/help" icon={<HelpCircle size={18} />} label="Help Center" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/faq" icon={<Info size={18} />} label="FAQ" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/coming-soon" icon={<Rocket size={18} />} label="Roadmap" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/contact" icon={<MessageSquare size={18} />} label="Contact Staff" onClick={() => setIsMobileMenuOpen(false)} />
 
                 <div className="mt-4 px-4 flex items-center justify-between text-[10px] text-earth-500">
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 font-mono">
                     <Calendar size={12} /> Year {year}, {season}
                   </span>
                   {isAdmin && (
                     <button 
                       onClick={() => advanceTime()}
-                      className="px-2 py-0.5 bg-fire-600 hover:bg-fire-500 rounded transition text-white"
+                      className="px-2 py-0.5 bg-fire-600 hover:bg-fire-500 rounded transition text-white font-bold"
                     >
                       Next Season
                     </button>
@@ -271,7 +265,7 @@ export default function RootLayout({
       </main>
 
       {/* Legal Footer */}
-      <footer className="bg-[#2A231C] text-earth-400 py-6 px-4 sm:px-6 lg:px-8 border-t border-earth-800">
+      <footer className="bg-[#1C1712] text-earth-400 py-6 px-4 sm:px-6 lg:px-8 border-t border-earth-800">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-black uppercase tracking-widest">
             <div className="flex items-center gap-6">
                 <Link href="/tos" className="flex items-center gap-1.5 hover:text-fire-400 transition-colors"><Scale size={12} className="text-fire-600" /> Terms of Service</Link>
@@ -279,7 +273,7 @@ export default function RootLayout({
                 <Link href="/credits" className="flex items-center gap-1.5 hover:text-fire-400 transition-colors"><Award size={12} className="text-cyan-600" /> Game Credits</Link>
             </div>
             <div className="text-earth-500">
-                &copy; {new Date().getFullYear()} Red Fox Breeding Simulator. All Rights Reserved. Inspired by Black Foxes UK.
+                &copy; {new Date().getFullYear()} Red Fox Breeding Simulator. All Rights Reserved.
             </div>
         </div>
       </footer>
@@ -303,7 +297,7 @@ function Dropdown({ label, icon, isOpen, setIsOpen, dropdownRef, children }: { l
             </button>
 
             {isOpen && (
-                <div className="absolute left-0 mt-2 w-56 rounded-xl bg-[#3B3127] border border-earth-700 shadow-2xl py-2 overflow-hidden ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in duration-150 origin-top-left z-[60]">
+                <div className="absolute left-0 mt-2 w-56 rounded-xl bg-[#2A231C] border border-earth-800 shadow-2xl py-2 overflow-hidden ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in duration-150 origin-top-left z-[60]">
                     {children}
                 </div>
             )}
@@ -316,7 +310,7 @@ function DropdownLink({ href, icon, label, onClick }: { href: string; icon: Reac
         <Link 
             href={href} 
             onClick={onClick}
-            className="flex items-center gap-3 px-4 py-2.5 hover:bg-earth-700 text-earth-200 hover:text-fire-400 transition-colors"
+            className="flex items-center gap-3 px-4 py-2.5 hover:bg-earth-800 text-earth-200 hover:text-fire-400 transition-colors"
         >
             {icon}
             <span className="text-xs font-bold uppercase tracking-wide">{label}</span>
