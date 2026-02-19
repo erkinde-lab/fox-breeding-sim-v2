@@ -8,7 +8,7 @@ import {
   Coins, Diamond, MessageSquare, Shield, Menu, ChevronDown,
   Users, User, ShoppingCart, Info, Utensils, Star, Baby, UserPlus,
   Package, Store, CheckSquare, HelpCircle, LifeBuoy, Layout, ExternalLink, Settings,
-  Scale, Award
+  Scale, Award, Rocket
 } from 'lucide-react';
 
 export default function RootLayout({
@@ -168,7 +168,8 @@ export default function RootLayout({
                 >
                   <DropdownLink href="/help" icon={<HelpCircle size={16} />} label="Help Center" onClick={() => setIsSupportOpen(false)} />
                   <DropdownLink href="/faq" icon={<Info size={16} />} label="FAQ" onClick={() => setIsSupportOpen(false)} />
-                  <DropdownLink href="/contact" icon={<MessageSquare size={16} />} label="Contact Staff" onClick={() => setIsSupportOpen(false)} />
+                  <DropdownLink href="/coming-soon" icon={<Rocket size={16} />} label="Roadmap" onClick={() => setIsSupportOpen(false)} />
+                        <DropdownLink href="/contact" icon={<MessageSquare size={16} />} label="Contact Staff" onClick={() => setIsSupportOpen(false)} />
                 </Dropdown>
               </nav>
             </div>
@@ -242,6 +243,7 @@ export default function RootLayout({
                 <div className="px-4 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider border-t border-earth-800/50 mt-1">Support</div>
                 <MobileNavLink href="/help" icon={<HelpCircle size={18} />} label="Help Center" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/faq" icon={<Info size={18} />} label="FAQ" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/coming-soon" icon={<Rocket size={18} />} label="Roadmap" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/contact" icon={<MessageSquare size={18} />} label="Contact Staff" onClick={() => setIsMobileMenuOpen(false)} />
 
                 <div className="mt-4 px-4 flex items-center justify-between text-[10px] text-earth-500">

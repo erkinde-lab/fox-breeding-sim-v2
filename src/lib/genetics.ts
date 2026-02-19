@@ -143,6 +143,19 @@ export function getPhenotype(genotype: Genotype) {
     // Silver base color names are masked by the modifier name.
     if (finalName && isRedGoldBase) {
       finalName = `${finalName} ${baseColorName}`;
+  // Brown (brcbrc)
+  if (BrC === 'brcbrc') colorModifiers.push('Brown');
+  
+  // Dilute (dd)
+  if (D === 'dd') colorModifiers.push('Dilute');
+
+  // Silver Factor (SS/Ss)
+  if (S === 'SS') {
+    colorModifiers.push('Silver');
+    isSilver = true;
+  } else if (S === 'Ss') {
+    if (!baseColorName.includes('Cross')) {
+      colorModifiers.push('Cross');
     }
   }
 
