@@ -200,7 +200,9 @@ export function getPhenotype(genotype: Genotype, isTested: boolean = false): Phe
     colorModifiers.push('Silver');
     isSilver = true;
   } else if (S === 'Ss') {
-    colorModifiers.push('Silver-Marked');
+    if (!baseColorName.includes('Cross')) {
+      colorModifiers.push('Cross');
+    }
   }
 
   // Fire Factor
