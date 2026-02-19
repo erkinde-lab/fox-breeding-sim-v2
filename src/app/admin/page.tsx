@@ -65,9 +65,9 @@ export default function AdminPanel() {
     alert('Fox spawned successfully!');
   };
 
-  const handleWarn = (id: string) => {
+  const handleWarn = (memberId: string) => {
     const reason = prompt('Reason for warning:');
-    if (reason) warnMember(id, reason);
+    if (reason) warnMember(memberId, reason);
   };
 
   const handleUpdateStats = () => {
@@ -436,8 +436,8 @@ export default function AdminPanel() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {adminLogs.length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
-              {adminLogs.map(log => (
+              {(adminLogs || []).length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
+              {(adminLogs || []).map(log => (
                 <div key={log.id} className="p-3 bg-earth-50 border border-earth-100 rounded-lg text-sm flex justify-between items-start">
                   <div>
                     <div className="font-bold text-fire-700">{log.action}</div>

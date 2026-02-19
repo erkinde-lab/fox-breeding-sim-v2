@@ -138,6 +138,12 @@ export function getPhenotype(genotype: Genotype) {
     } else if (isMansfieldPearl) {
       finalName = 'Mansfield Pearl';
     }
+
+    // For Red or Gold foxes, the modifier name should be added before the base color name.
+    // Silver base color names are masked by the modifier name.
+    if (finalName && isRedGoldBase) {
+      finalName = `${finalName} ${baseColorName}`;
+    }
   }
 
   // If still no special name, use base color
