@@ -106,28 +106,24 @@ export function getPhenotype(genotype: Genotype) {
   if (finalName) {
     // Already set
   } else if (canExpressFire) {
-    // Fire Factor nomenclature according to spreadsheet/memory
-    if (baseColorName === 'Red') {
-        if (hasP && hasG) finalName = 'Snow Glow';
-        else if (hasP) finalName = 'Fire and Ice';
-        else finalName = 'Wildfire';
-    } else if (baseColorName === 'Gold') {
-        if (hasP && hasG) finalName = 'Autumn Fire';
-        else if (hasP) finalName = 'Fire and Ice';
-        else finalName = 'Golden Sunrise';
+    // Specific Snow Glow / Cinnamon Fire overrides per request
+    if (baseColorName === 'Standard Silver' && hasG) {
+        finalName = 'Cinnamon Fire';
+    } else if ((isRedGoldBase && (hasP || hasG)) || (baseColorName === 'Alaskan Silver' && hasG)) {
+        finalName = 'Snow Glow';
+    }
+    // Standard fire expressions
+    else if (isRedGoldBase) {
+      if (baseColorName === 'Red') finalName = 'Wildfire';
+      else finalName = 'Golden Sunrise';
     } else if (isCrossBase) {
-        if (hasP && hasG) finalName = 'Autumn Fire';
-        else if (hasP) finalName = 'Moon Glow';
-        else finalName = 'Fire Cross';
-    } else if (baseColorName === 'Alaskan Silver') {
-        finalName = 'Colicott';
-    } else if (baseColorName === 'Standard Silver') {
-        if (aCount === 2) { // aabb
-            if (hasP) finalName = 'Fawn Glow';
-            else finalName = 'Colicott';
-        } else { // AAbb or Aabb
-            if (hasG) finalName = 'Cinnamon Fire';
-        }
+      if (isAmber) finalName = 'Snow Glow';
+      else if (hasP) finalName = 'Moon Glow';
+      else finalName = 'Fire Cross';
+    } else if (isSilverExpressingBase) {
+      if (isAmber) finalName = 'Champagne';
+      else if (hasP) finalName = 'Fawn Glow';
+      else finalName = 'Colicott';
     }
   }
 
@@ -148,12 +144,12 @@ export function getPhenotype(genotype: Genotype) {
       finalName = 'Mansfield Pearl';
     }
 
-    // Masking logic: Burgundy, Pearl, Mansfield Pearl are masked on Red base
+    // Masking for Red Foxes: Burgundy, Pearl, Mansfield Pearl are masked on Red
     if (baseColorName === 'Red' && (finalName === 'Burgundy' || finalName === 'Pearl' || finalName === 'Mansfield Pearl')) {
-        finalName = ''; // Masked, fall back to base name
+        finalName = ''; // Masked, will use base color
     }
 
-    if (finalName && isRedGoldBase && !['Pearl Amber', 'Sapphire', 'Amber'].includes(finalName)) {
+    if (finalName && isRedGoldBase) {
       finalName = `${finalName} ${baseColorName}`;
     }
   }
@@ -256,7 +252,7 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
       fertility: Math.floor(Math.random() * 50) + 25,
     };
   }
-  
+
   const inherit = (v1: number, v2: number) => {
     const mean = (v1 + v2) / 2;
     const variance = (Math.random() - 0.5) * 10;
@@ -303,7 +299,7 @@ export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
     const a2 = p2Alleles[Math.floor(Math.random() * 2)];
     offspring[locus] = [a1, a2];
   }
-  
+
   if (getPhenotype(offspring).isLethal) return null;
   return offspring;
 }
@@ -403,7 +399,7 @@ export function createFoundationalFox(): Fox {
   const base = baseGenotypes[Math.floor(Math.random() * baseGenotypes.length)];
   const genotype = getInitialGenotype();
   Object.assign(genotype, base);
-  
+
   // Possible rare recessive
   const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L'];
   if (Math.random() > 0.6) {
@@ -427,7 +423,7 @@ export function getActiveBoosts(fox: Fox): Record<string, number> {
   const now = Date.now();
   const activeBoosts: Record<string, number> = {};
   if (!fox.boosts) return activeBoosts;
-  
+
   for (const [stat, expiry] of Object.entries(fox.boosts)) {
     if (expiry > now) {
       activeBoosts[stat] = 2; // Each boost is +2
