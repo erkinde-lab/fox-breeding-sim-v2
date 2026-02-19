@@ -124,7 +124,12 @@ export default function FoxProfilePage() {
               )}
             </div>
           )}
-          <p className="text-earth-500 font-medium">{fox.phenotype}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-earth-500 font-medium">{fox.phenotype}</p>
+            <Badge variant="outline" className="bg-earth-50 text-earth-600 border-earth-200">
+              {fox.eyeColor} Eyes
+            </Badge>
+          </div>
           {hungry && <Badge variant="destructive" className="mt-1">Hungry - Stat Penalty</Badge>}
         </div>
         <div className="flex gap-2">

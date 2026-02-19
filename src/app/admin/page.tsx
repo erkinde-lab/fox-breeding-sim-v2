@@ -33,7 +33,6 @@ export default function AdminPanel() {
   const [addItemCount, setAddItemCount] = useState(1);
 
   // Genetics Lab State
-  const [spawnName, setSpawnName] = useState('Admin Fox');
   const [spawnGender, setSpawnGender] = useState<'Male' | 'Female'>('Male');
   const [spawnGenotype, setSpawnGenotype] = useState(getInitialGenotype());
 
@@ -61,13 +60,14 @@ export default function AdminPanel() {
   };
 
   const handleSpawn = () => {
-    adminSpawnFox(spawnName, spawnGender, spawnGenotype);
+    const phenotypeName = getPhenotype(spawnGenotype).name;
+    adminSpawnFox(phenotypeName, spawnGender, spawnGenotype);
     alert('Fox spawned successfully!');
   };
 
-  const handleWarn = (id: string) => {
+  const handleWarn = (memberId: string) => {
     const reason = prompt('Reason for warning:');
-    if (reason) warnMember(id, reason);
+    if (reason) warnMember(memberId, reason);
   };
 
   const handleUpdateStats = () => {
@@ -166,18 +166,18 @@ export default function AdminPanel() {
                       </td>
                       <td className="py-4 text-right pr-2">
                         <div className="flex justify-end gap-1">
-                          <Button 
-                            size="icon" 
-                            variant="ghost" 
+                          <Button
+                            size="icon"
+                            variant="ghost"
                             className="h-8 w-8 text-amber-500 hover:bg-amber-50"
                             onClick={() => handleWarn(member.id)}
                             title="Warn User"
                           >
                             <AlertTriangle size={16} />
                           </Button>
-                          <Button 
-                            size="icon" 
-                            variant="ghost" 
+                          <Button
+                            size="icon"
+                            variant="ghost"
                             className={`h-8 w-8 ${member.isBanned ? 'text-moss-500 hover:bg-moss-50' : 'text-red-500 hover:bg-red-50'}`}
                             onClick={() => banMember(member.id)}
                             title={member.isBanned ? 'Unban User' : 'Ban User'}
@@ -207,9 +207,9 @@ export default function AdminPanel() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase">Set User Gold</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="number" 
-                    value={editGold} 
+                  <input
+                    type="number"
+                    value={editGold}
                     onChange={e => setEditGold(Number(e.target.value))}
                     className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
                   />
@@ -219,9 +219,9 @@ export default function AdminPanel() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase">Set User Gems</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="number" 
-                    value={editGems} 
+                  <input
+                    type="number"
+                    value={editGems}
                     onChange={e => setEditGems(Number(e.target.value))}
                     className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
                   />
@@ -240,8 +240,8 @@ export default function AdminPanel() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase">Select Item</label>
-                <select 
-                  value={addItemId} 
+                <select
+                  value={addItemId}
                   onChange={e => setAddItemId(e.target.value)}
                   className="w-full p-2 border border-earth-200 rounded-lg text-sm"
                 >
@@ -257,9 +257,9 @@ export default function AdminPanel() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-400 uppercase">Quantity</label>
                 <div className="flex gap-2">
-                  <input 
-                    type="number" 
-                    value={addItemCount} 
+                  <input
+                    type="number"
+                    value={addItemCount}
                     onChange={e => setAddItemCount(Number(e.target.value))}
                     className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
                   />
@@ -298,7 +298,7 @@ export default function AdminPanel() {
                 </Button>
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Show History</h4>
               <div className="space-y-2">
@@ -326,14 +326,12 @@ export default function AdminPanel() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase">Fox Name</label>
-                    <input 
-                      type="text" 
-                      value={spawnName} 
-                      onChange={e => setSpawnName(e.target.value)}
-                      className="w-full p-2 border border-earth-200 rounded-lg text-sm"
-                    />
+                  <div className="p-4 bg-earth-50 rounded-xl border border-earth-200">
+                    <h5 className="text-sm font-bold mb-2">Predicted Outcome</h5>
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-medium">{getPhenotype(spawnGenotype).name}</div>
+                      <Badge variant="outline">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
@@ -350,16 +348,10 @@ export default function AdminPanel() {
                       >Female</Button>
                     </div>
                   </div>
-                  <div className="p-4 bg-earth-50 rounded-xl border border-earth-200">
-                    <h5 className="text-sm font-bold mb-2">Predicted Outcome</h5>
-                    <div className="flex justify-between items-center">
-                      <div className="text-sm font-medium">{getPhenotype(spawnGenotype).name}</div>
-                      <Badge variant="outline">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
-                    </div>
-                  </div>
                   <Button onClick={handleSpawn} className="w-full gap-2 bg-fire-600 hover:bg-fire-700">
                     <Plus size={16} /> Spawn Custom Fox
                   </Button>
+                  <p className="text-[10px] text-slate-400 italic">Note: Manual naming is disabled. The fox will be named according to its phenotype.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -444,8 +436,8 @@ export default function AdminPanel() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {adminLogs.length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
-              {adminLogs.map(log => (
+              {(adminLogs || []).length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
+              {(adminLogs || []).map(log => (
                 <div key={log.id} className="p-3 bg-earth-50 border border-earth-100 rounded-lg text-sm flex justify-between items-start">
                   <div>
                     <div className="font-bold text-fire-700">{log.action}</div>
