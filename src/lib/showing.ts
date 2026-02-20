@@ -1,10 +1,9 @@
-
 import { Fox, getActiveBoosts, isHungry } from './genetics';
 
 export type ShowLevel = 'Junior' | 'Open' | 'Senior' | 'Championship';
 export type ShowClass = 
     'Best Juvenile Male' | 'Best Juvenile Female' | 'Best Adult Male' | 'Best Adult Female' |
-    'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
+    'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
 
 export interface ShowResult {
   foxId: string;
@@ -85,6 +84,7 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     'Best Juvenile Female',
     'Best Adult Male',
     'Best Adult Female',
+    'Red Specialty',
     'Silver Specialty',
     'Gold Specialty',
     'Cross Specialty',
@@ -110,6 +110,9 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
       const a = [...f.genotype.A].sort().join('');
       const b = [...f.genotype.B].sort().join('');
       
+      if (cls === 'Red Specialty') {
+          return a === 'AA' && b === 'BB';
+      }
       if (cls === 'Silver Specialty') {
           return a === 'aa' || b === 'bb' || (a === 'Aa' && b === 'bb');
       }
@@ -117,18 +120,17 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
           return a === 'AA' && b === 'Bb';
       }
       if (cls === 'Cross Specialty') {
-          return a === 'Aa';
+          return a === 'Aa' && b !== 'bb';
       }
       if (cls === 'Exotic Specialty') {
           // Check for any non-wild-type in rare loci
-          const loci = ['C', 'G', 'P', 'S', 'Fire', 'BrC', 'D'];
+          const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
           return loci.some(l => {
               const alleles = f.genotype[l];
               if (!alleles) return false;
               // If not homozygous dominant
-              if (l === 'Fire') return alleles.includes('Fi');
               const wild = alleles[0].toUpperCase();
-              return alleles.some(a => a !== wild);
+              return alleles.some(al => al.toLowerCase() === al); // Check for recessive allele
           });
       }
 
@@ -139,7 +141,6 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     const finalEligible = eligibleFoxes.filter(f => {
         if (level === 'Junior') return f.pointsLifetime < 5;
         if (level === 'Senior') return f.pointsLifetime > 10;
-        // Championship handled by pre-filtering candidates elsewhere
         return true;
     });
 

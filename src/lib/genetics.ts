@@ -4,7 +4,7 @@ export type Genotype = Record<string, Allele[]>;
 export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: string[] }> = {
   A: { name: 'Agouti', alleles: ['A', 'a'] },
   B: { name: 'Black', alleles: ['B', 'b'] },
-  C: { name: 'Color', alleles: ['C', 'c'] }, // cc = Albino
+  C: { name: 'Albino', alleles: ['C', 'c'] }, // cc = Albino
   G: { name: 'Burgundy', alleles: ['G', 'g'] }, // gg = Burgundy
   P: { name: 'Pearl', alleles: ['P', 'p'] }, // pp = Pearl
   SS: { name: 'Mansfield Pearl', alleles: ['S', 's'] }, // ss = Mansfield Pearl
@@ -59,15 +59,15 @@ export function getPhenotype(genotype: Genotype) {
   const aCount = A.filter(x => x === 'a').length;
   const bCount = B.filter(x => x === 'b').length;
 
-  if (aCount === 0 && bCount === 0) baseColorName = 'Red';
-  else if (aCount === 0 && bCount === 1) baseColorName = 'Gold';
-  else if (aCount === 0 && bCount === 2) baseColorName = 'Standard Silver';
-  else if (aCount === 1 && bCount === 0) baseColorName = 'Gold Cross';
-  else if (aCount === 1 && bCount === 1) baseColorName = 'Silver Cross';
-  else if (aCount === 1 && bCount === 2) baseColorName = 'Standard Silver';
-  else if (aCount === 2 && bCount === 0) baseColorName = 'Alaskan Silver';
-  else if (aCount === 2 && bCount === 1) baseColorName = 'Alaskan Silver';
-  else if (aCount === 2 && bCount === 2) baseColorName = 'Standard Silver';
+  if (aCount === 0 && bCount === 0) baseColorName = 'Red'; // AABB
+  else if (aCount === 0 && bCount === 1) baseColorName = 'Gold'; // AABb
+  else if (aCount === 0 && bCount === 2) baseColorName = 'Standard Silver'; // AAbb
+  else if (aCount === 1 && bCount === 0) baseColorName = 'Gold Cross'; // AaBB
+  else if (aCount === 1 && bCount === 1) baseColorName = 'Silver Cross'; // AaBb
+  else if (aCount === 1 && bCount === 2) baseColorName = 'Standard Silver'; // Aabb
+  else if (aCount === 2 && bCount === 0) baseColorName = 'Alaskan Silver'; // aaBB
+  else if (aCount === 2 && bCount === 1) baseColorName = 'Alaskan Silver'; // aaBb
+  else if (aCount === 2 && bCount === 2) baseColorName = 'Standard Silver'; // aabb
 
   let finalName = '';
   let eyeColor = 'Brown';
@@ -87,8 +87,8 @@ export function getPhenotype(genotype: Genotype) {
   const isRedGoldBase = baseColorName === 'Red' || baseColorName === 'Gold';
 
   // Fire Expression check
-  // Fire is masked by Mansfield Pearl (ss), Burgundy alone (gg alone), and AA/Aa Silvers.
-  const canExpressFire = isFifi && !hasSS && !(hasG && !hasP) && (baseColorName !== 'Standard Silver' || isAA_Base);
+  // Fire is masked by Mansfield Pearl (ss)
+  const canExpressFire = isFifi && !hasSS && !isSapphire && !isBurgundy;
 
   // Special Phenotypes (Priority Overrides)
   if (isLethal) {
@@ -104,25 +104,34 @@ export function getPhenotype(genotype: Genotype) {
   }
 
   if (finalName) {
-    // Already set by Albino/Leucistic/Stillborn
+    // Already set
   } else if (canExpressFire) {
-    if (isAmber) {
-      if (isRedGoldBase) finalName = 'Autumn Fire';
-      else if (isCrossBase) finalName = 'Snow Glow';
-      else if (isSilverExpressingBase) finalName = 'Champagne';
-    } else if (isPearl) {
-      if (isRedGoldBase) finalName = 'Fire and Ice';
-      else if (isCrossBase) finalName = 'Moon Glow';
-      else if (isSilverExpressingBase) finalName = 'Fawn Glow';
-    } else {
-      if (baseColorName === 'Red') finalName = 'Wildfire';
-      else if (baseColorName === 'Gold') finalName = 'Golden Sunrise';
-      else if (isCrossBase) finalName = 'Fire Cross';
-      else if (isSilverExpressingBase) finalName = 'Colicott';
+    // Fire Factor nomenclature according to spreadsheet/memory
+    if (baseColorName === 'Red') {
+        if (hasP && hasG) finalName = 'Snow Glow';
+        else if (hasP) finalName = 'Fire and Ice';
+        else finalName = 'Wildfire';
+    } else if (baseColorName === 'Gold') {
+        if (hasP && hasG) finalName = 'Autumn Fire';
+        else if (hasP) finalName = 'Fire and Ice';
+        else finalName = 'Golden Sunrise';
+    } else if (isCrossBase) {
+        if (hasP && hasG) finalName = 'Autumn Fire';
+        else if (hasP) finalName = 'Moon Glow';
+        else finalName = 'Fire Cross';
+    } else if (baseColorName === 'Alaskan Silver') {
+        finalName = 'Colicott';
+    } else if (baseColorName === 'Standard Silver') {
+        if (aCount === 2) { // aabb
+            if (hasP) finalName = 'Fawn Glow';
+            else finalName = 'Colicott';
+        } else { // AAbb or Aabb
+            if (hasG) finalName = 'Cinnamon Fire';
+        }
     }
   }
 
-  // Handle named recessives if no Fire name assigned
+  // Handle named recessives if no special name assigned
   if (!finalName) {
     if (isPearlAmber) {
       finalName = 'Pearl Amber';
@@ -139,23 +148,13 @@ export function getPhenotype(genotype: Genotype) {
       finalName = 'Mansfield Pearl';
     }
 
-    // For Red or Gold foxes, the modifier name should be added before the base color name.
-    // Silver base color names are masked by the modifier name.
-    if (finalName && isRedGoldBase) {
-      finalName = `${finalName} ${baseColorName}`;
-  // Brown (brcbrc)
-  if (BrC === 'brcbrc') colorModifiers.push('Brown');
-  
-  // Dilute (dd)
-  if (D === 'dd') colorModifiers.push('Dilute');
+    // Masking logic: Burgundy, Pearl, Mansfield Pearl are masked on Red base
+    if (baseColorName === 'Red' && (finalName === 'Burgundy' || finalName === 'Pearl' || finalName === 'Mansfield Pearl')) {
+        finalName = ''; // Masked, fall back to base name
+    }
 
-  // Silver Factor (SS/Ss)
-  if (S === 'SS') {
-    colorModifiers.push('Silver');
-    isSilver = true;
-  } else if (S === 'Ss') {
-    if (!baseColorName.includes('Cross')) {
-      colorModifiers.push('Cross');
+    if (finalName && isRedGoldBase && !['Pearl Amber', 'Sapphire', 'Amber'].includes(finalName)) {
+      finalName = `${finalName} ${baseColorName}`;
     }
   }
 
@@ -174,24 +173,14 @@ export function getPhenotype(genotype: Genotype) {
     }
   }
 
-  // Pattern Logic
-  let patternName = 'None';
-  const wmCount = W.filter(x => x === 'WM').length;
-  const wpCount = W.filter(x => x === 'Wp').length;
-  const wgCount = W.filter(x => x === 'WG').length;
-  const wStandardCount = W.filter(x => x === 'W').length;
+  // Pattern Logic: Display multiple phenotypes if present
+  const patterns: string[] = [];
+  if (W.includes('WM')) patterns.push('Marble');
+  if (W.includes('Wp')) patterns.push('Platinum');
+  if (W.includes('WG')) patterns.push('Georgian');
+  if (W.includes('W')) patterns.push('White Mark');
 
-  if (wmCount >= 1 && wpCount >= 1) {
-    patternName = 'Marble Platinum';
-  } else if (wmCount >= 1) {
-    patternName = 'Marble';
-  } else if (wpCount >= 1) {
-    patternName = 'Platinum';
-  } else if (wgCount >= 1) {
-    patternName = 'Georgian';
-  } else if (wStandardCount >= 1) {
-    patternName = 'White Mark';
-  }
+  const patternName = patterns.length > 0 ? patterns.join(' ') : 'None';
 
   const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic' || finalName === 'Stillborn';
   let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
@@ -248,6 +237,7 @@ export interface Fox {
   isNPC?: boolean;
   lastFed?: number;
   boosts?: Record<string, number>;
+  preferredFeed?: string;
 }
 
 export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
@@ -402,7 +392,7 @@ export function createFox(data: Partial<Fox>): Fox {
   };
 }
 
-export function createFoundationalFox(): Fox {
+export function createFoundationalFox(random: () => number = Math.random): Fox {
   const baseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'], B: ['B', 'B'] }, // Red
     { A: ['a', 'a'], B: ['B', 'B'] }, // Alaskan Silver
@@ -410,7 +400,7 @@ export function createFoundationalFox(): Fox {
     { A: ['A', 'a'], B: ['B', 'b'] }, // Silver Cross
   ];
 
-  const base = baseGenotypes[Math.floor(Math.random() * baseGenotypes.length)];
+  const base = baseGenotypes[Math.floor(random() * baseGenotypes.length)];
   const genotype = getInitialGenotype();
   Object.assign(genotype, base);
   
