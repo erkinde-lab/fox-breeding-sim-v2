@@ -6,9 +6,9 @@ import { LOCI, getInitialGenotype, getPhenotype, Stats } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Users, Trophy, Coins, Microscope, Settings, 
-  AlertTriangle, Ban, Plus, Trash2, Save, 
+import {
+  Users, Trophy, Coins, Microscope, Settings,
+  AlertTriangle, Ban, Plus, Trash2, Save,
   RefreshCw, FastForward, Heart, Info,
   Search, ShieldCheck, UserX, Activity, List,
   ArrowUp, ArrowDown
@@ -17,18 +17,20 @@ import { useRouter } from 'next/navigation';
 
 export default function AdminPanel() {
   const router = useRouter();
-  const { 
+  const {
     isAdmin, members, gold, gems, inventory, foxes, adminLogs,
-    warnMember, banMember, adminSetCurrency, adminAddItem, 
-    adminSpawnFox, adminUpdateFoxStats, runShows, advanceTime, toggleAdminMode 
+    warnMember, banMember, adminSetCurrency, adminAddItem,
+    adminSpawnFox, adminUpdateFoxStats, runShows, advanceTime, toggleAdminMode,
+    bannerUrl, setBannerUrl, bannerPosition, setBannerPosition
   } = useGameStore();
 
   const [activeTab, setActiveTab] = useState('members');
   const [searchMember, setSearchMember] = useState('');
-  
+
   // Economy State
   const [editGold, setEditGold] = useState(gold);
   const [editGems, setEditGems] = useState(gems);
+  const [editBannerUrl, setEditBannerUrl] = useState(bannerUrl);
   const [addItemId, setAddItemId] = useState('supplies');
   const [addItemCount, setAddItemCount] = useState(1);
 
@@ -96,6 +98,7 @@ export default function AdminPanel() {
           { id: 'shows', label: 'Shows', icon: Trophy },
           { id: 'economy', label: 'Economy', icon: Coins },
           { id: 'genetics', label: 'Genetics Lab', icon: Microscope },
+          { id: 'site', label: 'Site Settings', icon: Info },
           { id: 'logs', label: 'Activity Logs', icon: List },
           { id: 'system', label: 'System', icon: RefreshCw },
         ].map(tab => (
@@ -336,12 +339,12 @@ export default function AdminPanel() {
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button
                         variant={spawnGender === 'Male' ? 'default' : 'outline'}
                         onClick={() => setSpawnGender('Male')}
                         className="flex-1"
                       >Male</Button>
-                      <Button 
+                      <Button
                         variant={spawnGender === 'Female' ? 'default' : 'outline'}
                         onClick={() => setSpawnGender('Female')}
                         className="flex-1"
@@ -359,15 +362,15 @@ export default function AdminPanel() {
                     <div key={key} className="p-3 bg-white border border-earth-100 rounded-lg space-y-2 shadow-sm">
                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locus.name}</div>
                       <div className="flex gap-2">
-                        <select 
-                          value={spawnGenotype[key][0]} 
+                        <select
+                          value={spawnGenotype[key][0]}
                           onChange={e => handleUpdateGenotype(key, 0, e.target.value)}
                           className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
                         >
                           {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
                         </select>
-                        <select 
-                          value={spawnGenotype[key][1]} 
+                        <select
+                          value={spawnGenotype[key][1]}
                           onChange={e => handleUpdateGenotype(key, 1, e.target.value)}
                           className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
                         >
@@ -391,8 +394,8 @@ export default function AdminPanel() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-400 uppercase">Select Fox</label>
-                  <select 
-                    value={selectedFoxId} 
+                  <select
+                    value={selectedFoxId}
                     onChange={e => {
                       const id = e.target.value;
                       setSelectedFoxId(id);
@@ -412,7 +415,7 @@ export default function AdminPanel() {
                     {['head', 'topline', 'forequarters', 'hindquarters', 'tail', 'coatQuality', 'temperament', 'presence', 'luck', 'fertility'].map(stat => (
                       <div key={stat} className="space-y-1">
                         <label className="text-[10px] font-bold text-slate-400 uppercase">{stat}</label>
-                        <input 
+                        <input
                           type="number"
                           value={modStats[stat as keyof Stats] || 0}
                           onChange={e => setModStats({ ...modStats, [stat]: Number(e.target.value) })}
@@ -424,6 +427,98 @@ export default function AdminPanel() {
                 )}
                 <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full">Save Stat Changes</Button>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === 'site' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="folk-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="text-blue-600" size={18} /> Header Banner
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase">Banner Image URL</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={editBannerUrl}
+                    onChange={e => setEditBannerUrl(e.target.value)}
+                    className="flex-1 p-2 border border-earth-200 rounded-lg text-sm"
+                    placeholder="https://..."
+                  />
+                  <Button onClick={() => setBannerUrl(editBannerUrl)}>Apply</Button>
+                </div>
+                <p className="text-[10px] text-slate-400 italic">
+                  Recommended Dimensions: <span className="font-bold text-slate-600">1920 x 400</span> (or any wide aspect ratio with 4:1 - 5:1 ratio).
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase">Vertical Focus ({bannerPosition})</label>
+                <div className="flex gap-4 items-center">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={parseInt(bannerPosition)}
+                    onChange={e => setBannerPosition(`${e.target.value}%`)}
+                    className="flex-1 accent-fire-600"
+                  />
+                  <span className="text-xs font-mono text-slate-500 w-10">
+                    {bannerPosition === '0%' ? 'Top' : (bannerPosition === '100%' ? 'Bottom' : bannerPosition)}
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-400 italic">Adjust which part of the image is shown in the banner crop.</p>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-bold text-slate-400 uppercase">Banner Presets (Verified IDs)</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { name: 'Red Fox Autumn', url: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&q=80&w=2070' },
+                    { name: 'Snow Fox Winter', url: 'https://images.unsplash.com/photo-1490264443916-701856236282?auto=format&fit=crop&q=80&w=2070' },
+                    { name: 'Forest Fox Cubs', url: 'https://images.unsplash.com/photo-1516934024742-b43617159ccd?auto=format&fit=crop&q=80&w=2070' },
+                    { name: 'Staring Red Fox', url: 'https://images.unsplash.com/photo-1519098901909-b1553a1190af?auto=format&fit=crop&q=80&w=2070' },
+                  ].map(preset => (
+                    <Button
+                      key={preset.name}
+                      variant="outline"
+                      size="sm"
+                      className="text-[10px] font-bold h-10"
+                      onClick={() => {
+                        setEditBannerUrl(preset.url);
+                        setBannerUrl(preset.url);
+                        setBannerPosition('50%');
+                      }}
+                    >
+                      {preset.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg">
+                <p className="text-[10px] font-bold text-blue-700 uppercase mb-1">Layout Reference</p>
+                <p className="text-[10px] text-blue-600">The site is currently configured for <span className="font-bold">Left Alignment</span> to match your branding preference.</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="folk-card overflow-hidden">
+            <CardHeader>
+              <CardTitle className="text-xs font-black uppercase text-slate-400 tracking-widest">Banner Preview</CardTitle>
+            </CardHeader>
+            <div
+              className="w-full h-40 bg-cover border-t border-earth-100"
+              style={{ backgroundImage: `url(${bannerUrl})`, backgroundPosition: `center ${bannerPosition}` }}
+            />
+            <CardContent className="p-4 bg-slate-50">
+              <p className="text-[10px] text-slate-500 font-medium">This banner will appear at the top of every page in the simulation.</p>
             </CardContent>
           </Card>
         </div>
@@ -465,7 +560,7 @@ export default function AdminPanel() {
                 <span>Next Season</span>
               </Button>
               <Button variant="outline" className="h-24 flex flex-col gap-2 rounded-2xl" onClick={() => {
-                if(confirm('Are you sure you want to reset all game data?')) {
+                if (confirm('Are you sure you want to reset all game data?')) {
                   localStorage.removeItem('red-fox-sim-storage');
                   window.location.reload();
                 }
@@ -478,7 +573,7 @@ export default function AdminPanel() {
                 <span>Reload UI</span>
               </Button>
             </div>
-            
+
             <div className="p-6 bg-fire-50 border border-fire-100 rounded-2xl flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ShieldCheck size={32} className="text-fire-600" />

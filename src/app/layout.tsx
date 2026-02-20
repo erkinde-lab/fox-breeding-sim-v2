@@ -1,10 +1,18 @@
-
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Alice, Quicksand } from "next/font/google";
 import "./globals.css";
 import LayoutClient from "./layout-client";
 
-const inter = Inter({ subsets: ["latin"] });
+const alice = Alice({
+  weight: '400',
+  subsets: ["latin"],
+  variable: '--font-alice',
+});
+
+const quicksand = Quicksand({
+  subsets: ["latin"],
+  variable: '--font-quicksand',
+});
 
 export const metadata: Metadata = {
   title: "Red Fox Breeding Simulator",
@@ -17,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${alice.variable} ${quicksand.variable}`}>
+      <body className={quicksand.className}>
         <LayoutClient>{children}</LayoutClient>
       </body>
     </html>

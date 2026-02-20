@@ -9,13 +9,13 @@ function cn(...inputs: ClassValue[]) {
 
 export function Badge({ className, variant = 'default', ...props }: React.HTMLAttributes<HTMLDivElement> & { variant?: 'default' | 'secondary' | 'destructive' | 'outline' }) {
   const variants = {
-    default: 'bg-earth-800 text-white hover:bg-slate-900/80',
-    secondary: 'bg-earth-100 text-earth-900 hover:bg-earth-100/80',
-    destructive: 'bg-red-500 text-slate-50 hover:bg-red-500/80',
-    outline: 'text-earth-900 border border-earth-200 hover:bg-earth-100',
+    default: 'bg-primary text-primary-foreground hover:opacity-90 shadow-sm',
+    secondary: 'bg-secondary text-secondary-foreground hover:opacity-90 shadow-sm',
+    destructive: 'bg-destructive text-destructive-foreground hover:opacity-90 shadow-sm',
+    outline: 'text-foreground border border-border hover:bg-muted',
   };
-  
+
   return (
-    <div className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-fire-600 focus:ring-offset-2", variants[variant], className)} {...props} />
+    <div className={cn("inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-widest transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2", variants[variant], className)} {...props} />
   );
 }

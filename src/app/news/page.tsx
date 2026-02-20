@@ -8,21 +8,21 @@ import { Badge } from '@/components/ui/badge';
 const NEWS_ITEMS = [
   {
     id: 1,
-    date: 'Spring, Year 1',
+    date: 'February 20, 2026',
     title: 'Marketplace Beta Launch',
     content: 'The player-to-player marketplace is now live! You can now list your foxes and items for sale in exchange for Gold or Gems. This is a beta release, so please report any bugs to the staff.',
     category: 'Update'
   },
   {
     id: 2,
-    date: 'Spring, Year 1',
+    date: 'February 19, 2026',
     title: 'Genetics Engine Update',
     content: 'We have refined the inheritance logic for Georgian White and Platinum mutations to better align with historical breeding data. Lethal combinations are now strictly enforced.',
     category: 'Engine'
   },
   {
     id: 3,
-    date: 'Spring, Year 1',
+    date: 'February 18, 2026',
     title: 'Welcome to Red Fox Sim!',
     content: 'Welcome to the world of competitive fox breeding. Start by adopting your foundational pair and working towards your first Championship win.',
     category: 'Announcement'

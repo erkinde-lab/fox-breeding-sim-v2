@@ -1,90 +1,143 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-earth-900: #3d2b1f;
-  --color-earth-800: #4a3728;
-  --color-earth-700: #5c4a3c;
-  --color-earth-500: #8c6a4a;
-  --color-earth-200: #d9c5b2;
-  --color-earth-100: #f5f1ed;
-  --color-earth-50: #fdfaf6;
+  --color-earth-900: var(--foreground);
+  --color-oatmeal: var(--background);
+  --color-sagebrush: var(--secondary);
+  --color-apricot: var(--primary);
+  --color-moab: var(--accent);
+  --color-ink: var(--foreground);
 
-  --color-fire-900: #7a2a1b;
-  --color-fire-700: #a63d28;
-  --color-fire-600: #c94c33;
-  --color-fire-500: #d96a4a;
-  --color-fire-400: #e68d5d;
-  
-  --color-moss-800: #3e4d2b;
-  --color-moss-600: #5d6d48;
-  --color-moss-400: #8c9d72;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
-  --color-parchment: #fcf9f2;
-
-  --font-serif: "Georgia", "Times New Roman", serif;
-  --font-hand: "Comic Sans MS", cursive; /* Fallback for hand-drawn feel if no custom font */
+  --font-folksy: var(--font-alice), Georgia, serif;
+  --font-rounded: var(--font-quicksand), sans-serif;
 }
 
 :root {
-  --background: #fdfaf6;
-  --foreground: #3d2b1f;
+  --background: #FDF8F3;
+  --foreground: #34495E;
   --card: #ffffff;
-  --card-foreground: #3d2b1f;
+  --card-foreground: #34495E;
   --popover: #ffffff;
-  --popover-foreground: #3d2b1f;
-  --primary: #c94c33;
+  --popover-foreground: #34495E;
+  --primary: #E6A57E;
   --primary-foreground: #ffffff;
-  --secondary: #8c6a4a;
+  --secondary: #8FA08E;
   --secondary-foreground: #ffffff;
   --muted: #f5f1ed;
   --muted-foreground: #5c4a3c;
-  --accent: #a63d28;
+  --accent: #B59D85;
   --accent-foreground: #ffffff;
   --destructive: #7a2a1b;
   --destructive-foreground: #ffffff;
   --border: #d9c5b2;
   --input: #d9c5b2;
-  --ring: #c94c33;
+  --ring: #E6A57E;
+  --banner-overlay: rgba(253, 248, 243, 0.9);
+  --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
+  --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
+}
+
+.dark {
+  --background: #121612;
+  --foreground: #D1D5D1;
+  --card: #1C231C;
+  --card-foreground: #D1D5D1;
+  --popover: #1C231C;
+  --popover-foreground: #D1D5D1;
+  --primary: #C58C6A;
+  --primary-foreground: #121612;
+  --secondary: #5D6D5D;
+  --secondary-foreground: #ffffff;
+  --muted: #242B24;
+  --muted-foreground: #7A8A7A;
+  --accent: #2C352C;
+  --accent-foreground: #F1F5F1;
+  --border: #243024;
+  --input: #243024;
+  --ring: #C58C6A;
+  --banner-overlay: rgba(18, 22, 18, 0.85);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-serif);
+  font-family: var(--font-rounded) !important;
+  font-weight: 500;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--color-earth-900);
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-folksy) !important;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
 }
 
 .folk-card {
-  background-color: white;
-  border: 2px solid var(--color-earth-200);
-  border-radius: 1rem;
-  box-shadow: 4px 4px 0px var(--color-earth-200);
-  transition: all 0.2s ease;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 2.5rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
 .folk-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px var(--color-earth-200);
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
 }
 
-.folk-button {
-  background-color: var(--color-fire-600);
-  color: white;
-  border: 2px solid var(--color-fire-900);
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-weight: bold;
-  box-shadow: 2px 2px 0px var(--color-fire-900);
-  transition: all 0.1s ease;
+.folk-btn {
+  border-radius: 9999px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.folk-button:active {
-  transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--color-fire-900);
+.folk-btn:hover {
+  transform: scale(1.05);
+}
+
+.folk-btn:active {
+  transform: scale(0.95);
+}
+
+.font-folksy {
+  font-family: var(--font-folksy);
+}
+
+.font-rounded {
+  font-family: var(--font-rounded);
 }

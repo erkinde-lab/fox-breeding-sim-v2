@@ -47,35 +47,35 @@ export default function ItemsPage() {
   return (
     <div className="space-y-12">
       <div>
-        <h1 className="text-4xl font-black text-slate-900 tracking-tight">Specialty Items</h1>
-        <p className="text-slate-500 mt-2">Essential tools to manage and analyze your breeding stock.</p>
+        <h1 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Specialty Items</h1>
+        <p className="text-muted-foreground mt-2">Essential tools to manage and analyze your breeding stock.</p>
       </div>
 
       <section className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {ITEM_LIST.map((item) => (
-            <Card key={item.id} className="flex flex-col border-slate-200 hover:border-blue-300 transition-colors">
-              <CardHeader className="flex flex-col items-center gap-4 text-center">
-                <div className="p-4 bg-slate-50 rounded-full">
+            <Card key={item.id} className="flex flex-col border-border bg-card hover:border-primary transition-colors overflow-hidden">
+              <CardHeader className="flex flex-col items-center gap-4 text-center bg-muted/30 p-8">
+                <div className="p-4 bg-card rounded-full shadow-sm border border-border">
                   {item.icon}
                 </div>
                 <div>
-                  <CardTitle className="text-lg">{item.name}</CardTitle>
-                  <p className="text-sm text-slate-500 mt-1">{item.description}</p>
+                  <CardTitle className="text-lg text-foreground font-black">{item.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1 font-medium">{item.description}</p>
                 </div>
               </CardHeader>
-              <CardContent className="mt-auto pt-0">
-                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-xs font-bold text-slate-400 uppercase">Owned: {inventory[item.id] || 0}</span>
-                    <span className="font-bold text-slate-900">{item.price.toLocaleString()} {item.currency.toUpperCase()}</span>
-                 </div>
-                 <Button 
+              <CardContent className="mt-auto pt-6 p-6 border-t border-border bg-card">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Owned: {inventory[item.id] || 0}</span>
+                  <span className="font-black text-foreground">{item.price.toLocaleString()} {item.currency.toUpperCase()}</span>
+                </div>
+                <Button
                   onClick={() => buyItem(item.id, item.price, item.currency)}
                   disabled={gold < item.price}
-                  className="w-full h-12 font-bold"
-                 >
-                   Purchase
-                 </Button>
+                  className="w-full h-12 font-black bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  Purchase
+                </Button>
               </CardContent>
             </Card>
           ))}

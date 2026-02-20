@@ -12,6 +12,13 @@ export interface ForumCategory {
   icon: string;
 }
 
+export interface ForumReply {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
+}
+
 export interface ForumPost {
   id: string;
   categoryId: string;
@@ -19,6 +26,8 @@ export interface ForumPost {
   title: string;
   content: string;
   createdAt: string;
+  isPinned?: boolean;
+  replies?: ForumReply[];
 }
 
 export interface Member {
@@ -112,11 +121,14 @@ interface GameState {
   hiredTrainer: boolean;
   hiredGeneticist: boolean;
   hiredNutritionist: boolean;
+  bannerUrl: string;
+  bannerPosition: string;
   foundationFoxes: Fox[];
   soldFoundationalSlots: number[];
   lastAdoptionReset: string;
   members: Member[];
   adminLogs: AdminLog[];
+  isDarkMode: boolean;
 
   // Actions
   advanceTime: () => void;
@@ -130,6 +142,9 @@ interface GameState {
   renameFox: (id: string, newName: string) => void;
   updateFox: (id: string, updates: Partial<Fox>) => void;
   initializeGame: () => void;
+  setBannerUrl: (url: string) => void;
+  setBannerPosition: (pos: string) => void;
+  toggleDarkMode: () => void;
   checkAdoptionReset: () => void;
   buyFoundationalFox: () => void;
   buyFoundationalFoxById: (slotIndex: number) => void;
@@ -153,6 +168,8 @@ interface GameState {
   setFoxPreferredFeed: (foxId: string, feedId: string) => void;
   feedAllFoxes: () => void;
   addForumPost: (categoryId: string, title: string, content: string, author: string) => void;
+  addForumReply: (postId: string, author: string, content: string) => void;
+  togglePinPost: (postId: string) => void;
   addForumCategory: (name: string, description: string, icon: string) => void;
   updateShowConfig: (level: string, updates: Partial<ShowConfig>) => void;
   listFoxOnMarket: (foxId: string, price: number, currency: 'gold' | 'gems') => void;
@@ -222,6 +239,7 @@ export const useGameStore = create<GameState>()(
       bestFemaleWins: 0,
       totalShowPoints: 0,
       forumCategories: [
+        { id: 'staff', name: 'Staff Announcements & Feedback', description: 'Official news and feedback from the development team.', icon: 'Megaphone' },
         { id: 'general', name: 'General Discussion', description: 'Talk about anything fox-related!', icon: 'MessageSquare' },
         { id: 'breeding', name: 'Breeding Tips', description: 'Share your genetic discoveries.', icon: 'Heart' },
         { id: 'shows', name: 'Show Results', description: 'Celebrate your wins!', icon: 'Trophy' },
@@ -242,11 +260,14 @@ export const useGameStore = create<GameState>()(
       hiredTrainer: false,
       hiredGeneticist: false,
       hiredNutritionist: false,
+      bannerUrl: 'https://images.unsplash.com/photo-1474511320723-9a56873867b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80',
+      bannerPosition: '50%',
       foundationFoxes: [],
       soldFoundationalSlots: [],
       lastAdoptionReset: '',
       members: [],
       adminLogs: [],
+      isDarkMode: false,
 
       checkAchievements: () => {
         const state = get();
@@ -376,30 +397,30 @@ export const useGameStore = create<GameState>()(
         const newInventory = { ...state.inventory };
         const newFoodUses = { ...state.foodUses };
 
-        if (itemId === 'supplies' || itemId.startsWith('feed-')) {
-            let uses = newFoodUses[itemId] || 0;
-            if (uses <= 0) {
-                if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
-                newInventory[itemId]--;
-                uses = 5;
-            }
-            newFoodUses[itemId] = uses - 1;
-
-            if (itemId === 'supplies') {
-                newFox.lastFed = Date.now();
-            } else {
-                const statKey = itemId.replace('feed-', '') as keyof Stats;
-                const stats = { ...newFox.stats };
-                stats[statKey] = Math.min(100, (stats[statKey] || 0) + 2);
-                newFox.stats = stats;
-                // Specialty feeds also satisfy hunger
-                newFox.lastFed = Date.now();
-            }
-        } else {
+        if (itemId === 'supplies' || itemId === 'standard-feed' || itemId.startsWith('feed-')) {
+          let uses = newFoodUses[itemId] || 0;
+          if (uses <= 0) {
             if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
-            if (itemId === 'genetic-test') newFox.genotypeRevealed = true;
-            if (itemId === 'pedigree-analysis') newFox.pedigreeAnalyzed = true;
             newInventory[itemId]--;
+            uses = itemId === 'supplies' ? 8 : (itemId === 'standard-feed' ? 4 : 5);
+          }
+          newFoodUses[itemId] = uses - 1;
+
+          if (itemId === 'supplies' || itemId === 'standard-feed') {
+            newFox.lastFed = Date.now();
+          } else {
+            const statKey = itemId.replace('feed-', '') as keyof Stats;
+            const stats = { ...newFox.stats };
+            stats[statKey] = Math.min(100, (stats[statKey] || 0) + 2);
+            newFox.stats = stats;
+            // Specialty feeds also satisfy hunger
+            newFox.lastFed = Date.now();
+          }
+        } else {
+          if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
+          if (itemId === 'genetic-test') newFox.genotypeRevealed = true;
+          if (itemId === 'pedigree-analysis') newFox.pedigreeAnalyzed = true;
+          newInventory[itemId]--;
         }
 
         return {
@@ -424,13 +445,13 @@ export const useGameStore = create<GameState>()(
           // Deterministic generation based on date string
           let seedVal = now.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
           const seededRandom = () => {
-              const x = Math.sin(seedVal++) * 10000;
-              return x - Math.floor(x);
+            const x = Math.sin(seedVal++) * 10000;
+            return x - Math.floor(x);
           };
 
           const newFoxes = [];
           for (let i = 0; i < 6; i++) {
-              newFoxes.push(createFoundationalFox(seededRandom));
+            newFoxes.push(createFoundationalFox(seededRandom));
           }
           set({
             foundationFoxes: newFoxes,
@@ -444,7 +465,7 @@ export const useGameStore = create<GameState>()(
         const { foxes } = get();
         get().checkAdoptionReset();
         if (Object.keys(foxes).length > 0) return;
-        
+
         const defaultMembers: Member[] = [
           { id: '1', name: 'RedFoxMaster', level: 45, joined: 'Spring, Year 1', points: 12500, avatarColor: 'bg-orange-500', isBanned: false, warnings: [] },
           { id: '2', name: 'SilverVixen', level: 38, joined: 'Summer, Year 1', points: 9800, avatarColor: 'bg-slate-400', isBanned: false, warnings: [] },
@@ -468,10 +489,10 @@ export const useGameStore = create<GameState>()(
 
         const maleGenotype = getInitialGenotype();
         const male = createFox({ name: 'Starter Male', gender: 'Male', genotype: maleGenotype, stats: starterStats() });
-        
+
         const femaleGenotype = getInitialGenotype();
         const female = createFox({ name: 'Starter Female', gender: 'Female', genotype: femaleGenotype, stats: starterStats() });
-        
+
         set({ foxes: { [male.id]: male, [female.id]: female }, gold: 10000, gems: 100, members: defaultMembers });
         get().advanceTime();
       },
@@ -491,9 +512,9 @@ export const useGameStore = create<GameState>()(
         if (!fox) return state;
         const newFox = { ...fox, id: Math.random().toString(36).substring(2, 9) };
         return {
-            gold: state.gold - 1000,
-            foxes: { ...state.foxes, [newFox.id]: newFox },
-            soldFoundationalSlots: [...state.soldFoundationalSlots, slotIndex]
+          gold: state.gold - 1000,
+          foxes: { ...state.foxes, [newFox.id]: newFox },
+          soldFoundationalSlots: [...state.soldFoundationalSlots, slotIndex]
         };
       }),
 
@@ -506,8 +527,8 @@ export const useGameStore = create<GameState>()(
           parents: [null, null]
         });
         return {
-            gems: state.gems - 50,
-            foxes: { ...state.foxes, [fox.id]: fox }
+          gems: state.gems - 50,
+          foxes: { ...state.foxes, [fox.id]: fox }
         };
       }),
 
@@ -515,10 +536,10 @@ export const useGameStore = create<GameState>()(
         const fox = state.foxes[foxId];
         if (!fox || fox.gender !== 'Male' || fox.age < 2) return state;
         return {
-            foxes: {
-                ...state.foxes,
-                [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
-            }
+          foxes: {
+            ...state.foxes,
+            [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
+          }
         };
       }),
 
@@ -538,7 +559,7 @@ export const useGameStore = create<GameState>()(
         if (state.gems < 100) return state;
         const updatedFoxes = { ...state.foxes };
         Object.keys(updatedFoxes).forEach(id => {
-            updatedFoxes[id] = { ...updatedFoxes[id], genotypeRevealed: true };
+          updatedFoxes[id] = { ...updatedFoxes[id], genotypeRevealed: true };
         });
         return { gems: state.gems - 100, hiredGeneticist: true, foxes: updatedFoxes };
       }),
@@ -547,6 +568,8 @@ export const useGameStore = create<GameState>()(
         return { gems: state.gems - 75, hiredNutritionist: true };
       }),
 
+      setBannerUrl: (url: string) => set({ bannerUrl: url }),
+      setBannerPosition: (pos: string) => set({ bannerPosition: pos }),
       setFoxPreferredFeed: (foxId, feedId) => set((state) => ({
         foxes: { ...state.foxes, [foxId]: { ...state.foxes[foxId], preferredFeed: feedId } }
       })),
@@ -555,14 +578,28 @@ export const useGameStore = create<GameState>()(
         const { foxes, hiredNutritionist } = get();
         if (!hiredNutritionist) return;
         Object.keys(foxes).forEach(id => {
-            const fox = foxes[id];
-            const feedId = fox.preferredFeed || 'supplies';
-            get().applyItem(feedId, id);
+          const fox = foxes[id];
+          const feedId = fox.preferredFeed || 'supplies';
+          get().applyItem(feedId, id);
         });
       },
 
       addForumPost: (categoryId, title, content, author) => set((state) => ({
-        forumPosts: [...state.forumPosts, { id: Math.random().toString(36).substring(2, 9), categoryId, author, title, content, createdAt: new Date().toISOString() }]
+        forumPosts: [...state.forumPosts, { id: Math.random().toString(36).substring(2, 9), categoryId, author, title, content, createdAt: new Date().toISOString(), isPinned: false, replies: [] }]
+      })),
+
+      addForumReply: (postId, author, content) => set((state) => ({
+        forumPosts: state.forumPosts.map(post =>
+          post.id === postId
+            ? { ...post, replies: [...(post.replies || []), { id: Math.random().toString(36).substring(2, 9), author, content, createdAt: new Date().toISOString() }] }
+            : post
+        )
+      })),
+
+      togglePinPost: (postId) => set((state) => ({
+        forumPosts: state.forumPosts.map(post =>
+          post.id === postId ? { ...post, isPinned: !post.isPinned } : post
+        )
       })),
 
       addForumCategory: (name, description, icon) => set((state) => ({
@@ -631,12 +668,12 @@ export const useGameStore = create<GameState>()(
               fox.pointsLifetime += res.pointsAwarded;
               newTotalPoints += res.pointsAwarded;
               if (res.place === 1) {
-                  newGold += config.first;
-                  if (res.class === 'Best Adult Male' || res.class === 'Best Juvenile Male') newBestMaleWins++;
-                  if (res.class === 'Best Adult Female' || res.class === 'Best Juvenile Female') newBestFemaleWins++;
+                newGold += config.first;
+                if (res.class === 'Best Adult Male' || res.class === 'Best Juvenile Male') newBestMaleWins++;
+                if (res.class === 'Best Adult Female' || res.class === 'Best Juvenile Female') newBestFemaleWins++;
               }
               if (level === 'Senior' && res.place === 1 && !newSeniorWinners.includes(fox.id)) {
-                  newSeniorWinners.push(fox.id);
+                newSeniorWinners.push(fox.id);
               }
             }
           });
@@ -675,9 +712,32 @@ export const useGameStore = create<GameState>()(
       },
       warnMember: (memberId, reason) => set((state) => ({ members: state.members.map(m => m.id === memberId ? { ...m, warnings: [...m.warnings, reason] } : m) })),
       banMember: (memberId) => set((state) => ({ members: state.members.map(m => m.id === memberId ? { ...m, isBanned: true } : m) })),
+      toggleDarkMode: () => set((state: GameState) => ({ isDarkMode: !state.isDarkMode })),
     }),
-    { 
+    {
       name: 'red-fox-sim-storage',
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Add default categories if missing
+          const defaultCategories = [
+            { id: 'staff', name: 'Staff Announcements & Feedback', description: 'Official news and feedback from the development team.', icon: 'Megaphone' },
+            { id: 'general', name: 'General Discussion', description: 'Talk about anything fox-related!', icon: 'MessageSquare' },
+            { id: 'breeding', name: 'Breeding Tips', description: 'Share your genetic discoveries.', icon: 'Heart' },
+            { id: 'shows', name: 'Show Results', description: 'Celebrate your wins!', icon: 'Trophy' },
+            { id: 'market', name: 'Trading', description: 'Buy, sell, and trade foxes.', icon: 'Store' },
+          ];
+
+          if (persistedState && persistedState.forumCategories) {
+            const existingIds = persistedState.forumCategories.map((c: any) => c.id);
+            const missing = defaultCategories.filter(c => !existingIds.includes(c.id));
+            if (missing.length > 0) {
+              persistedState.forumCategories = [...missing, ...persistedState.forumCategories];
+            }
+          }
+        }
+        return persistedState;
+      },
       partialize: (state) => state
     }
   )

@@ -38,11 +38,11 @@ export function getPhenotype(genotype: Genotype) {
   for (const locusKey in LOCI) {
     const alleles = genotype[locusKey];
     if (alleles && LOCI[locusKey].lethal) {
-        const combo = [...alleles].sort().join('');
-        if (LOCI[locusKey].lethal?.includes(combo)) {
-            isLethal = true;
-            break;
-        }
+      const combo = [...alleles].sort().join('');
+      if (LOCI[locusKey].lethal?.includes(combo)) {
+        isLethal = true;
+        break;
+      }
     }
   }
 
@@ -108,26 +108,26 @@ export function getPhenotype(genotype: Genotype) {
   } else if (canExpressFire) {
     // Fire Factor nomenclature according to spreadsheet/memory
     if (baseColorName === 'Red') {
-        if (hasP && hasG) finalName = 'Snow Glow';
-        else if (hasP) finalName = 'Fire and Ice';
-        else finalName = 'Wildfire';
+      if (hasP && hasG) finalName = 'Snow Glow';
+      else if (hasP) finalName = 'Fire and Ice';
+      else finalName = 'Wildfire';
     } else if (baseColorName === 'Gold') {
-        if (hasP && hasG) finalName = 'Autumn Fire';
-        else if (hasP) finalName = 'Fire and Ice';
-        else finalName = 'Golden Sunrise';
+      if (hasP && hasG) finalName = 'Autumn Fire';
+      else if (hasP) finalName = 'Fire and Ice';
+      else finalName = 'Golden Sunrise';
     } else if (isCrossBase) {
-        if (hasP && hasG) finalName = 'Autumn Fire';
-        else if (hasP) finalName = 'Moon Glow';
-        else finalName = 'Fire Cross';
+      if (hasP && hasG) finalName = 'Autumn Fire';
+      else if (hasP) finalName = 'Moon Glow';
+      else finalName = 'Fire Cross';
     } else if (baseColorName === 'Alaskan Silver') {
-        finalName = 'Colicott';
+      finalName = 'Colicott';
     } else if (baseColorName === 'Standard Silver') {
-        if (aCount === 2) { // aabb
-            if (hasP) finalName = 'Fawn Glow';
-            else finalName = 'Colicott';
-        } else { // AAbb or Aabb
-            if (hasG) finalName = 'Cinnamon Fire';
-        }
+      if (aCount === 2) { // aabb
+        if (hasP) finalName = 'Fawn Glow';
+        else finalName = 'Colicott';
+      } else { // AAbb or Aabb
+        if (hasG) finalName = 'Cinnamon Fire';
+      }
     }
   }
 
@@ -150,7 +150,7 @@ export function getPhenotype(genotype: Genotype) {
 
     // Masking logic: Burgundy, Pearl, Mansfield Pearl are masked on Red base
     if (baseColorName === 'Red' && (finalName === 'Burgundy' || finalName === 'Pearl' || finalName === 'Mansfield Pearl')) {
-        finalName = ''; // Masked, fall back to base name
+      finalName = ''; // Masked, fall back to base name
     }
 
     if (finalName && isRedGoldBase && !['Pearl Amber', 'Sapphire', 'Amber'].includes(finalName)) {
@@ -167,9 +167,9 @@ export function getPhenotype(genotype: Genotype) {
     finalName = baseToUse;
   } else if (finalName !== 'Stillborn') {
     // If a special name was chosen, check if it needs to be combined with "Cross"
-    const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic';
-    if (isCrossBase && !isMaskingPhenotype && !finalName.includes('Cross') && !finalName.includes('Glow') && !finalName.includes('Fire')) {
-        finalName = `${finalName} Cross`;
+    const isMasking = finalName === 'Albino' || finalName === 'Leucistic';
+    if (isCrossBase && !isMasking && !finalName.includes('Cross') && !finalName.includes('Glow') && !finalName.includes('Fire')) {
+      finalName = `${finalName} Cross`;
     }
   }
 
@@ -256,7 +256,7 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
       fertility: Math.floor(Math.random() * 50) + 25,
     };
   }
-  
+
   const inherit = (v1: number, v2: number) => {
     const mean = (v1 + v2) / 2;
     const variance = (Math.random() - 0.5) * 10;
@@ -295,27 +295,27 @@ export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
     const p1Alleles = parent1[locus];
     const p2Alleles = parent2[locus];
     if (!p1Alleles || !p2Alleles) {
-        const alleles = LOCI[locus].alleles;
-        offspring[locus] = [alleles[0], alleles[0]];
-        continue;
+      const alleles = LOCI[locus].alleles;
+      offspring[locus] = [alleles[0], alleles[0]];
+      continue;
     }
     const a1 = p1Alleles[Math.floor(Math.random() * 2)];
     const a2 = p2Alleles[Math.floor(Math.random() * 2)];
     offspring[locus] = [a1, a2];
   }
-  
+
   if (getPhenotype(offspring).isLethal) return null;
   return offspring;
 }
 
 export function calculateSilverIntensity(p1Intensity: number, p2Intensity: number): number {
-    const avg = (p1Intensity + p2Intensity) / 2;
-    const base = Math.ceil(avg);
-    const variance = Math.floor(Math.random() * 3) - 1;
-    return Math.max(1, Math.min(5, base + variance));
+  const avg = (p1Intensity + p2Intensity) / 2;
+  const base = Math.ceil(avg);
+  const variance = Math.floor(Math.random() * 3) - 1;
+  return Math.max(1, Math.min(5, base + variance));
 }
 
-export function calculateCOI(foxId: string, foxes: Record<string, { parents: [string | null, string | null ] }>): number {
+export function calculateCOI(foxId: string, foxes: Record<string, { parents: [string | null, string | null] }>): number {
   const fox = foxes[foxId];
   if (!fox || !fox.parents[0] || !fox.parents[1]) return 0;
 
@@ -403,7 +403,7 @@ export function createFoundationalFox(random: () => number = Math.random): Fox {
   const base = baseGenotypes[Math.floor(random() * baseGenotypes.length)];
   const genotype = getInitialGenotype();
   Object.assign(genotype, base);
-  
+
   // Possible rare recessive
   const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L'];
   if (Math.random() > 0.6) {
@@ -411,8 +411,8 @@ export function createFoundationalFox(random: () => number = Math.random): Fox {
     const locus = LOCI[gene];
     const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
     if (alleles.length > 0) {
-        const rare = alleles[Math.floor(Math.random() * alleles.length)];
-        genotype[gene] = [locus.alleles[0], rare];
+      const rare = alleles[Math.floor(Math.random() * alleles.length)];
+      genotype[gene] = [locus.alleles[0], rare];
     }
   }
 
@@ -427,7 +427,7 @@ export function getActiveBoosts(fox: Fox): Record<string, number> {
   const now = Date.now();
   const activeBoosts: Record<string, number> = {};
   if (!fox.boosts) return activeBoosts;
-  
+
   for (const [stat, expiry] of Object.entries(fox.boosts)) {
     if (expiry > now) {
       activeBoosts[stat] = 2; // Each boost is +2

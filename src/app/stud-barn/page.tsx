@@ -30,70 +30,78 @@ export default function StudBarnPage() {
   const isWinter = season === 'Winter';
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
-          <Shield className="text-blue-600" /> Stud Barn
+    <div className="space-y-12 pb-20">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-5xl font-folksy text-foreground tracking-tight flex items-center gap-4" style={{ fontWeight: 400 }}>
+          <Shield className="text-primary" size={40} /> Stud Barn
         </h2>
         {!isWinter && (
-          <Badge variant="destructive">Breeding Closed (Only in Winter)</Badge>
+          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest">
+            <Shield size={14} /> Seasonal Lock: Winter Only
+          </Badge>
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* Selection Panel */}
-        <Card className="lg:col-span-1 border-pink-200 bg-pink-50">
+        <Card className={cn("lg:col-span-1 folk-card border-2 transition-all duration-500", selectedFemaleId ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border bg-card")}>
           <CardHeader>
-            <CardTitle className="text-sm font-bold text-pink-700 uppercase">1. Select your Dam</CardTitle>
+            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> 1. Select Dam
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-3">
             {eligibleFemales.map(f => (
-              <div 
+              <div
                 key={f.id}
                 onClick={() => setSelectedFemaleId(f.id)}
                 className={cn(
-                  "p-3 rounded-lg border cursor-pointer transition text-sm",
-                  selectedFemaleId === f.id ? "bg-white border-pink-500 shadow-sm" : "bg-white/50 border-pink-100 hover:border-pink-300"
+                  "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
+                  selectedFemaleId === f.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
-                <div className="font-bold">{f.name}</div>
-                <div className="text-xs text-slate-500">{f.phenotype}</div>
+                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{f.name}</div>
+                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.phenotype}</div>
               </div>
             ))}
-            {eligibleFemales.length === 0 && <p className="text-xs text-slate-400 italic">No eligible females (Age 2+)</p>}
+            {eligibleFemales.length === 0 && (
+              <div className="text-center py-10 opacity-40 border-2 border-dashed border-border rounded-2xl">
+                <p className="text-xs font-bold text-foreground italic">No eligible females (Age 2+)</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Stud Listings */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="lg:col-span-3 space-y-10">
           <section>
-            <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-              <User size={18} className="text-blue-500" /> Foundation Studs (NPC)
+            <h3 className="text-xl font-black italic text-foreground mb-6 flex items-center gap-3 tracking-tight">
+              <User size={24} className="text-secondary" /> Foundation Studs <span className="text-muted-foreground/30 font-medium not-italic text-sm">(NPC)</span>
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {availableNPCs.map(npc => (
-                <StudCard 
-                    key={npc.id} 
-                    fox={npc} 
-                    onBreed={() => handleBreed(npc.id)} 
-                    disabled={!isWinter || !selectedFemaleId || gold < npc.studFee} 
+                <StudCard
+                  key={npc.id}
+                  fox={npc}
+                  onBreed={() => handleBreed(npc.id)}
+                  disabled={!isWinter || !selectedFemaleId || gold < npc.studFee}
                 />
               ))}
             </div>
           </section>
 
           {ownedStuds.length > 0 && (
-            <section>
-              <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                <Heart size={18} className="text-pink-500" /> Your Offered Studs
+            <section className="pt-10 border-t border-border">
+              <h3 className="text-xl font-black italic text-foreground mb-6 flex items-center gap-3 tracking-tight">
+                <Heart size={24} className="text-primary fill-primary/20" /> Your Offered Studs
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {ownedStuds.map(stud => (
-                  <StudCard 
-                    key={stud.id} 
-                    fox={stud} 
-                    onBreed={() => handleBreed(stud.id)} 
-                    disabled={!isWinter || !selectedFemaleId} 
+                  <StudCard
+                    key={stud.id}
+                    fox={stud}
+                    onBreed={() => handleBreed(stud.id)}
+                    disabled={!isWinter || !selectedFemaleId}
                   />
                 ))}
               </div>
@@ -107,29 +115,34 @@ export default function StudBarnPage() {
 
 function StudCard({ fox, onBreed, disabled }: { fox: import('@/lib/genetics').Fox, onBreed: () => void, disabled: boolean }) {
   return (
-    <Card className="overflow-hidden border-slate-200">
-      <div className="flex h-32">
-        <div className="w-32 flex-shrink-0">
-          <FoxIllustration phenotype={fox.phenotype} />
+    <Card className="folk-card overflow-hidden border-2 border-border bg-card group hover:border-secondary/30 transition-all hover:shadow-xl hover:shadow-secondary/5 rounded-[32px]">
+      <div className="flex h-40">
+        <div className="w-40 flex-shrink-0 bg-muted/40 flex items-center justify-center relative transition-colors group-hover:bg-secondary/5">
+          <FoxIllustration phenotype={fox.phenotype} size={14} />
+          <div className="absolute top-3 left-3">
+            <Badge variant="outline" className="text-[10px] uppercase font-black bg-background/80 backdrop-blur-md border-border">Age {fox.age}</Badge>
+          </div>
         </div>
-        <div className="flex-1 p-4 flex flex-col justify-between">
+        <div className="flex-1 p-6 flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-start">
-                <h4 className="font-bold text-slate-900">{fox.name}</h4>
-                <Badge variant="outline" className="text-[10px] uppercase">Age {fox.age}</Badge>
+            <div className="flex justify-between items-start mb-1">
+              <h4 className="font-black italic text-xl text-foreground group-hover:text-secondary transition-colors tracking-tight">{fox.name}</h4>
             </div>
-            <p className="text-xs text-slate-500">{fox.phenotype}</p>
-            <div className="mt-2 flex items-center gap-1 text-yellow-600 font-bold text-sm">
-                <Coins size={14} /> {fox.studFee.toLocaleString()} Fee
+            <p className="text-xs text-muted-foreground font-medium mb-3 line-clamp-1">{fox.phenotype}</p>
+            <div className="flex items-center gap-2 text-secondary font-black text-sm uppercase tracking-widest">
+              <Coins size={16} /> {fox.studFee.toLocaleString()} <span className="text-[10px] opacity-60">Fee</span>
             </div>
           </div>
-          <Button 
-            size="sm" 
-            onClick={onBreed} 
+          <Button
+            size="sm"
+            onClick={onBreed}
             disabled={disabled}
-            className="w-full mt-2"
+            className={cn(
+              "w-full mt-2 rounded-xl font-black uppercase tracking-widest text-[10px] h-10 transition-all",
+              !disabled ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20" : "bg-muted text-muted-foreground opacity-50"
+            )}
           >
-            Breed
+            Commit Breeding
           </Button>
         </div>
       </div>

@@ -7,78 +7,78 @@ import { PawPrint, Trophy, Heart, ShoppingBag } from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="space-y-12 py-12">
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl font-black text-earth-900 tracking-tight">
-          Welcome to <span className="text-fire-600">Red Fox</span> Breeding Simulator
+    <div className="space-y-16 py-12">
+      <div className="text-center space-y-6">
+        <h1 className="text-6xl sm:text-8xl font-folksy text-earth-900 tracking-tight leading-[0.85]">
+          Welcome to <span className="text-apricot">Red Fox</span><br />Breeding Simulator
         </h1>
-        <p className="text-xl text-earth-600 max-w-2xl mx-auto font-medium">
+        <p className="text-xl text-ink max-w-2xl mx-auto font-medium opacity-80 leading-relaxed">
           Experience the art of fox genetics and competitive showing. Build your kennel,
           master complex inheritance, and produce the next Best in Show champion.
         </p>
-        <div className="pt-6 flex justify-center gap-4">
+        <div className="pt-8 flex justify-center gap-6">
           <Link href="/kennel">
-            <Button size="lg" className="bg-fire-600 hover:bg-fire-500 h-14 px-8 text-lg font-bold shadow-lg shadow-fire-200">
+            <Button size="lg" className="h-16 px-10 text-lg">
               Enter My Kennel
             </Button>
           </Link>
           <Link href="/help">
-            <Button size="lg" variant="outline" className="h-14 px-8 text-lg font-bold border-earth-200">
+            <Button size="lg" variant="outline" className="h-16 px-10 text-lg">
               How to Play
             </Button>
           </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <FeatureCard
-            icon={<PawPrint size={32} className="text-fire-600" />}
-            title="Genetic Simulation"
-            description="Complex Agouti, Black, Albino, Burgundy, Pearl, Mansfield Pearl, Fire, and White Markings loci interaction."
+          icon={<PawPrint size={32} className="text-apricot" />}
+          title="Genetic Simulation"
+          description="Complex Agouti, Black, Albino, Burgundy, Pearl, Mansfield Pearl and Fire loci interaction."
         />
         <FeatureCard
-            icon={<Trophy size={32} className="text-amber-500" />}
-            title="Competitive Shows"
-            description="Compete in Junior, Open, Senior, and Championship levels across multiple specialty classes."
+          icon={<Trophy size={32} className="text-amber-500" />}
+          title="Competitive Shows"
+          description="Compete in Junior, Open, Senior, and Championship levels across multiple specialty classes."
         />
         <FeatureCard
-            icon={<Heart size={32} className="text-rose-500" />}
-            title="Breeding Center"
-            description="Strategic breeding with detailed COI tracking, health management, and genetic testing."
+          icon={<Heart size={32} className="text-sagebrush" />}
+          title="Breeding Center"
+          description="Strategic breeding with detailed COI tracking, health management, and genetic testing."
         />
         <FeatureCard
-            icon={<ShoppingBag size={32} className="text-emerald-600" />}
-            title="Economy & Staff"
-            description="Manage your gold and gems. Hire professional Staff to improve your kennel quality."
+          icon={<ShoppingBag size={32} className="text-moab" />}
+          title="Economy & Staff"
+          description="Manage your gold and gems. Hire professional Staff to improve your kennel quality."
         />
       </div>
 
-      <div className="bg-earth-900 rounded-[48px] p-12 text-white overflow-hidden relative">
-          <div className="relative z-10 max-w-xl">
-            <h2 className="text-3xl font-black mb-4">Ready to start your journey?</h2>
-            <p className="text-earth-300 text-lg mb-8">Join the community of breeders and start discovering rare color morphs today.</p>
-            <Link href="/shop/adoption">
-                <Button className="bg-white text-earth-900 hover:bg-earth-100 h-12 px-6 font-bold">
-                    Adopt Your First Fox
-                </Button>
-            </Link>
-          </div>
-          <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
-              <PawPrint size={300} />
-          </div>
+      <div className="bg-moab rounded-[4rem] p-16 text-white overflow-hidden relative shadow-2xl shadow-moab/20">
+        <div className="relative z-10 max-w-xl">
+          <h2 className="text-4xl font-folksy mb-6 leading-tight">Ready to start your journey?</h2>
+          <p className="text-white/80 text-lg mb-10 font-medium">Join our charming community of breeders and start discovering rare color morphs today.</p>
+          <Link href="/shop/adoption">
+            <Button className="bg-white text-moab hover:bg-oatmeal border-none transition-all shadow-xl">
+              Adopt Your First Fox
+            </Button>
+          </Link>
+        </div>
+        <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
+          <PawPrint size={350} />
+        </div>
       </div>
     </div>
   );
 }
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-    return (
-        <div className="bg-white p-8 rounded-[32px] border border-earth-100 shadow-sm space-y-4 hover:shadow-md transition-shadow">
-            <div className="p-4 bg-earth-50 rounded-2xl w-fit">
-                {icon}
-            </div>
-            <h3 className="font-bold text-xl text-earth-900">{title}</h3>
-            <p className="text-sm text-earth-600 leading-relaxed font-medium">{description}</p>
-        </div>
-    );
+  return (
+    <div className="folk-card p-10 space-y-6 flex flex-col items-start group">
+      <div className="p-5 bg-muted rounded-[1.5rem] transition-colors group-hover:bg-primary/10">
+        {icon}
+      </div>
+      <h3 className="font-folksy text-2xl text-earth-900">{title}</h3>
+      <p className="text-[15px] text-ink/70 leading-relaxed font-medium">{description}</p>
+    </div>
+  );
 }
