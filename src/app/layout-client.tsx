@@ -99,7 +99,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
         className="w-full h-[220px] sm:h-[320px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-sagebrush/20"
         style={{ backgroundImage: `url(${bannerUrl})`, backgroundPosition: `center ${bannerPosition}` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-ink max-w-2xl">
               <h2 className="text-5xl sm:text-7xl font-folksy tracking-tight leading-[0.85] text-earth-900">Welcome<br />Home</h2>
