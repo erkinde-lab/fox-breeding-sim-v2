@@ -351,7 +351,7 @@ export const useGameStore = create<GameState>()(
 
       addGold: (amount) => set((state) => ({ gold: state.gold + amount })),
       addGems: (amount) => set((state) => ({ gems: state.gems + amount })),
-      addFox: (fox) => set((state) => ({ foxes: { ...state.foxes, [fox.id]: fox } })),
+      addFox: (fox) => set((state) => ({ foxes: { ...state.foxes, [fox.id]: state.hiredGeneticist ? { ...fox, genotypeRevealed: true } : fox } })),
       sellFox: (id) => set((state) => {
         const newFoxes = { ...state.foxes };
         delete newFoxes[id];
@@ -376,7 +376,7 @@ export const useGameStore = create<GameState>()(
         const newInventory = { ...state.inventory };
         const newFoodUses = { ...state.foodUses };
 
-        if (itemId === 'supplies') {
+        if (itemId === 'supplies' || itemId.startsWith('feed-')) {
             let uses = newFoodUses[itemId] || 0;
             if (uses <= 0) {
                 if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
@@ -384,14 +384,17 @@ export const useGameStore = create<GameState>()(
                 uses = 5;
             }
             newFoodUses[itemId] = uses - 1;
-            newFox.lastFed = Date.now();
-        } else if (itemId.startsWith('feed-')) {
-            if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
-            newInventory[itemId]--;
-            const statKey = itemId.replace('feed-', '') as keyof Stats;
-            const stats = { ...newFox.stats };
-            stats[statKey] = Math.min(100, (stats[statKey] || 0) + 2);
-            newFox.stats = stats;
+
+            if (itemId === 'supplies') {
+                newFox.lastFed = Date.now();
+            } else {
+                const statKey = itemId.replace('feed-', '') as keyof Stats;
+                const stats = { ...newFox.stats };
+                stats[statKey] = Math.min(100, (stats[statKey] || 0) + 2);
+                newFox.stats = stats;
+                // Specialty feeds also satisfy hunger
+                newFox.lastFed = Date.now();
+            }
         } else {
             if (!newInventory[itemId] || newInventory[itemId] <= 0) return state;
             if (itemId === 'genetic-test') newFox.genotypeRevealed = true;

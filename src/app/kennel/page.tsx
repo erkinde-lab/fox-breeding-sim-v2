@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 function KennelContent() {
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'foxes';
-  const { foxes, kennelCapacity } = useGameStore();
+  const { foxes, kennelCapacity, hiredNutritionist, feedAllFoxes } = useGameStore();
   const foxList = Object.values(foxes);
 
   return (
@@ -35,9 +35,16 @@ function KennelContent() {
         <div className="space-y-6">
             <div className="flex justify-between items-center bg-white p-4 rounded-2xl border border-earth-100 shadow-sm">
                 <h2 className="text-xl font-bold text-earth-900">Your Foxes</h2>
-                <Badge variant="secondary" className="px-3 py-1 bg-earth-100 text-earth-700 border-none font-bold">
-                {foxList.length} / {kennelCapacity} Slots Filled
-                </Badge>
+                <div className="flex items-center gap-4">
+                    {hiredNutritionist && (
+                      <Button onClick={feedAllFoxes} variant="outline" size="sm" className="bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100 gap-2">
+                        <Utensils size={14} /> Feed All
+                      </Button>
+                    )}
+                    <Badge variant="secondary" className="px-3 py-1 bg-earth-100 text-earth-700 border-none font-bold">
+                    {foxList.length} / {kennelCapacity} Slots Filled
+                    </Badge>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
