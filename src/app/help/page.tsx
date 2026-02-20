@@ -130,7 +130,12 @@ export default function HelpPage() {
                 Shows run automatically each season. Every fox you own is evaluated across 8 physical and behavioral traits. A composite score is calculated and compared against all other entrants. Placements earn <strong>Gold</strong> and contribute to your kennel reputation.
               </InfoTile>
               <InfoTile icon={Zap} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Classes">
-                Foxes compete in the class matching their age and registration status. Younger foxes may compete in kit and junior classes, while mature foxes enter open and champion classes. Higher classes offer better payouts.
+                <ul className="list-disc list-inside space-y-1 mt-1">
+                  <li><strong>Kits</strong> are not eligible to show — they must age into juveniles first.</li>
+                  <li><strong>Juvenile</strong> foxes compete in the Juvenile class.</li>
+                  <li><strong>Junior</strong> shows are for adult foxes that have earned fewer than 5 lifetime points.</li>
+                  <li>As foxes accumulate points they advance to <strong>Open</strong> and <strong>Champion</strong> classes, which offer higher payouts.</li>
+                </ul>
               </InfoTile>
               <InfoTile icon={Info} color="bg-muted text-muted-foreground border-border" title="Improving Show Performance">
                 <ul className="list-disc list-inside space-y-1 mt-1">
