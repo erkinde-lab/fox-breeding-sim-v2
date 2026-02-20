@@ -45,9 +45,9 @@ export default function AdminPanel() {
   if (!isAdmin) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <ShieldCheck size={64} className="text-earth-200 mb-4" />
-        <h1 className="text-2xl font-black text-slate-900">Access Restricted</h1>
-        <p className="text-slate-500 mt-2 mb-6">You must be an administrator to view this page.</p>
+        <ShieldCheck size={64} className="text-secondary mb-4 opacity-20" />
+        <h1 className="text-2xl font-black text-foreground">Access Restricted</h1>
+        <p className="text-muted-foreground mt-2 mb-6">You must be an administrator to view this page.</p>
         <Button onClick={() => router.push('/')}>Return Home</Button>
       </div>
     );
@@ -82,12 +82,12 @@ export default function AdminPanel() {
     <div className="space-y-8 pb-20">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <Settings className="text-fire-600" size={36} /> Admin Panel
+          <h1 className="text-4xl font-black text-foreground tracking-tight flex items-center gap-3">
+            <Settings className="text-primary" size={36} /> Admin Panel
           </h1>
-          <p className="text-slate-500 mt-2">Global kennel management and user moderation tools.</p>
+          <p className="text-muted-foreground mt-2 font-medium">Global kennel management and user moderation tools.</p>
         </div>
-        <Button variant="ghost" onClick={toggleAdminMode} className="text-red-500 hover:text-red-600 hover:bg-red-50">
+        <Button variant="ghost" onClick={toggleAdminMode} className="text-destructive hover:text-destructive hover:bg-destructive/10">
           Deactivate Admin Mode
         </Button>
       </div>
@@ -114,17 +114,17 @@ export default function AdminPanel() {
       </div>
 
       {activeTab === 'members' && (
-        <Card className="folk-card">
+        <Card className="folk-card border-2 border-border bg-card">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>User Moderation</CardTitle>
+            <CardTitle className="font-black italic text-foreground tracking-tight">User Moderation</CardTitle>
             <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
               <input
                 type="text"
                 placeholder="Search by name..."
                 value={searchMember}
                 onChange={(e) => setSearchMember(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-earth-200 rounded-lg text-sm"
+                className="w-full pl-10 pr-4 py-2 bg-muted/30 border border-border rounded-lg text-sm font-medium"
               />
             </div>
           </CardHeader>
@@ -132,24 +132,24 @@ export default function AdminPanel() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-slate-400 uppercase text-[10px] font-black tracking-widest border-b border-earth-100">
+                  <tr className="text-left text-muted-foreground uppercase text-[10px] font-black tracking-widest border-b border-border">
                     <th className="pb-3 pl-2">User</th>
                     <th className="pb-3 text-center">Status</th>
                     <th className="pb-3 text-center">Warnings</th>
                     <th className="pb-3 text-right pr-2">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-earth-50">
+                <tbody className="divide-y divide-border">
                   {(members || []).filter(m => m.name.toLowerCase().includes(searchMember.toLowerCase())).map(member => (
-                    <tr key={member.id} className="hover:bg-earth-50 transition-colors">
+                    <tr key={member.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-4 pl-2">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full ${member.avatarColor} flex items-center justify-center text-white text-xs`}>
                             {member.name[0]}
                           </div>
                           <div>
-                            <div className="font-bold">{member.name}</div>
-                            <div className="text-[10px] text-slate-400">ID: {member.id} • Joined {member.joined}</div>
+                            <div className="font-bold text-foreground">{member.name}</div>
+                            <div className="text-[10px] text-muted-foreground">ID: {member.id} • Joined {member.joined}</div>
                           </div>
                         </div>
                       </td>
@@ -157,14 +157,14 @@ export default function AdminPanel() {
                         {member.isBanned ? (
                           <Badge variant="destructive" className="text-[8px] uppercase">Banned</Badge>
                         ) : (
-                          <Badge variant="secondary" className="bg-moss-100 text-moss-700 text-[8px] uppercase">Active</Badge>
+                          <Badge variant="secondary" className="bg-primary/10 text-primary border-none shadow-none text-[8px] uppercase">Active</Badge>
                         )}
                       </td>
                       <td className="py-4 text-center font-mono">
                         {(member.warnings || []).length > 0 ? (
-                          <span className="text-amber-600 font-bold">{member.warnings.length}</span>
+                          <span className="text-secondary font-bold">{member.warnings.length}</span>
                         ) : (
-                          <span className="text-slate-300">0</span>
+                          <span className="text-muted-foreground/30">0</span>
                         )}
                       </td>
                       <td className="py-4 text-right pr-2">
@@ -172,7 +172,7 @@ export default function AdminPanel() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="h-8 w-8 text-amber-500 hover:bg-amber-50"
+                            className="h-8 w-8 text-secondary hover:bg-secondary/10"
                             onClick={() => handleWarn(member.id)}
                             title="Warn User"
                           >
@@ -181,7 +181,7 @@ export default function AdminPanel() {
                           <Button
                             size="icon"
                             variant="ghost"
-                            className={`h-8 w-8 ${member.isBanned ? 'text-moss-500 hover:bg-moss-50' : 'text-red-500 hover:bg-red-50'}`}
+                            className={`h-8 w-8 ${member.isBanned ? 'text-primary hover:bg-primary/10' : 'text-destructive hover:bg-destructive/10'}`}
                             onClick={() => banMember(member.id)}
                             title={member.isBanned ? 'Unban User' : 'Ban User'}
                           >
@@ -200,33 +200,33 @@ export default function AdminPanel() {
 
       {activeTab === 'economy' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="folk-card">
+          <Card className="folk-card border-2 border-border bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Coins className="text-yellow-600" size={18} /> Global Economy
+              <CardTitle className="flex items-center gap-2 font-black italic text-foreground tracking-tight">
+                <Coins className="text-secondary" size={18} /> Global Economy
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Set User Gold</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Set User Gold</label>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     value={editGold}
                     onChange={e => setEditGold(Number(e.target.value))}
-                    className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
+                    className="flex-1 p-2 bg-muted/30 border border-border rounded-lg text-sm font-bold text-foreground"
                   />
                   <Button onClick={() => adminSetCurrency(editGold, editGems)}>Apply</Button>
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Set User Gems</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Set User Gems</label>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     value={editGems}
                     onChange={e => setEditGems(Number(e.target.value))}
-                    className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
+                    className="flex-1 p-2 bg-muted/30 border border-border rounded-lg text-sm font-bold text-foreground"
                   />
                   <Button onClick={() => adminSetCurrency(editGold, editGems)}>Apply</Button>
                 </div>
@@ -234,19 +234,19 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
 
-          <Card className="folk-card">
+          <Card className="folk-card border-2 border-border bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="text-moss-600" size={18} /> Item Spawner
+              <CardTitle className="flex items-center gap-2 font-black italic text-foreground tracking-tight">
+                <Plus className="text-primary" size={18} /> Item Spawner
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Select Item</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Select Item</label>
                 <select
                   value={addItemId}
                   onChange={e => setAddItemId(e.target.value)}
-                  className="w-full p-2 border border-earth-200 rounded-lg text-sm"
+                  className="w-full p-2 bg-muted/30 border border-border rounded-lg text-sm font-medium text-foreground"
                 >
                   <option value="supplies">Premium Feed</option>
                   <option value="genetic-test">Genetic Test</option>
@@ -258,13 +258,13 @@ export default function AdminPanel() {
                 </select>
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Quantity</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Quantity</label>
                 <div className="flex gap-2">
                   <input
                     type="number"
                     value={addItemCount}
                     onChange={e => setAddItemCount(Number(e.target.value))}
-                    className="flex-1 p-2 border border-earth-200 rounded-lg text-sm font-bold"
+                    className="flex-1 p-2 bg-muted/30 border border-border rounded-lg text-sm font-bold text-foreground"
                   />
                   <Button variant="outline" onClick={() => adminAddItem(addItemId, addItemCount)}>Spawn Items</Button>
                 </div>
@@ -275,22 +275,22 @@ export default function AdminPanel() {
       )}
 
       {activeTab === 'shows' && (
-        <Card className="folk-card">
+        <Card className="folk-card border-2 border-border bg-card">
           <CardHeader>
-            <CardTitle>Competitive Circuit</CardTitle>
+            <CardTitle className="font-black italic text-foreground tracking-tight">Competitive Circuit</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 bg-earth-50 rounded-xl border border-earth-100">
-                <h4 className="font-bold text-slate-900 mb-2">Automated Cycle</h4>
-                <p className="text-xs text-slate-500 mb-4">Triggers all current season shows based on your current foxes.</p>
+              <div className="p-4 bg-muted/20 rounded-xl border border-border">
+                <h4 className="font-bold text-foreground mb-2">Automated Cycle</h4>
+                <p className="text-xs text-muted-foreground mb-4 font-medium">Triggers all current season shows based on your current foxes.</p>
                 <Button className="w-full gap-2" onClick={runShows}>
                   <FastForward size={16} /> Force Season Shows
                 </Button>
               </div>
-              <div className="p-4 bg-earth-50 rounded-xl border border-earth-100">
-                <h4 className="font-bold text-slate-900 mb-2">Manual Points</h4>
-                <p className="text-xs text-slate-500 mb-4">Manually award points to all foxes in the kennel (+10 points).</p>
+              <div className="p-4 bg-muted/20 rounded-xl border border-border">
+                <h4 className="font-bold text-foreground mb-2">Manual Points</h4>
+                <p className="text-xs text-muted-foreground mb-4 font-medium">Manually award points to all foxes in the kennel (+10 points).</p>
                 <Button variant="outline" className="w-full gap-2" onClick={() => {
                   Object.keys(foxes).forEach(id => {
                     useGameStore.getState().updateFox(id, { pointsLifetime: foxes[id].pointsLifetime + 10 });
@@ -303,15 +303,15 @@ export default function AdminPanel() {
             </div>
 
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Show History</h4>
+              <h4 className="text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">Show History</h4>
               <div className="space-y-2">
                 {useGameStore.getState().showReports.slice(0, 5).map((report, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 bg-white border border-earth-100 rounded-lg text-sm shadow-sm">
+                  <div key={i} className="flex justify-between items-center p-3 bg-muted/10 border border-border rounded-lg text-sm shadow-inner group transition-colors hover:bg-muted/20">
                     <div className="flex items-center gap-3">
-                      <Badge variant="outline">{report.level}</Badge>
-                      <span className="font-medium">Year {report.year}, {report.season}</span>
+                      <Badge variant="outline" className="font-black text-[10px] border-secondary/20 text-secondary">{report.level}</Badge>
+                      <span className="font-bold italic text-foreground/80 tracking-tight">Year {report.year}, {report.season}</span>
                     </div>
-                    <div className="text-fire-600 font-bold">Winner: {report.bestInShowFoxId ? foxes[report.bestInShowFoxId]?.name : 'None'}</div>
+                    <div className="text-secondary font-black tracking-tight italic">Winner: {report.bestInShowFoxId ? foxes[report.bestInShowFoxId]?.name : 'None'}</div>
                   </div>
                 ))}
               </div>
@@ -322,59 +322,59 @@ export default function AdminPanel() {
 
       {activeTab === 'genetics' && (
         <div className="space-y-6">
-          <Card className="folk-card">
+          <Card className="folk-card border-2 border-border bg-card">
             <CardHeader>
-              <CardTitle>Genetics Lab: Spawn Fox</CardTitle>
+              <CardTitle className="font-black italic text-foreground tracking-tight">Genetics Lab: Spawn Fox</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <div className="p-4 bg-earth-50 rounded-xl border border-earth-200">
-                    <h5 className="text-sm font-bold mb-2">Predicted Outcome</h5>
+                  <div className="p-4 bg-muted/20 rounded-xl border border-border">
+                    <h5 className="text-sm font-black italic text-foreground mb-2">Predicted Outcome</h5>
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-medium">{getPhenotype(spawnGenotype).name}</div>
-                      <Badge variant="outline">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
+                      <div className="text-sm font-bold text-primary">{getPhenotype(spawnGenotype).name}</div>
+                      <Badge variant="outline" className="font-black text-[10px] uppercase tracking-tighter border-secondary/20 text-secondary">{getPhenotype(spawnGenotype).eyeColor} Eyes</Badge>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-400 uppercase">Gender</label>
+                    <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Gender</label>
                     <div className="flex gap-2">
                       <Button
                         variant={spawnGender === 'Male' ? 'default' : 'outline'}
                         onClick={() => setSpawnGender('Male')}
-                        className="flex-1"
+                        className="flex-1 rounded-xl font-black uppercase tracking-widest text-[10px]"
                       >Male</Button>
                       <Button
                         variant={spawnGender === 'Female' ? 'default' : 'outline'}
                         onClick={() => setSpawnGender('Female')}
-                        className="flex-1"
+                        className="flex-1 rounded-xl font-black uppercase tracking-widest text-[10px]"
                       >Female</Button>
                     </div>
                   </div>
-                  <Button onClick={handleSpawn} className="w-full gap-2 bg-fire-600 hover:bg-fire-700">
+                  <Button onClick={handleSpawn} className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.2em] h-12 rounded-2xl">
                     <Plus size={16} /> Spawn Custom Fox
                   </Button>
-                  <p className="text-[10px] text-slate-400 italic">Note: Manual naming is disabled. The fox will be named according to its phenotype.</p>
+                  <p className="text-[10px] text-muted-foreground/60 italic font-medium">Note: Manual naming is disabled. The fox will be named according to its phenotype.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                   {Object.entries(LOCI).map(([key, locus]) => (
-                    <div key={key} className="p-3 bg-white border border-earth-100 rounded-lg space-y-2 shadow-sm">
-                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{locus.name}</div>
+                    <div key={key} className="p-3 bg-card border-2 border-border rounded-2xl space-y-3 shadow-sm group hover:border-secondary/20 transition-colors">
+                      <div className="text-[10px] font-black text-muted-foreground/60 uppercase tracking-[0.2em]">{locus.name}</div>
                       <div className="flex gap-2">
                         <select
                           value={spawnGenotype[key][0]}
                           onChange={e => handleUpdateGenotype(key, 0, e.target.value)}
-                          className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
+                          className="flex-1 text-xs p-2 bg-muted/30 border border-border rounded-xl font-bold text-foreground focus:ring-2 focus:ring-secondary/20 transition-all"
                         >
-                          {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
+                          {locus.alleles.map(a => <option key={a} value={a} className="bg-card">{a}</option>)}
                         </select>
                         <select
                           value={spawnGenotype[key][1]}
                           onChange={e => handleUpdateGenotype(key, 1, e.target.value)}
-                          className="flex-1 text-xs p-1 border border-earth-100 rounded bg-earth-50"
+                          className="flex-1 text-xs p-2 bg-muted/30 border border-border rounded-xl font-bold text-foreground focus:ring-2 focus:ring-secondary/20 transition-all"
                         >
-                          {locus.alleles.map(a => <option key={a} value={a}>{a}</option>)}
+                          {locus.alleles.map(a => <option key={a} value={a} className="bg-card">{a}</option>)}
                         </select>
                       </div>
                     </div>
@@ -384,16 +384,16 @@ export default function AdminPanel() {
             </CardContent>
           </Card>
 
-          <Card className="folk-card">
+          <Card className="folk-card border-2 border-border bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="text-blue-600" size={18} /> Stat Modifier
+              <CardTitle className="flex items-center gap-2 font-black italic text-foreground tracking-tight">
+                <Activity className="text-secondary" size={18} /> Stat Modifier
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase">Select Fox</label>
+                  <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Select Fox</label>
                   <select
                     value={selectedFoxId}
                     onChange={e => {
@@ -401,11 +401,11 @@ export default function AdminPanel() {
                       setSelectedFoxId(id);
                       if (foxes[id]) setModStats(foxes[id].stats);
                     }}
-                    className="w-full p-2 border border-earth-200 rounded-lg text-sm"
+                    className="w-full p-2 bg-muted/30 border border-border rounded-lg text-sm font-medium text-foreground"
                   >
-                    <option value="">-- Select a Fox --</option>
+                    <option value="" className="bg-card">-- Select a Fox --</option>
                     {Object.values(foxes).map(f => (
-                      <option key={f.id} value={f.id}>{f.name} ({f.phenotype})</option>
+                      <option key={f.id} value={f.id} className="bg-card">{f.name} ({f.phenotype})</option>
                     ))}
                   </select>
                 </div>
@@ -414,18 +414,18 @@ export default function AdminPanel() {
                   <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                     {['head', 'topline', 'forequarters', 'hindquarters', 'tail', 'coatQuality', 'temperament', 'presence', 'luck', 'fertility'].map(stat => (
                       <div key={stat} className="space-y-1">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase">{stat}</label>
+                        <label className="text-[10px] font-black text-muted-foreground/40 uppercase tracking-widest">{stat}</label>
                         <input
                           type="number"
                           value={modStats[stat as keyof Stats] || 0}
                           onChange={e => setModStats({ ...modStats, [stat]: Number(e.target.value) })}
-                          className="w-full p-2 border border-earth-100 rounded bg-white text-sm font-bold"
+                          className="w-full p-2 bg-muted/20 border border-border rounded-lg text-sm font-black text-foreground"
                         />
                       </div>
                     ))}
                   </div>
                 )}
-                <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full">Save Stat Changes</Button>
+                <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full bg-secondary hover:bg-secondary/90 text-white font-black uppercase tracking-widest h-12 rounded-2xl shadow-lg shadow-secondary/10">Save Stat Changes</Button>
               </div>
             </CardContent>
           </Card>
@@ -434,32 +434,32 @@ export default function AdminPanel() {
 
       {activeTab === 'site' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="folk-card">
+          <Card className="folk-card border-2 border-border bg-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Info className="text-blue-600" size={18} /> Header Banner
+              <CardTitle className="flex items-center gap-2 font-black italic text-foreground tracking-tight">
+                <Info className="text-primary" size={18} /> Header Banner
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Banner Image URL</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Banner Image URL</label>
                 <div className="flex gap-2">
                   <input
                     type="text"
                     value={editBannerUrl}
                     onChange={e => setEditBannerUrl(e.target.value)}
-                    className="flex-1 p-2 border border-earth-200 rounded-lg text-sm"
+                    className="flex-1 p-2 bg-muted/30 border border-border rounded-lg text-sm font-medium text-foreground"
                     placeholder="https://..."
                   />
                   <Button onClick={() => setBannerUrl(editBannerUrl)}>Apply</Button>
                 </div>
-                <p className="text-[10px] text-slate-400 italic">
-                  Recommended Dimensions: <span className="font-bold text-slate-600">1920 x 400</span> (or any wide aspect ratio with 4:1 - 5:1 ratio).
+                <p className="text-[10px] text-muted-foreground/60 italic font-medium">
+                  Recommended Dimensions: <span className="font-bold text-primary">1920 x 400</span> (or any wide aspect ratio with 4:1 - 5:1 ratio).
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase">Vertical Focus ({bannerPosition})</label>
+                <label className="text-xs font-black text-muted-foreground uppercase tracking-widest">Vertical Focus ({bannerPosition})</label>
                 <div className="flex gap-4 items-center">
                   <input
                     type="range"
@@ -467,13 +467,13 @@ export default function AdminPanel() {
                     max="100"
                     value={parseInt(bannerPosition)}
                     onChange={e => setBannerPosition(`${e.target.value}%`)}
-                    className="flex-1 accent-fire-600"
+                    className="flex-1 accent-primary"
                   />
-                  <span className="text-xs font-mono text-slate-500 w-10">
+                  <span className="text-xs font-mono text-muted-foreground w-10 font-bold">
                     {bannerPosition === '0%' ? 'Top' : (bannerPosition === '100%' ? 'Bottom' : bannerPosition)}
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400 italic">Adjust which part of the image is shown in the banner crop.</p>
+                <p className="text-[10px] text-muted-foreground/60 italic font-medium">Adjust which part of the image is shown in the banner crop.</p>
               </div>
 
               <div className="space-y-3">
@@ -502,43 +502,43 @@ export default function AdminPanel() {
                 </div>
               </div>
 
-              <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg">
-                <p className="text-[10px] font-bold text-blue-700 uppercase mb-1">Layout Reference</p>
-                <p className="text-[10px] text-blue-600">The site is currently configured for <span className="font-bold">Left Alignment</span> to match your branding preference.</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <p className="text-[10px] font-black text-primary uppercase tracking-widest mb-1">Layout Reference</p>
+                <p className="text-[11px] text-foreground font-medium opacity-80">The site is currently configured for <span className="font-black italic">Left Alignment</span> to match your branding preference.</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="folk-card overflow-hidden">
-            <CardHeader>
-              <CardTitle className="text-xs font-black uppercase text-slate-400 tracking-widest">Banner Preview</CardTitle>
+          <Card className="folk-card overflow-hidden border-2 border-border bg-card">
+            <CardHeader className="bg-muted/30 border-b border-border">
+              <CardTitle className="text-xs font-black uppercase text-muted-foreground/40 tracking-[0.2em]">Banner Preview</CardTitle>
             </CardHeader>
             <div
-              className="w-full h-40 bg-cover border-t border-earth-100"
+              className="w-full h-48 bg-cover"
               style={{ backgroundImage: `url(${bannerUrl})`, backgroundPosition: `center ${bannerPosition}` }}
             />
-            <CardContent className="p-4 bg-slate-50">
-              <p className="text-[10px] text-slate-500 font-medium">This banner will appear at the top of every page in the simulation.</p>
+            <CardContent className="p-5 bg-muted/10">
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">This banner will appear at the top of every page in the simulation, providing a cozy atmosphere for your kennel.</p>
             </CardContent>
           </Card>
         </div>
       )}
 
       {activeTab === 'logs' && (
-        <Card className="folk-card">
+        <Card className="folk-card border-2 border-border bg-card">
           <CardHeader>
-            <CardTitle>Admin Activity Log</CardTitle>
+            <CardTitle className="font-black italic text-foreground tracking-tight">Admin Activity Log</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {(adminLogs || []).length === 0 && <p className="text-sm text-slate-400 italic">No activity recorded yet.</p>}
+            <div className="space-y-3">
+              {(adminLogs || []).length === 0 && <p className="text-sm text-muted-foreground italic py-10 text-center font-medium opacity-40">No activity recorded yet.</p>}
               {(adminLogs || []).map(log => (
-                <div key={log.id} className="p-3 bg-earth-50 border border-earth-100 rounded-lg text-sm flex justify-between items-start">
+                <div key={log.id} className="p-4 bg-muted/20 border border-border rounded-2xl text-sm flex justify-between items-start group hover:bg-muted/40 transition-colors">
                   <div>
-                    <div className="font-bold text-fire-700">{log.action}</div>
-                    <div className="text-slate-600 mt-1">{log.details}</div>
+                    <div className="font-black italic text-primary group-hover:text-secondary transition-colors">{log.action}</div>
+                    <div className="text-muted-foreground mt-1 font-medium">{log.details}</div>
                   </div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-[10px] text-muted-foreground/40 font-black uppercase tracking-widest">
                     {new Date(log.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
@@ -549,40 +549,42 @@ export default function AdminPanel() {
       )}
 
       {activeTab === 'system' && (
-        <Card className="folk-card">
+        <Card className="folk-card border-2 border-border bg-card">
           <CardHeader>
-            <CardTitle>System Controls</CardTitle>
+            <CardTitle className="font-black italic text-foreground tracking-tight">System Controls</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Button variant="outline" className="h-24 flex flex-col gap-2 rounded-2xl" onClick={advanceTime}>
-                <FastForward className="text-fire-600" />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <Button variant="outline" className="h-28 flex flex-col gap-3 rounded-[2rem] border-2 group hover:border-primary/30 transition-all font-black uppercase text-[10px] tracking-widest" onClick={advanceTime}>
+                <FastForward size={24} className="text-primary group-hover:scale-110 transition-transform" />
                 <span>Next Season</span>
               </Button>
-              <Button variant="outline" className="h-24 flex flex-col gap-2 rounded-2xl" onClick={() => {
+              <Button variant="outline" className="h-28 flex flex-col gap-3 rounded-[2rem] border-2 group hover:border-destructive/30 transition-all font-black uppercase text-[10px] tracking-widest" onClick={() => {
                 if (confirm('Are you sure you want to reset all game data?')) {
                   localStorage.removeItem('red-fox-sim-storage');
                   window.location.reload();
                 }
               }}>
-                <Trash2 className="text-red-500" />
+                <Trash2 size={24} className="text-destructive group-hover:scale-110 transition-transform" />
                 <span>Wipe Game Data</span>
               </Button>
-              <Button variant="outline" className="h-24 flex flex-col gap-2 rounded-2xl" onClick={() => router.push('/')}>
-                <RefreshCw className="text-moss-600" />
+              <Button variant="outline" className="h-28 flex flex-col gap-3 rounded-[2rem] border-2 group hover:border-secondary/30 transition-all font-black uppercase text-[10px] tracking-widest" onClick={() => router.push('/')}>
+                <RefreshCw size={24} className="text-secondary group-hover:scale-110 transition-transform" />
                 <span>Reload UI</span>
               </Button>
             </div>
 
-            <div className="p-6 bg-fire-50 border border-fire-100 rounded-2xl flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <ShieldCheck size={32} className="text-fire-600" />
+            <div className="p-8 bg-primary/10 border-2 border-primary/20 rounded-[2.5rem] flex items-center justify-between shadow-inner">
+              <div className="flex items-center gap-6">
+                <div className="p-4 bg-primary text-primary-foreground rounded-2xl shadow-lg shadow-primary/20">
+                  <ShieldCheck size={32} />
+                </div>
                 <div>
-                  <h4 className="font-bold text-slate-900">Developer Mode</h4>
-                  <p className="text-sm text-slate-500">Currently active. This grants bypass for costs and cooldowns.</p>
+                  <h4 className="font-black italic text-foreground text-xl tracking-tight">Developer Mode</h4>
+                  <p className="text-sm text-muted-foreground font-medium opacity-80 mt-1">Currently active. This grants bypass for all costs and cooldowns.</p>
                 </div>
               </div>
-              <Button variant="outline" onClick={toggleAdminMode}>Deactivate</Button>
+              <Button variant="outline" onClick={toggleAdminMode} className="rounded-xl border-2 font-black uppercase tracking-widest text-[10px] px-6">Deactivate</Button>
             </div>
           </CardContent>
         </Card>
