@@ -102,10 +102,9 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-center">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-ink max-w-2xl">
-              <Badge className="bg-sagebrush mb-4 px-3 py-1 text-[10px] font-black uppercase tracking-widest border-none text-white rounded-full">Official Kennel System</Badge>
               <h2 className="text-5xl sm:text-7xl font-folksy tracking-tight leading-[0.85] text-earth-900">Welcome<br />Home</h2>
               <div className="h-1.5 lg:w-24 bg-apricot mt-6 mb-4 rounded-full"></div>
-              <p className="font-bold sm:text-xl opacity-90 tracking-tight uppercase font-rounded text-moab">Professional Red Fox Breeding Simulation</p>
+              <p className="font-bold sm:text-xl tracking-tight uppercase font-rounded text-foreground/80 drop-shadow-sm">Professional Red Fox Breeding Simulation</p>
             </div>
           </div>
         </div>
