@@ -5,8 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, Diamond, Check, Microscope } from 'lucide-react';
-import { LOCI, Genotype, getPhenotype } from '@/lib/genetics';
+import { Star, Diamond, Check, Microscope, Eye } from 'lucide-react';
+import { LOCI, Genotype, getPhenotype, getValidEyeColors } from '@/lib/genetics';
 import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function CustomFoxPage() {
@@ -14,6 +14,7 @@ export default function CustomFoxPage() {
     const [customGenotype, setCustomGenotype] = useState<Record<string, string[]>>({});
     const [customGender, setCustomGender] = useState<'Male' | 'Female'>('Male');
     const [foxName, setFoxName] = useState('Custom Designer Fox');
+    const [eyeColor, setEyeColor] = useState('Random');
     const [showSuccess, setShowSuccess] = useState(false);
 
     const currentFoxCount = Object.keys(foxes).length;
@@ -28,10 +29,12 @@ export default function CustomFoxPage() {
         return finalGenotype as Genotype;
     }, [customGenotype]);
 
-    const currentPhenotype = useMemo(() => getPhenotype(currentGenotype), [currentGenotype]);
+    const currentPhenotype = useMemo(() => getPhenotype(currentGenotype, 3, eyeColor === 'Random' ? undefined : eyeColor), [currentGenotype, eyeColor]);
+
+    const validEyeColors = useMemo(() => getValidEyeColors(currentGenotype), [currentGenotype]);
 
     const handleCustomBuy = () => {
-        buyCustomFoundationalFox(currentGenotype, customGender, foxName);
+        buyCustomFoundationalFox(currentGenotype, customGender, foxName, eyeColor === 'Random' ? undefined : eyeColor);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
     };
@@ -141,6 +144,44 @@ export default function CustomFoxPage() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* Eye Color Selection */}
+                    <div className="space-y-6 bg-muted/30 p-8 rounded-3xl border border-border">
+                        <div className="flex flex-col md:flex-row gap-8 items-start">
+                            <div className="w-full md:w-1/3 space-y-4">
+                                <h3 className="text-xl font-folksy text-foreground flex items-center gap-2" style={{ fontWeight: 400 }}>
+                                    <Eye size={20} className="text-primary" /> Eye Color Selection
+                                </h3>
+                                <div className="space-y-2">
+                                    <label htmlFor="eye-color" className="text-xs font-black uppercase text-muted-foreground tracking-widest">Eye Color Preference</label>
+                                    <select
+                                        id="eye-color"
+                                        value={eyeColor}
+                                        onChange={(e) => setEyeColor(e.target.value)}
+                                        className="w-full h-12 bg-card border-2 border-border rounded-xl font-bold px-4 focus:border-primary focus:outline-none transition-colors text-foreground"
+                                    >
+                                        <option value="Random">Random (Weighted)</option>
+                                        {validEyeColors.map(color => (
+                                            <option key={color} value={color}>{color}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="flex-1 space-y-2">
+                                <label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Available Options</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {validEyeColors.map(color => (
+                                        <Badge key={color} variant="secondary" className="bg-card text-muted-foreground border-border px-3 py-1 font-bold">
+                                            {color}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-muted-foreground italic font-medium mt-4">
+                                    Eye color options are determined by the fox's phenotype. Selecting "Random" will use the natural probability weights for this pelt type.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
