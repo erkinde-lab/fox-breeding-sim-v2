@@ -22,7 +22,7 @@ export function getInitialGenotype(): Genotype {
   return genotype;
 }
 
-export function getPhenotype(genotype: Genotype) {
+export function getPhenotype(genotype: Genotype, silverIntensity?: number, providedEyeColor?: string) {
   const A = genotype.A || ['A', 'A'];
   const B = genotype.B || ['B', 'B'];
   const C = genotype.C || ['C', 'C'];
@@ -69,9 +69,8 @@ export function getPhenotype(genotype: Genotype) {
   else if (aCount === 2 && bCount === 1) baseColorName = 'Alaskan Silver'; // aaBb
   else if (aCount === 2 && bCount === 2) baseColorName = 'Standard Silver'; // aabb
 
-  let finalName = '';
-  let eyeColor = 'Brown';
-  let healthIssues: string[] = [];
+  const isCrossBase = baseColorName === 'Gold Cross' || baseColorName === 'Silver Cross';
+  const isRedGoldBase = baseColorName === 'Red' || baseColorName === 'Gold';
 
   // Helper flags
   const isAmber = hasG && hasP;
@@ -81,109 +80,106 @@ export function getPhenotype(genotype: Genotype) {
   const isPearl = hasP && !hasSS && !hasG;
   const isMansfieldPearl = hasSS && !hasP && !hasG;
 
-  const isAA_Base = aCount === 2;
-  const isSilverExpressingBase = baseColorName === 'Alaskan Silver' || (baseColorName === 'Standard Silver' && isAA_Base);
-  const isCrossBase = baseColorName === 'Gold Cross' || baseColorName === 'Silver Cross';
-  const isRedGoldBase = baseColorName === 'Red' || baseColorName === 'Gold';
+  let underlyingName = "";
 
-  // Fire Expression check
-  // Fire is masked by Mansfield Pearl (ss)
-  const canExpressFire = isFifi && !hasSS && !isSapphire && !isBurgundy;
-
-  // Special Phenotypes (Priority Overrides)
-  if (isLethal) {
-    finalName = 'Stillborn';
-  } else if (hasC) {
-    finalName = 'Albino';
-    eyeColor = 'Red';
-  } else if (hasL) {
-    finalName = 'Leucistic';
-    eyeColor = 'Blue';
-  } else if (isPearlAmber) {
-    eyeColor = 'Green';
-  }
-
-  if (finalName) {
-    // Already set
-  } else if (canExpressFire) {
-    // Fire Factor nomenclature according to spreadsheet/memory
-    if (baseColorName === 'Red') {
-      if (hasP && hasG) finalName = 'Snow Glow';
-      else if (hasP) finalName = 'Fire and Ice';
-      else finalName = 'Wildfire';
-    } else if (baseColorName === 'Gold') {
-      if (hasP && hasG) finalName = 'Autumn Fire';
-      else if (hasP) finalName = 'Fire and Ice';
-      else finalName = 'Golden Sunrise';
-    } else if (isCrossBase) {
-      if (hasP && hasG) finalName = 'Autumn Fire';
-      else if (hasP) finalName = 'Moon Glow';
-      else finalName = 'Fire Cross';
-    } else if (baseColorName === 'Alaskan Silver') {
-      finalName = 'Colicott';
-    } else if (baseColorName === 'Standard Silver') {
-      if (aCount === 2) { // aabb
-        if (hasP) finalName = 'Fawn Glow';
-        else finalName = 'Colicott';
-      } else { // AAbb or Aabb
-        if (hasG) finalName = 'Cinnamon Fire';
-      }
+  if (isFifi) {
+    // Fire Expression
+    if (aCount === 2) { // Alaskan base
+      if (hasG || hasP) underlyingName = "Snow Glow";
+      else underlyingName = "Colicott";
+    } else if (aCount === 1) { // Cross base
+      if (hasP) underlyingName = "Moon Glow";
+      else underlyingName = "Fire Cross";
+    } else if (bCount === 2) { // Standard Silver base
+      if (hasG) underlyingName = "Cinnamon Fire";
+      else if (hasP) underlyingName = "Fawn Glow";
+      else underlyingName = "Colicott";
+    } else { // Red/Gold base
+      if (hasG && hasP) underlyingName = "Autumn Fire";
+      else if (hasP) underlyingName = "Fire and Ice";
+      else if (hasG) underlyingName = "Snow Glow";
+      else if (baseColorName === "Gold") underlyingName = "Golden Sunrise";
+      else underlyingName = "Wildfire";
     }
   }
 
-  // Handle named recessives if no special name assigned
-  if (!finalName) {
+  if (!underlyingName) {
     if (isPearlAmber) {
-      finalName = 'Pearl Amber';
-      eyeColor = 'Green';
+      if (baseColorName === "Red") underlyingName = "Pearl Amber Red";
+      else if (baseColorName === "Gold" || baseColorName === "Gold Cross") underlyingName = "Pearl Amber Gold";
+      else underlyingName = "Pearl Amber";
     } else if (isAmber) {
-      finalName = 'Amber';
+      underlyingName = "Amber";
     } else if (isSapphire) {
-      finalName = 'Sapphire';
+      underlyingName = "Sapphire";
     } else if (isBurgundy) {
-      finalName = 'Burgundy';
+      underlyingName = "Burgundy";
     } else if (isPearl) {
-      finalName = 'Pearl';
+      underlyingName = "Pearl";
     } else if (isMansfieldPearl) {
-      finalName = 'Mansfield Pearl';
+      underlyingName = "Mansfield Pearl";
     }
 
-    // Masking logic: Burgundy, Pearl, Mansfield Pearl are masked on Red base
-    if (baseColorName === 'Red' && (finalName === 'Burgundy' || finalName === 'Pearl' || finalName === 'Mansfield Pearl')) {
-      finalName = ''; // Masked, fall back to base name
-    }
-
-    if (finalName && isRedGoldBase && !['Pearl Amber', 'Sapphire', 'Amber'].includes(finalName)) {
-      finalName = `${finalName} ${baseColorName}`;
+    // Suffix/Masking logic
+    if (underlyingName) {
+        if (baseColorName === "Red" && (underlyingName === "Burgundy" || underlyingName === "Pearl" || underlyingName === "Mansfield Pearl")) {
+          underlyingName = ""; // Masked
+        } else if (baseColorName === "Alaskan Silver" && hasG) {
+          underlyingName = "Champagne";
+        } else if (baseColorName === "Silver Cross" && hasG) {
+          underlyingName = "Pink Cross";
+        } else if (isRedGoldBase && !underlyingName.startsWith("Pearl Amber") && underlyingName !== "Sapphire" && underlyingName !== "Amber") {
+          underlyingName = `${underlyingName} ${baseColorName}`;
+        }
     }
   }
 
-  // If still no special name, use base color
-  if (!finalName) {
+  if (!underlyingName) {
     let baseToUse = baseColorName;
     if (baseToUse === 'Alaskan Silver' || baseToUse === 'Standard Silver') {
-      baseToUse = 'Silver';
+      baseToUse = silverIntensity === 1 ? 'Black' : 'Silver';
     }
-    finalName = baseToUse;
-  } else if (finalName !== 'Stillborn') {
-    // If a special name was chosen, check if it needs to be combined with "Cross"
-    const isMasking = finalName === 'Albino' || finalName === 'Leucistic';
-    if (isCrossBase && !isMasking && !finalName.includes('Cross') && !finalName.includes('Glow') && !finalName.includes('Fire')) {
-      finalName = `${finalName} Cross`;
-    }
+    underlyingName = baseToUse;
+  } else if (isCrossBase && !underlyingName.includes('Cross') && !underlyingName.includes('Glow') && !underlyingName.includes('Fire') && !underlyingName.startsWith('Pearl Amber')) {
+    underlyingName = `${underlyingName} Cross`;
   }
 
-  // Pattern Logic: Display multiple phenotypes if present
+  let finalName = "";
+  if (isLethal) finalName = 'Stillborn';
+  else if (hasC) finalName = 'Albino';
+  else if (hasL) finalName = 'Leucistic';
+  else finalName = underlyingName;
+
+  // Pattern Logic
   const patterns: string[] = [];
   if (W.includes('WM')) patterns.push('Marble');
   if (W.includes('Wp')) patterns.push('Platinum');
   if (W.includes('WG')) patterns.push('Georgian');
   if (W.includes('W')) patterns.push('White Mark');
-
   const patternName = patterns.length > 0 ? patterns.join(' ') : 'None';
 
   const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic' || finalName === 'Stillborn';
   let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
+
+  // Eye Color Logic
+  let eyeColor = providedEyeColor;
+  if (!eyeColor) {
+    let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
+    if (eyePoolName.startsWith("Pearl Amber")) eyePoolName = "Pearl Amber";
+    eyeColor = getRandomEyeColor(eyePoolName);
+  }
+
+  // W locus logic
+  const whiteAllelesCount = W.filter(a => a !== 'w').length;
+  if (whiteAllelesCount > 0 && !providedEyeColor && finalName !== "Albino") {
+    const chance = whiteAllelesCount >= 2 ? 0.25 : 0.10;
+    const rand = Math.random();
+    if (rand < chance) {
+      eyeColor = "Blue";
+    } else if (rand < chance * 2) {
+      eyeColor = `${eyeColor} - Blue Heterochromia`;
+    }
+  }
 
   return {
     name: displayName,
@@ -191,9 +187,9 @@ export function getPhenotype(genotype: Genotype) {
     pattern: patternName,
     eyeColor: eyeColor,
     geneticName: displayName,
-    description: `A beautiful ${displayName} with ${eyeColor.toLowerCase()} eyes.`,
+    description: `A beautiful ${displayName} with ${eyeColor.toLowerCase().replace(" - blue heterochromia", " and blue heterochromic")} eyes.`,
     isLethal,
-    healthIssues,
+    healthIssues: [],
   };
 }
 
@@ -359,8 +355,9 @@ export function calculateCOI(foxId: string, foxes: Record<string, { parents: [st
 
 export function createFox(data: Partial<Fox>): Fox {
   const genotype = data.genotype || getInitialGenotype();
-  const phenotype = getPhenotype(genotype);
-  const name = data.name || (phenotype.name !== 'Unknown Fox' ? phenotype.name : 'Unnamed Fox');
+  const silverIntensity = data.silverIntensity || Math.floor(Math.random() * 5) + 1;
+  const phenotype = getPhenotype(genotype, silverIntensity, data.eyeColor);
+  const name = data.name || (phenotype.name !== "Unknown Fox" ? phenotype.name : "Unnamed Fox");
 
   return {
     id: data.id || Math.random().toString(36).substring(2, 9),
@@ -370,14 +367,14 @@ export function createFox(data: Partial<Fox>): Fox {
     baseColor: phenotype.baseColor,
     pattern: phenotype.pattern,
     eyeColor: phenotype.eyeColor,
-    gender: data.gender || (Math.random() > 0.5 ? 'Male' : 'Female'),
+    gender: data.gender || (Math.random() > 0.5 ? "Male" : "Female"),
     age: data.age || 2,
     stats: data.stats || generateStats(),
     genotypeRevealed: data.genotypeRevealed || false,
     pedigreeAnalyzed: data.pedigreeAnalyzed || false,
     isRetired: data.isRetired || false,
     hasBeenRenamed: data.hasBeenRenamed || false,
-    silverIntensity: data.silverIntensity || Math.floor(Math.random() * 5) + 1,
+    silverIntensity: silverIntensity,
     healthIssues: phenotype.healthIssues,
     pointsYear: 0,
     pointsLifetime: 0,
@@ -406,19 +403,17 @@ export function createFoundationalFox(random: () => number = Math.random): Fox {
 
   // Possible rare recessive
   const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'W', 'L'];
-  if (Math.random() > 0.6) {
-    const gene = rareGenes[Math.floor(Math.random() * rareGenes.length)];
+  if (random() > 0.6) {
+    const gene = rareGenes[Math.floor(random() * rareGenes.length)];
     const locus = LOCI[gene];
     const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
     if (alleles.length > 0) {
-      const rare = alleles[Math.floor(Math.random() * alleles.length)];
+      const rare = alleles[Math.floor(random() * alleles.length)];
       genotype[gene] = [locus.alleles[0], rare];
     }
   }
 
-  const phenotype = getPhenotype(genotype);
   return createFox({
-    name: phenotype.name,
     genotype,
   });
 }
@@ -440,4 +435,87 @@ export function isHungry(fox: Fox): boolean {
   if (!fox.lastFed) return true;
   const oneWeek = 7 * 24 * 60 * 60 * 1000;
   return (Date.now() - fox.lastFed) > oneWeek;
+}
+
+export const EYE_COLOR_WEIGHTS: Record<string, number> = {
+  'Amber': 35,
+  'Light Brown': 35,
+  'Brown': 10,
+  'Green': 10,
+  'Grey': 10,
+  'Blue': 5,
+};
+
+export const PHENOTYPE_EYE_COLORS: Record<string, string[]> = {
+  'Red': ['Brown', 'Light Brown', 'Amber'],
+  'Gold': ['Brown', 'Light Brown', 'Amber'],
+  'Burgundy Gold': ['Amber'],
+  'Pearl Gold': ['Light Brown', 'Amber'],
+  'Amber Gold': ['Amber'],
+  'Albino': ['Red'],
+  'Silver': ['Brown'],
+  'Alaskan Silver': ['Brown', 'Light Brown', 'Amber'],
+  'Black': ['Brown', 'Light Brown', 'Amber'],
+  'Colicott': ['Blue'],
+  'Burgundy': ['Light Brown', 'Amber', 'Green'],
+  'Pearl': ['Light Brown', 'Amber', 'Green', 'Grey'],
+  'Mansfield Pearl': ['Light Brown', 'Amber', 'Green', 'Grey'],
+  'Amber': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Champagne': ['Blue'],
+  'Fawn Glow': ['Blue'],
+  'Sapphire': ['Grey', 'Green', 'Blue'],
+  'Pearl Amber': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Cross': ['Brown', 'Light Brown', 'Amber'],
+  'Silver Cross': ['Brown', 'Light Brown', 'Amber'],
+  'Pearl Cross': ['Light Brown', 'Amber'],
+  'Burgundy Cross': ['Amber'],
+  'Amber Cross': ['Amber', 'Grey', 'Green'],
+  'Pink Cross': ['Blue'],
+  'Wildfire': ['Brown', 'Light Brown', 'Amber'],
+  'Golden Sunrise': ['Brown', 'Light Brown', 'Amber'],
+  'Fire Cross': ['Brown', 'Light Brown', 'Amber', 'Green'],
+  'Cinnamon Fire': ['Amber', 'Green'],
+  'Snow Glow': ['Amber', 'Brown', 'Light Brown', 'Green', 'Blue'],
+  'Fire and Ice': ['Brown', 'Light Brown', 'Amber', 'Grey'],
+  'Moon Glow': ['Brown', 'Light Brown', 'Amber', 'Grey'],
+  'Autumn Fire': ['Amber', 'Grey', 'Blue'],
+};
+
+export function getRandomEyeColor(phenotypeName: string): string {
+  const possibleColors = PHENOTYPE_EYE_COLORS[phenotypeName] || ['Brown'];
+  if (possibleColors.length === 1) return possibleColors[0];
+
+  const weightedColors = possibleColors.map(color => ({
+    color,
+    weight: EYE_COLOR_WEIGHTS[color] || 10
+  }));
+
+  const totalWeight = weightedColors.reduce((sum, item) => sum + item.weight, 0);
+  let random = Math.random() * totalWeight;
+
+  for (const item of weightedColors) {
+    if (random < item.weight) return item.color;
+    random -= item.weight;
+  }
+
+  return possibleColors[0];
+}
+
+export function getValidEyeColors(genotype: Genotype, silverIntensity: number = 3): string[] {
+  const phenotype = getPhenotype(genotype, silverIntensity);
+  let eyePoolName = phenotype.baseColor === "Albino" ? "Albino" : phenotype.baseColor;
+  if (eyePoolName.startsWith("Pearl Amber")) eyePoolName = "Pearl Amber";
+
+  const colors = [...(PHENOTYPE_EYE_COLORS[eyePoolName] || ['Brown'])];
+
+  // Add White Mark options if applicable
+  const W = genotype.W || ['w', 'w'];
+  if (W.some(a => a !== 'w') && phenotype.baseColor !== "Albino") {
+    if (!colors.includes("Blue")) colors.push("Blue");
+    if (!colors.includes("Blue Heterochromia")) {
+        colors.push("Blue Heterochromia");
+    }
+  }
+
+  return colors;
 }
