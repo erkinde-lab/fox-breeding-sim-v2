@@ -422,10 +422,15 @@ export const useGameStore = create<GameState>()(
         const state = get();
         if (state.lastAdoptionReset !== now) {
           // Deterministic generation based on date string
-          const seed = now.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          let seedVal = now.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+          const seededRandom = () => {
+              const x = Math.sin(seedVal++) * 10000;
+              return x - Math.floor(x);
+          };
+
           const newFoxes = [];
           for (let i = 0; i < 6; i++) {
-              newFoxes.push(createFoundationalFox());
+              newFoxes.push(createFoundationalFox(seededRandom));
           }
           set({
             foundationFoxes: newFoxes,

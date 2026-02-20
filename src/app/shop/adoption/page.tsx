@@ -64,11 +64,16 @@ export default function AdoptionPage() {
                                 <Coins size={16} /> 1,000
                             </span>
                         </div>
-                        <div className="grid grid-cols-1 gap-2">
+                        <div className="grid grid-cols-2 gap-2">
+                             <Link href={`/fox/${fox.id}`} className="flex-1">
+                                <Button variant="outline" className="w-full h-12 font-bold gap-2">
+                                    <ExternalLink size={16} /> View Profile
+                                </Button>
+                             </Link>
                              <Button
                                 onClick={() => buyFoundationalFoxById(index)}
                                 disabled={isSold || gold < 1000 || currentFoxCount >= kennelCapacity}
-                                className="bg-fire-600 hover:bg-fire-500 text-white border-none font-bold h-12"
+                                className="bg-fire-600 hover:bg-fire-500 text-white border-none font-bold flex-1 h-12"
                             >
                                 {isSold ? 'Sold Out' : 'Adopt Now'}
                             </Button>

@@ -18,7 +18,7 @@ export default function FoxProfilePage() {
   const { id } = useParams();
   const router = useRouter();
   const { 
-    foxes, applyItem, inventory, renameFox, sellFox, 
+    foxes, foundationFoxes, applyItem, inventory, renameFox, sellFox,
     isAdmin, toggleStudStatus, hiredGroomer, 
     hiredVeterinarian, hiredTrainer, hiredNutritionist,
     setFoxPreferredFeed
@@ -26,8 +26,9 @@ export default function FoxProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
+  const isFoundational = foundationFoxes.some(f => f.id === id);
 
-  const fox = foxes[id as string];
+  const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
 
   useEffect(() => {
     if (fox) setNewName(fox.name);
@@ -70,10 +71,12 @@ export default function FoxProfilePage() {
           <ArrowLeft size={18} /> Back
         </Button>
         <div className="flex gap-2">
+            {!isFoundational && (<>
             <Button onClick={() => toggleStudStatus(fox.id, 500)} variant={fox.isAtStud ? "default" : "outline"} className={fox.isAtStud ? "bg-fire-600" : ""}>
                 {fox.isAtStud ? "Remove from Stud" : "List for Stud (500g)"}
             </Button>
             <Button onClick={() => { if(confirm("Are you sure?")) { sellFox(fox.id); router.push('/kennel'); } }} variant="destructive">Retire/Sell</Button>
+            </ >)}
         </div>
       </div>
 
@@ -109,7 +112,7 @@ export default function FoxProfilePage() {
           ) : (
             <div className="flex items-center gap-3">
               <h2 className="text-4xl font-black text-earth-900 tracking-tight">{fox.name}</h2>
-              {!fox.hasBeenRenamed && (
+              {!isFoundational && !fox.hasBeenRenamed && (
                 <button
                   onClick={() => setIsEditing(true)}
                   className="p-2 text-earth-300 hover:text-fire-600 transition-colors"
@@ -129,6 +132,7 @@ export default function FoxProfilePage() {
           {hungry && <Badge variant="destructive" className="mt-1 font-bold animate-pulse">Hungry - Stat Penalty</Badge>}
 
           <div className="flex flex-wrap gap-2 mt-4">
+          {!isFoundational && (<>
           {!fox.genotypeRevealed && (
             <Button onClick={handleReveal} variant="outline" className="gap-2 font-bold h-10 border-indigo-100 hover:bg-indigo-50 text-indigo-700">
               <Microscope size={16} /> Reveal Genotype
@@ -146,6 +150,7 @@ export default function FoxProfilePage() {
               <Heart size={16} /> Analyze Pedigree
             </Button>
           )}
+          </>)}
           {fox.isRetired && <Badge className="bg-earth-500 h-10 px-4 font-bold">Retired</Badge>}
         </div>
         </div>

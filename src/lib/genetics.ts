@@ -88,7 +88,7 @@ export function getPhenotype(genotype: Genotype) {
 
   // Fire Expression check
   // Fire is masked by Mansfield Pearl (ss)
-  const canExpressFire = isFifi && !hasSS;
+  const canExpressFire = isFifi && !hasSS && !isSapphire && !isBurgundy;
 
   // Special Phenotypes (Priority Overrides)
   if (isLethal) {
@@ -392,7 +392,7 @@ export function createFox(data: Partial<Fox>): Fox {
   };
 }
 
-export function createFoundationalFox(): Fox {
+export function createFoundationalFox(random: () => number = Math.random): Fox {
   const baseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'], B: ['B', 'B'] }, // Red
     { A: ['a', 'a'], B: ['B', 'B'] }, // Alaskan Silver
@@ -400,7 +400,7 @@ export function createFoundationalFox(): Fox {
     { A: ['A', 'a'], B: ['B', 'b'] }, // Silver Cross
   ];
 
-  const base = baseGenotypes[Math.floor(Math.random() * baseGenotypes.length)];
+  const base = baseGenotypes[Math.floor(random() * baseGenotypes.length)];
   const genotype = getInitialGenotype();
   Object.assign(genotype, base);
   
