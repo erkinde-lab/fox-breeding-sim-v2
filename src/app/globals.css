@@ -28,6 +28,9 @@
 
   --font-folksy: var(--font-alice), Georgia, serif;
   --font-rounded: var(--font-quicksand), sans-serif;
+
+  --shadow-primary-color: var(--shadow-primary);
+  --shadow-secondary-color: var(--shadow-secondary);
 }
 
 :root {
@@ -53,6 +56,8 @@
   --banner-overlay: rgba(253, 248, 243, 0.9);
   --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
   --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
+  --shadow-primary: rgba(230, 165, 126, 0.35);
+  --shadow-secondary: rgba(143, 160, 142, 0.25);
 }
 
 .dark {
@@ -76,6 +81,28 @@
   --banner-overlay: rgba(18, 22, 18, 0.85);
   --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  /* Use near-opaque black so badge shadows don't glow in dark mode */
+  --shadow-primary: rgba(0, 0, 0, 0.4);
+  --shadow-secondary: rgba(0, 0, 0, 0.3);
+}
+
+/* Override: In dark mode, Tailwind shadow-primary/* glows because --color-primary is warm orange.
+   We intercept by rewriting the composed shadow for elements that would receive a primary-colored shadow.
+   This targets the Tailwind v4 shadow composition: --tw-shadow is derived from --tw-shadow-color.
+   By setting --tw-shadow-color to a dark neutral, the glow becomes a proper shadow. */
+.dark [class*="shadow-primary"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.5);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.dark [class*="shadow-secondary"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.4);
+  --tw-shadow: var(--tw-shadow-colored);
+}
+
+.dark [class*="shadow-destructive"] {
+  --tw-shadow-color: rgba(0, 0, 0, 0.5);
+  --tw-shadow: var(--tw-shadow-colored);
 }
 
 body {
@@ -140,6 +167,24 @@ h6 {
 
 .font-rounded {
   font-family: var(--font-rounded);
+}
+
+/* Theme-safe badge/button shadow utilities */
+/* Replaces shadow-primary/* which glows orange in dark mode */
+.shadow-badge-primary {
+  box-shadow: 0 4px 12px -2px var(--shadow-primary);
+}
+
+.shadow-badge-secondary {
+  box-shadow: 0 4px 12px -2px var(--shadow-secondary);
+}
+
+.shadow-btn-primary {
+  box-shadow: 0 8px 20px -6px var(--shadow-primary);
+}
+
+.shadow-btn-secondary {
+  box-shadow: 0 8px 20px -6px var(--shadow-secondary);
 }
 
 /* Custom Scrollbar Styles */
