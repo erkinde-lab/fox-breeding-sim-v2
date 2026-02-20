@@ -137,6 +137,7 @@ export default function HelpPage() {
                   <li>Hire a <strong>Groomer</strong> for a +5 Coat Quality bonus to all foxes.</li>
                   <li>Hire a <strong>Veterinarian</strong> for a +1 bonus to all physical traits for kits.</li>
                   <li>Breed for high base stats — stats are heritable and compound across generations.</li>
+                  <li>Feed your foxes <strong>premium feeds</strong> from the shop — certain feeds provide temporary or lasting stat bonuses that can give your foxes an edge in the ring.</li>
                   <li>Certain colors and patterns may be preferred in specialty shows (check the Shows page for active class details).</li>
                 </ul>
               </InfoTile>
