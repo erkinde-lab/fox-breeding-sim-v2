@@ -6,11 +6,7 @@ import { useGameStore } from '@/lib/store';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Trophy, Heart, Activity, Info, Calendar,
-  Dna, ArrowLeft, Shield, ShoppingBag,
-  Edit2, Save, X, Microscope, Utensils
-} from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Edit2, Save, X, Microscope, Utensils, Activity, Calendar, Check, Shield, Heart, Dna, Trophy, Info, ShoppingBag } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Fox, calculateCOI, getActiveBoosts, isHungry } from '@/lib/genetics';
 
@@ -58,6 +54,25 @@ export default function FoxProfilePage() {
   const handleReveal = () => applyItem('genetic-test', fox.id);
   const handleAnalyze = () => applyItem('pedigree-analysis', fox.id);
 
+  // Navigation functions for kennel browsing
+  const goToPreviousFox = () => {
+    const foxIds = Object.keys(foxes).filter(id => foxes[id].gender === fox.gender);
+    const currentIndex = foxIds.indexOf(fox.id);
+    if (currentIndex > 0) {
+      const previousFoxId = foxIds[currentIndex - 1];
+      router.push(`/fox/${previousFoxId}`);
+    }
+  };
+
+  const goToNextFox = () => {
+    const foxIds = Object.keys(foxes).filter(id => foxes[id].gender === fox.gender);
+    const currentIndex = foxIds.indexOf(fox.id);
+    if (currentIndex < foxIds.length - 1) {
+      const nextFoxId = foxIds[currentIndex + 1];
+      router.push(`/fox/${nextFoxId}`);
+    }
+  };
+
   const getStat = (key: keyof typeof fox.stats, bonus = 0) => {
     const base = fox.stats[key];
     const boost = activeBoosts[key] || 0;
@@ -67,32 +82,36 @@ export default function FoxProfilePage() {
   return (
     <div className="space-y-8 pb-12">
       <div className="flex items-center justify-between">
-        <Button onClick={() => router.back()} variant="ghost" className="gap-2 text-earth-500 hover:text-earth-900">
+        <Button onClick={() => router.back()} variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
           <ArrowLeft size={18} /> Back
         </Button>
         <div className="flex gap-2">
-            {!isFoundational && (<>
+          {/* Navigation arrows for kennel browsing */}
+          <Button onClick={goToPreviousFox} variant="outline" disabled={Object.keys(foxes).filter(id => foxes[id].gender === fox.gender).length <= 1} className="gap-2">
+            <ChevronLeft size={16} /> Previous
+          </Button>
+          <Button onClick={goToNextFox} variant="outline" disabled={Object.keys(foxes).filter(id => foxes[id].gender === fox.gender).length <= 1} className="gap-2">
+            Next <ChevronRight size={16} />
+          </Button>
+          {!isFoundational && (<>
             <Button onClick={() => toggleStudStatus(fox.id, 500)} variant={fox.isAtStud ? "default" : "outline"} className={fox.isAtStud ? "bg-fire-600" : ""}>
                 {fox.isAtStud ? "Remove from Stud" : "List for Stud (500g)"}
             </Button>
             <Button onClick={() => { if(confirm("Are you sure?")) { sellFox(fox.id); router.push('/kennel'); } }} variant="destructive">Retire/Sell</Button>
-            </ >)}
+          </ >)}
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8 items-start">
         <div className="w-full lg:w-1/3 space-y-6">
-          <div className="folk-card overflow-hidden bg-white p-8 border-2 border-earth-100 rounded-[32px] flex flex-col items-center justify-center min-h-[350px] relative shadow-xl">
-             <div className="absolute top-4 left-4 flex gap-1">
+          <div className="folk-card overflow-hidden bg-white p-4 border-2 border-earth-100 rounded-[32px] flex flex-col items-center justify-center relative shadow-xl" style={{width: '420px', height: '420px', minWidth: '420px', maxWidth: '420px'}}>
+             <div className="absolute top-2 left-2">
                 <Badge variant="secondary" className="bg-earth-100 text-earth-700 border-none font-bold uppercase tracking-tighter text-[10px]">{fox.gender}</Badge>
-                <Badge variant="outline" className="text-earth-400 border-earth-200 text-[10px] font-bold">AGE {fox.age}</Badge>
              </div>
              <FoxIllustration phenotype={fox.phenotype} baseColor={fox.baseColor} pattern={fox.pattern} eyeColor={fox.eyeColor} size={24} />
-             <div className="mt-8 text-center">
-                <h1 className="text-3xl font-black text-earth-900 tracking-tight flex items-center gap-2 justify-center italic uppercase underline decoration-fire-500 decoration-4 underline-offset-8">
-                    {fox.name}
-                </h1>
-                <p className="mt-4 text-earth-500 font-medium tracking-wide uppercase text-xs">{fox.phenotype} Fox</p>
+             <div className="mt-2 text-center">
+                <h1 className="text-2xl font-black text-earth-900 tracking-tight flex items-center gap-2 justify-center italic uppercase">{fox.name}</h1>
+                <p className="mt-1 text-earth-500 font-medium tracking-wide uppercase text-xs">{fox.age} year old {fox.phenotype} fox</p>
              </div>
           </div>
         </div>
@@ -141,12 +160,12 @@ export default function FoxProfilePage() {
           <Button 
             onClick={() => applyItem('supplies', fox.id)}
             variant="outline" 
-            className="gap-2 border-orange-200 hover:bg-orange-50 text-orange-700 font-bold h-10"
+            className="gap-2 font-bold h-10"
           >
             <ShoppingBag size={16} /> Feed Fox
           </Button>
           {!fox.pedigreeAnalyzed && (
-            <Button onClick={handleAnalyze} variant="outline" className="gap-2 border-pink-200 hover:bg-pink-50 text-pink-700 font-bold h-10">
+            <Button onClick={handleAnalyze} variant="outline" className="gap-2 font-bold h-10">
               <Heart size={16} /> Analyze Pedigree
             </Button>
           )}
@@ -187,34 +206,34 @@ export default function FoxProfilePage() {
         {/* Details */}
         <Card className="md:col-span-2 folk-card border-2">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-black text-earth-900 tracking-tight italic uppercase">
-              <Info size={18} className="text-indigo-600" /> Genetics & History
+            <CardTitle className="flex items-center gap-2 font-black text-foreground tracking-tight italic uppercase">
+              <Info size={18} className="text-primary" /> Genetics & History
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h4 className="text-xs font-black text-earth-400 uppercase mb-4 tracking-widest flex items-center gap-2">
+                <h4 className="text-xs font-black text-muted-foreground uppercase mb-4 tracking-widest flex items-center gap-2">
                     <Dna size={14} /> Genotype
                 </h4>
                 {fox.genotypeRevealed ? (
                    <div className="grid grid-cols-2 gap-3">
                       {Object.entries(fox.genotype).map(([locus, alleles]) => (
-                        <div key={locus} className="text-xs font-bold bg-earth-50 p-3 rounded-xl flex justify-between border border-earth-100">
-                          <span className="text-earth-400 font-mono tracking-tighter">{locus}:</span>
-                          <span className="font-mono text-fire-700">{alleles.join('')}</span>
+                        <div key={locus} className="text-xs font-bold bg-muted p-3 rounded-xl flex justify-between border">
+                          <span className="text-muted-foreground font-mono tracking-tighter">{locus}:</span>
+                          <span className="font-mono text-foreground">{alleles.join('')}</span>
                         </div>
                       ))}
                    </div>
                 ) : (
-                  <div className="p-8 bg-earth-50 border-2 border-dashed border-earth-200 rounded-2xl text-earth-400 text-sm text-center font-bold">
+                  <div className="p-8 bg-muted border-2 border-dashed border rounded-2xl text-muted-foreground text-sm text-center font-bold">
                     Genotype is hidden. <br/>Use a Genetic Test to reveal.
                   </div>
                 )}
               </div>
               <div className="space-y-6">
                 <div>
-                    <h4 className="text-xs font-black text-earth-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-black text-muted-foreground uppercase mb-3 tracking-widest flex items-center gap-2">
                         <Activity size={14} /> Health Status
                     </h4>
                     {fox.healthIssues.length > 0 ? (
@@ -226,28 +245,28 @@ export default function FoxProfilePage() {
                         ))}
                     </div>
                     ) : (
-                    <p className="text-sm text-green-600 font-bold bg-green-50 p-3 rounded-xl border border-green-100 flex items-center gap-2">
+                    <p className="text-sm font-bold bg-primary/10 text-primary p-3 rounded-xl border border-primary/20 flex items-center gap-2">
                         <Check size={16} /> Perfect Health
                     </p>
                     )}
                 </div>
 
                 <div>
-                    <h4 className="text-xs font-black text-earth-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                    <h4 className="text-xs font-black text-muted-foreground uppercase mb-3 tracking-widest flex items-center gap-2">
                         <Calendar size={14} /> Life History
                     </h4>
-                    <div className="space-y-2 text-sm font-bold bg-earth-50 p-4 rounded-xl border border-earth-100">
+                    <div className="space-y-2 text-sm font-bold bg-muted p-4 rounded-xl border">
                         <p className="flex justify-between">
-                            <span className="text-earth-400">Born Year:</span>
-                            <span className="text-earth-700">{fox.birthYear}</span>
+                            <span className="text-muted-foreground">Born Year:</span>
+                            <span className="text-foreground">{fox.birthYear}</span>
                         </p>
                         <p className="flex justify-between">
-                            <span className="text-earth-400">Lifetime Points:</span>
-                            <span className="text-earth-700">{fox.pointsLifetime.toLocaleString()}</span>
+                            <span className="text-muted-foreground">Lifetime Points:</span>
+                            <span className="text-foreground">{fox.pointsLifetime.toLocaleString()}</span>
                         </p>
-                        <p className="flex justify-between border-t border-earth-100 pt-2 mt-2">
-                            <span className="text-earth-400 uppercase tracking-tighter text-[10px]">Inbreeding (COI):</span>
-                            <span className="text-earth-900 font-black">
+                        <p className="flex justify-between border-t border-border pt-2 mt-2">
+                            <span className="text-muted-foreground uppercase tracking-tighter text-[10px]">Inbreeding (COI):</span>
+                            <span className="text-foreground font-black">
                             {fox.pedigreeAnalyzed ? `${calculateCOI(fox.id, foxes)}%` : '???'}
                             </span>
                         </p>
@@ -370,19 +389,28 @@ export default function FoxProfilePage() {
 }
 
 function StatBar({ label, value, bonus = 0 }: { label: string; value: number; bonus?: number }) {
+  // Scale stat values to percentage (max value is 100 for most stats, 75 for fertility)
+  const maxValue = label === 'Fertility' ? 75 : 100;
+  const percentage = Math.min(100, (value / maxValue) * 100);
+  
   return (
     <div className="space-y-1">
-      <div className="flex justify-between text-[10px] font-black uppercase tracking-wider text-earth-400">
+      <div className="flex justify-between text-[10px] font-black uppercase tracking-wider text-muted-foreground">
         <span>{label}</span>
-        <span className="flex items-center gap-1 font-mono text-xs text-earth-900">
-            {bonus > 0 && <span className="text-green-600 font-bold">+{bonus}</span>}
+        <span className="flex items-center gap-1 font-mono text-xs text-foreground">
+            {bonus > 0 && <span className="text-green-600 font-bold dark:text-green-400">+{bonus}</span>}
             {value}
         </span>
       </div>
-      <div className="h-1.5 bg-earth-100 rounded-full overflow-hidden shadow-inner">
+      <div className="h-2 bg-muted rounded-full overflow-hidden shadow-inner relative">
         <div 
-          className="h-full bg-fire-600 transition-all shadow-[0_0_5px_rgba(234,88,12,0.4)]"
-          style={{ width: `${value}%` }} 
+          className="h-full bg-primary transition-all shadow-[0_0_5px_rgba(var(--primary),0.4)]"
+          style={{ width: `${percentage}%` }} 
+        />
+        {/* Current stat indicator - theme-aware */}
+        <div 
+          className="absolute top-0 h-full w-1 bg-background border-2 border-muted-foreground shadow-lg"
+          style={{ left: `${percentage}%` }}
         />
       </div>
     </div>
@@ -422,7 +450,7 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
 function cn(...inputs: (string | boolean | undefined | null)[]) {
   return inputs.filter(Boolean).join(' ');
 }
-function Check({ size }: { size: number }) {
+function CheckIcon({ size }: { size: number }) {
   return (
     <svg
       width={size}
@@ -430,11 +458,12 @@ function Check({ size }: { size: number }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="3"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <polyline points="20 6 9 17 4 12" />
+      <path d="M20 6L9 17l-5-5" />
+      <path d="m9 14 2 2a4 4 0 0 1 4v2a4 4 0 0 1-4h2a4 4 0 0 1 4z" />
     </svg>
   );
 }

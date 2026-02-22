@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Coins, ShoppingBag, Info, ExternalLink } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import Link from 'next/link';
@@ -24,7 +25,17 @@ export default function AdoptionPage() {
     <div className="space-y-8">
       <div>
         <h1 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Foundation Fox Adoption</h1>
-        <p className="text-muted-foreground mt-2">Adopt high-quality foxes with clean pedigrees. New foxes available daily.</p>
+        <p className="text-muted-foreground mt-2">Adopt high-quality foxes with clean pedigrees. New foxes available hourly with guaranteed variety.</p>
+        <div className="mt-4 p-4 bg-muted/50 rounded-lg border-l-4 border-primary/30">
+          <h4 className="font-black text-sm mb-2">Adoption Schedule & Genetics</h4>
+          <ul className="text-xs text-muted-foreground space-y-1">
+            <li>• <strong>Hourly Refresh:</strong> New collection of 6 foxes every hour</li>
+            <li>• <strong>Guaranteed Variety:</strong> At least one red base and one cross fox per hour</li>
+            <li>• <strong>Black Fox Limit:</strong> Maximum one black fox per hour (high rarity)</li>
+            <li>• <strong>Rare Gene Chance:</strong> Each fox has a 25% chance of carrying a heterozygous rare gene (Gg, Cc, Pp, Ss, Fifi, Ll)</li>
+            <li>• <strong>Foundation Quality:</strong> All foxes have clean pedigrees for breeding programs</li>
+          </ul>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -35,7 +46,7 @@ export default function AdoptionPage() {
               "folk-card overflow-hidden flex flex-col border-border bg-card",
               isSold ? "opacity-60 grayscale" : "hover:shadow-md transition-shadow"
             )}>
-              <div className="h-48 flex items-center justify-center relative bg-gradient-to-b from-muted to-card">
+              <div className="h-80 flex items-center justify-center relative bg-gradient-to-b from-muted to-card">
                 <FoxIllustration
                   phenotype={fox.phenotype}
                   baseColor={fox.baseColor}
@@ -53,6 +64,9 @@ export default function AdoptionPage() {
                 <div className="mb-4">
                   <div className="flex justify-between items-start">
                     <h3 className="text-xl font-bold text-foreground">{fox.phenotype}</h3>
+                    <Badge variant="outline" className="text-xs font-black uppercase tracking-wider">
+                      {fox.gender}
+                    </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground font-medium">Foundational Pedigree</p>
                 </div>

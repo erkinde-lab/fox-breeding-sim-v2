@@ -44,8 +44,22 @@ export function FoxIllustration({ phenotype, baseColor, pattern, eyeColor, size 
                         eyeColor?.toLowerCase() === 'green' ? 'text-green-500' : 'text-amber-700';
 
   return (
-    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 ${colors.border} ${colors.bg} h-full w-full relative transition-all duration-500 overflow-hidden`}>
-      <PawPrint style={{ width: size * 4, height: size * 4 }} className={`${colors.icon} opacity-50`} />
+    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 ${colors.border} ${colors.bg} relative transition-all duration-500 overflow-hidden`} 
+         style={{ width: size * 16, height: size * 16 }}>
+      <img 
+        src="/images/fox-placeholder.png" 
+        alt="Fox" 
+        className="w-full h-full object-contain rounded-xl"
+        onError={(e) => {
+          // Fallback to PawPrint if image fails to load
+          const target = e.target as HTMLImageElement;
+          target.style.display = 'none';
+          const fallback = document.createElement('div');
+          fallback.innerHTML = '<svg style="width: ' + (size * 8) + 'px; height: ' + (size * 8) + 'px" class="' + colors.icon + ' opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zm0 0c0 1.5-.5 3-1.5 4.5L12 20l-3-7C8 11.5 7.5 10 7.5 8.5a2.5 2.5 0 0 1 5 0z"></path></svg>';
+          fallback.className = 'flex items-center justify-center w-full h-full';
+          target.parentNode?.insertBefore(fallback, target.nextSibling);
+        }}
+      />
       {eyeColor && (
         <div className="absolute top-1/4 left-1/4 right-1/4 flex justify-around opacity-80">
           <div className={`w-1 h-1 rounded-full ${eyeColorStyle} bg-current`} />

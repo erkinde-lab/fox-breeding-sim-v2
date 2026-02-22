@@ -26,7 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${alice.variable} ${quicksand.variable}`}>
-      <body className={quicksand.className}>
+      <body className={quicksand.className} suppressHydrationWarning>
         <LayoutClient>{children}</LayoutClient>
       </body>
     </html>

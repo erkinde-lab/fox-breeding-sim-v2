@@ -9,11 +9,12 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
 
 export default function BreedingPage() {
-  const { foxes, breedFoxes, season, inventory } = useGameStore();
+  const { foxes, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
   const [selectedMale, setSelectedMale] = useState<string | null>(null);
   const [selectedFemale, setSelectedFemale] = useState<string | null>(null);
 
   const hasCalculator = inventory['calculator-access'] > 0;
+  const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
   const males = foxList.filter(f => f.gender === 'Male' && !f.isRetired && f.age >= 2);
@@ -21,6 +22,13 @@ export default function BreedingPage() {
 
   const handleBreed = () => {
     if (selectedMale && selectedFemale) {
+      // Check for calculator access OR geneticist access
+      if (!hasCalculator && !hasGeneticist) {
+        alert("You need to hire Geneticist staff member or purchase Breeding Calculator to access breeding insights!");
+        console.log("Calculator access:", hasCalculator, "Geneticist access:", hasGeneticist);
+        return;
+      }
+      
       breedFoxes(selectedMale, selectedFemale);
       setSelectedMale(null);
       setSelectedFemale(null);
@@ -170,14 +178,14 @@ export default function BreedingPage() {
                   <p className="text-sm text-muted-foreground font-medium">Genetic simulation based on 1,000 trials</p>
                 </div>
               </div>
-              {!hasCalculator && (
+              {!hasCalculator && !hasGeneticist && (
                 <Badge variant="outline" className="text-secondary border-secondary/20 bg-secondary/5 px-4 py-2 rounded-xl font-black uppercase text-[10px] tracking-widest">
                   Analyzer Not Purchased
                 </Badge>
               )}
             </div>
 
-            {hasCalculator && outcomes && (
+            {(hasCalculator || hasGeneticist) && outcomes && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div className="space-y-6">
                   <div className="p-8 bg-background/50 backdrop-blur-md rounded-[32px] border border-secondary/10 shadow-inner">
@@ -210,16 +218,19 @@ export default function BreedingPage() {
                       </div>
                     ))}
                   </div>
-                  <p className="text-[10px] text-muted-foreground/40 mt-4 italic text-right">* Exceedingly rare results (&lt; 1%) are hidden but not impossible.</p>
+                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-2xl border border-border">
+                    <AlertCircle size={18} className="text-muted-foreground/40 shrink-0 mt-0.5" />
+                    <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">Exceedingly rare results (&lt; 1%) are hidden but not impossible. These genetic combinations may require many breeding attempts to achieve.</p>
+                  </div>
                 </div>
               </div>
             )}
 
-            {!hasCalculator && (
+            {!hasCalculator && !hasGeneticist && (
               <div className="text-center py-20 bg-muted/10 rounded-[40px] border-2 border-dashed border-border px-8">
                 <Lock size={48} className="mx-auto text-muted-foreground/20 mb-4" />
                 <h4 className="text-xl font-black text-foreground italic mb-2">Calculator Locked</h4>
-                <p className="text-muted-foreground max-w-sm mx-auto font-medium">Purchase the **Inbreeding Calculator** from the shop to unlock detailed genetic insights for this pair.</p>
+                <p className="text-muted-foreground max-w-sm mx-auto font-medium">Purchase the **Inbreeding Calculator** from the shop or hire a **Geneticist** to unlock detailed genetic insights for this pair.</p>
               </div>
             )}
           </CardContent>

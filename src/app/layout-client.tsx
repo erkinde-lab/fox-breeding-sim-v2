@@ -404,7 +404,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               <span className="opacity-50 border-l border-moab/20 pl-8">Build v2.4.1</span>
             </div>
             <div className="opacity-50">
-              &copy; {new Date().getFullYear()} Red Fox Breeding Simulator.
+              &copy; 2024 Red Fox Breeding Simulator.
             </div>
           </div>
         </div>

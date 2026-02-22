@@ -48,30 +48,30 @@ export default function StaffPage() {
       hired: hiredVeterinarian,
       onHire: hireVeterinarian,
       icon: <Activity size={48} />,
-      color: 'red',
+      color: 'green',
       bonus: '+1 Physical Traits'
     },
     {
       id: 'geneticist',
-      name: 'Kennel Geneticist',
-      description: 'Unlock the secrets of your foxes. Automatically reveals genotypes for all owned foxes and unlocks detailed Breeding Insights.',
+      name: 'Geneticist',
+      description: 'Unlock the secrets of genetics. Grants permanent access to the Breeding Calculator and Pedigree Analysis tools.',
       cost: 100,
       hired: hiredGeneticist,
       onHire: hireGeneticist,
       icon: <Microscope size={48} />,
-      color: 'indigo',
-      bonus: 'Unlock Genotypes'
+      color: 'red',
+      bonus: 'Unlimited Insights'
     },
     {
       id: 'nutritionist',
-      name: 'Professional Nutritionist',
-      description: 'Optimize your foxes diet. Allows setting preferred feeds for each fox and enables the "Feed All" button on your dashboard.',
-      cost: 75,
+      name: 'Nutritionist',
+      description: 'Formulate optimal diets for your foxes. Grants a permanent +2 bonus to all health-related stats.',
+      cost: 30,
       hired: hiredNutritionist,
       onHire: hireNutritionist,
       icon: <Utensils size={48} />,
       color: 'orange',
-      bonus: 'Feed All Button'
+      bonus: '+2 Health Stats'
     }
   ];
 

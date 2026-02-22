@@ -116,8 +116,8 @@ export default function StudBarnPage() {
 function StudCard({ fox, onBreed, disabled }: { fox: import('@/lib/genetics').Fox, onBreed: () => void, disabled: boolean }) {
   return (
     <Card className="folk-card overflow-hidden border-2 border-border bg-card group hover:border-secondary/30 transition-all hover:shadow-xl hover:shadow-secondary/5 rounded-[32px]">
-      <div className="flex h-40">
-        <div className="w-40 flex-shrink-0 bg-muted/40 flex items-center justify-center relative transition-colors group-hover:bg-secondary/5">
+      <div className="flex h-56">
+        <div className="w-56 flex-shrink-0 bg-muted/40 flex items-center justify-center relative transition-colors group-hover:bg-secondary/5">
           <FoxIllustration phenotype={fox.phenotype} size={14} />
           <div className="absolute top-3 left-3">
             <Badge variant="outline" className="text-[10px] uppercase font-black bg-background/80 backdrop-blur-md border-border">Age {fox.age}</Badge>

@@ -143,7 +143,7 @@ function ListingCard({ listing, onAction, canAfford }: { listing: MarketListing,
   return (
     <Card className="folk-card overflow-hidden border-border bg-card">
       <div className="p-4 flex gap-4">
-        <div className="w-24 h-24 bg-muted rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+        <div className="w-32 h-32 bg-muted rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden">
           {isFox ? (
             <FoxIllustration phenotype={listing.foxData!.phenotype} />
           ) : (

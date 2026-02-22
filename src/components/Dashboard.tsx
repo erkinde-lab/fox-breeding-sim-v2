@@ -4,7 +4,7 @@ import React from 'react';
 import { useGameStore } from '@/lib/store';
 import { ShowReport } from '@/lib/showing';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Heart, Star, Utensils, Award, Sparkles, Ghost, Leaf } from 'lucide-react';
+import { Trophy, Heart, Star, Utensils, Award, Sparkles, Ghost, Leaf, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -12,8 +12,10 @@ export function Dashboard() {
   const {
     foxes, bisWins, bestMaleWins, bestFemaleWins,
     totalShowPoints, whelpingReports, showReports,
-    hiredNutritionist, feedAllFoxes
+    hiredNutritionist, feedAllFoxes, kennelCapacity, gold, expandKennel
   } = useGameStore();
+
+  const foxList = Object.values(foxes);
 
   const seasonalAwards = [
     { title: "Autumn Ghost", description: "Bred a Silver fox during the Hallow-season", year: 1, season: "Autumn", icon: Ghost, variant: "primary" },
@@ -34,21 +36,21 @@ export function Dashboard() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
+          label="Kennel Capacity"
+          value={`${foxList.length} / ${kennelCapacity}`}
+          icon={<Home size={24} />}
+          variant="primary"
+        />
+        <StatCard
           label="Total Points"
           value={totalShowPoints.toLocaleString()}
           icon={<Trophy size={24} />}
-          variant="primary"
+          variant="secondary"
         />
         <StatCard
           label="Best in Show"
           value={bisWins}
           icon={<Star size={24} />}
-          variant="secondary"
-        />
-        <StatCard
-          label="Best Male"
-          value={bestMaleWins}
-          icon={<Trophy size={24} />}
           variant="primary"
         />
         <StatCard
