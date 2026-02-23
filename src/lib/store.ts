@@ -6,6 +6,23 @@ import { create } from 'zustand';
 
 import { persist } from 'zustand/middleware';
 
+const generateNPCStuds = (year: number, season: string): Record<string, Fox> => {
+  const npcSeedStr = `npc-studs-${year}-${season}`;
+  let npcSeedVal = npcSeedStr.split("").reduce((a, b) => a + b.charCodeAt(0), 0);
+  const npcSeededRandom = () => {
+    const x = Math.sin(npcSeedVal++) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const nextNpcStuds: Record<string, Fox> = {};
+  for (let i = 0; i < 4; i++) {
+    const stud = createFoundationalFox(npcSeededRandom, "Male");
+    stud.isNPC = true;
+    stud.studFee = 500 + Math.floor(npcSeededRandom() * 1000);
+    nextNpcStuds[stud.id] = stud;
+  }
+  return nextNpcStuds;
+};
 import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, getActiveBoosts, getPhenotype, LOCI, Genotype, Stats, Fox, getInitialGenotype, breed } from '@/lib/genetics';
 
 import { runShow, ShowReport, ShowLevel } from './showing';
@@ -146,6 +163,7 @@ export interface Pregnancy {
 
   fatherId: string;
   fatherName: string;
+  fatherName: string;
 
   fatherGenotype: Genotype;
 
@@ -180,6 +198,7 @@ export interface AdminLog {
 export interface WhelpingReport {
 
   motherName: string;
+  fatherName: string;
   fatherName: string;
 
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
@@ -468,7 +487,8 @@ export const useGameStore = create<GameState>()(
 
       whelpingReports: [],
 
-      pregnancyList: [],
+      gold: male.isNPC ? state.gold - male.studFee : state.gold,
+          pregnancyList: [],
 
       kennelCapacity: 10,
 
@@ -675,7 +695,8 @@ export const useGameStore = create<GameState>()(
 
           whelpingReports: [...whelpingReports, ...state.whelpingReports].slice(0, 10),
 
-          pregnancyList: nextPregnancyList
+          pregnancyList: nextPregnancyList,
+          npcStuds: generateNPCStuds(nextYear, nextSeason)
 
         };
 
@@ -685,15 +706,16 @@ export const useGameStore = create<GameState>()(
 
       breedFoxes: (maleId, femaleId) => {
 
-        const { foxes, year, season, pregnancyList } = get();
+        const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
 
-        const male = foxes[maleId];
+        const male = foxes[maleId] || npcStuds[maleId];
 
         const female = foxes[femaleId];
 
 
 
         if (!male || !female || season !== 'Winter') return;
+        if (male.isNPC && gold < male.studFee) return;
 
         if (male.gender !== 'Male' || female.gender !== 'Female') return;
 
@@ -705,6 +727,7 @@ export const useGameStore = create<GameState>()(
 
         set((state) => ({
 
+          gold: male.isNPC ? state.gold - male.studFee : state.gold,
           pregnancyList: [
 
             ...state.pregnancyList,
@@ -927,6 +950,8 @@ export const useGameStore = create<GameState>()(
 
       initializeGame: () => {
 
+        const { year, season } = get();
+        set({ npcStuds: generateNPCStuds(year, season) });
         const { foxes } = get();
 
         get().checkAdoptionReset();
@@ -1441,6 +1466,8 @@ export const useGameStore = create<GameState>()(
 
       adminUpdateFoxStats: (foxId, statsUpdates) => {
 
+        const { year, season } = get();
+        set({ npcStuds: generateNPCStuds(year, season) });
         const { foxes } = get();
 
         if (!foxes[foxId]) return;

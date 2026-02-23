@@ -31,6 +31,8 @@ export default function CustomFoxPage() {
         });
         return sorted.join("");
     };
+        return sorted.join("");
+    };
 
     const currentFoxCount = Object.keys(foxes).length;
 

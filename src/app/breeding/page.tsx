@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
 
 export default function BreedingPage() {
-  const { foxes, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
+  const { foxes, npcStuds, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
   const [selectedMale, setSelectedMale] = useState<string | null>(null);
   const [selectedFemale, setSelectedFemale] = useState<string | null>(null);
 
@@ -17,18 +17,12 @@ export default function BreedingPage() {
   const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
-  const males = foxList.filter(f => f.gender === 'Male' && !f.isRetired && f.age >= 2);
+  const males = [...Object.values(foxes), ...Object.values(npcStuds)].filter(f => f.gender === 'Male' && !f.isRetired && f.age >= 2);
   const females = foxList.filter(f => f.gender === 'Female' && !f.isRetired && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedMale && selectedFemale) {
       // Check for calculator access OR geneticist access
-      if (!hasCalculator && !hasGeneticist) {
-        alert("You need to hire Geneticist staff member or purchase Breeding Calculator to access breeding insights!");
-        console.log("Calculator access:", hasCalculator, "Geneticist access:", hasGeneticist);
-        return;
-      }
-      
       breedFoxes(selectedMale, selectedFemale);
       setSelectedMale(null);
       setSelectedFemale(null);
@@ -38,7 +32,7 @@ export default function BreedingPage() {
 
   const calculateOutcomes = () => {
     if (!selectedMale || !selectedFemale) return null;
-    const m = foxes[selectedMale];
+    const m = foxes[selectedMale] || npcStuds[selectedMale];
     const f = foxes[selectedFemale];
 
     const counts: Record<string, number> = {};
@@ -99,8 +93,8 @@ export default function BreedingPage() {
                   selectedMale === m.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
-                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name}</div>
-                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`}</div>
+                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name} {m.isNPC && <Badge className="ml-2 bg-secondary/10 text-secondary border-none">NPC</Badge>}</div>
+                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`} {m.isNPC && ` • ${m.studFee} Gold`}</div>
               </div>
             ))}
             {males.length === 0 && (

@@ -236,8 +236,8 @@ export interface Fox {
   preferredFeed?: string;
 }
 
-export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
-  const base = () => Math.floor(Math.random() * 16) + 5;
+export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0, random: () => number = Math.random): Stats {
+  const base = () => Math.floor(random() * 16) + 5;
   if (!p1 || !p2) {
     return {
       head: base(),
@@ -249,13 +249,13 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
       temperament: base(),
       presence: base(),
       luck: base(),
-      fertility: Math.floor(Math.random() * 50) + 25,
+      fertility: Math.floor(random() * 50) + 25,
     };
   }
 
   const inherit = (v1: number, v2: number) => {
     const mean = (v1 + v2) / 2;
-    const variance = (Math.random() - 0.5) * 10;
+    const variance = (random() - 0.5) * 10;
     return Math.max(1, Math.min(100, Math.round(mean + variance)));
   };
 
@@ -352,23 +352,23 @@ export function calculateCOI(foxId: string, foxes: Record<string, { parents: [st
   return Math.round(coi * 1000) / 10;
 }
 
-export function createFox(data: Partial<Fox>): Fox {
+export function createFox(data: Partial<Fox>, random: () => number = Math.random): Fox {
   const genotype = data.genotype || getInitialGenotype();
-  const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(Math.random() * 5) + 1 : 3);
+  const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(random() * 5) + 1 : 3);
   const phenotype = getPhenotype(genotype, silverIntensity, data.eyeColor);
   const name = data.name || (phenotype.name !== "Unknown Fox" ? phenotype.name : "Unnamed Fox");
 
   return {
-    id: data.id || (typeof window !== 'undefined' ? Math.random().toString(36).substring(2, 9) : Date.now().toString()),
+    id: data.id || (typeof window !== 'undefined' ? random().toString(36).substring(2, 9) : Date.now().toString()),
     name: name,
     genotype,
     phenotype: phenotype.name,
     baseColor: phenotype.baseColor,
     pattern: phenotype.pattern,
     eyeColor: phenotype.eyeColor,
-    gender: data.gender || (typeof window !== 'undefined' && Math.random() > 0.5 ? "Male" : "Female"),
-    age: data.age || 2,
-    stats: data.stats || generateStats(),
+    gender: data.gender || (typeof window !== 'undefined' && random() > 0.5 ? "Male" : "Female"),
+    age: data.age !== undefined ? data.age : 2,
+    stats: data.stats || generateStats(undefined, undefined, 0, random),
     genotypeRevealed: data.genotypeRevealed || false,
     pedigreeAnalyzed: data.pedigreeAnalyzed || false,
     isRetired: data.isRetired || false,
@@ -388,7 +388,7 @@ export function createFox(data: Partial<Fox>): Fox {
   };
 }
 
-export function createFoundationalFox(random: () => number = Math.random): Fox {
+export function createFoundationalFox(random: () => number = Math.random, gender?: "Male" | "Female"): Fox {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
@@ -487,7 +487,7 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   return foxes;
 }
 
-function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number): Fox {
+function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Male" | "Female"): Fox {
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
   const genotype = getInitialGenotype();
