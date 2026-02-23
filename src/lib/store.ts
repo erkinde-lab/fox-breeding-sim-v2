@@ -1493,7 +1493,45 @@ export const useGameStore = create<GameState>()(
 
       migrate: (persistedState: any, version: number) => {
         if (version < 2) {
-          return undefined;
+          if (!persistedState) return persistedState;
+
+          // Legacy version 0 to 1 migration (Forum Categories)
+          if (version === 0) {
+            const defaultCategories = [
+              { id: 'staff', name: 'Staff Announcements & Feedback', description: 'Official news and feedback from the development team.', icon: 'Megaphone' },
+              { id: 'general', name: 'General Discussion', description: 'Talk about anything fox-related!', icon: 'MessageSquare' },
+              { id: 'breeding', name: 'Breeding Tips', description: 'Share your genetic discoveries.', icon: 'Heart' },
+              { id: 'shows', name: 'Show Results', description: 'Celebrate your wins!', icon: 'Trophy' },
+              { id: 'market', name: 'Trading', description: 'Buy, sell, and trade foxes.', icon: 'Store' },
+            ];
+
+            if (persistedState.forumCategories) {
+              const existingIds = persistedState.forumCategories.map((c: any) => c.id);
+              const missing = defaultCategories.filter(c => !existingIds.includes(c.id));
+              if (missing.length > 0) {
+                persistedState.forumCategories = [...missing, ...persistedState.forumCategories];
+              }
+            } else {
+              persistedState.forumCategories = defaultCategories;
+            }
+          }
+
+          // Version 1 to 2 migration (Gender terminology)
+          if (persistedState.foxes) {
+            Object.values(persistedState.foxes).forEach((fox: any) => {
+              if (fox.gender === 'Male') fox.gender = 'Dog';
+              if (fox.gender === 'Female') fox.gender = 'Vixen';
+            });
+          }
+
+          if (persistedState.bestMaleWins !== undefined) {
+            persistedState.bestDogWins = persistedState.bestMaleWins;
+            delete persistedState.bestMaleWins;
+          }
+          if (persistedState.bestFemaleWins !== undefined) {
+            persistedState.bestVixenWins = persistedState.bestFemaleWins;
+            delete persistedState.bestFemaleWins;
+          }
         }
         return persistedState;
       },

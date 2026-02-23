@@ -18,7 +18,7 @@ export default function BreedingPage() {
 
   const foxList = Object.values(foxes);
   const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
-  const fedogs = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedDog && selectedVixen) {
@@ -142,7 +142,7 @@ export default function BreedingPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 flex-1">
-            {fedogs.map(f => (
+            {vixens.map(f => (
               <div
                 key={f.id}
                 onClick={() => setSelectedVixen(f.id)}
@@ -155,7 +155,7 @@ export default function BreedingPage() {
                 <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.baseColor}{f.pattern !== "None" && ` • ${f.pattern}`}</div>
               </div>
             ))}
-            {fedogs.length === 0 && (
+            {vixens.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
                 <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens</p>
               </div>
