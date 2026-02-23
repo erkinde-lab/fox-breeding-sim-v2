@@ -2,7 +2,7 @@ import { Fox, getActiveBoosts, isHungry } from './genetics';
 
 export type ShowLevel = 'Junior' | 'Open' | 'Senior' | 'Championship';
 export type ShowClass = 
-    'Best Juvenile Male' | 'Best Juvenile Female' | 'Best Adult Male' | 'Best Adult Female' |
+    'Best Juvenile Dog' | 'Best Juvenile Vixen' | 'Best Adult Dog' | 'Best Adult Vixen' |
     'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
 
 export interface ShowResult {
@@ -80,10 +80,10 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
   const results: ShowResult[] = [];
   
   const classes: ShowClass[] = [
-    'Best Juvenile Male',
-    'Best Juvenile Female',
-    'Best Adult Male',
-    'Best Adult Female',
+    'Best Juvenile Dog',
+    'Best Juvenile Vixen',
+    'Best Adult Dog',
+    'Best Adult Vixen',
     'Red Specialty',
     'Silver Specialty',
     'Gold Specialty',
@@ -98,13 +98,13 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     const eligibleFoxes = foxes.filter(f => {
       if (f.isRetired || f.healthIssues.length > 0) return false;
       
-      const isMale = f.gender === 'Male';
+      const isDog = f.gender === 'Dog';
       const isJuvenile = f.age === 0;
       
-      if (cls === 'Best Juvenile Male') return isMale && isJuvenile;
-      if (cls === 'Best Juvenile Female') return !isMale && isJuvenile;
-      if (cls === 'Best Adult Male') return isMale && !isJuvenile;
-      if (cls === 'Best Adult Female') return !isMale && !isJuvenile;
+      if (cls === 'Best Juvenile Dog') return isDog && isJuvenile;
+      if (cls === 'Best Juvenile Vixen') return !isDog && isJuvenile;
+      if (cls === 'Best Adult Dog') return isDog && !isJuvenile;
+      if (cls === 'Best Adult Vixen') return !isDog && !isJuvenile;
       
       // Specialty Classes
       const a = [...f.genotype.A].sort().join('');

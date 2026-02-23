@@ -72,7 +72,7 @@ export default function AdminPanel() {
 
   // Genetics Lab State
 
-  const [spawnGender, setSpawnGender] = useState<'Male' | 'Female'>('Male');
+  const [spawnGender, setSpawnGender] = useState<'Dog' | 'Vixen'>('Dog');
 
   const [spawnGenotype, setSpawnGenotype] = useState(getInitialGenotype());
 
@@ -1255,23 +1255,23 @@ export default function AdminPanel() {
 
                       <Button
 
-                        variant={spawnGender === 'Male' ? 'default' : 'outline'}
+                        variant={spawnGender === 'Dog' ? 'default' : 'outline'}
 
-                        onClick={() => setSpawnGender('Male')}
+                        onClick={() => setSpawnGender('Dog')}
 
                         className="flex-1 rounded-xl font-black uppercase tracking-widest text-[10px]"
 
-                      >Male</Button>
+                      >Dog</Button>
 
                       <Button
 
-                        variant={spawnGender === 'Female' ? 'default' : 'outline'}
+                        variant={spawnGender === 'Vixen' ? 'default' : 'outline'}
 
-                        onClick={() => setSpawnGender('Female')}
+                        onClick={() => setSpawnGender('Vixen')}
 
                         className="flex-1 rounded-xl font-black uppercase tracking-widest text-[10px]"
 
-                      >Female</Button>
+                      >Vixen</Button>
 
                     </div>
 

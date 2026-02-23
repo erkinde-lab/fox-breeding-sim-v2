@@ -11,19 +11,19 @@ import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function StudBarnPage() {
   const { foxes, npcStuds, breedFoxes, season, gold } = useGameStore();
-  const [selectedFemaleId, setSelectedFemaleId] = useState<string | null>(null);
+  const [selectedVixenId, setSelectedVixenId] = useState<string | null>(null);
 
-  const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Male' && f.isAtStud && !f.isRetired);
+  const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
   const availableNPCs = Object.values(npcStuds);
-  const eligibleFemales = Object.values(foxes).filter(f => f.gender === 'Female' && !f.isRetired && f.age >= 2);
+  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const handleBreed = (fatherId: string) => {
-    if (!selectedFemaleId) {
-      alert("Please select a female fox first!");
+    if (!selectedVixenId) {
+      alert("Please select a vixen first!");
       return;
     }
-    breedFoxes(fatherId, selectedFemaleId);
-    setSelectedFemaleId(null);
+    breedFoxes(fatherId, selectedVixenId);
+    setSelectedVixenId(null);
     alert("Breeding committed! Check Spring for results.");
   };
 
@@ -44,29 +44,29 @@ export default function StudBarnPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
         {/* Selection Panel */}
-        <Card className={cn("lg:col-span-1 folk-card border-2 transition-all duration-500", selectedFemaleId ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border bg-card")}>
+        <Card className={cn("lg:col-span-1 folk-card border-2 transition-all duration-500", selectedVixenId ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border bg-card")}>
           <CardHeader>
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span> 1. Select Dam
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {eligibleFemales.map(f => (
+            {eligibleVixens.map(f => (
               <div
                 key={f.id}
-                onClick={() => setSelectedFemaleId(f.id)}
+                onClick={() => setSelectedVixenId(f.id)}
                 className={cn(
                   "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
-                  selectedFemaleId === f.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
+                  selectedVixenId === f.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
                 <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{f.name}</div>
                 <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.phenotype}</div>
               </div>
             ))}
-            {eligibleFemales.length === 0 && (
+            {eligibleVixens.length === 0 && (
               <div className="text-center py-10 opacity-40 border-2 border-dashed border-border rounded-2xl">
-                <p className="text-xs font-bold text-foreground italic">No eligible females (Age 2+)</p>
+                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Age 2+)</p>
               </div>
             )}
           </CardContent>
@@ -84,7 +84,7 @@ export default function StudBarnPage() {
                   key={npc.id}
                   fox={npc}
                   onBreed={() => handleBreed(npc.id)}
-                  disabled={!isWinter || !selectedFemaleId || gold < npc.studFee}
+                  disabled={!isWinter || !selectedVixenId || gold < npc.studFee}
                 />
               ))}
             </div>
@@ -101,7 +101,7 @@ export default function StudBarnPage() {
                     key={stud.id}
                     fox={stud}
                     onBreed={() => handleBreed(stud.id)}
-                    disabled={!isWinter || !selectedFemaleId}
+                    disabled={!isWinter || !selectedVixenId}
                   />
                 ))}
               </div>
