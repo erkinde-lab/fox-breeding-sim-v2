@@ -14,7 +14,7 @@ export default function FoxProfilePage() {
   const { id } = useParams();
   const router = useRouter();
   const { 
-    foxes, foundationFoxes, applyItem, inventory, renameFox, sellFox,
+    foxes, foundationFoxes, npcStuds, applyItem, inventory, renameFox, sellFox,
     isAdmin, toggleStudStatus, hiredGroomer, 
     hiredVeterinarian, hiredTrainer, hiredNutritionist,
     setFoxPreferredFeed
@@ -29,8 +29,8 @@ export default function FoxProfilePage() {
   const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
 
   useEffect(() => {
-    if (fox) setNewName(fox.name);
-  }, [fox]);
+    if (fox && !newName) setNewName(fox.name);
+  }, [fox, newName]);
 
   if (!fox) {
     return (
@@ -44,10 +44,18 @@ export default function FoxProfilePage() {
 
   const activeBoosts = getActiveBoosts(fox);
   const hungry = isHungry(fox);
-  const now = Date.now();
 
   const handleRename = () => {
     if (newName && newName !== fox.name) {
+      const allNames = [
+        ...Object.values(foxes).filter(f => f.id !== fox.id).map(f => f.name.toLowerCase()),
+        ...Object.values(npcStuds).filter(f => f.id !== fox.id).map(f => f.name.toLowerCase()),
+        ...foundationFoxes.filter(f => f.id !== fox.id).map(f => f.name.toLowerCase())
+      ];
+      if (allNames.includes(newName.toLowerCase())) {
+        alert("This name is already taken by another fox!");
+        return;
+      }
       renameFox(fox.id, newName);
       setIsEditing(false);
     }

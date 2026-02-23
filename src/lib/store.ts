@@ -6,6 +6,29 @@ import { create } from 'zustand';
 
 import { persist } from 'zustand/middleware';
 
+const generateNPCStuds = (year: number, season: string): Record<string, Fox> => {
+  const npcSeedStr = `npc-studs-${year}-${season}`;
+  let npcSeedVal = npcSeedStr.split("").reduce((a, b) => a + b.charCodeAt(0), 0);
+  const npcSeededRandom = () => {
+    const x = Math.sin(npcSeedVal++) * 10000;
+    return x - Math.floor(x);
+  };
+
+  const nextNpcStuds: Record<string, Fox> = {};
+  for (let i = 0; i < 4; i++) {
+    const stud = createFoundationalFox(npcSeededRandom, "Male");
+    stud.isNPC = true;
+    stud.genotypeRevealed = true;
+    stud.studFee = 500 + Math.floor(npcSeededRandom() * 1000);
+    Object.keys(stud.stats).forEach(key => {
+      if (key !== "fertility") {
+        stud.stats[key as keyof Stats] = Math.max(20, stud.stats[key as keyof Stats]);
+      }
+    });
+    nextNpcStuds[stud.id] = stud;
+  }
+  return nextNpcStuds;
+};
 import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, getActiveBoosts, getPhenotype, LOCI, Genotype, Stats, Fox, getInitialGenotype, breed } from '@/lib/genetics';
 
 import { runShow, ShowReport, ShowLevel } from './showing';
@@ -145,6 +168,8 @@ export interface Pregnancy {
   motherId: string;
 
   fatherId: string;
+  fatherName: string;
+  fatherName: string;
 
   fatherGenotype: Genotype;
 
@@ -179,6 +204,8 @@ export interface AdminLog {
 export interface WhelpingReport {
 
   motherName: string;
+  fatherName: string;
+  fatherName: string;
 
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
 
@@ -466,7 +493,8 @@ export const useGameStore = create<GameState>()(
 
       whelpingReports: [],
 
-      pregnancyList: [],
+      gold: male.isNPC ? state.gold - male.studFee : state.gold,
+          pregnancyList: [],
 
       kennelCapacity: 10,
 
@@ -616,53 +644,42 @@ export const useGameStore = create<GameState>()(
 
             const kitCount = (typeof window !== 'undefined' ? Math.floor(Math.random() * 4) : 3) + 2;
 
-            const kits = [];
-
             for (let i = 0; i < kitCount; i++) {
-
               const kitGenotype = breed(mother.genotype, preg.fatherGenotype);
+              const kitPhenotype = getPhenotype(kitGenotype, calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity));
 
-              if (kitGenotype) {
-
+              if (kitPhenotype.isLethal) {
+                kits.push({
+                  name: "Stillborn Fox",
+                  phenotype: "Stillborn",
+                  baseColor: "-",
+                  pattern: "-",
+                  eyeColor: "-",
+                  isStillborn: true
+                });
+              } else {
                 const kit = createFox({
-
                   parents: [preg.motherId, preg.fatherId],
-
                   genotype: kitGenotype,
-
+                  silverIntensity: calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity),
                   age: 0,
-
                   birthYear: nextYear,
-
                 });
 
                 updatedFoxes[kit.id] = kit;
 
                 kits.push({
-
                   name: kit.name,
-
                   phenotype: kit.phenotype,
-
                   baseColor: kit.baseColor,
-
                   pattern: kit.pattern,
-
                   eyeColor: kit.eyeColor,
-
                   isStillborn: false
-
                 });
-
-              } else {
-
-                kits.push({ name: 'Stillborn Kit', phenotype: 'Stillborn', baseColor: 'None', pattern: 'None', eyeColor: 'None', isStillborn: true });
-
               }
-
             }
 
-            whelpingReports.push({ motherName: mother.name, kits });
+            whelpingReports.push({ motherName: mother.name, fatherName: preg.fatherName, kits });
 
           });
 
@@ -684,7 +701,8 @@ export const useGameStore = create<GameState>()(
 
           whelpingReports: [...whelpingReports, ...state.whelpingReports].slice(0, 10),
 
-          pregnancyList: nextPregnancyList
+          pregnancyList: nextPregnancyList,
+          npcStuds: generateNPCStuds(nextYear, nextSeason)
 
         };
 
@@ -694,7 +712,7 @@ export const useGameStore = create<GameState>()(
 
       breedFoxes: (dogId, vixenId) => {
 
-        const { foxes, year, season, pregnancyList } = get();
+        const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
 
         const dog = foxes[dogId];
 
@@ -714,6 +732,7 @@ export const useGameStore = create<GameState>()(
 
         set((state) => ({
 
+          gold: male.isNPC ? state.gold - male.studFee : state.gold,
           pregnancyList: [
 
             ...state.pregnancyList,
@@ -875,11 +894,20 @@ export const useGameStore = create<GameState>()(
 
 
 
-      renameFox: (id, newName) => set((state) => ({
+      renameFox: (id, newName) => set((state) => {
+        const allFoxes = [
+          ...Object.values(state.foxes),
+          ...Object.values(state.npcStuds),
+          ...state.foundationFoxes
+        ];
+        const isNameTaken = allFoxes.some(f => f.id !== id && f.name.toLowerCase() === newName.toLowerCase());
+        if (isNameTaken) return state;
+        return {
 
         foxes: { ...state.foxes, [id]: { ...state.foxes[id], name: newName, hasBeenRenamed: true } }
+        };
 
-      })),
+      }),
 
 
 
@@ -935,6 +963,8 @@ export const useGameStore = create<GameState>()(
 
       initializeGame: () => {
 
+        const { year, season } = get();
+        set({ npcStuds: generateNPCStuds(year, season) });
         const { foxes } = get();
 
         get().checkAdoptionReset();
@@ -1449,6 +1479,8 @@ export const useGameStore = create<GameState>()(
 
       adminUpdateFoxStats: (foxId, statsUpdates) => {
 
+        const { year, season } = get();
+        set({ npcStuds: generateNPCStuds(year, season) });
         const { foxes } = get();
 
         if (!foxes[foxId]) return;

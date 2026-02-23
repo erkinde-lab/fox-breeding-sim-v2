@@ -79,9 +79,9 @@ const loci = [
   {
     key: 'W',
     name: 'White Markings (W)',
-    alleles: 'w (no marking) / W (White Mark) / Wp (Platinum) / WM (Marble) / WG (Georgian)',
-    effect: 'Controls white patterning on the coat. A fox can carry multiple W alleles, producing layered patterns. White Mark (W) adds small white patches, Platinum (Wp) creates a washed-out silvery effect, Marble (WM) produces irregular high-white marbling, and Georgian (WG) adds georgian-style marks.',
-    health: 'Homozygous white alleles (WW, WpWp, WMWM, WGWG) are lethal — kits do not survive. Always breed white-marked foxes to non-white to avoid lethal combinations.',
+    alleles: 'w (no marking) / W (White Mark) / WP (Platinum) / WM (Marble) / WG (Georgian)',
+    effect: 'Controls white patterning on the coat. A fox can carry multiple W alleles, producing layered patterns. White Mark (W) adds small white patches, Platinum (WP) creates a washed-out silvery effect, Marble (WM) produces irregular high-white marbling, and Georgian (WG) adds georgian-style marks.',
+    health: 'Homozygous white alleles (WW, WPWP, WMWM, WGWG) are lethal — kits do not survive. Always breed white-marked foxes to non-white to avoid lethal combinations.',
     healthSeverity: 'lethal',
   },
   {

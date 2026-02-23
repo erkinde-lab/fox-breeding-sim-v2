@@ -9,7 +9,7 @@ export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: st
   P: { name: 'Pearl', alleles: ['P', 'p'] }, // pp = Pearl
   SS: { name: 'Mansfield Pearl', alleles: ['S', 's'] }, // ss = Mansfield Pearl
   Fire: { name: 'Fire', alleles: ['FI', 'fi'] }, // fi = Fire (Recessive)
-  W: { name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG'], lethal: ['WW', 'WMWM', 'WGWG'] },
+  W: { name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG', 'WP'], lethal: ['WW', 'WMWM', 'WGWG', 'WPWP'] },
   L: { name: 'Leucistic', alleles: ['L', 'l'] }, // ll = Leucistic
 };
 
@@ -153,13 +153,13 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   // Pattern Logic
   const patterns: string[] = [];
   if (W.includes('WM')) patterns.push('Marble');
-  if (W.includes('Wp')) patterns.push('Platinum');
+  if (W.includes('WP')) patterns.push('Platinum');
   if (W.includes('WG')) patterns.push('Georgian');
   if (W.includes('W')) patterns.push('White Mark');
   const patternName = patterns.length > 0 ? patterns.join(' ') : 'None';
 
   const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic' || finalName === 'Stillborn';
-  let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
+  const displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
 
   // Eye Color Logic
   let eyeColor = providedEyeColor;
@@ -236,8 +236,8 @@ export interface Fox {
   preferredFeed?: string;
 }
 
-export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
-  const base = () => Math.floor(Math.random() * 16) + 5;
+export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0, random: () => number = Math.random): Stats {
+  const base = () => Math.floor(random() * 16) + 5;
   if (!p1 || !p2) {
     return {
       head: base(),
@@ -249,13 +249,13 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
       temperament: base(),
       presence: base(),
       luck: base(),
-      fertility: Math.floor(Math.random() * 50) + 25,
+      fertility: Math.floor(random() * 50) + 25,
     };
   }
 
   const inherit = (v1: number, v2: number) => {
     const mean = (v1 + v2) / 2;
-    const variance = (Math.random() - 0.5) * 10;
+    const variance = (random() - 0.5) * 10;
     return Math.max(1, Math.min(100, Math.round(mean + variance)));
   };
 
@@ -285,7 +285,7 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
   return stats;
 }
 
-export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
+export function breed(parent1: Genotype, parent2: Genotype): Genotype {
   const offspring: Genotype = {};
   for (const locus in LOCI) {
     const p1Alleles = parent1[locus];
@@ -300,7 +300,6 @@ export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
     offspring[locus] = [a1, a2];
   }
 
-  if (getPhenotype(offspring).isLethal) return null;
   return offspring;
 }
 
@@ -353,14 +352,14 @@ export function calculateCOI(foxId: string, foxes: Record<string, { parents: [st
   return Math.round(coi * 1000) / 10;
 }
 
-export function createFox(data: Partial<Fox>): Fox {
+export function createFox(data: Partial<Fox>, random: () => number = Math.random): Fox {
   const genotype = data.genotype || getInitialGenotype();
-  const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(Math.random() * 5) + 1 : 3);
+  const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(random() * 5) + 1 : 3);
   const phenotype = getPhenotype(genotype, silverIntensity, data.eyeColor);
   const name = data.name || (phenotype.name !== "Unknown Fox" ? phenotype.name : "Unnamed Fox");
 
   return {
-    id: data.id || (typeof window !== 'undefined' ? Math.random().toString(36).substring(2, 9) : Date.now().toString()),
+    id: data.id || (typeof window !== 'undefined' ? random().toString(36).substring(2, 9) : Date.now().toString()),
     name: name,
     genotype,
     phenotype: phenotype.name,
@@ -389,7 +388,7 @@ export function createFox(data: Partial<Fox>): Fox {
   };
 }
 
-export function createFoundationalFox(random: () => number = Math.random): Fox {
+export function createFoundationalFox(random: () => number = Math.random, gender?: "Male" | "Female"): Fox {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
@@ -409,8 +408,17 @@ export function createFoundationalFox(random: () => number = Math.random): Fox {
   Object.assign(genotype, baseGenotypes[Math.floor(safeRandom() * baseGenotypes.length)]);
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
-  const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'L'];
-  if (safeRandom() > 0.75) {
+  const rareRand = safeRandom();
+  const rareGenes = ["G", "C", "P", "SS", "Fire", "L"];
+  if (rareRand < 0.5) {
+    const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
+    const locus = LOCI[gene];
+    const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
+    if (alleles.length > 0) {
+      const rare = alleles[Math.floor(safeRandom() * alleles.length)];
+      genotype[gene] = [rare, rare];
+    }
+  } else if (rareRand < 0.5 + 0.5 * 0.75) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
     const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
@@ -424,7 +432,8 @@ export function createFoundationalFox(random: () => number = Math.random): Fox {
     genotype,
     coi: 0,
     pedigreeAnalyzed: true,
-  });
+    gender,
+  }, safeRandom);
 }
 
 export function createFoundationFoxCollection(random: () => number = Math.random): Fox[] {
@@ -488,7 +497,7 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   return foxes;
 }
 
-function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number): Fox {
+function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Male" | "Female"): Fox {
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
   const genotype = getInitialGenotype();
@@ -510,7 +519,8 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
     genotype,
     coi: 0,
     pedigreeAnalyzed: true,
-  });
+    gender,
+  }, safeRandom);
 }
 
 export function getActiveBoosts(fox: Fox): Record<string, number> {
