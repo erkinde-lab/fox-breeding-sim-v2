@@ -12,7 +12,7 @@ import { FoxIllustration } from '@/components/FoxIllustration';
 export default function CustomFoxPage() {
     const { buyCustomFoundationalFox, gems, foxes, kennelCapacity } = useGameStore();
     const [customGenotype, setCustomGenotype] = useState<Record<string, string[]>>({});
-    const [customGender, setCustomGender] = useState<'Male' | 'Female'>('Male');
+    const [customGender, setCustomGender] = useState<'Dog' | 'Vixen'>('Dog');
     const [foxName, setFoxName] = useState('Custom Designer Fox');
     const [eyeColor, setEyeColor] = useState<'Random' | string>('Brown');
     const [baseEyeColor, setBaseEyeColor] = useState<'Random' | string>('Brown');
@@ -108,10 +108,10 @@ export default function CustomFoxPage() {
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase text-muted-foreground tracking-widest">Selected Gender</label>
                                 <div className="flex gap-2">
-                                    {['Male', 'Female'].map(g => (
+                                    {['Dog', 'Vixen'].map(g => (
                                         <Button
                                             key={g}
-                                            onClick={() => setCustomGender(g as 'Male' | 'Female')}
+                                            onClick={() => setCustomGender(g as 'Dog' | 'Vixen')}
                                             variant={customGender === g ? 'default' : 'outline'}
                                             className={cn(
                                                 "flex-1 h-12 font-black rounded-xl border-2 uppercase tracking-widest",

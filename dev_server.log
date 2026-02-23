@@ -1,0 +1,24 @@
+
+> fox-sim@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+✓ Ready in 2.5s
+ GET /admin 200 in 2.1s (compile: 1481ms, render: 629ms)
+ GET /admin 200 in 117ms (compile: 6ms, render: 111ms)
+ GET / 200 in 142ms (compile: 36ms, render: 106ms)
+ GET /admin 200 in 93ms (compile: 4ms, render: 89ms)
+ GET / 200 in 291ms (compile: 114ms, render: 176ms)
+ GET /admin 200 in 342ms (compile: 134ms, render: 208ms)
+ GET /admin 200 in 105ms (compile: 4ms, render: 100ms)
+ GET /admin 200 in 202ms (compile: 12ms, render: 190ms)
+ GET /admin 200 in 98ms (compile: 5ms, render: 92ms)
+ GET /admin 200 in 93ms (compile: 4ms, render: 89ms)
+ GET /admin 200 in 82ms (compile: 4ms, render: 79ms)
+ GET /admin 200 in 126ms (compile: 4ms, render: 121ms)
+ GET /kennel?tab=dashboard 200 in 973ms (compile: 842ms, render: 131ms)
+ GET /breeding 200 in 219ms (compile: 77ms, render: 142ms)

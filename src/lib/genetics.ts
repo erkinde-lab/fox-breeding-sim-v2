@@ -214,7 +214,7 @@ export interface Fox {
   baseColor: string;
   pattern: string;
   eyeColor: string;
-  gender: 'Male' | 'Female';
+  gender: 'Dog' | 'Vixen';
   age: number;
   stats: Stats;
   genotypeRevealed: boolean;
@@ -367,7 +367,7 @@ export function createFox(data: Partial<Fox>): Fox {
     baseColor: phenotype.baseColor,
     pattern: phenotype.pattern,
     eyeColor: phenotype.eyeColor,
-    gender: data.gender || (typeof window !== 'undefined' && Math.random() > 0.5 ? "Male" : "Female"),
+    gender: data.gender || (typeof window !== 'undefined' && Math.random() > 0.5 ? "Dog" : "Vixen"),
     age: data.age || 2,
     stats: data.stats || generateStats(),
     genotypeRevealed: data.genotypeRevealed || false,
