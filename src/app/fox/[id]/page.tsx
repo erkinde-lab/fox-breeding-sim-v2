@@ -6,7 +6,7 @@ import { useGameStore } from '@/lib/store';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ChevronLeft, ChevronRight, Edit2, Save, X, Microscope, Utensils, Activity, Calendar, Check, Shield, Heart, Dna, Trophy, Info, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Edit2, Save, X, Microscope, Utensils, Activity, Calendar, Check, Shield, Heart, Dna, Trophy, Info, ShoppingBag, ChevronDown, Star } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Fox, calculateCOI, getActiveBoosts, isHungry } from '@/lib/genetics';
 
@@ -22,6 +22,8 @@ export default function FoxProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
+  const [selectedFeed, setSelectedFeed] = useState('supplies');
+  const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
   const isFoundational = foundationFoxes.some(f => f.id === id);
 
   const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
@@ -54,10 +56,45 @@ export default function FoxProfilePage() {
   const handleReveal = () => applyItem('genetic-test', fox.id);
   const handleAnalyze = () => applyItem('pedigree-analysis', fox.id);
 
+  // Feed options for dropdown
+  const feedOptions = [
+    { id: 'supplies', label: 'Premium Feed', icon: <ChevronDown size={14} /> },
+    { id: 'feed-head', label: 'Cranial Crunch', icon: <Dna size={14} /> },
+    { id: 'feed-topline', label: 'Spine Support', icon: <Shield size={14} /> },
+    { id: 'feed-forequarters', label: 'Shoulder Strength', icon: <Trophy size={14} /> },
+    { id: 'feed-hindquarters', label: 'Hip Health', icon: <Activity size={14} /> },
+    { id: 'feed-tail', label: 'Brush Boost', icon: <Heart size={14} /> },
+    { id: 'feed-coatQuality', label: 'Lustrous Layers', icon: <Star size={14} /> },
+    { id: 'feed-temperament', label: 'Calm Kibble', icon: <Info size={14} /> },
+    { id: 'feed-presence', label: 'Showstopper Snack', icon: <Trophy size={14} /> },
+  ];
+
+  const handleFeed = () => {
+    applyItem(selectedFeed, fox.id);
+  };
+
+  // Check if fox is fed (not hungry)
+  const isFed = !isHungry(fox);
+
   // Navigation functions for kennel browsing
   const goToPreviousFox = () => {
-    const foxIds = Object.keys(foxes).filter(id => foxes[id].gender === fox.gender);
+    // Determine which kennel this fox belongs to
+    let kennelFoxes;
+    if (fox.age < 1) {
+      // Young Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.age < 1);
+    } else if (fox.isRetired) {
+      // Retired Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.isRetired);
+    } else {
+      // Adult Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.age >= 1 && !f.isRetired);
+    }
+    
+    // Get fox IDs in display order (same order as kennel page)
+    const foxIds = kennelFoxes.map(f => f.id);
     const currentIndex = foxIds.indexOf(fox.id);
+    
     if (currentIndex > 0) {
       const previousFoxId = foxIds[currentIndex - 1];
       router.push(`/fox/${previousFoxId}`);
@@ -65,32 +102,83 @@ export default function FoxProfilePage() {
   };
 
   const goToNextFox = () => {
-    const foxIds = Object.keys(foxes).filter(id => foxes[id].gender === fox.gender);
+    // Determine which kennel this fox belongs to
+    let kennelFoxes;
+    if (fox.age < 1) {
+      // Young Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.age < 1);
+    } else if (fox.isRetired) {
+      // Retired Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.isRetired);
+    } else {
+      // Adult Kennel
+      kennelFoxes = Object.values(foxes).filter(f => f.age >= 1 && !f.isRetired);
+    }
+    
+    // Get fox IDs in display order (same order as kennel page)
+    const foxIds = kennelFoxes.map(f => f.id);
     const currentIndex = foxIds.indexOf(fox.id);
+    
     if (currentIndex < foxIds.length - 1) {
       const nextFoxId = foxIds[currentIndex + 1];
       router.push(`/fox/${nextFoxId}`);
     }
   };
 
+  // Navigate back to the appropriate kennel page
+  const goToKennel = () => {
+    if (fox.age < 1) {
+      router.push('/kennel/young');
+    } else if (fox.isRetired) {
+      router.push('/kennel/retired');
+    } else {
+      router.push('/kennel');
+    }
+  };
+
   const getStat = (key: keyof typeof fox.stats, bonus = 0) => {
     const base = fox.stats[key];
     const boost = activeBoosts[key] || 0;
-    return { value: base + boost + bonus, bonus: boost + bonus };
+    const totalBonus = boost + bonus;
+    return { value: base + totalBonus, bonus: totalBonus };
   };
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex items-center justify-between">
-        <Button onClick={() => router.back()} variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
+        <Button onClick={goToKennel} variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
           <ArrowLeft size={18} /> Back
         </Button>
         <div className="flex gap-2">
           {/* Navigation arrows for kennel browsing */}
-          <Button onClick={goToPreviousFox} variant="outline" disabled={Object.keys(foxes).filter(id => foxes[id].gender === fox.gender).length <= 1} className="gap-2">
+          <Button onClick={goToPreviousFox} variant="outline" disabled={
+            (() => {
+              let kennelFoxes;
+              if (fox.age < 1) {
+                kennelFoxes = Object.values(foxes).filter(f => f.age < 1);
+              } else if (fox.isRetired) {
+                kennelFoxes = Object.values(foxes).filter(f => f.isRetired);
+              } else {
+                kennelFoxes = Object.values(foxes).filter(f => f.age >= 1 && !f.isRetired);
+              }
+              return kennelFoxes.length <= 1;
+            })()
+          } className="gap-2">
             <ChevronLeft size={16} /> Previous
           </Button>
-          <Button onClick={goToNextFox} variant="outline" disabled={Object.keys(foxes).filter(id => foxes[id].gender === fox.gender).length <= 1} className="gap-2">
+          <Button onClick={goToNextFox} variant="outline" disabled={
+            (() => {
+              let kennelFoxes;
+              if (fox.age < 1) {
+                kennelFoxes = Object.values(foxes).filter(f => f.age < 1);
+              } else if (fox.isRetired) {
+                kennelFoxes = Object.values(foxes).filter(f => f.isRetired);
+              } else {
+                kennelFoxes = Object.values(foxes).filter(f => f.age >= 1 && !f.isRetired);
+              }
+              return kennelFoxes.length <= 1;
+            })()
+          } className="gap-2">
             Next <ChevronRight size={16} />
           </Button>
           {!isFoundational && (<>
@@ -111,7 +199,7 @@ export default function FoxProfilePage() {
              <FoxIllustration phenotype={fox.phenotype} baseColor={fox.baseColor} pattern={fox.pattern} eyeColor={fox.eyeColor} size={24} />
              <div className="mt-2 text-center">
                 <h1 className="text-2xl font-black text-earth-900 tracking-tight flex items-center gap-2 justify-center italic uppercase">{fox.name}</h1>
-                <p className="mt-1 text-earth-500 font-medium tracking-wide uppercase text-xs">{fox.age} year old {fox.phenotype} fox</p>
+                <p className="mt-1 text-earth-500 font-medium tracking-wide uppercase text-xs">{fox.age} year old {fox.phenotype}</p>
              </div>
           </div>
         </div>
@@ -157,13 +245,88 @@ export default function FoxProfilePage() {
               <Microscope size={16} /> Reveal Genotype
             </Button>
           )}
-          <Button 
-            onClick={() => applyItem('supplies', fox.id)}
-            variant="outline" 
-            className="gap-2 font-bold h-10"
-          >
-            <ShoppingBag size={16} /> Feed Fox
-          </Button>
+          
+          {/* Feed Dropdown */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Button
+                variant="outline"
+                className="gap-2 font-bold h-10 pr-8"
+                onClick={() => setIsFeedDropdownOpen(!isFeedDropdownOpen)}
+              >
+                {feedOptions.find(f => f.id === selectedFeed)?.icon}
+                {feedOptions.find(f => f.id === selectedFeed)?.label}
+                <ChevronDown size={14} className="absolute right-2" />
+              </Button>
+              
+              {/* Save Feed Badge */}
+              <Button
+                variant="outline"
+                className="gap-2 font-bold h-10"
+                style={{ appearance: 'none' }}
+                onClick={() => {
+                  if (hiredNutritionist) {
+                    setFoxPreferredFeed(fox.id, selectedFeed);
+                    alert('Feed preference saved for "Feed All" function!');
+                  }
+                }}
+                disabled={!hiredNutritionist}
+              >
+                <Save size={16} /> Save Feed
+              </Button>
+              
+              {/* Current Feed Indicator */}
+              {fox.preferredFeed && (
+                <Badge className="bg-blue-100 text-blue-700 border-blue-200 gap-1">
+                  <Check size={12} /> {feedOptions.find(f => f.id === fox.preferredFeed)?.label}
+                </Badge>
+              )}
+              
+              {isFeedDropdownOpen && (
+                <div className="absolute top-full mt-1 w-48 bg-card border border-border rounded-lg shadow-lg z-50">
+                  {feedOptions.map(feed => {
+                    const count = inventory[feed.id] || 0;
+                    return (
+                      <button
+                        key={feed.id}
+                        className="w-full flex items-center justify-between px-3 py-2 hover:bg-muted transition-colors text-left"
+                        onClick={() => {
+                          setSelectedFeed(feed.id);
+                          setIsFeedDropdownOpen(false);
+                        }}
+                        disabled={count === 0}
+                      >
+                        <div className="flex items-center gap-2">
+                          {feed.icon}
+                          <span className="text-sm">{feed.label}</span>
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {count}
+                        </Badge>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            
+            <Button 
+              onClick={handleFeed}
+              variant="outline" 
+              className="gap-2 font-bold h-10"
+              disabled={(inventory[selectedFeed] || 0) === 0}
+            >
+              <ShoppingBag size={16} /> Feed
+            </Button>
+            
+            {/* Fed Indicator */}
+            {isFed && (
+              <Badge className="bg-green-100 text-green-700 border-green-200 gap-1">
+                <Check size={12} /> Fed
+              </Badge>
+            )}
+          </div>
+          
           {!fox.pedigreeAnalyzed && (
             <Button onClick={handleAnalyze} variant="outline" className="gap-2 font-bold h-10">
               <Heart size={16} /> Analyze Pedigree
@@ -283,49 +446,6 @@ export default function FoxProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Specialty Feeds */}
-        <Card className="md:col-span-3 folk-card bg-fire-50 border-fire-100 border-2">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-fire-700 font-black uppercase italic tracking-tight">
-              <ShoppingBag size={20} /> Apply Specialty Feeds
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-              {[
-                { id: 'feed-head', label: 'Head' },
-                { id: 'feed-topline', label: 'Topline' },
-                { id: 'feed-forequarters', label: 'Fore' },
-                { id: 'feed-hindquarters', label: 'Hind' },
-                { id: 'feed-tail', label: 'Tail' },
-                { id: 'feed-coatQuality', label: 'Coat' },
-                { id: 'feed-temperament', label: 'Temp' },
-                { id: 'feed-presence', label: 'Pres' },
-              ].map(f => {
-                const count = inventory[f.id] || 0;
-                const statKey = f.id.replace('feed-', '');
-                const expiry = fox.boosts?.[statKey];
-                const isActive = expiry && expiry > now;
-                const daysLeft = isActive ? Math.ceil((expiry - now) / (1000 * 60 * 60 * 24)) : 0;
-                return (
-                  <Button 
-                    key={f.id}
-                    variant="outline"
-                    className="flex-1 min-w-[100px] h-20 flex flex-col items-center justify-center gap-1 border-fire-200 hover:bg-white hover:border-fire-500 transition-all bg-white shadow-sm rounded-xl"
-                    disabled={count === 0}
-                    onClick={() => applyItem(f.id, fox.id)}
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-fire-800">{f.label}</span>
-                    <Badge variant="secondary" className="bg-fire-100 text-fire-700 text-[10px] font-black border-none h-5">
-                        {count}
-                    </Badge>
-                  </Button>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Nutritionist Controls */}
         {hiredNutritionist && (
           <Card className="md:col-span-3 folk-card bg-orange-50 border-orange-100 border-2">
@@ -366,7 +486,7 @@ export default function FoxProfilePage() {
         )}
 
         {/* Pedigree */}
-        <Card className="col-span-full folk-card border-2 shadow-inner">
+        <Card className="folk-card border-2 shadow-inner max-w-fit mx-auto">
           <CardHeader className="flex flex-row items-center justify-between border-b border-earth-100 bg-earth-50/30">
             <CardTitle className="flex items-center gap-2 font-black text-earth-900 tracking-tight italic uppercase">
               <Heart size={18} className="text-rose-600" /> Ancestry & Pedigree
@@ -377,8 +497,8 @@ export default function FoxProfilePage() {
               </div>
             )}
           </CardHeader>
-          <CardContent className="overflow-x-auto p-8">
-             <div className="min-w-[1000px]">
+          <CardContent className="p-3">
+             <div className="min-w-[500px]">
                 <PedigreeTree foxId={fox.id} foxes={foxes} />
              </div>
           </CardContent>
@@ -392,14 +512,15 @@ function StatBar({ label, value, bonus = 0 }: { label: string; value: number; bo
   // Scale stat values to percentage (max value is 100 for most stats, 75 for fertility)
   const maxValue = label === 'Fertility' ? 75 : 100;
   const percentage = Math.min(100, (value / maxValue) * 100);
+  const baseValue = value - bonus; // Calculate base value
   
   return (
     <div className="space-y-1">
       <div className="flex justify-between text-[10px] font-black uppercase tracking-wider text-muted-foreground">
         <span>{label}</span>
         <span className="flex items-center gap-1 font-mono text-xs text-foreground">
+            {baseValue}
             {bonus > 0 && <span className="text-green-600 font-bold dark:text-green-400">+{bonus}</span>}
-            {value}
         </span>
       </div>
       <div className="h-2 bg-muted rounded-full overflow-hidden shadow-inner relative">
@@ -422,23 +543,23 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
   const fox = foxId ? foxes[foxId] : null;
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-1">
       <div className={cn(
-        "flex-1 p-3 border-2 rounded-2xl text-xs min-w-[180px] shadow-sm transition-all",
+        "w-24 h-8 p-2 border rounded-lg text-[10px] shadow-sm transition-all flex items-center justify-center",
         fox ? "border-earth-100 bg-white" : "border-earth-100 bg-earth-50 text-earth-300 italic"
       )}>
         {fox ? (
-          <div>
-            <div className="font-black text-earth-900 uppercase tracking-tighter truncate">{fox.name}</div>
-            <div className="text-[10px] font-bold text-earth-400 uppercase tracking-widest truncate">{fox.phenotype}</div>
+          <div className="text-center">
+            <div className="font-black text-earth-900 uppercase tracking-tight truncate text-[9px] leading-tight">{fox.name}</div>
+            <div className="text-[8px] font-bold text-earth-400 uppercase tracking-widest truncate leading-tight">{fox.phenotype}</div>
           </div>
         ) : (
-          "Unknown Ancestor"
+          <div className="text-[8px] text-center">?</div>
         )}
       </div>
       
       {depth < 4 && (
-        <div className="flex flex-col gap-3 border-l-2 border-earth-100 pl-6 py-2">
+        <div className="flex flex-col gap-0.5 border-l border-earth-100 pl-2 py-0.5">
           <PedigreeTree foxId={fox?.parents[0] || null} foxes={foxes} depth={depth + 1} />
           <PedigreeTree foxId={fox?.parents[1] || null} foxes={foxes} depth={depth + 1} />
         </div>

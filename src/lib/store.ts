@@ -576,6 +576,13 @@ export const useGameStore = create<GameState>()(
 
 
 
+        // Reset fed status at the start of each season
+        Object.keys(updatedFoxes).forEach(id => {
+          updatedFoxes[id].lastFed = undefined; // Reset fed status
+        });
+
+
+
         if (nextIndex === 0) {
 
           Object.keys(updatedFoxes).forEach(id => {
@@ -584,7 +591,8 @@ export const useGameStore = create<GameState>()(
 
             updatedFoxes[id].pointsYear = 0;
 
-            if (updatedFoxes[id].age > 12) {
+            // Auto-retire all foxes at 10 years old
+            if (updatedFoxes[id].age >= 10) {
 
               updatedFoxes[id].isRetired = true;
 
@@ -743,6 +751,17 @@ export const useGameStore = create<GameState>()(
       addFox: (fox) => set((state) => ({ foxes: { ...state.foxes, [fox.id]: state.hiredGeneticist ? { ...fox, genotypeRevealed: true } : fox } })),
 
       sellFox: (id) => set((state) => {
+
+        const fox = state.foxes[id];
+
+        // Prevent retirement before 6 years old
+        if (fox && fox.age < 6) {
+
+          alert('Foxes cannot be retired before they are 6 years old.');
+
+          return state;
+
+        }
 
         const newFoxes = { ...state.foxes };
 

@@ -28,10 +28,10 @@ export default function KennelPage() {
             </div>
 
             {/* Combined Kennel Navigation & Management */}
-            <div className="space-y-10">
+            <div className="space-y-10 px-4 sm:px-0">
                 {/* Centered Management Card */}
-                <div className="flex justify-center">
-                    <div className="flex flex-col gap-6 bg-card p-8 rounded-[40px] border-2 border-border shadow-sm w-full max-w-6xl">
+                <div className="w-full max-w-4xl sm:max-w-6xl mx-auto">
+                    <div className="flex flex-col gap-6 bg-card p-8 rounded-[40px] border-2 border-border shadow-sm">
                         {/* Navigation Section - Top of Card */}
                         <div className="flex justify-between items-center">
                             <Link href="/kennel/young">
