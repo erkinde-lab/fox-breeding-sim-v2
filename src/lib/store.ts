@@ -18,7 +18,13 @@ const generateNPCStuds = (year: number, season: string): Record<string, Fox> => 
   for (let i = 0; i < 4; i++) {
     const stud = createFoundationalFox(npcSeededRandom, "Male");
     stud.isNPC = true;
+    stud.genotypeRevealed = true;
     stud.studFee = 500 + Math.floor(npcSeededRandom() * 1000);
+    Object.keys(stud.stats).forEach(key => {
+      if (key !== "fertility") {
+        stud.stats[key as keyof Stats] = Math.max(20, stud.stats[key as keyof Stats]);
+      }
+    });
     nextNpcStuds[stud.id] = stud;
   }
   return nextNpcStuds;

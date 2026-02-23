@@ -159,7 +159,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const patternName = patterns.length > 0 ? patterns.join(' ') : 'None';
 
   const isMaskingPhenotype = finalName === 'Albino' || finalName === 'Leucistic' || finalName === 'Stillborn';
-  let displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
+  const displayName = `${patternName !== 'None' && !isMaskingPhenotype ? patternName + ' ' : ''}${finalName} Fox`;
 
   // Eye Color Logic
   let eyeColor = providedEyeColor;
@@ -408,8 +408,17 @@ export function createFoundationalFox(random: () => number = Math.random, gender
   Object.assign(genotype, baseGenotypes[Math.floor(safeRandom() * baseGenotypes.length)]);
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
-  const rareGenes = ['G', 'C', 'P', 'SS', 'Fire', 'L'];
-  if (safeRandom() > 0.75) {
+  const rareRand = safeRandom();
+  const rareGenes = ["G", "C", "P", "SS", "Fire", "L"];
+  if (rareRand < 0.5) {
+    const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
+    const locus = LOCI[gene];
+    const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
+    if (alleles.length > 0) {
+      const rare = alleles[Math.floor(safeRandom() * alleles.length)];
+      genotype[gene] = [rare, rare];
+    }
+  } else if (rareRand < 0.5 + 0.5 * 0.75) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
     const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
@@ -423,7 +432,8 @@ export function createFoundationalFox(random: () => number = Math.random, gender
     genotype,
     coi: 0,
     pedigreeAnalyzed: true,
-  });
+    gender,
+  }, safeRandom);
 }
 
 export function createFoundationFoxCollection(random: () => number = Math.random): Fox[] {
@@ -509,7 +519,8 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
     genotype,
     coi: 0,
     pedigreeAnalyzed: true,
-  });
+    gender,
+  }, safeRandom);
 }
 
 export function getActiveBoosts(fox: Fox): Record<string, number> {

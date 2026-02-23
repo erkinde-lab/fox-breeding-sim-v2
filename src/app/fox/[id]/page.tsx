@@ -29,8 +29,8 @@ export default function FoxProfilePage() {
   const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
 
   useEffect(() => {
-    if (fox) setNewName(fox.name);
-  }, [fox]);
+    if (fox && !newName) setNewName(fox.name);
+  }, [fox, newName]);
 
   if (!fox) {
     return (
@@ -44,7 +44,6 @@ export default function FoxProfilePage() {
 
   const activeBoosts = getActiveBoosts(fox);
   const hungry = isHungry(fox);
-  const now = Date.now();
 
   const handleRename = () => {
     if (newName && newName !== fox.name) {

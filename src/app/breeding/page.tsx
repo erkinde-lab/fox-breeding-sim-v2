@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useGameStore } from '@/lib/store';
-import { getPhenotype, breed, calculateCOI } from '@/lib/genetics';
+import { getPhenotype, breed, calculateCOI, LOCI } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -95,6 +95,19 @@ export default function BreedingPage() {
               >
                 <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name} {m.isNPC && <Badge className="ml-2 bg-secondary/10 text-secondary border-none">NPC</Badge>}</div>
                 <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`} {m.isNPC && ` • ${m.studFee} Gold`}</div>
+                {m.genotypeRevealed && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {Object.entries(m.genotype).map(([locus, alleles]) => {
+                      const isRare = alleles.some(a => a !== LOCI[locus].alleles[0]);
+                      if (!isRare) return null;
+                      return (
+                        <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
+                          {locus}: {alleles.join("")}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ))}
             {males.length === 0 && (
@@ -147,6 +160,19 @@ export default function BreedingPage() {
               >
                 <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{f.name}</div>
                 <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.baseColor}{f.pattern !== "None" && ` • ${f.pattern}`}</div>
+                {f.genotypeRevealed && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {Object.entries(f.genotype).map(([locus, alleles]) => {
+                      const isRare = alleles.some(a => a !== LOCI[locus].alleles[0]);
+                      if (!isRare) return null;
+                      return (
+                        <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
+                          {locus}: {alleles.join("")}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             ))}
             {females.length === 0 && (
