@@ -82,7 +82,7 @@ export default function YoungKennelPage() {
                         <PawPrint className="w-12 h-12 text-orange-600/30" />
                     </div>
                     <p className="text-foreground font-black text-3xl italic tracking-tight">No young foxes yet...</p>
-                    <p className="text-muted-foreground font-medium mt-2 mb-10">Your young foxes will appear here when they're born.</p>
+                    <p className="text-muted-foreground font-medium mt-2 mb-10">Your young foxes will appear here when they&apos;re born.</p>
                     <Link href="/breeding">
                         <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-10 h-16 rounded-2xl shadow-2xl shadow-primary/20 text-sm">Visit Breeding Center</Button>
                     </Link>

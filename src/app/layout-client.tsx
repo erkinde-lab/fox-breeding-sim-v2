@@ -334,7 +334,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                 <span className="text-2xl font-folksy text-foreground tracking-tight">Red Fox Simulator</span>
               </div>
               <p className="text-[13px] leading-relaxed max-w-xs font-medium text-foreground opacity-70">
-                The world's premier digital kennel management system for red fox enthusiasts. Compete, breed, and build your legacy in our thriving community.
+                The world&apos;s premier digital kennel management system for red fox enthusiasts. Compete, breed, and build your legacy in our thriving community.
               </p>
               <div className="flex gap-4">
                 <button className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all text-foreground/70 border border-border">
