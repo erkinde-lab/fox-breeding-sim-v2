@@ -1,0 +1,25 @@
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✓ Ready in 1083ms
+○ Compiling / ...
+ HEAD / 200 in 4.4s (compile: 3.8s, render: 573ms)
+ GET / 200 in 130ms (compile: 11ms, render: 119ms)
+ GET /breeding 200 in 765ms (compile: 633ms, render: 132ms)
+ GET / 200 in 99ms (compile: 4ms, render: 95ms)
+ GET /kennel/young 200 in 575ms (compile: 470ms, render: 105ms)
+ GET /kennel?tab=dashboard 200 in 647ms (compile: 508ms, render: 139ms)
+ GET /shop/custom 200 in 605ms (compile: 476ms, render: 130ms)
+ GET / 200 in 89ms (compile: 6ms, render: 84ms)
+ GET /breeding 200 in 150ms (compile: 5ms, render: 144ms)
+ GET / 200 in 75ms (compile: 4ms, render: 71ms)
+ GET /breeding 200 in 74ms (compile: 4ms, render: 71ms)
+ GET / 200 in 77ms (compile: 4ms, render: 73ms)
+ GET /kennel?tab=dashboard 200 in 132ms (compile: 3ms, render: 129ms)

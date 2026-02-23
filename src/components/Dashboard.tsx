@@ -76,7 +76,7 @@ export function Dashboard() {
             {whelpingReports.length > 0 ? (
               <div className="space-y-4">
                 <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest bg-muted/30 px-3 py-1 rounded-md inline-block">
-                  {whelpingReports[0].motherName}&apos;s Litter
+                  {whelpingReports[0].motherName} & {whelpingReports[0].fatherName}&apos;s Litter
                 </p>
                 <div className="grid grid-cols-1 gap-2">
                   {whelpingReports[0].kits.map((kit, i) => (

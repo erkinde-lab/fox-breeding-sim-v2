@@ -22,12 +22,14 @@ export default function CustomFoxPage() {
 
     // Function to format alleles correctly (uppercase then lowercase for heterozygous)
     const formatAlleles = (a1: string, a2: string) => {
-        if (a1 === a2) {
-            return a1 + a1; // Homozygous: AA
-        }
-        // Heterozygous: sort alphabetically but ensure first is uppercase, second is lowercase
-        const sorted = [a1, a2].sort();
-        return sorted[0].toUpperCase() + sorted[1].toLowerCase();
+        const sorted = [a1, a2].sort((x, y) => {
+            const isXCap = x[0] === x[0].toUpperCase();
+            const isYCap = y[0] === y[0].toUpperCase();
+            if (isXCap && !isYCap) return -1;
+            if (!isXCap && isYCap) return 1;
+            return x.localeCompare(y);
+        });
+        return sorted.join("");
     };
 
     const currentFoxCount = Object.keys(foxes).length;

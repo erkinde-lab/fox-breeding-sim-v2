@@ -145,6 +145,7 @@ export interface Pregnancy {
   motherId: string;
 
   fatherId: string;
+  fatherName: string;
 
   fatherGenotype: Genotype;
 
@@ -179,6 +180,7 @@ export interface AdminLog {
 export interface WhelpingReport {
 
   motherName: string;
+  fatherName: string;
 
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
 
@@ -616,53 +618,42 @@ export const useGameStore = create<GameState>()(
 
             const kitCount = (typeof window !== 'undefined' ? Math.floor(Math.random() * 4) : 3) + 2;
 
-            const kits = [];
-
             for (let i = 0; i < kitCount; i++) {
-
               const kitGenotype = breed(mother.genotype, preg.fatherGenotype);
+              const kitPhenotype = getPhenotype(kitGenotype, calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity));
 
-              if (kitGenotype) {
-
+              if (kitPhenotype.isLethal) {
+                kits.push({
+                  name: "Stillborn Fox",
+                  phenotype: "Stillborn",
+                  baseColor: "-",
+                  pattern: "-",
+                  eyeColor: "-",
+                  isStillborn: true
+                });
+              } else {
                 const kit = createFox({
-
                   parents: [preg.motherId, preg.fatherId],
-
                   genotype: kitGenotype,
-
+                  silverIntensity: calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity),
                   age: 0,
-
                   birthYear: nextYear,
-
                 });
 
                 updatedFoxes[kit.id] = kit;
 
                 kits.push({
-
                   name: kit.name,
-
                   phenotype: kit.phenotype,
-
                   baseColor: kit.baseColor,
-
                   pattern: kit.pattern,
-
                   eyeColor: kit.eyeColor,
-
                   isStillborn: false
-
                 });
-
-              } else {
-
-                kits.push({ name: 'Stillborn Kit', phenotype: 'Stillborn', baseColor: 'None', pattern: 'None', eyeColor: 'None', isStillborn: true });
-
               }
-
             }
 
-            whelpingReports.push({ motherName: mother.name, kits });
+            whelpingReports.push({ motherName: mother.name, fatherName: preg.fatherName, kits });
 
           });
 
@@ -723,6 +714,7 @@ export const useGameStore = create<GameState>()(
               motherId: femaleId,
 
               fatherId: maleId,
+              fatherName: male.name,
 
               fatherGenotype: male.genotype,
 

@@ -19,7 +19,7 @@ const FAQS = [
   },
   {
     q: "What are lethal genes?",
-    a: "Some mutations (like Platinum or White Marked) are lethal in homozygous form (WpWp). These kits will be stillborn. Always check genotypes before breeding!"
+    a: "Some mutations (like Platinum or White Marked) are lethal in homozygous form (WPWP). These kits will be stillborn. Always check genotypes before breeding!"
   },
   {
     q: "How do Staff members help?",

@@ -9,7 +9,7 @@ export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: st
   P: { name: 'Pearl', alleles: ['P', 'p'] }, // pp = Pearl
   SS: { name: 'Mansfield Pearl', alleles: ['S', 's'] }, // ss = Mansfield Pearl
   Fire: { name: 'Fire', alleles: ['FI', 'fi'] }, // fi = Fire (Recessive)
-  W: { name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG'], lethal: ['WW', 'WMWM', 'WGWG'] },
+  W: { name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG', 'WP'], lethal: ['WW', 'WMWM', 'WGWG', 'WPWP'] },
   L: { name: 'Leucistic', alleles: ['L', 'l'] }, // ll = Leucistic
 };
 
@@ -153,7 +153,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   // Pattern Logic
   const patterns: string[] = [];
   if (W.includes('WM')) patterns.push('Marble');
-  if (W.includes('Wp')) patterns.push('Platinum');
+  if (W.includes('WP')) patterns.push('Platinum');
   if (W.includes('WG')) patterns.push('Georgian');
   if (W.includes('W')) patterns.push('White Mark');
   const patternName = patterns.length > 0 ? patterns.join(' ') : 'None';
@@ -285,7 +285,7 @@ export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0): Stats {
   return stats;
 }
 
-export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
+export function breed(parent1: Genotype, parent2: Genotype): Genotype {
   const offspring: Genotype = {};
   for (const locus in LOCI) {
     const p1Alleles = parent1[locus];
@@ -300,7 +300,6 @@ export function breed(parent1: Genotype, parent2: Genotype): Genotype | null {
     offspring[locus] = [a1, a2];
   }
 
-  if (getPhenotype(offspring).isLethal) return null;
   return offspring;
 }
 
