@@ -243,9 +243,9 @@ interface GameState {
 
   bisWins: number;
 
-  bestMaleWins: number;
+  bestDogWins: number;
 
-  bestFemaleWins: number;
+  bestVixenWins: number;
 
   totalShowPoints: number;
 
@@ -293,7 +293,7 @@ interface GameState {
 
   advanceTime: () => void;
 
-  breedFoxes: (maleId: string, femaleId: string) => void;
+  breedFoxes: (dogId: string, vixenId: string) => void;
 
   addGold: (amount: number) => void;
 
@@ -325,7 +325,7 @@ interface GameState {
 
   buyFoundationalFoxById: (slotIndex: number) => void;
 
-  buyCustomFoundationalFox: (genotype: Genotype, gender: 'Male' | 'Female', name?: string, eyeColor?: string) => void;
+  buyCustomFoundationalFox: (genotype: Genotype, gender: 'Dog' | 'Vixen', name?: string, eyeColor?: string) => void;
 
   expandKennel: () => void;
 
@@ -339,7 +339,7 @@ interface GameState {
 
   adminAddItem: (itemId: string, count: number) => void;
 
-  adminSpawnFox: (name: string, gender: 'Male' | 'Female', genotype: Genotype) => void;
+  adminSpawnFox: (name: string, gender: 'Dog' | 'Vixen', genotype: Genotype) => void;
 
   adminUpdateFoxStats: (foxId: string, stats: Partial<Stats>) => void;
 
@@ -502,9 +502,9 @@ export const useGameStore = create<GameState>()(
 
       bisWins: 0,
 
-      bestMaleWins: 0,
+      bestDogWins: 0,
 
-      bestFemaleWins: 0,
+      bestVixenWins: 0,
 
       totalShowPoints: 0,
 
@@ -710,24 +710,23 @@ export const useGameStore = create<GameState>()(
 
 
 
-      breedFoxes: (maleId, femaleId) => {
+      breedFoxes: (dogId, vixenId) => {
 
         const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
 
-        const male = foxes[maleId] || npcStuds[maleId];
+        const dog = foxes[dogId];
 
-        const female = foxes[femaleId];
+        const vixen = foxes[vixenId];
 
 
 
-        if (!male || !female || season !== 'Winter') return;
-        if (male.isNPC && gold < male.studFee) return;
+        if (!dog || !vixen || season !== 'Winter') return;
 
-        if (male.gender !== 'Male' || female.gender !== 'Female') return;
+        if (dog.gender !== 'Dog' || vixen.gender !== 'Vixen') return;
 
-        if (male.age < 2 || female.age < 2 || male.isRetired || female.isRetired) return;
+        if (dog.age < 2 || vixen.age < 2 || dog.isRetired || vixen.isRetired) return;
 
-        if (pregnancyList.some(p => p.motherId === femaleId)) return;
+        if (pregnancyList.some(p => p.motherId === vixenId)) return;
 
 
 
@@ -740,16 +739,15 @@ export const useGameStore = create<GameState>()(
 
             {
 
-              motherId: femaleId,
+              motherId: vixenId,
 
-              fatherId: maleId,
-              fatherName: male.name,
+              fatherId: dogId,
 
-              fatherGenotype: male.genotype,
+              fatherGenotype: dog.genotype,
 
-              fatherStats: male.stats,
+              fatherStats: dog.stats,
 
-              fatherSilverIntensity: male.silverIntensity,
+              fatherSilverIntensity: dog.silverIntensity,
 
               dueYear: state.year + 1,
 
@@ -1017,19 +1015,19 @@ export const useGameStore = create<GameState>()(
 
 
 
-        const maleGenotype = getInitialGenotype();
+        const dogGenotype = getInitialGenotype();
 
-        const male = createFox({ name: 'Starter Male', gender: 'Male', genotype: maleGenotype, stats: starterStats() });
-
-
-
-        const femaleGenotype = getInitialGenotype();
-
-        const female = createFox({ name: 'Starter Female', gender: 'Female', genotype: femaleGenotype, stats: starterStats() });
+        const dog = createFox({ name: 'Starter Dog', gender: 'Dog', genotype: dogGenotype, stats: starterStats() });
 
 
 
-        set({ foxes: { [male.id]: male, [female.id]: female }, gold: 10000, gems: 100, members: defaultMembers });
+        const vixenGenotype = getInitialGenotype();
+
+        const vixen = createFox({ name: 'Starter Vixen', gender: 'Vixen', genotype: vixenGenotype, stats: starterStats() });
+
+
+
+        set({ foxes: { [dog.id]: dog, [vixen.id]: vixen }, gold: 10000, gems: 100, members: defaultMembers });
 
         get().advanceTime();
 
@@ -1157,7 +1155,7 @@ export const useGameStore = create<GameState>()(
 
         const fox = state.foxes[foxId];
 
-        if (!fox || fox.gender !== 'Male' || fox.age < 2) return state;
+        if (!fox || fox.gender !== 'Dog' || fox.age < 2) return state;
 
         return {
 
@@ -1391,9 +1389,9 @@ export const useGameStore = create<GameState>()(
 
         let newBisWins = get().bisWins;
 
-        let newBestMaleWins = get().bestMaleWins;
+        let newBestDogWins = get().bestDogWins;
 
-        let newBestFemaleWins = get().bestFemaleWins;
+        let newBestVixenWins = get().bestVixenWins;
 
         let newTotalPoints = get().totalShowPoints;
 
@@ -1427,9 +1425,9 @@ export const useGameStore = create<GameState>()(
 
                 newGold += config.first;
 
-                if (res.class === 'Best Adult Male' || res.class === 'Best Juvenile Male') newBestMaleWins++;
+                if (res.class === 'Best Adult Dog' || res.class === 'Best Juvenile Dog') newBestDogWins++;
 
-                if (res.class === 'Best Adult Female' || res.class === 'Best Juvenile Female') newBestFemaleWins++;
+                if (res.class === 'Best Adult Vixen' || res.class === 'Best Juvenile Vixen') newBestVixenWins++;
 
               }
 
@@ -1465,7 +1463,7 @@ export const useGameStore = create<GameState>()(
 
         });
 
-        set({ foxes: updatedFoxes, gold: newGold, seniorShowWinners: newSeniorWinners, showReports: [...newShowReports, ...get().showReports].slice(0, 10), bisWins: newBisWins, bestMaleWins: newBestMaleWins, bestFemaleWins: newBestFemaleWins, totalShowPoints: newTotalPoints });
+        set({ foxes: updatedFoxes, gold: newGold, seniorShowWinners: newSeniorWinners, showReports: [...newShowReports, ...get().showReports].slice(0, 10), bisWins: newBisWins, bestDogWins: newBestDogWins, bestVixenWins: newBestVixenWins, totalShowPoints: newTotalPoints });
 
         get().checkAchievements();
 
@@ -1523,48 +1521,13 @@ export const useGameStore = create<GameState>()(
 
       name: 'red-fox-sim-storage',
 
-      version: 1,
+      version: 2,
 
       migrate: (persistedState: any, version: number) => {
-
-        if (version === 0) {
-
-          // Add default categories if missing
-
-          const defaultCategories = [
-
-            { id: 'staff', name: 'Staff Announcements & Feedback', description: 'Official news and feedback from the development team.', icon: 'Megaphone' },
-
-            { id: 'general', name: 'General Discussion', description: 'Talk about anything fox-related!', icon: 'MessageSquare' },
-
-            { id: 'breeding', name: 'Breeding Tips', description: 'Share your genetic discoveries.', icon: 'Heart' },
-
-            { id: 'shows', name: 'Show Results', description: 'Celebrate your wins!', icon: 'Trophy' },
-
-            { id: 'market', name: 'Trading', description: 'Buy, sell, and trade foxes.', icon: 'Store' },
-
-          ];
-
-
-
-          if (persistedState && persistedState.forumCategories) {
-
-            const existingIds = persistedState.forumCategories.map((c: any) => c.id);
-
-            const missing = defaultCategories.filter(c => !existingIds.includes(c.id));
-
-            if (missing.length > 0) {
-
-              persistedState.forumCategories = [...missing, ...persistedState.forumCategories];
-
-            }
-
-          }
-
+        if (version < 2) {
+          return undefined;
         }
-
         return persistedState;
-
       },
 
       partialize: (state) => state

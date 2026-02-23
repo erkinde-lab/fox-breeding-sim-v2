@@ -9,31 +9,37 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
 
 export default function BreedingPage() {
-  const { foxes, npcStuds, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
-  const [selectedMale, setSelectedMale] = useState<string | null>(null);
-  const [selectedFemale, setSelectedFemale] = useState<string | null>(null);
+  const { foxes, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
+  const [selectedDog, setSelectedDog] = useState<string | null>(null);
+  const [selectedVixen, setSelectedVixen] = useState<string | null>(null);
 
   const hasCalculator = inventory['calculator-access'] > 0;
   const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
-  const males = [...Object.values(foxes), ...Object.values(npcStuds)].filter(f => f.gender === 'Male' && !f.isRetired && f.age >= 2);
-  const females = foxList.filter(f => f.gender === 'Female' && !f.isRetired && f.age >= 2);
+  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
+  const fedogs = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const handleBreed = () => {
-    if (selectedMale && selectedFemale) {
+    if (selectedDog && selectedVixen) {
       // Check for calculator access OR geneticist access
-      breedFoxes(selectedMale, selectedFemale);
-      setSelectedMale(null);
-      setSelectedFemale(null);
+      if (!hasCalculator && !hasGeneticist) {
+        alert("You need to hire Geneticist staff member or purchase Breeding Calculator to access breeding insights!");
+        console.log("Calculator access:", hasCalculator, "Geneticist access:", hasGeneticist);
+        return;
+      }
+      
+      breedFoxes(selectedDog, selectedVixen);
+      setSelectedDog(null);
+      setSelectedVixen(null);
       alert("Breeding successful! Kits will be born in Spring.");
     }
   };
 
   const calculateOutcomes = () => {
-    if (!selectedMale || !selectedFemale) return null;
-    const m = foxes[selectedMale] || npcStuds[selectedMale];
-    const f = foxes[selectedFemale];
+    if (!selectedDog || !selectedVixen) return null;
+    const m = foxes[selectedDog];
+    const f = foxes[selectedVixen];
 
     const counts: Record<string, number> = {};
     const trials = 1000;
@@ -48,7 +54,7 @@ export default function BreedingPage() {
 
     const predictedCOI = calculateCOI('temp', {
       ...foxes,
-      temp: { parents: [selectedMale, selectedFemale] }
+      temp: { parents: [selectedDog, selectedVixen] }
     });
 
     return {
@@ -76,21 +82,21 @@ export default function BreedingPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
-        {/* Male Selection */}
-        <Card className={cn("folk-card border-2 flex flex-col transition-all duration-500", selectedMale ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border")}>
+        {/* Dog Selection */}
+        <Card className={cn("folk-card border-2 flex flex-col transition-all duration-500", selectedDog ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border")}>
           <CardHeader>
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-400"></span> Select Sire (Male)
+              <span className="w-2 h-2 rounded-full bg-blue-400"></span> Select Sire (Dog)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 flex-1">
-            {males.map(m => (
+            {dogs.map(m => (
               <div
                 key={m.id}
-                onClick={() => setSelectedMale(m.id)}
+                onClick={() => setSelectedDog(m.id)}
                 className={cn(
                   "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
-                  selectedMale === m.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
+                  selectedDog === m.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
                 <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name} {m.isNPC && <Badge className="ml-2 bg-secondary/10 text-secondary border-none">NPC</Badge>}</div>
@@ -110,9 +116,9 @@ export default function BreedingPage() {
                 )}
               </div>
             ))}
-            {males.length === 0 && (
+            {dogs.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible males</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible dogs</p>
               </div>
             )}
           </CardContent>
@@ -120,17 +126,17 @@ export default function BreedingPage() {
 
         <div className="flex flex-col items-center justify-center gap-6 p-8 bg-muted/20 rounded-[48px] border-2 border-dashed border-border">
           <div className="relative">
-            <Heart className={cn("w-20 h-20 transition-all duration-700", selectedMale && selectedFemale ? "text-primary scale-110 drop-shadow-[0_0_15px_rgba(var(--primary),0.5)] animate-pulse" : "text-muted-foreground/10 translate-y-2")} />
-            {selectedMale && selectedFemale && <div className="absolute inset-0 animate-ping bg-primary/20 rounded-full scale-150 blur-xl"></div>}
+            <Heart className={cn("w-20 h-20 transition-all duration-700", selectedDog && selectedVixen ? "text-primary scale-110 drop-shadow-[0_0_15px_rgba(var(--primary),0.5)] animate-pulse" : "text-muted-foreground/10 translate-y-2")} />
+            {selectedDog && selectedVixen && <div className="absolute inset-0 animate-ping bg-primary/20 rounded-full scale-150 blur-xl"></div>}
           </div>
 
           <div className="space-y-4 w-full">
             <Button
               onClick={handleBreed}
-              disabled={!selectedMale || !selectedFemale || !isWinter}
+              disabled={!selectedDog || !selectedVixen || !isWinter}
               className={cn(
                 "w-full py-8 rounded-2xl font-black uppercase tracking-widest text-sm transition-all shadow-xl",
-                selectedMale && selectedFemale ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20" : "bg-muted text-muted-foreground opacity-50"
+                selectedDog && selectedVixen ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20" : "bg-muted text-muted-foreground opacity-50"
               )}
             >
               Commit Breeding
@@ -141,21 +147,21 @@ export default function BreedingPage() {
           </div>
         </div>
 
-        {/* Female Selection */}
-        <Card className={cn("folk-card border-2 flex flex-col transition-all duration-500", selectedFemale ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border")}>
+        {/* Vixen Selection */}
+        <Card className={cn("folk-card border-2 flex flex-col transition-all duration-500", selectedVixen ? "border-primary/40 bg-primary/5 shadow-lg shadow-primary/5" : "border-border")}>
           <CardHeader>
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-pink-400"></span> Select Dam (Female)
+              <span className="w-2 h-2 rounded-full bg-pink-400"></span> Select Dam (Vixen)
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 flex-1">
-            {females.map(f => (
+            {fedogs.map(f => (
               <div
                 key={f.id}
-                onClick={() => setSelectedFemale(f.id)}
+                onClick={() => setSelectedVixen(f.id)}
                 className={cn(
                   "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
-                  selectedFemale === f.id ? "bg-card border-primary shadow-md -translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
+                  selectedVixen === f.id ? "bg-card border-primary shadow-md -translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
                 <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{f.name}</div>
@@ -175,9 +181,9 @@ export default function BreedingPage() {
                 )}
               </div>
             ))}
-            {females.length === 0 && (
+            {fedogs.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible females</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens</p>
               </div>
             )}
           </CardContent>
@@ -185,7 +191,7 @@ export default function BreedingPage() {
       </div>
 
       {/* Calculator Section */}
-      {selectedMale && selectedFemale && (
+      {selectedDog && selectedVixen && (
         <Card className="folk-card border-secondary/20 bg-secondary/5 overflow-hidden shadow-2xl shadow-secondary/5 rounded-[40px]">
           <CardContent className="p-10">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 pb-6 border-b border-secondary/10">

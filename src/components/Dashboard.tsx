@@ -10,7 +10,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export function Dashboard() {
   const {
-    foxes, bisWins, bestMaleWins, bestFemaleWins,
+    foxes, bisWins, bestDogWins, bestVixenWins,
     totalShowPoints, whelpingReports, showReports,
     hiredNutritionist, feedAllFoxes, kennelCapacity, gold, expandKennel
   } = useGameStore();
@@ -54,8 +54,8 @@ export function Dashboard() {
           variant="primary"
         />
         <StatCard
-          label="Best Female"
-          value={bestFemaleWins}
+          label="Best Vixen"
+          value={bestVixenWins}
           icon={<Trophy size={24} />}
           variant="primary"
         />
