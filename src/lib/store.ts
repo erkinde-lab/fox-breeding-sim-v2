@@ -890,11 +890,20 @@ export const useGameStore = create<GameState>()(
 
 
 
-      renameFox: (id, newName) => set((state) => ({
+      renameFox: (id, newName) => set((state) => {
+        const allFoxes = [
+          ...Object.values(state.foxes),
+          ...Object.values(state.npcStuds),
+          ...state.foundationFoxes
+        ];
+        const isNameTaken = allFoxes.some(f => f.id !== id && f.name.toLowerCase() === newName.toLowerCase());
+        if (isNameTaken) return state;
+        return {
 
         foxes: { ...state.foxes, [id]: { ...state.foxes[id], name: newName, hasBeenRenamed: true } }
+        };
 
-      })),
+      }),
 
 
 
