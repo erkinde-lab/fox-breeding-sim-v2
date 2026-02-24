@@ -16,7 +16,7 @@ const generateNPCStuds = (year: number, season: string): Record<string, Fox> => 
 
   const nextNpcStuds: Record<string, Fox> = {};
   for (let i = 0; i < 4; i++) {
-    const stud = createFoundationalFox(npcSeededRandom, "Male");
+    const stud = createFoundationalFox(npcSeededRandom, "Dog");
     stud.isNPC = true;
     stud.genotypeRevealed = true;
     stud.studFee = 500 + Math.floor(npcSeededRandom() * 1000);
@@ -164,23 +164,14 @@ export interface ShowConfig {
 
 
 export interface Pregnancy {
-
   motherId: string;
-
   fatherId: string;
   fatherName: string;
-  fatherName: string;
-
   fatherGenotype: Genotype;
-
   fatherStats: Stats;
-
   fatherSilverIntensity: number;
-
   dueYear: number;
-
   dueSeason: string;
-
 }
 
 
@@ -202,16 +193,10 @@ export interface AdminLog {
 
 
 export interface WhelpingReport {
-
   motherName: string;
   fatherName: string;
-  fatherName: string;
-
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
-
 }
-
-
 
 interface GameState {
 
@@ -222,6 +207,7 @@ interface GameState {
   gems: number;
 
   year: number;
+  joiningYear: number;
 
   season: 'Spring' | 'Summer' | 'Autumn' | 'Winter';
 
@@ -472,6 +458,7 @@ export const useGameStore = create<GameState>()(
       gems: 100,
 
       year: 1,
+      joiningYear: 1,
 
       season: 'Spring',
 
@@ -493,7 +480,6 @@ export const useGameStore = create<GameState>()(
 
       whelpingReports: [],
 
-      gold: male.isNPC ? state.gold - male.studFee : state.gold,
           pregnancyList: [],
 
       kennelCapacity: 10,
@@ -527,6 +513,9 @@ export const useGameStore = create<GameState>()(
       isAdmin: false,
 
       showConfig: {
+        "Amateur Junior": { bis: 1000, first: 500, second: 250, third: 100 },
+        "Amateur Open": { bis: 2500, first: 1000, second: 500, third: 250 },
+        "Amateur Senior": { bis: 5000, first: 2500, second: 1000, third: 500 },
 
         Junior: { bis: 1000, first: 500, second: 250, third: 100 },
 
@@ -637,6 +626,7 @@ export const useGameStore = create<GameState>()(
           state.pregnancyList.forEach(preg => {
 
             const mother = updatedFoxes[preg.motherId];
+            const kits: any[] = [];
 
             if (!mother) return;
 
@@ -732,7 +722,6 @@ export const useGameStore = create<GameState>()(
 
         set((state) => ({
 
-          gold: male.isNPC ? state.gold - male.studFee : state.gold,
           pregnancyList: [
 
             ...state.pregnancyList,
@@ -742,6 +731,7 @@ export const useGameStore = create<GameState>()(
               motherId: vixenId,
 
               fatherId: dogId,
+              fatherName: dog.name,
 
               fatherGenotype: dog.genotype,
 
@@ -1300,9 +1290,7 @@ export const useGameStore = create<GameState>()(
 
 
       updateShowConfig: (level, updates) => set((state) => ({
-
         showConfig: { ...state.showConfig, [level]: { ...state.showConfig[level], ...updates } }
-
       })),
 
 
@@ -1521,7 +1509,7 @@ export const useGameStore = create<GameState>()(
 
       name: 'red-fox-sim-storage',
 
-      version: 2,
+      version: 3,
 
       migrate: (persistedState: any, version: number) => {
         if (version < 2) {

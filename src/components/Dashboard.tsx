@@ -34,7 +34,7 @@ export function Dashboard() {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         <StatCard
           label="Kennel Capacity"
           value={`${foxList.length} / ${kennelCapacity}`}
@@ -51,6 +51,12 @@ export function Dashboard() {
           label="Best in Show"
           value={bisWins}
           icon={<Star size={24} />}
+          variant="primary"
+        />
+        <StatCard
+          label="Best Dog"
+          value={bestDogWins}
+          icon={<Trophy size={24} />}
           variant="primary"
         />
         <StatCard

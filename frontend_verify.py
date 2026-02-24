@@ -7,7 +7,7 @@ async def verify():
         page = await browser.new_page()
 
         # Check Dashboard
-        await page.goto("http://localhost:3000/")
+        await page.goto("http://localhost:3000/kennel/dashboard")
         await page.wait_for_timeout(2000)
         content = await page.content()
         print(f"Dashboard - Best Vixen found: {'Best Vixen' in content}")
@@ -22,6 +22,10 @@ async def verify():
         print(f"Breeding - Vixen label found: {'Vixen' in content}")
         await page.screenshot(path="breeding_final.png")
 
+                # Toggle Admin Mode
+        await page.goto("http://localhost:3000/kennel/dashboard")
+        await page.click("svg.lucide-paw-print")
+        await page.wait_for_timeout(500)
         # Check Admin
         await page.goto("http://localhost:3000/admin")
         await page.wait_for_timeout(2000)
@@ -30,8 +34,19 @@ async def verify():
         content = await page.content()
         print(f"Admin - Dog button found: {'Dog' in content}")
         print(f"Admin - Vixen button found: {'Vixen' in content}")
+        # Click Shows tab
+        await page.click("text=Shows")
+        await page.wait_for_timeout(1000)
+        content = await page.content()
+        print(f"Admin - Amateur Junior config found: {'Amateur Junior' in content}")
         await page.screenshot(path="admin_final.png")
 
+        # Check Shows for Amateur
+        await page.goto("http://localhost:3000/shows")
+        await page.wait_for_timeout(2000)
+        content = await page.content()
+        print(f"Shows - Amateur Junior found: {"Amateur Junior" in content}")
+        print(f"Shows - Eligibility notice found: {"qualify for Amateur shows" in content}")
         await browser.close()
 
 if __name__ == "__main__":
