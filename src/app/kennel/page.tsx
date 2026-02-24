@@ -1,133 +1,196 @@
 'use client';
 
-import React, { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Star, Heart, ArrowRight } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
+import { isHungry, isGroomed, isTrained, Fox } from '@/lib/genetics';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function KennelPage() {
-    const { foxes, kennelCapacity, hiredNutritionist, feedAllFoxes, expandKennel, gold } = useGameStore();
+function KennelContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const { foxes, kennelCapacity, expandKennel, gold } = useGameStore();
+    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard');
+
+    useEffect(() => {
+        const tab = searchParams.get('tab');
+        if (tab) setActiveTab(tab);
+    }, [searchParams]);
+
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        router.push(`/kennel?tab=${tab}`, { scroll: false });
+    };
+
     const foxList = Object.values(foxes);
-    
-    // Filter for adult foxes only (age >= 1 and not retired)
     const adultFoxes = foxList.filter(fox => fox.age >= 1 && !fox.isRetired);
+    const youngFoxes = foxList.filter(fox => fox.age < 1);
+    const retiredFoxes = foxList.filter(fox => fox.isRetired);
+
+    const tabs = [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'adult', label: 'Adult Kennel', icon: PawPrint, count: adultFoxes.length },
+        { id: 'young', label: 'Young Kennel', icon: Heart, count: youngFoxes.length },
+        { id: 'retired', label: 'Retired', icon: Home, count: retiredFoxes.length },
+    ];
 
     return (
-        <div className="space-y-16 pb-20">
+        <div className="space-y-8 pb-20">
             {/* Header section */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
-                    <h1 className="text-5xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Kennel Management</h1>
-                    <p className="text-muted-foreground mt-2 font-medium">Manage your foxes, view stats, and track show progress.</p>
-                </div>
-            </div>
-
-            {/* Combined Kennel Navigation & Management */}
-            <div className="space-y-10 px-4 sm:px-0">
-                {/* Centered Management Card */}
-                <div className="w-full max-w-4xl sm:max-w-6xl mx-auto">
-                    <div className="flex flex-col gap-6 bg-card p-8 rounded-[40px] border-2 border-border shadow-sm">
-                        {/* Navigation Section - Top of Card */}
-                        <div className="flex justify-between items-center">
-                            <Link href="/kennel/young">
-                                <Button variant="outline" className="bg-primary/10 hover:bg-primary/20 text-primary font-black uppercase tracking-widest px-6 h-12 rounded-xl border-primary/30">
-                                    <PawPrint size={16} /> Young Kennel
-                                </Button>
-                            </Link>
-                            <Link href="/kennel">
-                                <Button variant="outline" className="bg-primary/10 hover:bg-primary/20 text-primary font-black uppercase tracking-widest px-6 h-12 rounded-xl border-primary/30">
-                                    <PawPrint size={16} /> Adult Kennel
-                                </Button>
-                            </Link>
-                            <Link href="/kennel/retired">
-                                <Button variant="outline" className="bg-muted hover:bg-muted/80 text-muted-foreground font-black uppercase tracking-widest px-6 h-12 rounded-xl border-border">
-                                    <PawPrint size={16} /> Retired Kennel
-                                </Button>
-                            </Link>
-                        </div>
-
-                        {/* Kennel Info & Feed All Foxes - Inline */}
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="p-4 bg-primary/10 rounded-2xl">
-                                    <PawPrint className="text-primary" size={28} />
-                                </div>
-                                <div>
-                                    <h2 className="text-3xl font-black italic text-foreground tracking-tight">Adult Kennel</h2>
-                                    <div className="flex items-center gap-1">
-                                        <p className="text-[10px] font-black uppercase text-muted-foreground/60 tracking-widest mt-1">Managing {adultFoxes.length}/{kennelCapacity} foxes</p>
-                                        <Badge 
-                                            variant="outline" 
-                                            className="px-2 py-0.5 bg-primary/10 border-2 border-primary/30 text-primary font-black text-[10px] uppercase tracking-widest rounded-md justify-center h-6 leading-none cursor-pointer hover:bg-primary/20 transition-colors"
-                                            onClick={() => expandKennel()}
-                                        >
-                                            +5 Slots
-                                        </Badge>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {hiredNutritionist && (
-                                <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-8 h-14 rounded-2xl shadow-lg shadow-primary/20 gap-3">
-                                    <Utensils size={18} /> Feed All Foxes
-                                </Button>
-                            )}
-                        </div>
+                    <h1 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>My Kennel</h1>
+                    <div className="flex items-center gap-2 mt-1">
+                        <p className="text-muted-foreground text-sm font-medium">Managing {foxList.length} foxes</p>
+                        <span className="text-muted-foreground/30">•</span>
+                        <button
+                            onClick={() => expandKennel()}
+                            className="text-xs font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                        >
+                            Expand Kennel ({kennelCapacity} slots) <ArrowRight size={10} />
+                        </button>
                     </div>
                 </div>
 
-                {/* Adult Kennel Fox Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" style={{gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '2.5rem'}}>
-                    {adultFoxes.map((fox) => (
-                        <Link key={fox.id} href={`/fox/${fox.id}`}>
-                            <div className="folk-card overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 cursor-pointer group rounded-[48px] border-2 border-border/50 bg-card flex flex-col" style={{width: '380px', height: '480px', minWidth: '380px', maxWidth: '380px'}}>
-                                <div className="h-96 flex items-start justify-center relative bg-muted/30 transition-colors group-hover:bg-primary/5 shrink-0" style={{padding: '32px 32px 32px 32px'}}>
-                                    <FoxIllustration phenotype={fox.phenotype} baseColor={fox.baseColor} pattern={fox.pattern} eyeColor={fox.eyeColor} size={22} />
-                                    <div className="absolute top-2 right-2 flex flex-col gap-1 items-end">
-                                        {fox.isRetired && <Badge className="bg-muted text-muted-foreground border-2 border-border font-black text-[10px] uppercase px-2 py-1 rounded-lg">Retired</Badge>}
-                                        {fox.healthIssues.length > 0 && <Badge variant="destructive" className="font-black text-[10px] uppercase shadow-lg shadow-destructive/20 px-2 py-1 rounded-lg">Health Issue</Badge>}
-                                    </div>
-                                </div>
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <div className="flex justify-between items-start mb-1">
-                                        <h3 className="text-xl font-black italic text-foreground group-hover:text-primary transition-colors tracking-tight">{fox.name}</h3>
-                                        <span className="uppercase tracking-[0.2em] bg-muted/50 px-3 py-1 rounded-lg border border-border/50 text-foreground font-black text-[10px]">{fox.gender}</span>
-                                    </div>
-                                    <div className="text-xs text-muted-foreground mb-4 font-medium line-clamp-2 leading-relaxed">{fox.age} year old {fox.phenotype.toLowerCase()}</div>
-                                    <div className="flex items-center justify-between text-[10px] font-black text-muted-foreground/40 pt-6 border-t border-border mt-auto">
-                                        <span className="flex items-center gap-2 group-hover:text-primary transition-colors uppercase tracking-widest">
-                                            <Trophy size={16} className="text-primary" /> {fox.pointsLifetime.toLocaleString()} Points
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
+                {/* Tab Navigation */}
+                <div className="flex bg-muted/50 p-1 rounded-2xl border border-border/50 w-full md:w-auto overflow-x-auto no-scrollbar">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => handleTabChange(tab.id)}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                                activeTab === tab.id
+                                ? "bg-card text-foreground shadow-sm border border-border/50"
+                                : "text-muted-foreground hover:text-foreground"
+                            }`}
+                        >
+                            <tab.icon size={14} />
+                            {tab.label}
+                            {tab.count !== undefined && (
+                                <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[10px] ${activeTab === tab.id ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                    {tab.count}
+                                </span>
+                            )}
+                        </button>
                     ))}
                 </div>
             </div>
 
-            {/* Empty State */}
-            {adultFoxes.length === 0 && (
-                <div className="col-span-full py-40 text-center bg-card rounded-[64px] border-2 border-dashed border-border transition-all hover:bg-muted/5 group">
-                    <div className="w-24 h-24 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
-                        <Info className="w-12 h-12 text-muted-foreground/30" />
-                    </div>
-                    <p className="text-foreground font-black text-3xl italic tracking-tight">The kennel feels cold...</p>
-                    <p className="text-muted-foreground font-medium mt-2 mb-10">No adult foxes in your kennel yet.</p>
-                    <Link href="/shop/adoption">
-                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-10 h-16 rounded-2xl shadow-2xl shadow-primary/20 text-sm">Adopt Your First Fox</Button>
-                    </Link>
-                </div>
-            )}
+            {/* Tab Content */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                >
+                    {activeTab === 'dashboard' && <Dashboard />}
+                    {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" />}
+                    {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" />}
+                    {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" />}
+                </motion.div>
+            </AnimatePresence>
         </div>
     );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-    return inputs.filter(Boolean).join(' ');
+function KennelGrid({ foxes, type }: { foxes: Fox[], type: string }) {
+    if (foxes.length === 0) {
+        return (
+            <div className="py-24 text-center bg-card/50 rounded-[40px] border-2 border-dashed border-border transition-all">
+                <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Info className="w-8 h-8 text-muted-foreground/30" />
+                </div>
+                <h3 className="text-xl font-black italic text-foreground tracking-tight">No foxes here</h3>
+                <p className="text-muted-foreground text-sm font-medium mt-1 mb-8">
+                    {type === 'adult' ? "You don't have any adult foxes yet." :
+                     type === 'young' ? "No kits in the nursery right now." :
+                     "The retirement home is empty."}
+                </p>
+                {type !== 'retired' && (
+                    <Link href={type === 'young' ? "/breeding" : "/shop/adoption"}>
+                        <Button variant="outline" className="font-black uppercase tracking-widest text-xs h-10 rounded-xl">
+                            {type === 'young' ? "Visit Breeding Center" : "Adopt a Fox"}
+                        </Button>
+                    </Link>
+                )}
+            </div>
+        );
+    }
+
+    return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {foxes.map((fox) => (
+                <FoxCard key={fox.id} fox={fox} />
+            ))}
+        </div>
+    );
+}
+
+function FoxCard({ fox }: { fox: Fox }) {
+    const hungry = isHungry(fox);
+    const groomed = isGroomed(fox);
+    const trained = isTrained(fox);
+
+    return (
+        <Link href={`/fox/${fox.id}`}>
+            <div className="folk-card group relative overflow-hidden bg-card border-2 border-border rounded-[32px] hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div className="aspect-square bg-muted/30 relative flex items-center justify-center p-6 group-hover:bg-primary/5 transition-colors duration-500">
+                    <FoxIllustration
+                        phenotype={fox.phenotype}
+                        baseColor={fox.baseColor}
+                        pattern={fox.pattern}
+                        eyeColor={fox.eyeColor}
+                        size={16}
+                    />
+
+                    {/* Status Icons Overlay */}
+                    <div className="absolute top-4 right-4 flex flex-col gap-2">
+                        <div className="flex items-center gap-1.5 bg-background/80 backdrop-blur-sm px-2 py-1.5 rounded-xl border border-border/50 shadow-sm">
+                            <Utensils size={12} className={hungry ? "text-muted-foreground/20" : "text-primary"} />
+                            <Sparkles size={12} className={!groomed ? "text-muted-foreground/20" : "text-secondary"} />
+                            <Dumbbell size={12} className={!trained ? "text-muted-foreground/20" : "text-orange-500"} />
+                        </div>
+                    </div>
+
+                    {/* Gender Badge */}
+                    <div className="absolute bottom-4 left-4">
+                        <Badge variant="outline" className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === 'Dog' ? 'text-blue-500' : 'text-rose-500'}`}>
+                            {fox.gender === 'Dog' ? 'Dog' : 'Vixen'}
+                        </Badge>
+                    </div>
+                </div>
+
+                <div className="p-5 flex-1 flex flex-col gap-1">
+                    <div className="flex justify-between items-start gap-2">
+                        <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{fox.name}</h3>
+                        <div className="flex items-center gap-1 text-primary font-black text-xs">
+                            <Trophy size={12} />
+                            <span>{fox.pointsLifetime}</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">{fox.age} {fox.age === 1 ? 'Year' : 'Years'} Old</span>
+                        <span className="w-1 h-1 rounded-full bg-border" />
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight truncate">{fox.phenotype}</span>
+                    </div>
+                </div>
+            </div>
+        </Link>
+    );
+}
+
+export default function KennelPage() {
+    return (
+        <Suspense fallback={<div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Loading Kennel...</div>}>
+            <KennelContent />
+        </Suspense>
+    );
 }

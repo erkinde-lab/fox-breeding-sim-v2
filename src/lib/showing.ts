@@ -1,4 +1,4 @@
-import { Fox, getActiveBoosts, isHungry } from './genetics';
+import { Fox, getActiveBoosts, isHungry, isGroomed, isTrained } from './genetics';
 
 export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior";
 export type ShowClass = 
@@ -36,8 +36,8 @@ export function calculateScore(fox: Fox, hasGroomer: boolean = false, hasTrainer
   let temperament = stats.temperament + (activeBoosts['temperament'] || 0);
   let presence = stats.presence + (activeBoosts['presence'] || 0);
 
-  if (hasGroomer) coatQuality += 5;
-  if (hasTrainer) {
+  if (isGroomed(fox)) coatQuality += 5;
+  if (isTrained(fox)) {
       temperament += 3;
       presence += 3;
   }

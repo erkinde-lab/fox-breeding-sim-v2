@@ -350,6 +350,10 @@ interface GameState {
   setFoxPreferredFeed: (foxId: string, feedId: string) => void;
 
   feedAllFoxes: () => void;
+  groomFox: (foxId: string) => void;
+  trainFox: (foxId: string) => void;
+  groomAllFoxes: () => void;
+  trainAllFoxes: () => void;
 
   addForumPost: (categoryId: string, title: string, content: string, author: string) => void;
 
@@ -593,9 +597,11 @@ export const useGameStore = create<GameState>()(
 
 
 
-        // Reset fed status at the start of each season
+                // Reset fed status at the start of each season
         Object.keys(updatedFoxes).forEach(id => {
-          updatedFoxes[id].lastFed = undefined; // Reset fed status
+          updatedFoxes[id].lastFed = undefined;
+          updatedFoxes[id].lastGroomed = undefined;
+          updatedFoxes[id].lastTrained = undefined;
         });
 
 
@@ -1241,6 +1247,34 @@ export const useGameStore = create<GameState>()(
 
         });
 
+      },
+
+      groomFox: (foxId) => set((state) => ({
+        foxes: { ...state.foxes, [foxId]: { ...state.foxes[foxId], lastGroomed: Date.now() } }
+      })),
+
+      trainFox: (foxId) => set((state) => ({
+        foxes: { ...state.foxes, [foxId]: { ...state.foxes[foxId], lastTrained: Date.now() } }
+      })),
+
+      groomAllFoxes: () => {
+        const { foxes, hiredGroomer } = get();
+        if (!hiredGroomer) return;
+        const updatedFoxes = { ...foxes };
+        Object.keys(updatedFoxes).forEach(id => {
+          updatedFoxes[id] = { ...updatedFoxes[id], lastGroomed: Date.now() };
+        });
+        set({ foxes: updatedFoxes });
+      },
+
+      trainAllFoxes: () => {
+        const { foxes, hiredTrainer } = get();
+        if (!hiredTrainer) return;
+        const updatedFoxes = { ...foxes };
+        Object.keys(updatedFoxes).forEach(id => {
+          updatedFoxes[id] = { ...updatedFoxes[id], lastTrained: Date.now() };
+        });
+        set({ foxes: updatedFoxes });
       },
 
 

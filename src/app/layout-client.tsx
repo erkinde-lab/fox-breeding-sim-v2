@@ -153,7 +153,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                   setIsOpen={setIsKennelOpen}
                   dropdownRef={kennelRef}
                 >
-                  <DropdownLink href="/kennel/dashboard" icon={<LayoutDashboard size={16} />} label="Dashboard" onClick={() => setIsKennelOpen(false)} />
+                  <DropdownLink href="/kennel?tab=dashboard" icon={<LayoutDashboard size={16} />} label="Dashboard" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/kennel" icon={<PawPrint size={16} />} label="My Foxes" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/inventory" icon={<Package size={16} />} label="Inventory" onClick={() => setIsKennelOpen(false)} />
                 </Dropdown>
@@ -269,7 +269,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                 {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
 
                 <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Kennel</div>
-                <MobileNavLink href="/kennel/dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/kennel?tab=dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
 
@@ -366,7 +366,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                 Kennel
               </h4>
               <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
-                <li><Link href="/kennel/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
+                <li><Link href="/kennel?tab=dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
                 <li><Link href="/kennel" className="hover:text-primary transition-colors">My Foxes</Link></li>
                 <li><Link href="/inventory" className="hover:text-primary transition-colors">Stockpile</Link></li>
                 <li><Link href="/breeding" className="hover:text-primary transition-colors">Breeding Center</Link></li>
