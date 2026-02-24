@@ -388,7 +388,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
   };
 }
 
-export function createFoundationalFox(random: () => number = Math.random, gender?: "Male" | "Female"): Fox {
+export function createFoundationalFox(random: () => number = Math.random, gender?: "Dog" | "Vixen"): Fox {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
@@ -497,7 +497,7 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   return foxes;
 }
 
-function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Male" | "Female"): Fox {
+function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Dog" | "Vixen"): Fox {
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
   
   const genotype = getInitialGenotype();

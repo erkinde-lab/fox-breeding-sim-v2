@@ -1,6 +1,6 @@
 import { Fox, getActiveBoosts, isHungry } from './genetics';
 
-export type ShowLevel = 'Junior' | 'Open' | 'Senior' | 'Championship';
+export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior";
 export type ShowClass = 
     'Best Juvenile Dog' | 'Best Juvenile Vixen' | 'Best Adult Dog' | 'Best Adult Vixen' |
     'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
@@ -139,8 +139,12 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
 
     // Level restrictions
     const finalEligible = eligibleFoxes.filter(f => {
-        if (level === 'Junior') return f.pointsLifetime < 5;
-        if (level === 'Senior') return f.pointsLifetime > 10;
+        // Amateur shows are restricted to adult foxes
+        if (level.startsWith("Amateur") && f.age === 0) return false;
+
+        const baseLevel = level.replace("Amateur ", "");
+        if (baseLevel === "Junior") return f.pointsLifetime < 5;
+        if (baseLevel === "Senior") return f.pointsLifetime > 10;
         return true;
     });
 

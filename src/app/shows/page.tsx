@@ -20,9 +20,10 @@ import { Trophy, Users, Info } from 'lucide-react';
 
 export default function ShowsPage() {
 
-  const { runShows, year, season, seniorShowWinners } = useGameStore();
+  const { runShows, year, joiningYear, season, seniorShowWinners } = useGameStore();
 
-  const luckBonus = 0; // Remove random calculation for now
+  const luckBonus = 0;
+  const isAmateurEligible = year <= (joiningYear || 1) + 1; // Remove random calculation for now
 
 
 
@@ -32,7 +33,14 @@ export default function ShowsPage() {
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
 
-        <h2 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Show Arena</h2>
+        <div className="space-y-4">
+          <h2 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Show Arena</h2>
+          {isAmateurEligible && (
+            <div className="p-4 bg-primary/10 border border-primary/20 rounded-xl text-xs font-black uppercase tracking-widest text-primary">
+              You qualify for Amateur shows until winter of Year {(joiningYear || 1) + 1}
+            </div>
+          )}
+        </div>
 
         <Button onClick={runShows} className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 py-6 rounded-2xl shadow-lg shadow-primary/20">
 
@@ -77,6 +85,22 @@ export default function ShowsPage() {
               <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Levels</h4>
 
               <ul className="space-y-2 text-sm">
+                {isAmateurEligible && (
+                  <>
+                    <li className="flex justify-between items-center p-2 rounded-lg hover:bg-muted/30 transition-colors border-b border-primary/10 pb-3 mb-1">
+                      <span className="font-bold text-primary">Amateur Junior</span>
+                      <Badge variant="outline" className="text-[9px] font-bold border-primary/30 text-primary">&lt; 5 pts</Badge>
+                    </li>
+                    <li className="flex justify-between items-center p-2 rounded-lg hover:bg-muted/30 transition-colors border-b border-primary/10 pb-3 mb-1">
+                      <span className="font-bold text-primary">Amateur Open</span>
+                      <Badge variant="outline" className="text-[9px] font-bold border-primary/30 text-primary">Adults</Badge>
+                    </li>
+                    <li className="flex justify-between items-center p-2 rounded-lg hover:bg-muted/30 transition-colors border-b border-primary/10 pb-3 mb-3">
+                      <span className="font-bold text-primary">Amateur Senior</span>
+                      <Badge variant="outline" className="text-[9px] font-bold border-primary/30 text-primary">&gt; 10 pts</Badge>
+                    </li>
+                  </>
+                )}
 
                 <li className="flex justify-between items-center p-2 rounded-lg hover:bg-muted/30 transition-colors">
 

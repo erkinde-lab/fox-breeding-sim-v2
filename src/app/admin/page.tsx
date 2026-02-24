@@ -42,7 +42,7 @@ export default function AdminPanel() {
 
     warnMember, banMember, adminSetCurrency, adminAddItem,
 
-    adminSpawnFox, adminUpdateFoxStats, runShows, advanceTime, toggleAdminMode,
+    adminSpawnFox, adminUpdateFoxStats, runShows, advanceTime, toggleAdminMode, updateShowConfig,
 
     bannerUrl, setBannerUrl, bannerPosition, setBannerPosition
 
@@ -171,6 +171,9 @@ export default function AdminPanel() {
       Open: { bis: 2500, first: 1000, second: 500, third: 250 },
 
       Senior: { bis: 5000, first: 2500, second: 1000, third: 500 },
+      "Amateur Junior": { bis: 1000, first: 500, second: 250, third: 100 },
+      "Amateur Open": { bis: 2500, first: 1000, second: 500, third: 250 },
+      "Amateur Senior": { bis: 5000, first: 2500, second: 1000, third: 500 },
 
       Championship: { bis: 10000, first: 5000, second: 2500, third: 1000 }
 
@@ -789,8 +792,9 @@ export default function AdminPanel() {
                                 const val = parseInt(e.target.value) || 0;
                                 const newConfig = { ...showConfig };
                                 newConfig[level] = { ...newConfig[level], first: val };
-                                setShowConfig(newConfig);
-                                savePrizeConfig(newConfig);
+                                  setShowConfig(newConfig);
+                                  savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { first: val });
                                 showSavedIndicator(`${level}-first`);
                                 console.log('🔧 DEBUG: Prize config updated and saved');
                               }}
@@ -810,6 +814,7 @@ export default function AdminPanel() {
                                   newConfig[level] = { ...newConfig[level], first: val };
                                   setShowConfig(newConfig);
                                   savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { first: val });
                                   showSavedIndicator(`${level}-first`);
                                   console.log('🔧 DEBUG: Prize config updated and saved');
                                 }}
@@ -831,8 +836,9 @@ export default function AdminPanel() {
                                 const val = parseInt(e.target.value) || 0;
                                 const newConfig = { ...showConfig };
                                 newConfig[level] = { ...newConfig[level], second: val };
-                                setShowConfig(newConfig);
-                                savePrizeConfig(newConfig);
+                                  setShowConfig(newConfig);
+                                  savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { second: val });
                                 showSavedIndicator(`${level}-second`);
                               }}
                             >
@@ -851,6 +857,7 @@ export default function AdminPanel() {
                                   newConfig[level] = { ...newConfig[level], second: val };
                                   setShowConfig(newConfig);
                                   savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { second: val });
                                   showSavedIndicator(`${level}-second`);
                                 }}
                               />
@@ -871,8 +878,9 @@ export default function AdminPanel() {
                                 const val = parseInt(e.target.value) || 0;
                                 const newConfig = { ...showConfig };
                                 newConfig[level] = { ...newConfig[level], third: val };
-                                setShowConfig(newConfig);
-                                savePrizeConfig(newConfig);
+                                  setShowConfig(newConfig);
+                                  savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { third: val });
                                 showSavedIndicator(`${level}-third`);
                               }}
                             >
@@ -891,6 +899,7 @@ export default function AdminPanel() {
                                   newConfig[level] = { ...newConfig[level], third: val };
                                   setShowConfig(newConfig);
                                   savePrizeConfig(newConfig);
+                                  updateShowConfig(level as any, { third: val });
                                   showSavedIndicator(`${level}-third`);
                                 }}
                               />
@@ -933,6 +942,7 @@ export default function AdminPanel() {
                               newConfig[level] = { ...newConfig[level], bis: val };
                               setShowConfig(newConfig);
                               savePrizeConfig(newConfig);
+                              updateShowConfig(level as any, { bis: val });
                               showSavedIndicator(`${level}-bis`);
                             }}
                           />
