@@ -7,35 +7,9 @@
 - Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-✓ Ready in 1212ms
-○ Compiling / ...
- HEAD / 200 in 3.9s (compile: 3.6s, render: 314ms)
- GET / 200 in 153ms (compile: 17ms, render: 136ms)
- GET /breeding 200 in 1424ms (compile: 1250ms, render: 175ms)
- GET /admin 200 in 2.0s (compile: 1802ms, render: 233ms)
- GET / 200 in 103ms (compile: 5ms, render: 98ms)
- GET /breeding 200 in 86ms (compile: 4ms, render: 83ms)
- GET /admin 200 in 196ms (compile: 5ms, render: 191ms)
- GET /kennel/dashboard 200 in 727ms (compile: 603ms, render: 124ms)
- GET /breeding 200 in 138ms (compile: 6ms, render: 132ms)
- GET /admin 200 in 92ms (compile: 4ms, render: 89ms)
- GET /shows 200 in 570ms (compile: 480ms, render: 90ms)
- GET /kennel/dashboard 200 in 89ms (compile: 3ms, render: 86ms)
- GET /breeding 200 in 74ms (compile: 3ms, render: 71ms)
- GET /kennel/dashboard 200 in 143ms (compile: 3ms, render: 140ms)
- GET /admin 200 in 69ms (compile: 3ms, render: 66ms)
- GET /shows 200 in 78ms (compile: 3ms, render: 75ms)
- GET /breeding 200 in 108ms (compile: 5ms, render: 103ms)
- GET /kennel/dashboard 200 in 121ms (compile: 3ms, render: 118ms)
- GET /breeding 200 in 78ms (compile: 3ms, render: 75ms)
- GET /kennel/dashboard 200 in 80ms (compile: 3ms, render: 77ms)
- GET /admin 200 in 70ms (compile: 3ms, render: 67ms)
- GET /kennel/dashboard 200 in 81ms (compile: 3ms, render: 77ms)
- GET /breeding 200 in 74ms (compile: 3ms, render: 71ms)
- GET /kennel/dashboard 200 in 80ms (compile: 3ms, render: 77ms)
- GET /admin 200 in 66ms (compile: 4ms, render: 62ms)
- GET /shows 200 in 76ms (compile: 4ms, render: 72ms)
- GET /kennel/dashboard 200 in 121ms (compile: 4ms, render: 117ms)
- GET /shows 200 in 90ms (compile: 3ms, render: 87ms)
- GET /kennel/dashboard 200 in 91ms (compile: 3ms, render: 87ms)
- GET /admin 200 in 85ms (compile: 3ms, render: 82ms)
+✓ Ready in 1149ms
+○ Compiling /kennel ...
+ GET /kennel 200 in 8.2s (compile: 7.5s, render: 730ms)
+ GET /kennel?tab=adult 200 in 67ms (compile: 9ms, render: 58ms)
+ GET /fox/9e5155q 200 in 1587ms (compile: 1550ms, render: 37ms)
+[?25h

@@ -4,7 +4,7 @@ import React from 'react';
 import { useGameStore } from '@/lib/store';
 import { ShowReport } from '@/lib/showing';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Heart, Star, Utensils, Award, Sparkles, Ghost, Leaf, Home } from 'lucide-react';
+import { Trophy, Heart, Star, Utensils, Award, Sparkles, Ghost, Leaf, Home, Dumbbell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -12,7 +12,7 @@ export function Dashboard() {
   const {
     foxes, bisWins, bestDogWins, bestVixenWins,
     totalShowPoints, whelpingReports, showReports,
-    hiredNutritionist, feedAllFoxes, kennelCapacity, gold, expandKennel
+    hiredNutritionist, feedAllFoxes, hiredGroomer, groomAllFoxes, hiredTrainer, trainAllFoxes, kennelCapacity, gold, expandKennel
   } = useGameStore();
 
   const foxList = Object.values(foxes);
@@ -27,11 +27,23 @@ export function Dashboard() {
     <div className="space-y-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Kennel Dashboard</h2>
-        {hiredNutritionist && (
-          <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-primary/20 gap-2">
-            <Utensils size={16} /> Feed All Foxes
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-4">
+          {hiredNutritionist && (
+            <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-primary/20 gap-2">
+              <Utensils size={16} /> Feed All Foxes
+            </Button>
+          )}
+          {hiredGroomer && (
+            <Button onClick={groomAllFoxes} className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-secondary/20 gap-2">
+              <Sparkles size={16} /> Groom All Foxes
+            </Button>
+          )}
+          {hiredTrainer && (
+            <Button onClick={trainAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-primary/20 gap-2">
+              <Dumbbell size={16} /> Train All Foxes
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">

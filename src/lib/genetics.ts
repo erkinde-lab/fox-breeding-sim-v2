@@ -231,7 +231,7 @@ export interface Fox {
   isAtStud: boolean;
   studFee: number;
   isNPC?: boolean;
-  lastFed?: number;
+  lastFed?: number; lastGroomed?: number; lastTrained?: number;
   boosts?: Record<string, number>;
   preferredFeed?: string;
 }
@@ -537,9 +537,15 @@ export function getActiveBoosts(fox: Fox): Record<string, number> {
 }
 
 export function isHungry(fox: Fox): boolean {
-  if (!fox.lastFed) return true;
-  const oneWeek = 7 * 24 * 60 * 60 * 1000;
-  return (Date.now() - fox.lastFed) > oneWeek;
+  return !fox.lastFed;
+}
+
+export function isGroomed(fox: Fox): boolean {
+  return !!fox.lastGroomed;
+}
+
+export function isTrained(fox: Fox): boolean {
+  return !!fox.lastTrained;
 }
 
 export const EYE_COLOR_WEIGHTS: Record<string, number> = {
