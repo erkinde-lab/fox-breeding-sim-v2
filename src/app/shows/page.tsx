@@ -107,7 +107,7 @@ export default function ShowsPage() {
               (tab.adminOnly ? isAdmin : true) && (
                 <button
                   key={tab.id}
-                  onClick={() => { setActiveTab(tab.id as any); setSelectedShowId(null); }}
+                  onClick={() => { setActiveTab(tab.id as "available" | "amateur" | "history" | "manage"); setSelectedShowId(null); }}
                   disabled={tab.disabled}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all",

@@ -29,16 +29,15 @@ export default function FoxProfilePage() {
   const isFoundational = foundationFoxes.some(f => f.id === id);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(fox?.name || '');
+  const [newName, setNewName] = useState('');
+  const [prevFoxId, setPrevFoxId] = useState<string | null>(null);
   const [selectedFeed, setSelectedFeed] = useState('supplies');
   const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
 
-  // Sync name if fox changes (e.g. initial load)
-  useEffect(() => {
-    if (fox && !isEditing) {
-      setNewName(fox.name);
-    }
-  }, [fox, isEditing]);
+  if (fox && fox.id !== prevFoxId) {
+    setPrevFoxId(fox.id);
+    setNewName(fox.name);
+  }
 
   if (!fox) {
     return (

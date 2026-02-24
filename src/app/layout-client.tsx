@@ -4,11 +4,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import {
-  Menu, X, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
+  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
   Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
-  Diamond, Calendar, Info, Microscope, Star, MessageSquare,
+  Diamond, Calendar, Info, Star, MessageSquare,
   User, ExternalLink, HelpCircle, Rocket, UserPlus, Utensils,
-  Store, Baby, CheckSquare, Shield, Scale, Award, FastForward, Search, Moon, Sun, Plus, LayoutDashboard
+  Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus, LayoutDashboard
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -191,9 +191,8 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                   dropdownRef={shopsRef}
                 >
                   <DropdownLink href="/shop/adoption" icon={<Baby size={16} />} label="Foundation Adoption" onClick={() => setIsShopsOpen(false)} />
-                  <DropdownLink href="/shop/items" icon={<ShoppingCart size={16} />} label="Specialty Items" onClick={() => setIsShopsOpen(false)} />
+                  <DropdownLink href="/shop/supplies" icon={<Package size={16} />} label="Supplies & Feeds" onClick={() => setIsShopsOpen(false)} />
                   <DropdownLink href="/shop/staff" icon={<UserPlus size={16} />} label="Staff & Services" onClick={() => setIsShopsOpen(false)} />
-                  <DropdownLink href="/shop/feeds" icon={<Utensils size={16} />} label="Feeds" onClick={() => setIsShopsOpen(false)} />
                   <DropdownLink href="/shop/marketplace" icon={<Store size={16} />} label="Marketplace" onClick={() => setIsShopsOpen(false)} />
                   <DropdownLink href="/shop/custom" icon={<Star size={16} />} label="Custom Foxes" onClick={() => setIsShopsOpen(false)} />
                 </Dropdown>
@@ -284,9 +283,8 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
 
                 <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Shops</div>
                 <MobileNavLink href="/shop/adoption" icon={<Baby size={18} />} label="Foundation Adoption" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/items" icon={<ShoppingCart size={18} />} label="Specialty Items" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/shop/supplies" icon={<Package size={18} />} label="Supplies & Feeds" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/shop/staff" icon={<UserPlus size={18} />} label="Staff & Services" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/feeds" icon={<Utensils size={18} />} label="Feeds" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/shop/marketplace" icon={<Store size={18} />} label="Marketplace" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/shop/custom" icon={<Star size={18} />} label="Custom Foxes" onClick={() => setIsMobileMenuOpen(false)} />
 
@@ -381,7 +379,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
                 <li><Link href="/shop/adoption" className="hover:text-primary transition-colors">Foundation Adopt</Link></li>
                 <li><Link href="/shop/marketplace" className="hover:text-primary transition-colors">Player Market</Link></li>
-                <li><Link href="/shop/feeds" className="hover:text-primary transition-colors">Feeds & Tech</Link></li>
+                <li><Link href="/shop/supplies" className="hover:text-primary transition-colors">Supplies & Feeds</Link></li>
                 <li><Link href="/shop/custom" className="hover:text-primary transition-colors">Custom Designer</Link></li>
               </ul>
             </div>

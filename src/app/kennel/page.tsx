@@ -18,14 +18,12 @@ function KennelContent() {
     const { foxes, kennelCapacity, expandKennel } = useGameStore();
 
     // Initialize tab from search params or default
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard');
 
-    useEffect(() => {
-        const tab = searchParams.get('tab');
-        if (tab && tab !== activeTab) {
-            setActiveTab(tab);
-        }
-    }, [searchParams, activeTab]);
+    const tabFromUrl = searchParams.get('tab');
+    if (tabFromUrl && tabFromUrl !== activeTab) {
+        setActiveTab(tabFromUrl);
+    }
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);
