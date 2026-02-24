@@ -308,7 +308,7 @@ export default function ShowsPage() {
                     <CardContent className="p-4 space-y-4">
                       <div className="space-y-2">
                         {eligibleFoxes.length === 0 ? (
-                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.</p>
+                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.<br/>Foxes must be fed, healthy, and not retired.</p>
                         ) : (
                           <div className="flex flex-col gap-2">
                             {eligibleFoxes.map(fox => {

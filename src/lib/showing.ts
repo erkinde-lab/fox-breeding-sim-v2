@@ -96,7 +96,7 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
 
   classes.forEach(cls => {
     const eligibleFoxes = foxes.filter(f => {
-      if (f.isRetired || f.healthIssues.length > 0) return false;
+      if (f.isRetired || f.healthIssues.length > 0 || isHungry(f)) return false;
       
       const isDog = f.gender === 'Dog';
       const isJuvenile = f.age === 0;
@@ -247,7 +247,7 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
 }
 
 export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: ShowClass): boolean {
-  if (fox.isRetired || fox.healthIssues.length > 0) return false;
+  if (fox.isRetired || fox.healthIssues.length > 0 || isHungry(fox)) return false;
 
   const isDog = fox.gender === 'Dog';
   const isJuvenile = fox.age === 0;
