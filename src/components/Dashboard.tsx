@@ -211,7 +211,7 @@ function StatCard({ label, value, icon, variant }: { label: string, value: strin
   );
 }
 
-function ChallengeAward({ title, description, year, season, icon: Icon, variant }: { title: string, description: string, year: number, season: string, icon: any, variant: 'primary' | 'secondary' }) {
+function ChallengeAward({ title, description, year, season, icon: Icon, variant }: { title: string, description: string, year: number, season: string, icon: React.ElementType, variant: 'primary' | 'secondary' }) {
   return (
     <div className="bg-card p-5 rounded-[2.5rem] border-2 border-border shadow-sm group hover:border-secondary/30 transition-all hover:translate-y-[-2px] hover:shadow-lg">
       <div className="flex items-start gap-4">

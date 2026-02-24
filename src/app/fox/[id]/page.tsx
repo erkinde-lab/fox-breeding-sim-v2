@@ -7,10 +7,10 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
-  ArrowLeft, ChevronLeft, ChevronRight, Edit2, Save, X,
+  ArrowLeft, Edit2, Save, X,
   Microscope, Utensils, Activity, Calendar, Check, Shield,
   Heart, Dna, Trophy, Info, ShoppingBag, ChevronDown,
-  Star, Sparkles, Dumbbell
+  Sparkles, Dumbbell
 } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Fox, calculateCOI, getActiveBoosts, isHungry, isGroomed, isTrained } from '@/lib/genetics';
@@ -19,23 +19,26 @@ export default function FoxProfilePage() {
   const { id } = useParams();
   const router = useRouter();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, inventory, renameFox, sellFox,
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox,
     isAdmin, toggleStudStatus, hiredGroomer, 
     hiredVeterinarian, hiredTrainer, hiredNutritionist,
-    setFoxPreferredFeed, groomFox, trainFox
+    groomFox, trainFox
   } = useGameStore();
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [selectedFeed, setSelectedFeed] = useState('supplies');
-  const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
 
   const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
   const isFoundational = foundationFoxes.some(f => f.id === id);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(fox?.name || '');
+  const [selectedFeed, setSelectedFeed] = useState('supplies');
+  const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
+
+  // Sync name if fox changes (e.g. initial load)
   useEffect(() => {
-    if (fox && !newName) setNewName(fox.name);
-  }, [fox, newName]);
+    if (fox && !isEditing) {
+      setNewName(fox.name);
+    }
+  }, [fox, isEditing]);
 
   if (!fox) {
     return (
@@ -439,7 +442,6 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
       
       {depth < 4 && (
         <div className="flex flex-col gap-2 relative">
-          {/* Connector lines can be added here with absolute positioning if desired */}
           <PedigreeTree foxId={fox?.parents[0] || null} foxes={foxes} depth={depth + 1} />
           <PedigreeTree foxId={fox?.parents[1] || null} foxes={foxes} depth={depth + 1} />
         </div>

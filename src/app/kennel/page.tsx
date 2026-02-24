@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Star, Heart, ArrowRight } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
@@ -15,13 +15,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 function KennelContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { foxes, kennelCapacity, expandKennel, gold } = useGameStore();
-    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard');
+    const { foxes, kennelCapacity, expandKennel } = useGameStore();
+
+    // Initialize tab from search params or default
+    const [activeTab, setActiveTab] = useState('dashboard');
 
     useEffect(() => {
         const tab = searchParams.get('tab');
-        if (tab) setActiveTab(tab);
-    }, [searchParams]);
+        if (tab && tab !== activeTab) {
+            setActiveTab(tab);
+        }
+    }, [searchParams, activeTab]);
 
     const handleTabChange = (tab: string) => {
         setActiveTab(tab);

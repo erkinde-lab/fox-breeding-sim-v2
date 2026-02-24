@@ -632,7 +632,7 @@ export const useGameStore = create<GameState>()(
           state.pregnancyList.forEach(preg => {
 
             const mother = updatedFoxes[preg.motherId];
-            const kits: any[] = [];
+            const kits: Fox[] = [];
 
             if (!mother) return;
 
