@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
-import { getPhenotype, breed, calculateCOI, LOCI } from '@/lib/genetics';
+import { getPhenotype, breed, calculateCOI, LOCI, calculateBreedingOutcomes } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,14 +18,12 @@ export default function BreedingPage() {
 
   const foxList = Object.values(foxes);
   const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
-  const fedogs = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedDog && selectedVixen) {
-      // Check for calculator access OR geneticist access
       if (!hasCalculator && !hasGeneticist) {
         alert("You need to hire Geneticist staff member or purchase Breeding Calculator to access breeding insights!");
-        console.log("Calculator access:", hasCalculator, "Geneticist access:", hasGeneticist);
         return;
       }
       
@@ -36,37 +34,13 @@ export default function BreedingPage() {
     }
   };
 
-  const calculateOutcomes = () => {
+  const outcomes = useMemo(() => {
     if (!selectedDog || !selectedVixen) return null;
     const m = foxes[selectedDog];
     const f = foxes[selectedVixen];
-
-    const counts: Record<string, number> = {};
-    const trials = 1000;
-
-    for (let i = 0; i < trials; i++) {
-      const child = breed(m.genotype, f.genotype);
-      if (child) {
-        const name = getPhenotype(child).name;
-        counts[name] = (counts[name] || 0) + 1;
-      }
-    }
-
-    const predictedCOI = calculateCOI('temp', {
-      ...foxes,
-      temp: { parents: [selectedDog, selectedVixen] }
-    });
-
-    return {
-      probabilities: Object.entries(counts)
-        .map(([name, count]) => ({ name, percent: Math.round((count / trials) * 100) }))
-        .filter(item => item.percent >= 1)
-        .sort((a, b) => b.percent - a.percent),
-      predictedCOI
-    };
-  };
-
-  const outcomes = calculateOutcomes();
+    if (!m || !f) return null;
+    return calculateBreedingOutcomes(m, f, foxes);
+  }, [selectedDog, selectedVixen, foxes]);
 
   const isWinter = season === 'Winter';
 
@@ -75,7 +49,7 @@ export default function BreedingPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-5xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Breeding Center</h2>
         {!isWinter && (
-          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest">
+          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-white">
             <AlertCircle size={14} /> Seasonal Lock: Winter Only
           </Badge>
         )}
@@ -99,26 +73,22 @@ export default function BreedingPage() {
                   selectedDog === m.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
-                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name} {m.isNPC && <Badge className="ml-2 bg-secondary/10 text-secondary border-none">NPC</Badge>}</div>
-                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`} {m.isNPC && ` • ${m.studFee} Gold`}</div>
+                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name}</div>
+                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`}</div>
                 {m.genotypeRevealed && (
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {Object.entries(m.genotype).map(([locus, alleles]) => {
-                      const isRare = alleles.some(a => a !== LOCI[locus].alleles[0]);
-                      if (!isRare) return null;
-                      return (
-                        <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
-                          {locus}: {alleles.join("")}
-                        </Badge>
-                      );
-                    })}
+                    {Object.entries(m.genotype).map(([locus, alleles]) => (
+                      <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
+                        {locus}: {alleles.join("")}
+                      </Badge>
+                    ))}
                   </div>
                 )}
               </div>
             ))}
             {dogs.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible dogs</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible dogs (Age 2+)</p>
               </div>
             )}
           </CardContent>
@@ -142,7 +112,7 @@ export default function BreedingPage() {
               Commit Breeding
             </Button>
             {!isWinter && (
-              <p className="text-[10px] text-center font-bold text-muted-foreground/60 uppercase tracking-widest">Available in Spring</p>
+              <p className="text-[10px] text-center font-bold text-muted-foreground/60 uppercase tracking-widest">Available in Winter</p>
             )}
           </div>
         </div>
@@ -155,7 +125,7 @@ export default function BreedingPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 flex-1">
-            {fedogs.map(f => (
+            {vixens.map(f => (
               <div
                 key={f.id}
                 onClick={() => setSelectedVixen(f.id)}
@@ -168,22 +138,18 @@ export default function BreedingPage() {
                 <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.baseColor}{f.pattern !== "None" && ` • ${f.pattern}`}</div>
                 {f.genotypeRevealed && (
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {Object.entries(f.genotype).map(([locus, alleles]) => {
-                      const isRare = alleles.some(a => a !== LOCI[locus].alleles[0]);
-                      if (!isRare) return null;
-                      return (
-                        <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
-                          {locus}: {alleles.join("")}
-                        </Badge>
-                      );
-                    })}
+                    {Object.entries(f.genotype).map(([locus, alleles]) => (
+                      <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
+                        {locus}: {alleles.join("")}
+                      </Badge>
+                    ))}
                   </div>
                 )}
               </div>
             ))}
-            {fedogs.length === 0 && (
+            {vixens.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens (Age 2+)</p>
               </div>
             )}
           </CardContent>
@@ -219,7 +185,7 @@ export default function BreedingPage() {
                     <div className="flex items-baseline gap-3">
                       <span className="text-6xl font-black text-foreground tabular-nums tracking-tighter">{outcomes.predictedCOI}<span className="text-3xl text-secondary/40">%</span></span>
                       {outcomes.predictedCOI > 15 && (
-                        <Badge variant="destructive" className="font-black uppercase text-[9px] px-2 py-1 shadow-lg shadow-destructive/20 animate-pulse">High Risk</Badge>
+                        <Badge variant="destructive" className="font-black uppercase text-[9px] px-2 py-1 shadow-lg shadow-destructive/20 animate-pulse text-white">High Risk</Badge>
                       )}
                     </div>
                   </div>
@@ -232,7 +198,7 @@ export default function BreedingPage() {
                 <div className="space-y-4">
                   <p className="text-[10px] font-black text-secondary uppercase tracking-[0.2em] px-2">Phenotype Probabilities</p>
                   <div className="grid grid-cols-1 gap-3">
-                    {outcomes.probabilities.map(item => (
+                    {outcomes.probabilities.slice(0, 8).map(item => (
                       <div key={item.name} className="bg-card p-4 rounded-2xl border border-border flex justify-between items-center group hover:border-secondary/30 transition-all hover:translate-x-2">
                         <span className="font-bold text-foreground group-hover:text-secondary transition-colors italic">{item.name}</span>
                         <div className="flex items-center gap-3">
@@ -243,10 +209,6 @@ export default function BreedingPage() {
                         </div>
                       </div>
                     ))}
-                  </div>
-                  <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-2xl border border-border">
-                    <AlertCircle size={18} className="text-muted-foreground/40 shrink-0 mt-0.5" />
-                    <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">Exceedingly rare results (&lt; 1%) are hidden but not impossible. These genetic combinations may require many breeding attempts to achieve.</p>
                   </div>
                 </div>
               </div>

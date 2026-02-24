@@ -179,3 +179,109 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     bestInShowFoxId,
   };
 }
+
+export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: Fox[], year: number, season: string, hasGroomer: boolean = false, hasTrainer: boolean = false, hasVeterinarian: boolean = false): ShowReport {
+  const eligibleFoxes = foxes.filter(f => {
+    if (f.isRetired || f.healthIssues.length > 0) return false;
+
+    const isDog = f.gender === 'Dog';
+    const isJuvenile = f.age === 0;
+
+    if (showClass === 'Best Juvenile Dog') return isDog && isJuvenile;
+    if (showClass === 'Best Juvenile Vixen') return !isDog && isJuvenile;
+    if (showClass === 'Best Adult Dog') return isDog && !isJuvenile;
+    if (showClass === 'Best Adult Vixen') return !isDog && !isJuvenile;
+
+    const a = [...f.genotype.A].sort().join('');
+    const b = [...f.genotype.B].sort().join('');
+
+    if (showClass === 'Red Specialty') return a === 'AA' && b === 'BB';
+    if (showClass === 'Silver Specialty') return a === 'aa' || b === 'bb' || (a === 'Aa' && b === 'bb');
+    if (showClass === 'Gold Specialty') return a === 'AA' && b === 'Bb';
+    if (showClass === 'Cross Specialty') return a === 'Aa' && b !== 'bb';
+    if (showClass === 'Exotic Specialty') {
+        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+        return loci.some(l => {
+            const alleles = f.genotype[l];
+            if (!alleles) return false;
+            const wild = alleles[0].toUpperCase();
+            return alleles.some(al => al.toLowerCase() === al);
+        });
+    }
+    return false;
+  });
+
+  const finalEligible = eligibleFoxes.filter(f => {
+      if (level.startsWith("Amateur") && f.age === 0) return false;
+      const baseLevel = level.replace("Amateur ", "");
+      if (baseLevel === "Junior") return f.pointsLifetime < 5;
+      if (baseLevel === "Senior") return f.pointsLifetime > 10;
+      return true;
+  });
+
+  const scored = finalEligible.map(f => ({
+    id: f.id,
+    score: calculateScore(f, hasGroomer, hasTrainer, hasVeterinarian),
+  })).sort((a, b) => b.score - a.score);
+
+  const results: ShowResult[] = [];
+  scored.slice(0, 3).forEach((s, idx) => {
+    const place = idx + 1;
+    const points = 4 - place;
+    results.push({
+      foxId: s.id,
+      score: s.score,
+      place,
+      pointsAwarded: points,
+      class: showClass,
+    });
+  });
+
+  return {
+    level,
+    year,
+    season,
+    results,
+    bestInShowFoxId: scored.length > 0 ? scored[0].id : null,
+  };
+}
+
+export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: ShowClass): boolean {
+  if (fox.isRetired || fox.healthIssues.length > 0) return false;
+
+  const isDog = fox.gender === 'Dog';
+  const isJuvenile = fox.age === 0;
+
+  let classMatch = false;
+  if (showClass === 'Best Juvenile Dog') classMatch = isDog && isJuvenile;
+  else if (showClass === 'Best Juvenile Vixen') classMatch = !isDog && isJuvenile;
+  else if (showClass === 'Best Adult Dog') classMatch = isDog && !isJuvenile;
+  else if (showClass === 'Best Adult Vixen') classMatch = !isDog && !isJuvenile;
+  else {
+    const a = [...fox.genotype.A].sort().join('');
+    const b = [...fox.genotype.B].sort().join('');
+
+    if (showClass === 'Red Specialty') classMatch = a === 'AA' && b === 'BB';
+    else if (showClass === 'Silver Specialty') classMatch = a === 'aa' || b === 'bb' || (a === 'Aa' && b === 'bb');
+    else if (showClass === 'Gold Specialty') classMatch = a === 'AA' && b === 'Bb';
+    else if (showClass === 'Cross Specialty') classMatch = a === 'Aa' && b !== 'bb';
+    else if (showClass === 'Exotic Specialty') {
+        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+        classMatch = loci.some(l => {
+            const alleles = fox.genotype[l];
+            if (!alleles) return false;
+            const wild = alleles[0].toUpperCase();
+            return alleles.some(al => al.toLowerCase() === al);
+        });
+    }
+  }
+
+  if (!classMatch) return false;
+
+  if (level.startsWith("Amateur") && fox.age === 0) return false;
+  const baseLevel = level.replace("Amateur ", "");
+  if (baseLevel === "Junior") return fox.pointsLifetime < 5;
+  if (baseLevel === "Senior") return fox.pointsLifetime > 10;
+
+  return true;
+}

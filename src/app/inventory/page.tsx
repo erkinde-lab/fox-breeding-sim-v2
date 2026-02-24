@@ -56,7 +56,7 @@ export default function InventoryPage() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button onClick={handleList} className="bg-moss-600 hover:bg-moss-500 px-8 h-12 font-black">Confirm Listing</Button>
+                        <Button onClick={handleList} className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 h-12 font-black">Confirm Listing</Button>
                         <Button variant="ghost" onClick={() => setListingItemId(null)} className="h-12"><X size={18}/></Button>
                       </div>
                   </div>

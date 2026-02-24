@@ -1,31 +1,44 @@
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Coins, User, Shield } from 'lucide-react';
+import { Heart, Coins, User, Shield, Calculator, AlertCircle, Lock, Dna, Activity } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
+import { calculateBreedingOutcomes, LOCI } from '@/lib/genetics';
 
 export default function StudBarnPage() {
-  const { foxes, npcStuds, breedFoxes, season, gold } = useGameStore();
+  const { foxes, npcStuds, breedFoxes, season, gold, hiredGeneticist, inventory } = useGameStore();
   const [selectedVixenId, setSelectedVixenId] = useState<string | null>(null);
+  const [selectedStudId, setSelectedStudId] = useState<string | null>(null);
 
   const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
   const availableNPCs = Object.values(npcStuds);
-  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 1);
 
-  const handleBreed = (fatherId: string) => {
-    if (!selectedVixenId) {
-      alert("Please select a vixen first!");
+  const hasCalculator = inventory['calculator-access'] > 0;
+  const hasGeneticist = hiredGeneticist;
+
+  const handleBreed = () => {
+    if (!selectedVixenId || !selectedStudId) {
+      alert("Please select both a vixen and a stud!");
       return;
     }
-    breedFoxes(fatherId, selectedVixenId);
+    breedFoxes(selectedStudId, selectedVixenId);
     setSelectedVixenId(null);
+    setSelectedStudId(null);
     alert("Breeding committed! Check Spring for results.");
   };
+
+  const outcomes = useMemo(() => {
+    if (!selectedVixenId || !selectedStudId) return null;
+    const vixen = foxes[selectedVixenId];
+    const stud = foxes[selectedStudId] || npcStuds[selectedStudId];
+    if (!vixen || !stud) return null;
+    return calculateBreedingOutcomes(stud, vixen, foxes);
+  }, [selectedVixenId, selectedStudId, foxes, npcStuds]);
 
   const isWinter = season === 'Winter';
 
@@ -36,7 +49,7 @@ export default function StudBarnPage() {
           <Shield className="text-primary" size={40} /> Stud Barn
         </h2>
         {!isWinter && (
-          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest">
+          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-white">
             <Shield size={14} /> Seasonal Lock: Winter Only
           </Badge>
         )}
@@ -66,7 +79,7 @@ export default function StudBarnPage() {
             ))}
             {eligibleVixens.length === 0 && (
               <div className="text-center py-10 opacity-40 border-2 border-dashed border-border rounded-2xl">
-                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Age 2+)</p>
+                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Adult)</p>
               </div>
             )}
           </CardContent>
@@ -74,6 +87,53 @@ export default function StudBarnPage() {
 
         {/* Stud Listings */}
         <div className="lg:col-span-3 space-y-10">
+          {/* Insights / Calculator */}
+          {selectedVixenId && selectedStudId && (
+            <Card className="folk-card border-secondary/20 bg-secondary/5 overflow-hidden shadow-2xl shadow-secondary/5 rounded-[40px]">
+              <CardContent className="p-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-6 mb-8 pb-4 border-b border-secondary/10">
+                  <div className="flex items-center gap-4">
+                    <Calculator className="text-secondary" size={24} />
+                    <h3 className="text-2xl font-black italic text-foreground tracking-tight">Breeding Insights</h3>
+                  </div>
+                  <Button
+                    onClick={handleBreed}
+                    disabled={!isWinter || (npcStuds[selectedStudId] && gold < npcStuds[selectedStudId].studFee)}
+                    className="bg-primary text-primary-foreground font-black uppercase tracking-widest px-8 rounded-xl"
+                  >
+                    Commit Breeding
+                  </Button>
+                </div>
+
+                {(hasCalculator || hasGeneticist) && outcomes ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                      <p className="text-[10px] font-black text-secondary uppercase mb-2 tracking-widest">Phenotype Probabilities</p>
+                      <div className="space-y-2">
+                        {outcomes.probabilities.slice(0, 5).map(p => (
+                          <div key={p.name} className="flex justify-between items-center text-xs p-2 bg-background/50 rounded-lg border border-secondary/5">
+                            <span className="font-bold">{p.name}</span>
+                            <span className="font-black text-secondary">{p.percent}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex flex-col justify-center items-center p-6 bg-background/50 rounded-[32px] border border-secondary/10">
+                       <p className="text-[10px] font-black text-secondary uppercase mb-2 tracking-widest">Inbreeding Risk</p>
+                       <div className="text-4xl font-black text-foreground">{outcomes.predictedCOI}%</div>
+                       <p className="text-[10px] text-muted-foreground mt-2 font-medium">COI Coefficient</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-10 opacity-60 italic text-sm">
+                    <Lock size={20} className="mx-auto mb-2"/>
+                    Purchase Calculator or hire Geneticist for insights.
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <section>
             <h3 className="text-xl font-black italic text-foreground mb-6 flex items-center gap-3 tracking-tight">
               <User size={24} className="text-secondary" /> Foundation Studs <span className="text-muted-foreground/30 font-medium not-italic text-sm">(NPC)</span>
@@ -83,7 +143,9 @@ export default function StudBarnPage() {
                 <StudCard
                   key={npc.id}
                   fox={npc}
-                  onBreed={() => handleBreed(npc.id)}
+                  isSelected={selectedStudId === npc.id}
+                  onSelect={() => setSelectedStudId(npc.id)}
+                  onBreed={() => { setSelectedStudId(npc.id); handleBreed(); }}
                   disabled={!isWinter || !selectedVixenId || gold < npc.studFee}
                 />
               ))}
@@ -100,7 +162,9 @@ export default function StudBarnPage() {
                   <StudCard
                     key={stud.id}
                     fox={stud}
-                    onBreed={() => handleBreed(stud.id)}
+                    isSelected={selectedStudId === stud.id}
+                    onSelect={() => setSelectedStudId(stud.id)}
+                    onBreed={() => { setSelectedStudId(stud.id); handleBreed(); }}
                     disabled={!isWinter || !selectedVixenId}
                   />
                 ))}
@@ -113,37 +177,63 @@ export default function StudBarnPage() {
   );
 }
 
-function StudCard({ fox, onBreed, disabled }: { fox: import('@/lib/genetics').Fox, onBreed: () => void, disabled: boolean }) {
+function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: import('@/lib/genetics').Fox, isSelected: boolean, onSelect: () => void, onBreed: () => void, disabled: boolean }) {
   return (
-    <Card className="folk-card overflow-hidden border-2 border-border bg-card group hover:border-secondary/30 transition-all hover:shadow-xl hover:shadow-secondary/5 rounded-[32px]">
-      <div className="flex h-56">
-        <div className="w-56 flex-shrink-0 bg-muted/40 flex items-center justify-center relative transition-colors group-hover:bg-secondary/5">
-          <FoxIllustration phenotype={fox.phenotype} size={14} />
-          <div className="absolute top-3 left-3">
-            <Badge variant="outline" className="text-[10px] uppercase font-black bg-background/80 backdrop-blur-md border-border">Age {fox.age}</Badge>
+    <Card
+      onClick={onSelect}
+      className={cn(
+        "folk-card overflow-hidden border-2 cursor-pointer transition-all hover:shadow-xl rounded-[32px]",
+        isSelected ? "border-primary bg-primary/5 shadow-primary/5" : "border-border bg-card hover:border-secondary/30"
+      )}
+    >
+      <div className="flex flex-col sm:flex-row h-full">
+        <div className="w-full sm:w-44 flex-shrink-0 bg-muted/40 flex items-center justify-center relative transition-colors group-hover:bg-secondary/5 p-4">
+          <FoxIllustration phenotype={fox.phenotype} size={10} />
+          <div className="absolute top-2 left-2">
+            <Badge variant="outline" className="text-[8px] uppercase font-black bg-background/80 backdrop-blur-md border-border px-1.5 h-4">Age {fox.age}</Badge>
           </div>
         </div>
-        <div className="flex-1 p-6 flex flex-col justify-between">
+        <div className="flex-1 p-5 flex flex-col justify-between">
           <div>
-            <div className="flex justify-between items-start mb-1">
-              <h4 className="font-black italic text-xl text-foreground group-hover:text-secondary transition-colors tracking-tight">{fox.name}</h4>
+            <h4 className="font-black italic text-lg text-foreground truncate tracking-tight">{fox.name}</h4>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter mb-2">{fox.phenotype}</p>
+
+            {/* Stats & Genotype Mini-Display */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+               <div className="space-y-1">
+                  <div className="flex items-center gap-1 text-[8px] font-black text-muted-foreground/60 uppercase"><Activity size={8}/> Stats</div>
+                  <div className="text-[9px] font-bold text-foreground">
+                    Avg: {Math.round(Object.values(fox.stats).reduce((a,b)=>a+b,0)/Object.values(fox.stats).length)}
+                  </div>
+               </div>
+               <div className="space-y-1">
+                  <div className="flex items-center gap-1 text-[8px] font-black text-muted-foreground/60 uppercase"><Dna size={8}/> Genetics</div>
+                  <div className="flex flex-wrap gap-0.5">
+                    {Object.entries(fox.genotype).slice(0, 3).map(([l, a]) => (
+                      <span key={l} className="text-[8px] font-mono bg-muted px-0.5 rounded">{l}:{a.join("")}</span>
+                    ))}
+                    <span className="text-[8px] text-muted-foreground">...</span>
+                  </div>
+               </div>
             </div>
-            <p className="text-xs text-muted-foreground font-medium mb-3 line-clamp-1">{fox.phenotype}</p>
-            <div className="flex items-center gap-2 text-secondary font-black text-sm uppercase tracking-widest">
-              <Coins size={16} /> {fox.studFee.toLocaleString()} <span className="text-[10px] opacity-60">Fee</span>
+
+            <div className="flex items-center gap-2 text-secondary font-black text-xs uppercase tracking-widest">
+              <Coins size={14} /> {fox.studFee.toLocaleString()}
             </div>
           </div>
-          <Button
-            size="sm"
-            onClick={onBreed}
-            disabled={disabled}
-            className={cn(
-              "w-full mt-2 rounded-xl font-black uppercase tracking-widest text-[10px] h-10 transition-all",
-              !disabled ? "bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg shadow-secondary/20" : "bg-muted text-muted-foreground opacity-50"
-            )}
-          >
-            Commit Breeding
-          </Button>
+          {isSelected && (
+            <Button
+              size="sm"
+              onClick={(e) => { e.stopPropagation(); onBreed(); }}
+              disabled={disabled}
+              className={cn(
+                "w-full mt-3 rounded-xl font-black uppercase tracking-widest text-[9px] h-8 transition-all",
+                !disabled ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" : "bg-muted text-muted-foreground opacity-50"
+              )}
+            >
+              Commit Breeding
+            </Button>
+          )}
         </div>
       </div>
     </Card>

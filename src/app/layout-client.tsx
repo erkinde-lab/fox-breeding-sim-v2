@@ -260,8 +260,9 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
           </div>
 
           {/* Mobile Navigation Menu */}
+                    {/* Mobile Navigation Menu */}
           {isMobileMenuOpen && (
-            <div className="xl:hidden fixed inset-0 z-50 bg-card border-t border-border overflow-y-auto" style={{ maxHeight: '100vh' }} ref={mobileMenuRef}>
+            <div className="xl:hidden fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background border-t border-border overflow-y-auto animate-in slide-in-from-top duration-300 shadow-2xl" ref={mobileMenuRef}>
               <div className="flex flex-col gap-1 mt-2">
                 <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Main</div>
                 <MobileNavLink href="/" icon={<Home size={18} />} label="Home" onClick={() => setIsMobileMenuOpen(false)} />

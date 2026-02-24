@@ -21,7 +21,7 @@ export default function StaffPage() {
     {
       id: 'groomer',
       name: 'Professional Groomer',
-      description: 'Provide expert care to all your foxes. Grants a permanent +5 Coat Quality bonus to all your foxes in shows.',
+      description: 'Provide expert care to all your foxes. Grants a permanent +5 Coat Quality bonus to all your foxes in shows. Unlocks the "Groom All" button on your dashboard.',
       cost: 20,
       hired: hiredGroomer,
       onHire: hireGroomer,
@@ -32,7 +32,7 @@ export default function StaffPage() {
     {
       id: 'trainer',
       name: 'Expert Trainer',
-      description: 'Polish your foxes behavior and presence. Grants a permanent +3 Temperament and +3 Presence bonus in shows.',
+      description: 'Polish your foxes behavior and presence. Grants a permanent +3 Temperament and +3 Presence bonus in shows. Unlocks the "Train All" button on your dashboard.',
       cost: 40,
       hired: hiredTrainer,
       onHire: hireTrainer,
@@ -65,7 +65,7 @@ export default function StaffPage() {
     {
       id: 'nutritionist',
       name: 'Nutritionist',
-      description: 'Formulate optimal diets for your foxes. Grants a permanent +2 bonus to all health-related stats.',
+      description: 'Formulate optimal diets for your foxes. Grants a permanent +2 bonus to all health-related stats. Unlocks the "Feed All" button on your dashboard.',
       cost: 30,
       hired: hiredNutritionist,
       onHire: hireNutritionist,

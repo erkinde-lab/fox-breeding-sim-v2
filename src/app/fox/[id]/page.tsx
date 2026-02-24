@@ -122,9 +122,15 @@ export default function FoxProfilePage() {
                 {fox.isAtStud ? "Listed at Stud" : "List for Stud"}
               </Button>
               <Button
-                onClick={() => { if(confirm("Retire or sell this fox?")) { sellFox(fox.id); router.push('/kennel'); } }}
+                onClick={() => {
+                  if(fox.age < 6) {
+                    alert("Foxes must be at least 6 years old to retire.");
+                    return;
+                  }
+                  if(confirm("Retire or sell this fox?")) { sellFox(fox.id); router.push('/kennel'); }
+                }}
                 variant="destructive"
-                className="rounded-xl font-black uppercase tracking-widest text-[10px] h-9"
+                className={`rounded-xl font-black uppercase tracking-widest text-[10px] h-9 ${fox.age < 6 ? "opacity-50 grayscale cursor-not-allowed" : ""}`}
               >
                 Retire/Sell
               </Button>
