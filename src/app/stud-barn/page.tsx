@@ -8,16 +8,16 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, Coins, User, Shield, Calculator, AlertCircle, Lock, Dna, Activity } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
-import { calculateBreedingOutcomes, LOCI } from '@/lib/genetics';
+import { calculateBreedingOutcomes, LOCI, getFormattedName } from '@/lib/genetics';
 
 export default function StudBarnPage() {
   const { foxes, npcStuds, breedFoxes, season, gold, hiredGeneticist, inventory } = useGameStore();
   const [selectedVixenId, setSelectedVixenId] = useState<string | null>(null);
   const [selectedStudId, setSelectedStudId] = useState<string | null>(null);
 
-  const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
+  const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired && !f.isAltered);
   const availableNPCs = Object.values(npcStuds);
-  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && !f.isAltered && f.age >= 2);
 
   const hasCalculator = inventory['calculator-access'] > 0;
   const hasGeneticist = hiredGeneticist;
@@ -196,7 +196,7 @@ function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: impor
         </div>
         <div className="flex-1 p-5 flex flex-col justify-between">
           <div>
-            <h4 className="font-black italic text-lg text-foreground truncate tracking-tight">{fox.name}</h4>
+            <h4 className="font-black italic text-lg text-foreground truncate tracking-tight">{getFormattedName(fox)}</h4>
             <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter mb-2">{fox.phenotype}</p>
 
             {/* Stats & Genotype Mini-Display */}

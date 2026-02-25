@@ -3,11 +3,12 @@ import { cn } from '@/lib/utils';
 
 import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
-import { getPhenotype, breed, calculateCOI, LOCI, calculateBreedingOutcomes } from '@/lib/genetics';
+import { getPhenotype, breed, calculateCOI, LOCI, calculateBreedingOutcomes, getFormattedName } from '@/lib/genetics';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
+import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function BreedingPage() {
   const { foxes, breedFoxes, season, inventory, hiredGeneticist, pregnancyList } = useGameStore();
@@ -18,8 +19,8 @@ export default function BreedingPage() {
   const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
-  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
-  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && !f.isAltered && f.age >= 2);
+  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && !f.isAltered && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedDog && selectedVixen) {
@@ -78,7 +79,7 @@ export default function BreedingPage() {
                   <FoxIllustration phenotype={m.phenotype} size={6} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{m.name}</div>
+                  <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{getFormattedName(m)}</div>
                   <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">{m.phenotype}</div>
                   <div className="flex flex-wrap gap-1 mt-1">
                     {Object.entries(m.genotype).map(([locus, alleles]) => (
@@ -147,7 +148,7 @@ export default function BreedingPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center">
-                      <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{f.name}</div>
+                      <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{getFormattedName(f)}</div>
                       {isServiced && <Badge variant="outline" className="text-[8px] uppercase font-black border-primary/30 text-primary">Serviced</Badge>}
                     </div>
                     <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">{f.phenotype}</div>

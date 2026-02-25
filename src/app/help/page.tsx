@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, AlertTriangle, Info } from 'lucide-react';
+import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, Crown, AlertTriangle, Info } from 'lucide-react';
 
 const SectionHeader = ({ icon: Icon, label }: { icon: React.ElementType; label: string }) => (
   <h2 className="text-2xl font-folksy text-foreground flex items-center gap-2" style={{ fontWeight: 400 }}>
@@ -179,12 +179,13 @@ export default function HelpPage() {
               <InfoTile icon={Trophy} color="bg-primary/10 text-primary border-primary/20" title="How Shows Work">
                 Shows run automatically each season. Every fox you own is evaluated across 8 physical and behavioral traits. A composite score is calculated and compared against all other entrants. Placements earn <strong>Gold</strong> and contribute to your kennel reputation.
               </InfoTile>
-              <InfoTile icon={Zap} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Classes">
+              <InfoTile icon={Trophy} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Circuits">
                 <ul className="list-disc list-inside space-y-1 mt-1">
-                  <li><strong>Kits</strong> are not eligible to show — they must age into juveniles first.</li>
-                  <li><strong>Juvenile</strong> foxes compete in the Juvenile class.</li>
-                  <li><strong>Junior</strong> shows are for adult foxes that have earned fewer than 5 lifetime points.</li>
-                  <li>As foxes accumulate points they advance to <strong>Open</strong> and <strong>Champion</strong> classes, which offer higher payouts.</li>
+                  <li><strong>Amateur Arena</strong>: For new players (Year 1 & 2 only). Restricts foxes to 0 lifetime points.</li>
+                  <li><strong>Junior Circuit</strong>: For foxes with 0–15 lifetime points.</li>
+                  <li><strong>Open Circuit</strong>: For foxes with 16–40 lifetime points.</li>
+                  <li><strong>Senior Circuit</strong>: For foxes with 41+ lifetime points. The premier circuit for earning titles.</li>
+                  <li><strong>Altered Arena</strong>: A dedicated space for spayed/neutered foxes, featuring all the same tiers.</li>
                 </ul>
               </InfoTile>
               <InfoTile icon={Info} color="bg-muted text-muted-foreground border-border" title="Improving Show Performance">
@@ -210,6 +211,97 @@ export default function HelpPage() {
           </Card>
         </section>
 
+
+        {/* Titling & Rankings */}
+        <section className="space-y-6">
+          <SectionHeader icon={Crown} label="Titling & Rankings" />
+          <Card className="folk-card border-border bg-card">
+            <CardContent className="pt-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">The Path to Champion</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Foxes earn permanent prefix titles as they prove themselves in the show ring. Altered foxes earn "Altered" versions of these titles (e.g., ACH).
+                  </p>
+                  <ul className="space-y-3">
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">CH / ACH (Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>30 Lifetime Points</strong> and <strong>2 Majors</strong>.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">GCH / AGCH (Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>100 Lifetime Points</strong> and <strong>1 Best in Show</strong> win.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">DGCH / DAGCH (Double Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>250 Lifetime Points</strong> and <strong>3 Best in Show</strong> wins.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Points & Majors</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Points scale based on the number of foxes in a class. The larger the competition, the more points are awarded.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg text-[10px] font-bold uppercase">
+                      <span>Field Size</span>
+                      <span>1st Place Points</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between px-2 text-xs"><span>1-4 Foxes</span> <span className="font-black">2 Pts</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>5-9 Foxes</span> <span>3 Pts + Major</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>10-19 Foxes</span> <span>5 Pts + Major</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>20+ Foxes</span> <span>7 Pts + Major</span></div>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground italic mt-2">
+                    * A <strong>Major</strong> is a 1st place win in a class of 5 or more foxes.
+                  </p>
+                </div>
+              </div>
+
+              <hr className="border-border" />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Parental Merit (ROM)</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Exceptional producers earn the <strong>ROM (Register of Merit)</strong> suffix. This title is awarded based on the success of their offspring.
+                  </p>
+                  <div className="flex gap-4 mt-2">
+                    <div className="flex-1 p-3 bg-muted/30 rounded-xl border border-border text-center">
+                      <span className="font-black text-foreground block text-xs uppercase mb-1">Sires (Dogs)</span>
+                      <span className="text-xs text-muted-foreground">10 Champion Kits</span>
+                    </div>
+                    <div className="flex-1 p-3 bg-muted/30 rounded-xl border border-border text-center">
+                      <span className="font-black text-foreground block text-xs uppercase mb-1">Dams (Vixens)</span>
+                      <span className="text-xs text-muted-foreground">5 Champion Kits</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Yearly Rankings</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    At the end of every year (after Winter), the most successful foxes earn prestigious ranking suffixes.
+                  </p>
+                  <ul className="space-y-2">
+                    <li className="flex items-center gap-2 text-sm">
+                      <Badge className="bg-yellow-500/20 text-yellow-600 border-none font-black">NW</Badge>
+                      <span className="font-medium">National Winner (#1 Fox overall)</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <Badge className="bg-primary/20 text-primary border-none font-black">RW</Badge>
+                      <span className="font-medium">Regional Winner (Top 10 overall)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
         {/* Genetics & Stats */}
         <section className="space-y-6">
           <SectionHeader icon={Microscope} label="Genetics & Stats" />

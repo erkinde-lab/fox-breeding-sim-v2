@@ -11,10 +11,10 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, Edit2, Save, X, Sparkles, Dumbbell, Utensils,
   ChevronDown, Heart, Activity, Calendar, Dna, Info,
-  Trophy, Check, ShoppingBag, Activity as ActivityIcon
+  Trophy, Check, ShoppingBag, Activity as ActivityIcon, Coins, Diamond, Medal
 } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
-import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts } from '@/lib/genetics';
+import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts, getFormattedName } from '@/lib/genetics';
 import { useNotifications } from '@/components/NotificationProvider';
 
 export default function FoxProfilePage() {
@@ -22,16 +22,13 @@ export default function FoxProfilePage() {
   const router = useRouter();
   const { addNotification } = useNotifications();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox,
-    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, breedingHistory, breedingHistory, listFoxOnMarket, cancelListing, marketListings, updateFox, breedingHistory, breedingHistory
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox, spayNeuterFox,
+    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFeed, setSelectedFeed] = useState('supplies');
   const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
-  const [isListing, setIsListing] = useState(false);
-  const [listPrice, setListPrice] = useState(1000);
-  const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
   const [isListing, setIsListing] = useState(false);
   const [listPrice, setListPrice] = useState(1000);
   const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
@@ -41,11 +38,6 @@ export default function FoxProfilePage() {
   const [newName, setNewName] = useState(fox?.name || '');
 
   if (!fox) return <div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Fox not found</div>;
-
-  const foxIds = Object.keys(foxes).sort();
-  const currentIndex = foxIds.indexOf(fox.id);
-  const prevId = currentIndex > 0 ? foxIds[currentIndex - 1] : null;
-  const nextId = currentIndex < foxIds.length - 1 ? foxIds[currentIndex + 1] : null;
 
   const foxIds = Object.keys(foxes).sort();
   const currentIndex = foxIds.indexOf(fox.id);
@@ -91,23 +83,9 @@ export default function FoxProfilePage() {
     }
   };
 
-  const handleList = () => {
-    listFoxOnMarket(fox.id, listPrice, listCurrency);
-    setIsListing(false);
-    addNotification("Fox listed on marketplace!", "success");
-    router.push("/shop/marketplace");
-  };
 
-  const handleRetire = () => {
-    if (fox.age < 6) {
-      addNotification("Foxes must be at least 6 years old to retire.", "destructive");
-      return;
-    }
-    if (confirm("Retire this fox? This cannot be undone.")) {
-      retireFox(fox.id);
-      router.push("/kennel");
-    }
-  };
+
+
 
   const feedOptions = [
     { id: 'supplies', label: 'Premium Feed' },
@@ -123,11 +101,6 @@ export default function FoxProfilePage() {
 
   const handleFeed = () => {
     applyItem(selectedFeed, fox.id);
-  };
-
-  const handleSetPreferredFeed = (feedId: string) => {
-    updateFox(fox.id, { preferredFeed: feedId });
-    setSelectedFeed(feedId);
   };
 
   const handleSetPreferredFeed = (feedId: string) => {
@@ -182,6 +155,20 @@ export default function FoxProfilePage() {
               >
                 Retire/Sell
               </Button>
+              <Button
+                onClick={() => {
+                  if(fox.age < 1) {
+                    addNotification("Foxes must be at least 1 year old to be altered.", "destructive");
+                    return;
+                  }
+                  if(confirm("Spay/Neuter this fox? This is permanent and will remove them from breeding.")) { spayNeuterFox(fox.id); }
+                }}
+                variant="outline"
+                disabled={fox.isAltered}
+                className="rounded-xl font-black uppercase tracking-widest text-[10px] h-9"
+              >
+                {fox.isAltered ? "Altered" : "Spay/Neuter"}
+              </Button>
             </>
           )}
         </div>
@@ -191,7 +178,7 @@ export default function FoxProfilePage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
             <CardHeader className="bg-muted/30 pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {getFormattedName(fox)}</CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                <div className="space-y-4">
@@ -237,7 +224,7 @@ export default function FoxProfilePage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
             <CardHeader className="bg-muted/30 pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {getFormattedName(fox)}</CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                <div className="space-y-4">
@@ -318,7 +305,7 @@ export default function FoxProfilePage() {
                       </div>
                    ) : (
                       <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-black italic text-foreground tracking-tight uppercase">{fox.name}</h1>
+                        <h1 className="text-3xl font-black italic text-foreground tracking-tight uppercase flex items-center gap-2">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500" size={24} />}</h1>
                         {!isFoundational && !fox.hasBeenRenamed && (
                           <button onClick={() => setIsEditing(true)} className="p-2 text-muted-foreground hover:text-primary transition-colors">
                             <Edit2 size={16} />
@@ -629,7 +616,7 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
       }`}>
         {fox ? (
           <Link href={`/fox/${fox.id}`} className="w-full flex flex-col items-center">
-            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px] group-hover:text-primary transition-colors">{fox.name}</div>
+            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px] group-hover:text-primary transition-colors">{getFormattedName(fox)}</div>
             <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest truncate w-full">{fox.phenotype}</div>
           </Link>
         ) : (
