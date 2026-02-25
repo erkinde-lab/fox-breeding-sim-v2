@@ -56,7 +56,7 @@ export default function AdminPanel() {
       const stats = foxes[selectedFoxId].stats;
       const targetId = selectedFoxId;
       Promise.resolve().then(() => {
-        setModStats(stats as any);
+        setModStats(stats as Stats);
         lastSyncedId.current = targetId;
       });
     }

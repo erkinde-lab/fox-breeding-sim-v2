@@ -227,6 +227,12 @@ export interface Fox {
   silverIntensity: number;
   healthIssues: string[];
   pointsYear: number;
+  bisWins: number;
+  majors: number;
+  meritScore: number;
+  prefixTitle?: string;
+  suffixTitle?: string;
+
   pointsLifetime: number;
   parents: [string | null, string | null];
   birthYear: number;
@@ -235,6 +241,7 @@ export interface Fox {
   studFee: number;
   isNPC?: boolean;
   lastFed?: number; lastGroomed?: number; lastTrained?: number; isStillborn?: boolean;
+  isAltered: boolean;
   boosts?: Record<string, number>;
   preferredFeed?: string;
 }
@@ -385,8 +392,15 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     genotypeRevealed: data.genotypeRevealed || false,
     pedigreeAnalyzed: data.pedigreeAnalyzed ?? (data.parents ? (data.parents[0] === null && data.parents[1] === null) : true),
     isRetired: data.isRetired || false,
+    isAltered: data.isAltered || false,
     hasBeenRenamed: data.hasBeenRenamed || false,
     silverIntensity: silverIntensity,
+    bisWins: data.bisWins || 0,
+    majors: data.majors || 0,
+    meritScore: data.meritScore || 0,
+    prefixTitle: data.prefixTitle,
+    suffixTitle: data.suffixTitle,
+
     healthIssues: phenotype.healthIssues,
     pointsYear: 0,
     pointsLifetime: 0,
@@ -740,4 +754,14 @@ export function calculateBreedingOutcomes(m: Fox, f: Fox, foxes: Record<string, 
     probabilities,
     predictedCOI: Math.round(calculateCOI(m.id, foxes, f.id) * 100) / 100
   };
+}
+export function getFormattedName(fox: Fox): string {
+  let name = fox.name;
+  if (fox.prefixTitle) {
+    name = `${fox.prefixTitle} ${name}`;
+  }
+  if (fox.suffixTitle) {
+    name = `${name} ${fox.suffixTitle}`;
+  }
+  return name;
 }

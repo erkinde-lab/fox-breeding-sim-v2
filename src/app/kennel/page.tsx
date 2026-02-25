@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, Suspense, useMemo } from 'react';
+import React, { useState, Suspense, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown, Crown, Medal } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
-import { isHungry, isGroomed, isTrained, Fox } from '@/lib/genetics';
+import { isHungry, isGroomed, isTrained, Fox, getFormattedName } from '@/lib/genetics';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type SortOption = 'id' | 'name' | 'age' | 'points';
@@ -19,21 +19,19 @@ function KennelContent() {
     const router = useRouter();
     const { foxes, kennelCapacity, expandKennel, season } = useGameStore();
 
-    const [activeTab, setActiveTab] = useState('dashboard');
+
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('id');
 
-    useEffect(() => {
-        const tab = searchParams.get('tab');
-        if (tab && ['dashboard', 'adult', 'young', 'retired'].includes(tab)) {
-            setActiveTab(tab);
-        } else {
-            setActiveTab('dashboard');
+    const tabParam = searchParams.get('tab');
+    const activeTab = useMemo(() => {
+        if (tabParam && ['dashboard', 'adult', 'young', 'retired', 'hof'].includes(tabParam)) {
+            return tabParam;
         }
-    }, [searchParams]);
+        return 'dashboard';
+    }, [tabParam]);
 
     const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
         router.push(`/kennel?tab=${tab}`, { scroll: false });
     };
 
@@ -64,6 +62,7 @@ function KennelContent() {
         { id: 'adult', label: 'Adult Kennel', icon: PawPrint, count: foxList.filter(f => f.age >= 1 && !f.isRetired).length },
         { id: 'young', label: 'Young Kennel', icon: Heart, count: foxList.filter(f => f.age < 1).length },
         { id: 'retired', label: 'Retired', icon: Home, count: foxList.filter(f => f.isRetired).length },
+        { id: 'hof', label: 'Hall of Fame', icon: Crown },
     ];
 
     return (
@@ -152,6 +151,7 @@ function KennelContent() {
                     {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" isFiltered={searchQuery !== ''} season={season} />}
                     {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" isFiltered={searchQuery !== ''} season={season} />}
                     {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" isFiltered={searchQuery !== ''} season={season} />}
+                    {activeTab === 'hof' && <HallOfFame foxes={foxList} />}
                 </motion.div>
             </AnimatePresence>
         </div>
@@ -221,10 +221,15 @@ function FoxCard({ fox, season }: { fox: Fox, season: string }) {
                     </div>
 
                     {/* Gender Badge */}
-                    <div className="absolute bottom-4 left-4">
+                    <div className="absolute bottom-4 left-4 flex gap-1">
                         <Badge variant="outline" className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === 'Dog' ? 'text-blue-500' : 'text-rose-500'}`}>
                             {fox.gender === 'Dog' ? 'Dog' : 'Vixen'}
                         </Badge>
+                        {fox.isAltered && (
+                            <Badge variant="outline" className="font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 text-muted-foreground">
+                                Altered
+                            </Badge>
+                        )}
                     </div>
 
                     {/* ID Overlay on Hover */}
@@ -235,7 +240,7 @@ function FoxCard({ fox, season }: { fox: Fox, season: string }) {
 
                 <div className="p-5 flex-1 flex flex-col gap-1">
                     <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{fox.name}</h3>
+                        <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors flex items-center gap-1">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500 shrink-0" size={14} />}</h3>
                         <div className="flex items-center gap-1 text-primary font-black text-xs">
                             <Trophy size={12} />
                             <span>{fox.pointsLifetime}</span>
@@ -257,5 +262,86 @@ export default function KennelPage() {
         <Suspense fallback={<div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Loading Kennel...</div>}>
             <KennelContent />
         </Suspense>
+    );
+}
+
+function HallOfFame({ foxes }: { foxes: Fox[] }) {
+    const decoratedAltered = foxes
+        .filter(f => f.isAltered && (f.pointsLifetime >= 50 || (f.bisWins || 0) > 0))
+        .sort((a, b) => (b.bisWins || 0) - (a.bisWins || 0) || b.pointsLifetime - a.pointsLifetime);
+
+    if (decoratedAltered.length === 0) {
+        return (
+            <div className="py-24 text-center bg-card/50 rounded-[40px] border-2 border-dashed border-border transition-all">
+                <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Crown className="w-8 h-8 text-muted-foreground/30" />
+                </div>
+                <h3 className="text-xl font-black italic text-foreground tracking-tight">
+                    The Hall of Fame is empty
+                </h3>
+                <p className="text-muted-foreground text-sm font-medium mt-1 mb-8">
+                    Decorate your Altered foxes with Best in Show wins or reach 50+ points to see them here.
+                </p>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            <div className="bg-primary/5 border border-primary/10 rounded-3xl p-6 flex items-center gap-4">
+                <div className="p-3 bg-primary/10 rounded-2xl text-primary">
+                    <Trophy size={24} />
+                </div>
+                <div>
+                    <h3 className="text-lg font-black italic tracking-tight">Legacy of Champions</h3>
+                    <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Honoring our most decorated Altered foxes</p>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {decoratedAltered.map((fox) => (
+                    <Link href={`/fox/${fox.id}`} key={fox.id}>
+                        <div className="folk-card group relative overflow-hidden bg-card border-2 border-primary/20 rounded-[32px] hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                            <div className="aspect-square bg-muted/30 relative flex items-center justify-center p-6 group-hover:bg-primary/5 transition-colors duration-500">
+                                <FoxIllustration
+                                    phenotype={fox.phenotype}
+                                    baseColor={fox.baseColor}
+                                    pattern={fox.pattern}
+                                    eyeColor={fox.eyeColor}
+                                    size={16}
+                                />
+                                <div className="absolute top-4 left-4">
+                                    <div className="p-2 bg-background/80 backdrop-blur-sm rounded-xl border border-primary/20 text-primary shadow-sm">
+                                        <Crown size={14} />
+                                    </div>
+                                </div>
+                                <div className="absolute bottom-4 right-4">
+                                     <Badge variant="outline" className="font-black text-[9px] uppercase tracking-widest bg-primary text-primary-foreground border-none">
+                                        Legacy
+                                     </Badge>
+                                </div>
+                            </div>
+                            <div className="p-5 flex-1 flex flex-col gap-3">
+                                <div className="flex justify-between items-start gap-2">
+                                    <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors flex items-center gap-1">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500 shrink-0" size={14} />}</h3>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <div className="bg-muted/50 rounded-xl p-2 text-center">
+                                        <div className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter">BIS Wins</div>
+                                        <div className="text-sm font-black text-primary">{fox.bisWins || 0}</div>
+                                    </div>
+                                    <div className="bg-muted/50 rounded-xl p-2 text-center">
+                                        <div className="text-[8px] font-black text-muted-foreground uppercase tracking-tighter">Points</div>
+                                        <div className="text-sm font-black text-foreground">{fox.pointsLifetime}</div>
+                                    </div>
+                                </div>
+                                <div className="pt-2 border-t border-border/50">
+                                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight truncate block">{fox.phenotype}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </div>
     );
 }

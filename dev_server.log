@@ -7,12 +7,19 @@
 - Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-Attention: Next.js now collects completely anonymous telemetry regarding usage.
-This information is used to shape Next.js' roadmap and prioritize features.
-You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-https://nextjs.org/telemetry
-
-✓ Ready in 1150ms
-○ Compiling /tos ...
- GET /tos 200 in 7.1s (compile: 6.1s, render: 992ms)
- GET /privacy 200 in 1137ms (compile: 1023ms, render: 114ms)
+✓ Ready in 2.7s
+ GET / 200 in 3.7s (compile: 3.0s, render: 706ms)
+ GET / 200 in 291ms (compile: 15ms, render: 275ms)
+ GET /shop/adoption 200 in 147ms (compile: 110ms, render: 37ms)
+ GET /shop/custom 200 in 1866ms (compile: 1827ms, render: 39ms)
+ GET /shop/supplies 200 in 1174ms (compile: 1136ms, render: 38ms)
+ GET / 200 in 115ms (compile: 7ms, render: 109ms)
+ GET / 200 in 97ms (compile: 4ms, render: 93ms)
+ GET /shop/adoption 200 in 31ms (compile: 5ms, render: 26ms)
+ GET /shop/custom 200 in 33ms (compile: 6ms, render: 27ms)
+ GET /shop/supplies 200 in 28ms (compile: 5ms, render: 23ms)
+ GET /kennel 200 in 945ms (compile: 906ms, render: 39ms)
+ GET /shows 200 in 869ms (compile: 808ms, render: 61ms)
+ GET /stud-barn 200 in 884ms (compile: 835ms, render: 49ms)
+ GET /help 200 in 1012ms (compile: 939ms, render: 73ms)
+✓ Compiled in 73ms
