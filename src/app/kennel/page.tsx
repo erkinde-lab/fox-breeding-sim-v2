@@ -149,16 +149,16 @@ function KennelContent() {
                     transition={{ duration: 0.2 }}
                 >
                     {activeTab === 'dashboard' && <Dashboard />}
-                    {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" isFiltered={searchQuery !== ''} />}
-                    {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" isFiltered={searchQuery !== ''} />}
-                    {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" isFiltered={searchQuery !== ''} />}
+                    {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" isFiltered={searchQuery !== ''} season={season} />}
+                    {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" isFiltered={searchQuery !== ''} season={season} />}
+                    {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" isFiltered={searchQuery !== ''} season={season} />}
                 </motion.div>
             </AnimatePresence>
         </div>
     );
 }
 
-function KennelGrid({ foxes, type, isFiltered }: { foxes: Fox[], type: string, isFiltered: boolean }) {
+function KennelGrid({ foxes, type, isFiltered, season }: { foxes: Fox[], type: string, isFiltered: boolean, season: string }) {
     if (foxes.length === 0) {
         return (
             <div className="py-24 text-center bg-card/50 rounded-[40px] border-2 border-dashed border-border transition-all">
