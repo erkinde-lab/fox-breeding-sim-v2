@@ -96,36 +96,7 @@ export default function SuppliesPage() {
         </div>
       </div>
 
-      {/* Basic Supplies Section */}
-      {(activeTab === 'all' || activeTab === 'feeds') && (
-        <section className="space-y-6">
-          <h2 className="text-2xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Basic Kibble</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <KibbleCard
-              id="standard-feed"
-              name="Standard Feed"
-              description="Budget-friendly kibble. 4 servings per bag."
-              price={25}
-              icon={<ShoppingBag size={40} />}
-              inventory={inventory}
-              gold={gold}
-              buyItem={buyItem}
-            />
-            <KibbleCard
-              id="supplies"
-              name="Premium Feed"
-              description="High-protein kibble. 8 servings per bag."
-              price={50}
-              icon={<Zap size={40} />}
-              inventory={inventory}
-              gold={gold}
-              buyItem={buyItem}
-            />
-          </div>
-        </section>
-      )}
-
-      {/* Specialty Items Section */}
+            {/* Specialty Items Section */}
       {(activeTab === 'all' || activeTab === 'items') && (
         <section className="space-y-6">
           <h2 className="text-2xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Specialty Tools</h2>
@@ -156,6 +127,35 @@ export default function SuppliesPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+      )}
+
+{/* Basic Supplies Section */}
+      {(activeTab === 'all' || activeTab === 'feeds') && (
+        <section className="space-y-6">
+          <h2 className="text-2xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Basic Kibble</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <KibbleCard
+              id="standard-feed"
+              name="Standard Feed"
+              description="Budget-friendly kibble. 4 servings per bag."
+              price={25}
+              icon={<ShoppingBag size={40} />}
+              inventory={inventory}
+              gold={gold}
+              buyItem={buyItem}
+            />
+            <KibbleCard
+              id="supplies"
+              name="Premium Feed"
+              description="High-protein kibble. 8 servings per bag."
+              price={50}
+              icon={<Zap size={40} />}
+              inventory={inventory}
+              gold={gold}
+              buyItem={buyItem}
+            />
           </div>
         </section>
       )}

@@ -18,17 +18,17 @@ export default function MembersPage() {
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">Members</h1>
-          <p className="text-slate-500 mt-2">Connect with other fox breeders and see who&apos;s leading the pack.</p>
+          <h1 className="text-4xl font-black text-foreground tracking-tight">Members</h1>
+          <p className="text-muted-foreground mt-2">Connect with other fox breeders and see who&apos;s leading the pack.</p>
         </div>
         <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
           <input
             type="text"
             placeholder="Search members..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-earth-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-fire-500 focus:border-transparent transition-all shadow-sm text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-sm text-sm"
           />
         </div>
       </div>
@@ -45,14 +45,14 @@ export default function MembersPage() {
                   <CardTitle className="text-lg">{member.name}</CardTitle>
                   <Badge variant="outline" className="text-[10px] uppercase">Lvl {member.level}</Badge>
                 </div>
-                <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                   <Calendar size={10} /> Joined {member.joined}
                 </p>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-between items-center text-sm pt-2 border-t border-slate-100 mt-2">
-                <div className="flex items-center gap-1 text-slate-600">
+              <div className="flex justify-between items-center text-sm pt-2 border-t border-border mt-2">
+                <div className="flex items-center gap-1 text-foreground">
                   <Trophy size={14} className="text-yellow-500" />
                   <span className="font-bold">{member.points.toLocaleString()} pts</span>
                 </div>
@@ -65,7 +65,7 @@ export default function MembersPage() {
                   {member.isBanned && (
                     <Badge variant="destructive" className="text-[8px] uppercase">Banned</Badge>
                   )}
-                  <div className="flex items-center gap-1 text-slate-400 text-xs">
+                  <div className="flex items-center gap-1 text-muted-foreground text-xs">
                     <Star size={12} className="text-orange-400 fill-orange-400" />
                     Top 1%
                   </div>
@@ -75,7 +75,7 @@ export default function MembersPage() {
           </Card>
         ))}
         {filteredMembers.length === 0 && (
-          <div className="col-span-full py-12 text-center text-slate-500">
+          <div className="col-span-full py-12 text-center text-muted-foreground">
             No members found matching &quot;{searchQuery}&quot;
           </div>
         )}

@@ -85,19 +85,22 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   if (isFifi) {
     // Fire Expression
     if (aCount === 2) { // Alaskan base
-      if (hasG || hasP) underlyingName = "Snow Glow";
-      else underlyingName = "Colicott";
-    } else if (aCount === 1) { // Cross base
-      if (hasP) underlyingName = "Moon Glow";
-      else underlyingName = "Fire Cross";
-    } else if (bCount === 2) { // Standard Silver base
-      if (hasG) underlyingName = "Cinnamon Fire";
+      if (hasG) underlyingName = "Champagne";
       else if (hasP) underlyingName = "Fawn Glow";
       else underlyingName = "Colicott";
+    } else if (aCount === 1) { // Cross base
+      if (isAmber) underlyingName = "Champagne Cross";
+      else if (isPearl) {
+        if (baseColorName === "Gold Cross") underlyingName = "Fire and Ice";
+        else underlyingName = "Moon Glow";
+      } else if (isBurgundy) underlyingName = "Snow Glow";
+      else underlyingName = "Fire Cross";
+    } else if (bCount === 2) { // Standard Silver base
+      if (isBurgundy || isAmber) underlyingName = "Cinnamon Fire";
+      else underlyingName = ""; // Masked
     } else { // Red/Gold base
-      if (hasG && hasP) underlyingName = "Autumn Fire";
-      else if (hasP) underlyingName = "Fire and Ice";
-      else if (hasG) underlyingName = "Snow Glow";
+      if (isAmber) underlyingName = "Autumn Fire";
+      else if (isBurgundy || isPearl) underlyingName = "Snow Glow";
       else if (baseColorName === "Gold") underlyingName = "Golden Sunrise";
       else underlyingName = "Wildfire";
     }
@@ -189,7 +192,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
     geneticName: displayName,
     description: `A beautiful ${displayName} with ${eyeColor.toLowerCase().replace(" - blue heterochromia", " and blue heterochromic")} eyes.`,
     isLethal,
-    healthIssues: isMansfieldPearl ? ['Mansfield Pearl Alert'] : [],
+    healthIssues: isMansfieldPearl ? ['Chediak-Hygashi syndrome: high risk of vixen dying if pregnant'] : [],
   };
 }
 
@@ -377,21 +380,21 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     pattern: phenotype.pattern,
     eyeColor: phenotype.eyeColor,
     gender: data.gender || (typeof window !== 'undefined' && Math.random() > 0.5 ? "Dog" : "Vixen"),
-    age: data.age || 2,
+    age: data.age ?? 2,
     stats: data.stats || generateStats(),
     genotypeRevealed: data.genotypeRevealed || false,
-    pedigreeAnalyzed: data.pedigreeAnalyzed || false,
+    pedigreeAnalyzed: data.pedigreeAnalyzed ?? (data.parents ? (data.parents[0] === null && data.parents[1] === null) : true),
     isRetired: data.isRetired || false,
     hasBeenRenamed: data.hasBeenRenamed || false,
     silverIntensity: silverIntensity,
     healthIssues: phenotype.healthIssues,
     pointsYear: 0,
     pointsLifetime: 0,
-    parents: data.parents || [null, null],
-    birthYear: data.birthYear || 0,
-    coi: data.coi || 0,
-    isAtStud: data.isAtStud || false,
-    studFee: data.studFee || 0,
+    parents: data.parents ?? [null, null],
+    birthYear: data.birthYear ?? 0,
+    coi: data.coi ?? 0,
+    isAtStud: data.isAtStud ?? false,
+    studFee: data.studFee ?? 0,
     isNPC: data.isNPC || false,
     lastFed: data.lastFed || Date.now(),
     boosts: data.boosts || {},

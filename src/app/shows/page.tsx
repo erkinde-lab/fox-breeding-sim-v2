@@ -44,7 +44,7 @@ export default function ShowsPage() {
 
   const selectedShow = shows.find(s => s.id === selectedShowId);
   const eligibleFoxes = selectedShow
-    ? Object.values(foxes).filter(f => isFoxEligibleForShow(f, selectedShow.level, selectedShow.type))
+    ? Object.values(foxes).filter(f => isFoxEligibleForShow(f, selectedShow.level, selectedShow.type, season))
     : [];
 
   const handleAddShow = () => {
@@ -157,7 +157,7 @@ export default function ShowsPage() {
                               </div>
                               <div className="flex items-center gap-2">
                                 <Badge variant="secondary" className="text-[9px] font-bold px-1.5 h-4">{res.class}</Badge>
-                                <span className="text-xs font-black text-muted-foreground">{res.score} pts</span>
+                                <span className="text-xs font-black text-muted-foreground">{res.score} score ({res.pointsAwarded} pts)</span>
                               </div>
                             </div>
 
@@ -330,7 +330,7 @@ export default function ShowsPage() {
                     <CardContent className="p-4 space-y-4">
                       <div className="space-y-2">
                         {eligibleFoxes.length === 0 ? (
-                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.<br/>Foxes must be fed, healthy, and not retired.</p>
+                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.<br/>Foxes must be named, fed, healthy, and not retired.</p>
                         ) : (
                           <div className="flex flex-col gap-2">
                             {eligibleFoxes.map(fox => {
@@ -339,9 +339,9 @@ export default function ShowsPage() {
                                 <button
                                   key={fox.id}
                                   onClick={() => enterFoxInShow(fox.id, selectedShow.id)}
-                                  disabled={isEntered}
+
                                   className={cn(
-                                    "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left",
+                                    "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left overflow-visible relative",
                                     isEntered
                                       ? "bg-green-500/10 border-green-500/30 text-green-700"
                                       : "bg-card border-border hover:border-primary/50 hover:bg-primary/5"
