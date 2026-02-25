@@ -116,7 +116,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo and Desktop Nav */}
-            <div className="flex items-center gap-12 w-full">
+            <div className="flex items-center gap-12">
               <Link href="/" className="flex items-center gap-3 group shrink-0">
                 <div
                   className="p-3 bg-apricot rounded-[1.2rem] group-hover:bg-fire-400 transition-all group-hover:rotate-6 shadow-xl shadow-apricot/20 cursor-help"
@@ -154,7 +154,6 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                   setIsOpen={setIsKennelOpen}
                   dropdownRef={kennelRef}
                 >
-                  <DropdownLink href="/kennel?tab=dashboard" icon={<LayoutDashboard size={16} />} label="Dashboard" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/kennel" icon={<PawPrint size={16} />} label="My Foxes" onClick={() => setIsKennelOpen(false)} />
                   <DropdownLink href="/inventory" icon={<Package size={16} />} label="Inventory" onClick={() => setIsKennelOpen(false)} />
                 </Dropdown>
@@ -270,7 +269,6 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                 {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
 
                 <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Kennel</div>
-                <MobileNavLink href="/kennel?tab=dashboard" icon={<LayoutDashboard size={18} />} label="Dashboard" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
                 <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
 

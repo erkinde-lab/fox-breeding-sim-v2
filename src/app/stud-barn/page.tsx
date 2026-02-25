@@ -210,10 +210,10 @@ function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: impor
                <div className="space-y-1">
                   <div className="flex items-center gap-1 text-[8px] font-black text-muted-foreground/60 uppercase"><Dna size={8}/> Genetics</div>
                   <div className="flex flex-wrap gap-0.5">
-                    {Object.entries(fox.genotype).slice(0, 3).map(([l, a]) => (
+                    {Object.entries(fox.genotype).slice(0, fox.isNPC || fox.genotypeRevealed ? undefined : 3).map(([l, a]) => (
                       <span key={l} className="text-[8px] font-mono bg-muted px-0.5 rounded">{l}:{a.join("")}</span>
                     ))}
-                    <span className="text-[8px] text-muted-foreground">...</span>
+                    {(!fox.isNPC && !fox.genotypeRevealed) && <span className="text-[8px] text-muted-foreground">...</span>}
                   </div>
                </div>
             </div>

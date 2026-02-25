@@ -290,6 +290,7 @@ interface GameState {
   addFox: (fox: Fox) => void;
 
   sellFox: (id: string) => void;
+  retireFox: (id: string) => void;
 
   buyItem: (itemId: string, price: number, currency: 'gold' | 'gems', quantity?: number) => void;
 
@@ -774,6 +775,13 @@ export const useGameStore = create<GameState>()(
       addGems: (amount) => set((state) => ({ gems: state.gems + amount })),
 
       addFox: (fox) => set((state) => ({ foxes: { ...state.foxes, [fox.id]: state.hiredGeneticist ? { ...fox, genotypeRevealed: true } : fox } })),
+
+      retireFox: (id) => set((state) => ({
+        foxes: {
+          ...state.foxes,
+          [id]: { ...state.foxes[id], isRetired: true }
+        }
+      })),
 
       sellFox: (id) => set((state) => {
 
@@ -1442,7 +1450,12 @@ export const useGameStore = create<GameState>()(
 
       enterFoxInShow: (foxId, showId) => set((state) => ({
         shows: state.shows.map(s =>
-          s.id === showId ? { ...s, entries: [...new Set([...s.entries, foxId])] } : s
+          s.id === showId ? {
+            ...s,
+            entries: s.entries.includes(foxId)
+              ? s.entries.filter(id => id !== foxId)
+              : [...s.entries, foxId]
+          } : s
         )
       })),
 

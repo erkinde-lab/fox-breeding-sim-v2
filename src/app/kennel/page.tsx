@@ -17,7 +17,7 @@ type SortOption = 'id' | 'name' | 'age' | 'points';
 function KennelContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { foxes, kennelCapacity, expandKennel } = useGameStore();
+    const { foxes, kennelCapacity, expandKennel, season } = useGameStore();
 
     const [activeTab, setActiveTab] = useState('dashboard');
     const [searchQuery, setSearchQuery] = useState('');
@@ -188,13 +188,13 @@ function KennelGrid({ foxes, type, isFiltered }: { foxes: Fox[], type: string, i
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {foxes.map((fox) => (
-                <FoxCard key={fox.id} fox={fox} />
+                <FoxCard key={fox.id} fox={fox} season={season} />
             ))}
         </div>
     );
 }
 
-function FoxCard({ fox }: { fox: Fox }) {
+function FoxCard({ fox, season }: { fox: Fox, season: string }) {
     const hungry = isHungry(fox);
     const groomed = isGroomed(fox);
     const trained = isTrained(fox);
@@ -242,7 +242,7 @@ function FoxCard({ fox }: { fox: Fox }) {
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">{fox.age} {fox.age === 1 ? 'Year' : 'Years'} Old</span>
+                        <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">{fox.age === 0 ? ((['Spring', 'Summer'].includes(season)) ? 'Newborn' : 'Juvenile') : `${fox.age} ${fox.age === 1 ? 'Year' : 'Years'} Old`}</span>
                         <span className="w-1 h-1 rounded-full bg-border" />
                         <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight truncate">{fox.phenotype}</span>
                     </div>

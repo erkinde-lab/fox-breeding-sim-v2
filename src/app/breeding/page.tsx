@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
 
 export default function BreedingPage() {
-  const { foxes, breedFoxes, season, inventory, hiredGeneticist } = useGameStore();
+  const { foxes, breedFoxes, season, inventory, hiredGeneticist, pregnancyList } = useGameStore();
   const [selectedDog, setSelectedDog] = useState<string | null>(null);
   const [selectedVixen, setSelectedVixen] = useState<string | null>(null);
 
@@ -70,21 +70,24 @@ export default function BreedingPage() {
                 key={m.id}
                 onClick={() => setSelectedDog(m.id)}
                 className={cn(
-                  "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
+                  "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group flex items-center gap-4",
                   selectedDog === m.id ? "bg-card border-primary shadow-md translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
                 )}
               >
-                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{m.name}</div>
-                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{m.baseColor}{m.pattern !== "None" && ` • ${m.pattern}`}</div>
-                {m.genotypeRevealed && (
-                  <div className="flex flex-wrap gap-1 mt-2">
+                <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center shrink-0 border border-border/50">
+                  <FoxIllustration phenotype={m.phenotype} size={6} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{m.name}</div>
+                  <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">{m.phenotype}</div>
+                  <div className="flex flex-wrap gap-1 mt-1">
                     {Object.entries(m.genotype).map(([locus, alleles]) => (
-                      <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
-                        {locus}: {alleles.join("")}
-                      </Badge>
+                      <span key={locus} className="text-[7px] font-mono bg-muted px-0.5 rounded text-muted-foreground uppercase">
+                        {locus}:{alleles.join("")}
+                      </span>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
             ))}
             {dogs.length === 0 && (
@@ -126,28 +129,39 @@ export default function BreedingPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 flex-1">
-            {vixens.map(f => (
-              <div
-                key={f.id}
-                onClick={() => setSelectedVixen(f.id)}
-                className={cn(
-                  "p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 group",
-                  selectedVixen === f.id ? "bg-card border-primary shadow-md -translate-x-1" : "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50"
-                )}
-              >
-                <div className="font-black text-foreground italic group-hover:text-primary transition-colors">{f.name}</div>
-                <div className="text-[10px] font-bold text-muted-foreground mt-1 uppercase tracking-tighter">{f.baseColor}{f.pattern !== "None" && ` • ${f.pattern}`}</div>
-                {f.genotypeRevealed && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {Object.entries(f.genotype).map(([locus, alleles]) => (
-                      <Badge key={locus} variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary uppercase font-black">
-                        {locus}: {alleles.join("")}
-                      </Badge>
-                    ))}
+            {vixens.map(f => {
+              const isServiced = pregnancyList.some(p => p.motherId === f.id);
+              return (
+                <div
+                  key={f.id}
+                  onClick={() => !isServiced && setSelectedVixen(f.id)}
+                  className={cn(
+                    "p-4 rounded-2xl border-2 transition-all duration-300 group flex items-center gap-4",
+                    isServiced ? "opacity-50 grayscale cursor-not-allowed bg-muted/10 border-border" :
+                    selectedVixen === f.id ? "bg-card border-primary shadow-md -translate-x-1 cursor-pointer" :
+                    "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50 cursor-pointer"
+                  )}
+                >
+                  <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center shrink-0 border border-border/50">
+                    <FoxIllustration phenotype={f.phenotype} size={6} />
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <div className="font-black text-foreground italic group-hover:text-primary transition-colors truncate">{f.name}</div>
+                      {isServiced && <Badge variant="outline" className="text-[8px] uppercase font-black border-primary/30 text-primary">Serviced</Badge>}
+                    </div>
+                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">{f.phenotype}</div>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {Object.entries(f.genotype).map(([locus, alleles]) => (
+                        <span key={locus} className="text-[7px] font-mono bg-muted px-0.5 rounded text-muted-foreground uppercase">
+                          {locus}:{alleles.join("")}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
             {vixens.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
                 <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens (Age 2+)</p>

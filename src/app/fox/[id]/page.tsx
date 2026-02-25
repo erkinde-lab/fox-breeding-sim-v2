@@ -22,19 +22,35 @@ export default function FoxProfilePage() {
   const router = useRouter();
   const { addNotification } = useNotifications();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox,
-    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox,
+    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, listFoxOnMarket, cancelListing, marketListings, updateFox
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFeed, setSelectedFeed] = useState('supplies');
   const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
+  const [isListing, setIsListing] = useState(false);
+  const [listPrice, setListPrice] = useState(1000);
+  const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
+  const [isListing, setIsListing] = useState(false);
+  const [listPrice, setListPrice] = useState(1000);
+  const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
 
   const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id) || Object.values(npcStuds).find(f => f.id === id);
   const isFoundational = !foxes[id as string];
   const [newName, setNewName] = useState(fox?.name || '');
 
   if (!fox) return <div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Fox not found</div>;
+
+  const foxIds = Object.keys(foxes).sort();
+  const currentIndex = foxIds.indexOf(fox.id);
+  const prevId = currentIndex > 0 ? foxIds[currentIndex - 1] : null;
+  const nextId = currentIndex < foxIds.length - 1 ? foxIds[currentIndex + 1] : null;
+
+  const foxIds = Object.keys(foxes).sort();
+  const currentIndex = foxIds.indexOf(fox.id);
+  const prevId = currentIndex > 0 ? foxIds[currentIndex - 1] : null;
+  const nextId = currentIndex < foxIds.length - 1 ? foxIds[currentIndex + 1] : null;
 
   const hungry = isHungry(fox);
   const groomed = isGroomed(fox);
@@ -55,6 +71,42 @@ export default function FoxProfilePage() {
   const handleReveal = () => applyItem('genetic-test', fox.id);
   const handleAnalyze = () => applyItem('pedigree-analysis', fox.id);
 
+  const handleList = () => {
+    listFoxOnMarket(fox.id, listPrice, listCurrency);
+    setIsListing(false);
+    addNotification("Fox listed on marketplace!", "success");
+    router.push("/shop/marketplace");
+  };
+
+  const handleRetire = () => {
+    if (fox.age < 6) {
+      addNotification("Foxes must be at least 6 years old to retire.", "destructive");
+      return;
+    }
+    if (confirm("Retire this fox? This cannot be undone.")) {
+      retireFox(fox.id);
+      router.push("/kennel");
+    }
+  };
+
+  const handleList = () => {
+    listFoxOnMarket(fox.id, listPrice, listCurrency);
+    setIsListing(false);
+    addNotification("Fox listed on marketplace!", "success");
+    router.push("/shop/marketplace");
+  };
+
+  const handleRetire = () => {
+    if (fox.age < 6) {
+      addNotification("Foxes must be at least 6 years old to retire.", "destructive");
+      return;
+    }
+    if (confirm("Retire this fox? This cannot be undone.")) {
+      retireFox(fox.id);
+      router.push("/kennel");
+    }
+  };
+
   const feedOptions = [
     { id: 'supplies', label: 'Premium Feed' },
     { id: 'feed-head', label: 'Cranial Crunch' },
@@ -69,6 +121,16 @@ export default function FoxProfilePage() {
 
   const handleFeed = () => {
     applyItem(selectedFeed, fox.id);
+  };
+
+  const handleSetPreferredFeed = (feedId: string) => {
+    updateFox(fox.id, { preferredFeed: feedId });
+    setSelectedFeed(feedId);
+  };
+
+  const handleSetPreferredFeed = (feedId: string) => {
+    updateFox(fox.id, { preferredFeed: feedId });
+    setSelectedFeed(feedId);
   };
 
   const goToKennel = () => {
@@ -111,7 +173,7 @@ export default function FoxProfilePage() {
                     addNotification("Foxes must be at least 6 years old to retire.", "destructive");
                     return;
                   }
-                  if(confirm("Retire or sell this fox?")) { sellFox(fox.id); router.push('/kennel'); }
+                  if(confirm("Retire or sell this fox?")) { retireFox(fox.id); router.push('/kennel'); }
                 }}
                 variant="destructive"
                 className={`rounded-xl font-black uppercase tracking-widest text-[10px] h-9 ${fox.age < 6 ? "opacity-50 grayscale cursor-not-allowed" : ""}`}
@@ -123,6 +185,98 @@ export default function FoxProfilePage() {
         </div>
       </div>
 
+            {isListing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+          <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+               <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5 block">Set Price</label>
+                    <div className="relative">
+                       <input
+                         type="number"
+                         value={listPrice}
+                         onChange={(e) => setListPrice(parseInt(e.target.value) || 0)}
+                         className="w-full bg-muted border border-border rounded-xl px-4 py-3 font-black text-lg focus:ring-2 focus:ring-primary outline-none"
+                       />
+                       <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          {listCurrency === 'gold' ? <Coins size={20} className="text-yellow-600"/> : <Diamond size={20} className="text-cyan-600"/>}
+                       </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5 block">Currency</label>
+                    <div className="grid grid-cols-2 gap-2">
+                       <Button
+                         variant={listCurrency === 'gold' ? 'default' : 'outline'}
+                         onClick={() => setListCurrency('gold')}
+                         className="rounded-xl font-black uppercase tracking-widest text-xs"
+                       >Gold</Button>
+                       <Button
+                         variant={listCurrency === 'gems' ? 'default' : 'outline'}
+                         onClick={() => setListCurrency('gems')}
+                         className="rounded-xl font-black uppercase tracking-widest text-xs"
+                       >Gems</Button>
+                    </div>
+                  </div>
+               </div>
+               <div className="flex gap-3">
+                  <Button onClick={handleList} className="flex-1 h-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20">List on Market</Button>
+                  <Button onClick={() => setIsListing(false)} variant="ghost" className="flex-1 h-12 font-black uppercase tracking-widest rounded-xl">Cancel</Button>
+               </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+            {isListing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+          <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
+            <CardHeader className="bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-6">
+               <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5 block">Set Price</label>
+                    <div className="relative">
+                       <input
+                         type="number"
+                         value={listPrice}
+                         onChange={(e) => setListPrice(parseInt(e.target.value) || 0)}
+                         className="w-full bg-muted border border-border rounded-xl px-4 py-3 font-black text-lg focus:ring-2 focus:ring-primary outline-none"
+                       />
+                       <div className="absolute right-4 top-1/2 -translate-y-1/2">
+                          {listCurrency === 'gold' ? <Coins size={20} className="text-yellow-600"/> : <Diamond size={20} className="text-cyan-600"/>}
+                       </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest mb-1.5 block">Currency</label>
+                    <div className="grid grid-cols-2 gap-2">
+                       <Button
+                         variant={listCurrency === 'gold' ? 'default' : 'outline'}
+                         onClick={() => setListCurrency('gold')}
+                         className="rounded-xl font-black uppercase tracking-widest text-xs"
+                       >Gold</Button>
+                       <Button
+                         variant={listCurrency === 'gems' ? 'default' : 'outline'}
+                         onClick={() => setListCurrency('gems')}
+                         className="rounded-xl font-black uppercase tracking-widest text-xs"
+                       >Gems</Button>
+                    </div>
+                  </div>
+               </div>
+               <div className="flex gap-3">
+                  <Button onClick={handleList} className="flex-1 h-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20">List on Market</Button>
+                  <Button onClick={() => setIsListing(false)} variant="ghost" className="flex-1 h-12 font-black uppercase tracking-widest rounded-xl">Cancel</Button>
+               </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left Column: Illustration & Quick Stats */}
         <div className="xl:col-span-4 space-y-6">
@@ -175,7 +329,7 @@ export default function FoxProfilePage() {
                    </Badge>
                 </div>
                 <div className="flex items-center gap-2 text-muted-foreground font-bold text-xs uppercase tracking-tight">
-                   <span>{fox.age}y</span>
+                   <span>{fox.age === 0 ? ((['Spring', 'Summer'].includes(season)) ? 'Newborn' : 'Juvenile') : fox.age + 'y'}</span>
                    <span className="w-1 h-1 rounded-full bg-border" />
                    <span>{fox.phenotype}</span>
                    <span className="w-1 h-1 rounded-full bg-border" />

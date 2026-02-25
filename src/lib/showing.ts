@@ -100,7 +100,8 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
       if (f.isRetired || f.healthIssues.length > 0 || isHungry(f)) return false;
       
       const isDog = f.gender === 'Dog';
-      const isJuvenile = f.age === 0;
+      const isNewborn = f.age === 0 && (season === 'Spring' || season === 'Summer');
+      const isJuvenile = f.age === 0 && !isNewborn;
       
       if (cls === 'Best Juvenile Dog') return isDog && isJuvenile;
       if (cls === 'Best Juvenile Vixen') return !isDog && isJuvenile;
@@ -171,7 +172,8 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
     if (f.isRetired || f.healthIssues.length > 0) return false;
 
     const isDog = f.gender === 'Dog';
-    const isJuvenile = f.age === 0;
+    const isNewborn = f.age === 0 && (season === 'Spring' || season === 'Summer');
+    const isJuvenile = f.age === 0 && !isNewborn;
 
     if (showClass === 'Best Juvenile Dog') return isDog && isJuvenile;
     if (showClass === 'Best Juvenile Vixen') return !isDog && isJuvenile;
@@ -232,11 +234,12 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
   };
 }
 
-export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: ShowClass): boolean {
-  if (fox.isRetired || fox.healthIssues.length > 0 || isHungry(fox)) return false;
+export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: ShowClass, season: string): boolean {
+  if (fox.isRetired || fox.healthIssues.length > 0 || isHungry(fox) || !fox.hasBeenRenamed) return false;
 
   const isDog = fox.gender === 'Dog';
-  const isJuvenile = fox.age === 0;
+  const isNewborn = fox.age === 0 && (season === 'Spring' || season === 'Summer');
+  const isJuvenile = fox.age === 0 && !isNewborn;
 
   let classMatch = false;
   if (showClass === 'Best Juvenile Dog') classMatch = isDog && isJuvenile;
