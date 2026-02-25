@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React from 'react';
 import { useGameStore, ACHIEVEMENTS } from '@/lib/store';
@@ -179,6 +180,3 @@ function ChallengeRow({ title, progress, total, reward, unit, instruction }: { t
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

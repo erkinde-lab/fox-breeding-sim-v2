@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useEffect } from 'react';
 import { useGameStore } from '@/lib/store';
@@ -108,6 +109,3 @@ export default function AdoptionPage() {
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

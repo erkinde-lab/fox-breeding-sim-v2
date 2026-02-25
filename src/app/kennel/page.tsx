@@ -1,26 +1,35 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Star, Heart, ArrowRight } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
 import { isHungry, isGroomed, isTrained, Fox } from '@/lib/genetics';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type SortOption = 'id' | 'name' | 'age' | 'points';
+
 function KennelContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { foxes, kennelCapacity, expandKennel, gold } = useGameStore();
-    const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'dashboard');
+    const { foxes, kennelCapacity, expandKennel } = useGameStore();
+
+    const [activeTab, setActiveTab] = useState('dashboard');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortBy, setSortBy] = useState<SortOption>('id');
 
     useEffect(() => {
         const tab = searchParams.get('tab');
-        if (tab) setActiveTab(tab);
+        if (tab && ['dashboard', 'adult', 'young', 'retired'].includes(tab)) {
+            setActiveTab(tab);
+        } else {
+            setActiveTab('dashboard');
+        }
     }, [searchParams]);
 
     const handleTabChange = (tab: string) => {
@@ -29,21 +38,38 @@ function KennelContent() {
     };
 
     const foxList = Object.values(foxes);
-    const adultFoxes = foxList.filter(fox => fox.age >= 1 && !fox.isRetired);
-    const youngFoxes = foxList.filter(fox => fox.age < 1);
-    const retiredFoxes = foxList.filter(fox => fox.isRetired);
+
+    const filteredAndSortedFoxes = useMemo(() => {
+        return foxList
+            .filter(fox => {
+                const query = searchQuery.toLowerCase();
+                return fox.name.toLowerCase().includes(query) ||
+                       fox.phenotype.toLowerCase().includes(query) ||
+                       fox.id.toLowerCase().includes(query);
+            })
+            .sort((a, b) => {
+                if (sortBy === 'name') return a.name.localeCompare(b.name);
+                if (sortBy === 'age') return b.age - a.age;
+                if (sortBy === 'points') return b.pointsLifetime - a.pointsLifetime;
+                return a.id.localeCompare(b.id);
+            });
+    }, [foxList, searchQuery, sortBy]);
+
+    const adultFoxes = filteredAndSortedFoxes.filter(fox => fox.age >= 1 && !fox.isRetired);
+    const youngFoxes = filteredAndSortedFoxes.filter(fox => fox.age < 1);
+    const retiredFoxes = filteredAndSortedFoxes.filter(fox => fox.isRetired);
 
     const tabs = [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'adult', label: 'Adult Kennel', icon: PawPrint, count: adultFoxes.length },
-        { id: 'young', label: 'Young Kennel', icon: Heart, count: youngFoxes.length },
-        { id: 'retired', label: 'Retired', icon: Home, count: retiredFoxes.length },
+        { id: 'adult', label: 'Adult Kennel', icon: PawPrint, count: foxList.filter(f => f.age >= 1 && !f.isRetired).length },
+        { id: 'young', label: 'Young Kennel', icon: Heart, count: foxList.filter(f => f.age < 1).length },
+        { id: 'retired', label: 'Retired', icon: Home, count: foxList.filter(f => f.isRetired).length },
     ];
 
     return (
         <div className="space-y-8 pb-20">
             {/* Header section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                 <div>
                     <h1 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>My Kennel</h1>
                     <div className="flex items-center gap-2 mt-1">
@@ -58,27 +84,58 @@ function KennelContent() {
                     </div>
                 </div>
 
-                {/* Tab Navigation */}
-                <div className="flex bg-muted/50 p-1 rounded-2xl border border-border/50 w-full md:w-auto overflow-x-auto no-scrollbar">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => handleTabChange(tab.id)}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                                activeTab === tab.id
-                                ? "bg-card text-foreground shadow-sm border border-border/50"
-                                : "text-muted-foreground hover:text-foreground"
-                            }`}
-                        >
-                            <tab.icon size={14} />
-                            {tab.label}
-                            {tab.count !== undefined && (
-                                <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[10px] ${activeTab === tab.id ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
-                                    {tab.count}
-                                </span>
-                            )}
-                        </button>
-                    ))}
+                <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                    {/* Search and Sort (Only show on kennel tabs) */}
+                    {activeTab !== 'dashboard' && (
+                        <div className="flex gap-2 flex-1 sm:flex-none">
+                            <div className="relative flex-1 sm:w-64">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
+                                <input
+                                    type="text"
+                                    placeholder="Search foxes..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full bg-card border border-border pl-10 pr-4 py-2 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                                />
+                            </div>
+                            <div className="relative">
+                                <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" size={14} />
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value as SortOption)}
+                                    className="bg-card border border-border pl-9 pr-8 py-2 rounded-xl text-xs font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                                >
+                                    <option value="id">Sort: ID</option>
+                                    <option value="name">Sort: Name</option>
+                                    <option value="age">Sort: Age</option>
+                                    <option value="points">Sort: Points</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Tab Navigation */}
+                    <div className="flex bg-muted/50 p-1 rounded-2xl border border-border/50 overflow-x-auto no-scrollbar">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => handleTabChange(tab.id)}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                                    activeTab === tab.id
+                                    ? "bg-card text-foreground shadow-sm border border-border/50"
+                                    : "text-muted-foreground hover:text-foreground"
+                                }`}
+                            >
+                                <tab.icon size={14} />
+                                {tab.label}
+                                {tab.count !== undefined && (
+                                    <span className={`ml-1 px-1.5 py-0.5 rounded-md text-[10px] ${activeTab === tab.id ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                                        {tab.count}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -92,29 +149,32 @@ function KennelContent() {
                     transition={{ duration: 0.2 }}
                 >
                     {activeTab === 'dashboard' && <Dashboard />}
-                    {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" />}
-                    {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" />}
-                    {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" />}
+                    {activeTab === 'adult' && <KennelGrid foxes={adultFoxes} type="adult" isFiltered={searchQuery !== ''} />}
+                    {activeTab === 'young' && <KennelGrid foxes={youngFoxes} type="young" isFiltered={searchQuery !== ''} />}
+                    {activeTab === 'retired' && <KennelGrid foxes={retiredFoxes} type="retired" isFiltered={searchQuery !== ''} />}
                 </motion.div>
             </AnimatePresence>
         </div>
     );
 }
 
-function KennelGrid({ foxes, type }: { foxes: Fox[], type: string }) {
+function KennelGrid({ foxes, type, isFiltered }: { foxes: Fox[], type: string, isFiltered: boolean }) {
     if (foxes.length === 0) {
         return (
             <div className="py-24 text-center bg-card/50 rounded-[40px] border-2 border-dashed border-border transition-all">
                 <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Info className="w-8 h-8 text-muted-foreground/30" />
                 </div>
-                <h3 className="text-xl font-black italic text-foreground tracking-tight">No foxes here</h3>
+                <h3 className="text-xl font-black italic text-foreground tracking-tight">
+                    {isFiltered ? "No matching foxes" : "No foxes here"}
+                </h3>
                 <p className="text-muted-foreground text-sm font-medium mt-1 mb-8">
-                    {type === 'adult' ? "You don't have any adult foxes yet." :
+                    {isFiltered ? "Try adjusting your search query." :
+                     type === 'adult' ? "You don't have any adult foxes yet." :
                      type === 'young' ? "No kits in the nursery right now." :
                      "The retirement home is empty."}
                 </p>
-                {type !== 'retired' && (
+                {!isFiltered && type !== 'retired' && (
                     <Link href={type === 'young' ? "/breeding" : "/shop/adoption"}>
                         <Button variant="outline" className="font-black uppercase tracking-widest text-xs h-10 rounded-xl">
                             {type === 'young' ? "Visit Breeding Center" : "Adopt a Fox"}
@@ -165,6 +225,11 @@ function FoxCard({ fox }: { fox: Fox }) {
                         <Badge variant="outline" className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === 'Dog' ? 'text-blue-500' : 'text-rose-500'}`}>
                             {fox.gender === 'Dog' ? 'Dog' : 'Vixen'}
                         </Badge>
+                    </div>
+
+                    {/* ID Overlay on Hover */}
+                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-end p-4 pointer-events-none">
+                        <span className="text-[10px] font-black text-primary uppercase tracking-tighter bg-background px-2 py-1 rounded-lg border border-primary/20 shadow-sm">ID: {fox.id}</span>
                     </div>
                 </div>
 

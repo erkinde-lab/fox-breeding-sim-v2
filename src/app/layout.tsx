@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Alice, Quicksand } from "next/font/google";
 import "./globals.css";
 import LayoutClient from "./layout-client";
+import { NotificationProvider } from "@/components/NotificationProvider";
 
 const alice = Alice({
   weight: '400',
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${alice.variable} ${quicksand.variable}`}>
       <body className={quicksand.className} suppressHydrationWarning>
-        <LayoutClient>{children}</LayoutClient>
+        <NotificationProvider><LayoutClient>{children}</LayoutClient></NotificationProvider>
       </body>
     </html>
   );

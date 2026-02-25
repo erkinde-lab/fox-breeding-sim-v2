@@ -1,66 +1,50 @@
 'use client';
+import Link from 'next/link';
 
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
-  ArrowLeft, ChevronLeft, ChevronRight, Edit2, Save, X,
-  Microscope, Utensils, Activity, Calendar, Check, Shield,
-  Heart, Dna, Trophy, Info, ShoppingBag, ChevronDown,
-  Star, Sparkles, Dumbbell
+  ArrowLeft, Edit2, Save, X, Sparkles, Dumbbell, Utensils,
+  ChevronDown, Heart, Activity, Calendar, Dna, Info,
+  Trophy, Check, ShoppingBag, Activity as ActivityIcon
 } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
-import { Fox, calculateCOI, getActiveBoosts, isHungry, isGroomed, isTrained } from '@/lib/genetics';
+import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts } from '@/lib/genetics';
+import { useNotifications } from '@/components/NotificationProvider';
 
 export default function FoxProfilePage() {
   const { id } = useParams();
   const router = useRouter();
+  const { addNotification } = useNotifications();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, inventory, renameFox, sellFox,
-    isAdmin, toggleStudStatus, hiredGroomer, 
-    hiredVeterinarian, hiredTrainer, hiredNutritionist,
-    setFoxPreferredFeed, groomFox, trainFox
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox,
+    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState('');
   const [selectedFeed, setSelectedFeed] = useState('supplies');
   const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
 
-  const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id);
-  const isFoundational = foundationFoxes.some(f => f.id === id);
+  const fox = foxes[id as string] || foundationFoxes.find(f => f.id === id) || Object.values(npcStuds).find(f => f.id === id);
+  const isFoundational = !foxes[id as string];
+  const [newName, setNewName] = useState(fox?.name || '');
 
-  useEffect(() => {
-    if (fox && !newName) setNewName(fox.name);
-  }, [fox, newName]);
+  if (!fox) return <div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Fox not found</div>;
 
-  if (!fox) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <div className="p-6 bg-muted rounded-full text-muted-foreground/30"><Info size={48} /></div>
-        <h2 className="text-2xl font-black text-foreground">Fox Not Found</h2>
-        <Button onClick={() => router.push('/kennel')} variant="outline" className="rounded-xl font-black uppercase tracking-widest text-xs">Back to Kennel</Button>
-      </div>
-    );
-  }
-
-  const activeBoosts = getActiveBoosts(fox);
   const hungry = isHungry(fox);
   const groomed = isGroomed(fox);
   const trained = isTrained(fox);
+  const activeBoosts = getActiveBoosts(fox);
 
   const handleRename = () => {
-    if (newName && newName !== fox.name) {
-      const allNames = [
-        ...Object.values(foxes).filter(f => f.id !== fox.id).map(f => f.name.toLowerCase()),
-        ...Object.values(npcStuds).filter(f => f.id !== fox.id).map(f => f.name.toLowerCase()),
-        ...foundationFoxes.filter(f => f.id !== fox.id).map(f => f.name.toLowerCase())
-      ];
-      if (allNames.includes(newName.toLowerCase())) {
-        alert("This name is already taken by another fox!");
+    if (newName.trim()) {
+      if (Object.values(foxes).some(f => f.name.toLowerCase() === newName.toLowerCase() && f.id !== fox.id)) {
+        addNotification("This name is already taken by another fox!", "destructive");
         return;
       }
       renameFox(fox.id, newName);
@@ -100,6 +84,9 @@ export default function FoxProfilePage() {
     return { value: base + totalBonus, bonus: totalBonus };
   };
 
+  const groomFox = (fid: string) => { applyItem('grooming-kit', fid); };
+  const trainFox = (fid: string) => { applyItem('training-session', fid); };
+
   return (
     <div className="space-y-6 pb-12">
       {/* Navigation & Actions Header */}
@@ -119,9 +106,15 @@ export default function FoxProfilePage() {
                 {fox.isAtStud ? "Listed at Stud" : "List for Stud"}
               </Button>
               <Button
-                onClick={() => { if(confirm("Retire or sell this fox?")) { sellFox(fox.id); router.push('/kennel'); } }}
+                onClick={() => {
+                  if(fox.age < 6) {
+                    addNotification("Foxes must be at least 6 years old to retire.", "destructive");
+                    return;
+                  }
+                  if(confirm("Retire or sell this fox?")) { sellFox(fox.id); router.push('/kennel'); }
+                }}
                 variant="destructive"
-                className="rounded-xl font-black uppercase tracking-widest text-[10px] h-9"
+                className={`rounded-xl font-black uppercase tracking-widest text-[10px] h-9 ${fox.age < 6 ? "opacity-50 grayscale cursor-not-allowed" : ""}`}
               >
                 Retire/Sell
               </Button>
@@ -255,9 +248,9 @@ export default function FoxProfilePage() {
         </div>
 
         {/* Middle Column: Stats */}
-        <div className="xl:col-span-4">
-          <Card className="folk-card border-2 border-border h-full shadow-sm rounded-[48px] overflow-hidden">
-            <CardHeader className="p-8 pb-0">
+        <div className="xl:col-span-4 space-y-6">
+          <Card className="folk-card border-2 border-border shadow-sm rounded-[48px] overflow-hidden">
+            <CardHeader className="bg-muted/30 p-8 border-b border-border">
               <div className="flex items-center gap-3">
                  <div className="p-2 bg-primary/10 rounded-xl text-primary"><Trophy size={20} /></div>
                  <CardTitle className="text-xl font-black italic tracking-tight uppercase">Show Performance</CardTitle>
@@ -320,7 +313,7 @@ export default function FoxProfilePage() {
              <CardContent className="p-6 space-y-6">
                 <div>
                    <h4 className="text-[10px] font-black text-muted-foreground uppercase mb-3 tracking-[0.2em] flex items-center gap-2">
-                      <Activity size={14} /> Health
+                      <ActivityIcon size={14} /> Health
                    </h4>
                    {fox.healthIssues.length > 0 ? (
                       <div className="space-y-2">
@@ -425,13 +418,13 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
   return (
     <div className="flex items-center gap-4">
       <div className={`w-36 p-3 border-2 rounded-2xl shadow-sm transition-all flex flex-col items-center justify-center text-center ${
-        fox ? "border-border bg-card hover:border-primary/30" : "border-border/30 bg-muted/20 text-muted-foreground/30 italic border-dashed"
+        fox ? "border-border bg-card hover:border-primary/30 group" : "border-border/30 bg-muted/20 text-muted-foreground/30 italic border-dashed"
       }`}>
         {fox ? (
-          <>
-            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px]">{fox.name}</div>
+          <Link href={`/fox/${fox.id}`} className="w-full flex flex-col items-center">
+            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px] group-hover:text-primary transition-colors">{fox.name}</div>
             <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest truncate w-full">{fox.phenotype}</div>
-          </>
+          </Link>
         ) : (
           <div className="text-[10px] font-black">?</div>
         )}
@@ -439,7 +432,6 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
       
       {depth < 4 && (
         <div className="flex flex-col gap-2 relative">
-          {/* Connector lines can be added here with absolute positioning if desired */}
           <PedigreeTree foxId={fox?.parents[0] || null} foxes={foxes} depth={depth + 1} />
           <PedigreeTree foxId={fox?.parents[1] || null} foxes={foxes} depth={depth + 1} />
         </div>

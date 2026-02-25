@@ -231,7 +231,7 @@ export interface Fox {
   isAtStud: boolean;
   studFee: number;
   isNPC?: boolean;
-  lastFed?: number; lastGroomed?: number; lastTrained?: number;
+  lastFed?: number; lastGroomed?: number; lastTrained?: number; isStillborn?: boolean;
   boosts?: Record<string, number>;
   preferredFeed?: string;
 }
@@ -310,9 +310,19 @@ export function calculateSilverIntensity(p1Intensity: number, p2Intensity: numbe
   return Math.max(1, Math.min(5, base + variance));
 }
 
-export function calculateCOI(foxId: string, foxes: Record<string, { parents: [string | null, string | null] }>): number {
-  const fox = foxes[foxId];
-  if (!fox || !fox.parents[0] || !fox.parents[1]) return 0;
+export function calculateCOI(foxIdOrSireId: string, foxes: Record<string, { parents: [string | null, string | null] }>, maybeDamId?: string): number {
+  let sireId: string | null = null;
+  let damId: string | null = null;
+
+  if (maybeDamId) {
+    sireId = foxIdOrSireId;
+    damId = maybeDamId;
+  } else {
+    const fox = foxes[foxIdOrSireId];
+    if (!fox || !fox.parents[0] || !fox.parents[1]) return 0;
+    sireId = fox.parents[0];
+    damId = fox.parents[1];
+  }
 
   const getPaths = (id: string, depth: number = 0, currentPath: string[] = []): string[][] => {
     if (depth > 5) return [];
@@ -325,8 +335,8 @@ export function calculateCOI(foxId: string, foxes: Record<string, { parents: [st
     return paths;
   };
 
-  const sirePaths = getPaths(fox.parents[0]);
-  const damPaths = getPaths(fox.parents[1]);
+  const sirePaths = getPaths(sireId);
+  const damPaths = getPaths(damId);
 
   let coi = 0;
   const sireAncestors = new Set(sirePaths.flat());
@@ -705,4 +715,26 @@ export function getEyeColorHex(eyeColor: string, baseColor?: string): string {
   }
   
   return colorMap[eyeColor] || '#8B4513';
+}
+
+export function calculateBreedingOutcomes(m: Fox, f: Fox, foxes: Record<string, Fox>) {
+  const counts: Record<string, number> = {};
+  const trials = 1000;
+
+  for (let i = 0; i < trials; i++) {
+    const child = breed(m.genotype, f.genotype);
+    if (child) {
+      const name = getPhenotype(child).name;
+      counts[name] = (counts[name] || 0) + 1;
+    }
+  }
+
+  const probabilities = Object.entries(counts)
+    .map(([name, count]) => ({ name, percent: Math.round((count / trials) * 100) }))
+    .sort((a, b) => b.percent - a.percent);
+
+  return {
+    probabilities,
+    predictedCOI: Math.round(calculateCOI(m.id, foxes, f.id) * 100) / 100
+  };
 }

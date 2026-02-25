@@ -31,7 +31,8 @@ const generateNPCStuds = (year: number, season: string): Record<string, Fox> => 
 };
 import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, getActiveBoosts, getPhenotype, LOCI, Genotype, Stats, Fox, getInitialGenotype, breed } from '@/lib/genetics';
 
-import { runShow, ShowReport, ShowLevel } from './showing';
+import { runShow, runSpecificShow, ShowReport, ShowLevel, ShowClass } from './showing';
+export interface Show { id: string; name: string; level: ShowLevel; type: ShowClass; entries: string[]; isRun: boolean; }
 
 
 
@@ -218,6 +219,7 @@ interface GameState {
   seniorShowWinners: string[];
 
   showReports: ShowReport[];
+  shows: Show[];
 
   whelpingReports: WhelpingReport[];
 
@@ -316,12 +318,17 @@ interface GameState {
   expandKennel: () => void;
 
   runShows: () => void;
+  generateSeasonalShows: () => void;
+  enterFoxInShow: (foxId: string, showId: string) => void;
+  addShow: (show: Show) => void;
+  removeShow: (showId: string) => void;
+  updateShow: (showId: string, updates: Partial<Show>) => void;
 
   toggleAdminMode: () => void;
 
   adminAddCurrency: (gold: number, gems: number) => void;
 
-  adminSetCurrency: (gold: number, gems: number) => void;
+  adminSetCurrency: (updates: { gold?: number; gems?: number }) => void;
 
   adminAddItem: (itemId: string, count: number) => void;
 
@@ -370,6 +377,7 @@ interface GameState {
   listItemOnMarket: (itemId: string, price: number, currency: 'gold' | 'gems') => void;
 
   cancelListing: (listingId: string) => void;
+  updateMarketListing: (listingId: string, updates: Partial<MarketListing>) => void;
 
   buyFromMarket: (listingId: string) => void;
 
@@ -481,6 +489,7 @@ export const useGameStore = create<GameState>()(
       seniorShowWinners: [],
 
       showReports: [],
+      shows: [],
 
       whelpingReports: [],
 
@@ -575,7 +584,8 @@ export const useGameStore = create<GameState>()(
 
 
 
-      advanceTime: () => set((state) => {
+      advanceTime: () => {
+        set((state) => {
 
         const seasons: ('Spring' | 'Summer' | 'Autumn' | 'Winter')[] = ['Spring', 'Summer', 'Autumn', 'Winter'];
 
@@ -602,7 +612,7 @@ export const useGameStore = create<GameState>()(
           updatedFoxes[id].lastFed = undefined;
           updatedFoxes[id].lastGroomed = undefined;
           updatedFoxes[id].lastTrained = undefined;
-        });
+                });
 
 
 
@@ -632,7 +642,7 @@ export const useGameStore = create<GameState>()(
           state.pregnancyList.forEach(preg => {
 
             const mother = updatedFoxes[preg.motherId];
-            const kits: any[] = [];
+            const kits: WhelpingReport['kits'] = [];
 
             if (!mother) return;
 
@@ -699,10 +709,10 @@ export const useGameStore = create<GameState>()(
 
           pregnancyList: nextPregnancyList,
           npcStuds: generateNPCStuds(nextYear, nextSeason)
-
         };
-
-      }),
+      });
+      get().generateSeasonalShows();
+    },
 
 
 
@@ -772,7 +782,6 @@ export const useGameStore = create<GameState>()(
         // Prevent retirement before 6 years old
         if (fox && fox.age < 6) {
 
-          alert('Foxes cannot be retired before they are 6 years old.');
 
           return state;
 
@@ -958,6 +967,7 @@ export const useGameStore = create<GameState>()(
 
 
       initializeGame: () => {
+        if (get().shows.length === 0) get().generateSeasonalShows();
 
         const { year, season } = get();
         set({ npcStuds: generateNPCStuds(year, season) });
@@ -1359,6 +1369,12 @@ export const useGameStore = create<GameState>()(
 
 
 
+
+      updateMarketListing: (listingId, updates) => set((state) => ({
+        marketListings: state.marketListings.map(l =>
+          l.id === listingId ? { ...l, ...updates } : l
+        )
+      })),
       cancelListing: (listingId) => set((state) => {
 
         const listing = state.marketListings.find(l => l.id === listingId);
@@ -1399,96 +1415,113 @@ export const useGameStore = create<GameState>()(
 
 
 
-      runShows: () => {
 
-        const { foxes, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
+      generateSeasonalShows: () => set((state) => {
+        const levels: ShowLevel[] = ["Junior", "Open", "Senior", "Amateur Junior", "Amateur Open", "Amateur Senior"];
+        const classes: ShowClass[] = [
+          "Best Juvenile Dog", "Best Juvenile Vixen", "Best Adult Dog", "Best Adult Vixen",
+          "Red Specialty", "Silver Specialty", "Gold Specialty", "Cross Specialty", "Exotic Specialty"
+        ];
 
-        const foxList = Object.values(foxes);
+        const newShows: Show[] = [];
+        levels.forEach(level => {
+          classes.forEach(cls => {
+            newShows.push({
+              id: Math.random().toString(36).substring(2, 9),
+              name: `${level} ${cls} Showcase`,
+              level,
+              type: cls,
+              entries: [],
+              isRun: false
+            });
+          });
+        });
 
+        return { shows: newShows };
+      }),
+
+      enterFoxInShow: (foxId, showId) => set((state) => ({
+        shows: state.shows.map(s =>
+          s.id === showId ? { ...s, entries: [...new Set([...s.entries, foxId])] } : s
+        )
+      })),
+
+      addShow: (show) => set((state) => ({
+        shows: [show, ...state.shows]
+      })),
+
+      removeShow: (showId) => set((state) => ({
+        shows: state.shows.filter(s => s.id !== showId)
+      })),
+
+      updateShow: (showId, updates) => set((state) => ({
+        shows: state.shows.map(s =>
+          s.id === showId ? { ...s, ...updates } : s
+        )
+      })),
+            runShows: () => {
+        const { shows, foxes, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
         const newShowReports: ShowReport[] = [];
-
         let newGold = get().gold;
-
         let newBisWins = get().bisWins;
-
         let newBestDogWins = get().bestDogWins;
-
         let newBestVixenWins = get().bestVixenWins;
-
         let newTotalPoints = get().totalShowPoints;
-
         const newSeniorWinners = [...get().seniorShowWinners];
-
         const updatedFoxes = { ...foxes };
 
+        shows.forEach(show => {
+          if (show.entries.length === 0) return;
 
+          const enteredFoxes = show.entries.map(id => foxes[id]).filter(Boolean) as Fox[];
+          if (enteredFoxes.length === 0) return;
 
-        Object.keys(showConfig).forEach(level => {
-
-          const config = showConfig[level as ShowLevel];
-
-          const report = runShow(level as ShowLevel, foxList, year, season, hiredGroomer, hiredTrainer, hiredVeterinarian);
-
+          const report = runSpecificShow(show.level, show.type, enteredFoxes, year, season, hiredGroomer, hiredTrainer, hiredVeterinarian);
           newShowReports.push(report);
 
+          const config = showConfig[show.level as ShowLevel];
+
           report.results.forEach(res => {
-
             const fox = updatedFoxes[res.foxId];
-
             if (fox) {
-
               fox.pointsYear += res.pointsAwarded;
-
               fox.pointsLifetime += res.pointsAwarded;
-
               newTotalPoints += res.pointsAwarded;
-
               if (res.place === 1) {
-
                 newGold += config.first;
-
                 if (res.class === 'Best Adult Dog' || res.class === 'Best Juvenile Dog') newBestDogWins++;
-
                 if (res.class === 'Best Adult Vixen' || res.class === 'Best Juvenile Vixen') newBestVixenWins++;
-
+                if (show.level === 'Senior' && !newSeniorWinners.includes(fox.id)) {
+                  newSeniorWinners.push(fox.id);
+                }
               }
-
-              if (level === 'Senior' && res.place === 1 && !newSeniorWinners.includes(fox.id)) {
-
-                newSeniorWinners.push(fox.id);
-
-              }
-
             }
-
           });
 
           if (report.bestInShowFoxId) {
-
             const bisFox = updatedFoxes[report.bestInShowFoxId];
-
             if (bisFox) {
-
               bisFox.pointsYear += 5;
-
               bisFox.pointsLifetime += 5;
-
               newTotalPoints += 5;
-
               newBisWins++;
-
               newGold += config.bis;
-
             }
-
           }
-
         });
 
-        set({ foxes: updatedFoxes, gold: newGold, seniorShowWinners: newSeniorWinners, showReports: [...newShowReports, ...get().showReports].slice(0, 10), bisWins: newBisWins, bestDogWins: newBestDogWins, bestVixenWins: newBestVixenWins, totalShowPoints: newTotalPoints });
-
+        set({
+          foxes: updatedFoxes,
+          gold: newGold,
+          seniorShowWinners: newSeniorWinners,
+          showReports: [...newShowReports, ...get().showReports].slice(0, 20),
+          bisWins: newBisWins,
+          bestDogWins: newBestDogWins,
+          bestVixenWins: newBestVixenWins,
+          totalShowPoints: newTotalPoints,
+          shows: shows.map(s => ({ ...s, entries: [], isRun: true }))
+        });
         get().checkAchievements();
-
       },
 
 
@@ -1517,7 +1550,7 @@ export const useGameStore = create<GameState>()(
 
       adminAddCurrency: (goldAmount, gemsAmount) => set((state) => ({ gold: state.gold + goldAmount, gems: state.gems + gemsAmount })),
 
-      adminSetCurrency: (gold, gems) => set({ gold, gems }),
+      adminSetCurrency: (updates) => set(updates),
 
       adminAddItem: (itemId, count) => set((state) => ({ inventory: { ...state.inventory, [itemId]: (state.inventory[itemId] || 0) + count } })),
 
@@ -1545,7 +1578,7 @@ export const useGameStore = create<GameState>()(
 
       version: 3,
 
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState: unknown, version: number) => {
         if (version < 2) {
           return undefined;
         }
