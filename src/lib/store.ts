@@ -737,16 +737,15 @@ export const useGameStore = create<GameState>()(
 
 
       breedFoxes: (dogId, vixenId) => {
-
         const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
-
-        const dog = foxes[dogId];
-
+        const dog = foxes[dogId] || npcStuds[dogId];
         const vixen = foxes[vixenId];
 
 
 
         if (!dog || !vixen || season !== 'Winter') return;
+
+        if ((foxes[dogId] && !dog.hasBeenRenamed) || !vixen.hasBeenRenamed) return;
 
         if (dog.gender !== 'Dog' || vixen.gender !== 'Vixen') return;
 

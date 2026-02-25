@@ -92,7 +92,7 @@ export default function BreedingPage() {
             ))}
             {dogs.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible dogs (Age 2+)</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible named dogs (Age 2+)</p>
               </div>
             )}
           </CardContent>
@@ -164,7 +164,7 @@ export default function BreedingPage() {
             })}
             {vixens.length === 0 && (
               <div className="text-center py-10 bg-muted/20 rounded-2xl border-2 border-dashed border-border">
-                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible vixens (Age 2+)</p>
+                <p className="text-xs font-bold text-muted-foreground/50 italic">No eligible named vixens (Age 2+)</p>
               </div>
             )}
           </CardContent>

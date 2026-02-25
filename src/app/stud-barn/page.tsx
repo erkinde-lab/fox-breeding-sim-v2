@@ -80,7 +80,7 @@ export default function StudBarnPage() {
             ))}
             {eligibleVixens.length === 0 && (
               <div className="text-center py-10 opacity-40 border-2 border-dashed border-border rounded-2xl">
-                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Age 2+)</p>
+                <p className="text-xs font-bold text-foreground italic">No eligible named vixens (Age 2+)</p>
               </div>
             )}
           </CardContent>
