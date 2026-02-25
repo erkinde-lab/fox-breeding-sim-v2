@@ -135,7 +135,7 @@ export default function HelpPage() {
                     <li><strong>Selection:</strong> Navigate to the <span className="font-bold">Breeding Center</span>. Select a <span className="text-blue-500 font-bold">Sire (Dog)</span> and a <span className="text-pink-500 font-bold">Dam (Vixen)</span>.</li>
                     <li><strong>Eligibility:</strong> Both foxes must be at least <span className="font-bold text-foreground">2 years old</span>, healthy, and not retired. A vixen can only be bred once per season.</li>
                     <li><strong>Simulation:</strong> Use the <span className="font-bold">Breeding Calculator</span> (or hire a <span className="font-bold">Geneticist</span>) to see potential outcomes and COI.</li>
-                    <li><strong>Commitment:</strong> Press <span className="font-bold text-foreground">"Commit Breeding"</span> to finalize the pair.</li>
+                    <li><strong>Commitment:</strong> Press <span className="font-bold text-foreground">&quot;Commit Breeding&quot;</span> to finalize the pair.</li>
                     <li><strong>Whelping:</strong> Kits will be born in the <span className="text-green-600 font-bold">Spring</span> season.</li>
                   </ol>
                 </div>
@@ -221,7 +221,7 @@ export default function HelpPage() {
                 <div className="space-y-4">
                   <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">The Path to Champion</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Foxes earn permanent prefix titles as they prove themselves in the show ring. Altered foxes earn "Altered" versions of these titles (e.g., ACH).
+                    Foxes earn permanent prefix titles as they prove themselves in the show ring. Altered foxes earn &quot;Altered&quot; versions of these titles (e.g., ACH).
                   </p>
                   <ul className="space-y-3">
                     <li className="p-3 bg-muted/30 rounded-xl border border-border">
@@ -240,7 +240,7 @@ export default function HelpPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Points & Majors</h3>
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Points &amp; Majors</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Points scale based on the number of foxes in a class. The larger the competition, the more points are awarded.
                   </p>

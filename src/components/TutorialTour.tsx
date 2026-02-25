@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { useGameStore } from '@/lib/store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { X, ChevronRight, ChevronLeft, Info, HelpCircle, Store, Heart, Trophy, ShoppingBag, Home, Diamond, ShieldCheck } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Info, HelpCircle, Heart, Trophy, ShoppingBag, Home, Diamond, ShieldCheck } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 const steps = [

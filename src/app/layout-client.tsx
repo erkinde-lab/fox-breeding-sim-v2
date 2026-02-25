@@ -6,13 +6,11 @@ import { useGameStore } from '@/lib/store';
 import { TutorialTour } from '@/components/TutorialTour';
 import Link from 'next/link';
 import {
-  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
-  Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
+  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
   Diamond, Calendar, Info, Star, MessageSquare,
-  User, ExternalLink, HelpCircle, Rocket, UserPlus, Utensils,
-  Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus, LayoutDashboard
+  User, ExternalLink, HelpCircle, Rocket, UserPlus, Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const {

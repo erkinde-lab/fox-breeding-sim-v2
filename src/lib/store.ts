@@ -29,9 +29,9 @@ const generateNPCStuds = (year: number, season: string): Record<string, Fox> => 
   }
   return nextNpcStuds;
 };
-import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, getActiveBoosts, getPhenotype, LOCI, Genotype, Stats, Fox, getInitialGenotype, breed } from '@/lib/genetics';
+import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, getPhenotype, Genotype, Stats, Fox, breed } from '@/lib/genetics';
 
-import { runShow, runSpecificShow, ShowReport, ShowLevel, ShowClass } from './showing';
+import { runSpecificShow, ShowReport, ShowLevel, ShowClass } from './showing';
 export interface Show { id: string; name: string; level: ShowLevel; type: ShowClass; entries: string[]; isRun: boolean; }
 
 
@@ -782,7 +782,7 @@ export const useGameStore = create<GameState>()(
 
 
       breedFoxes: (dogId, vixenId) => {
-        const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
+        const { npcStuds, season, pregnancyList } = get();
         const dog = foxes[dogId] || npcStuds[dogId];
         const vixen = foxes[vixenId];
 
@@ -841,8 +841,7 @@ export const useGameStore = create<GameState>()(
 
       retireFox: (id) => set((state) => ({
         foxes: {
-          ...state.foxes,
-          [id]: { ...state.foxes[id], isRetired: true }
+          ...state.foxes, [id]: { ...state.foxes[id], isRetired: true }
         }
       })),
 
@@ -1045,7 +1044,7 @@ export const useGameStore = create<GameState>()(
 
         const { year, season } = get();
         set({ npcStuds: generateNPCStuds(year, season) });
-        const { foxes, members } = get();
+        const { members } = get();
 
         get().checkAdoptionReset();
 
@@ -1202,9 +1201,7 @@ export const useGameStore = create<GameState>()(
 
           foxes: {
 
-            ...state.foxes,
-
-            [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
+            ...state.foxes, [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
 
           }
 
@@ -1287,8 +1284,7 @@ export const useGameStore = create<GameState>()(
 
         return {
           foxes: {
-            ...state.foxes,
-            [foxId]: updatedFox
+            ...state.foxes, [foxId]: updatedFox
           }
         };
       }),
@@ -1306,7 +1302,7 @@ export const useGameStore = create<GameState>()(
 
       feedAllFoxes: () => {
 
-        const { foxes, hiredNutritionist } = get();
+        const { hiredNutritionist } = get();
 
         if (!hiredNutritionist) return;
 
@@ -1331,7 +1327,7 @@ export const useGameStore = create<GameState>()(
       })),
 
       groomAllFoxes: () => {
-        const { foxes, hiredGroomer } = get();
+        const { hiredGroomer } = get();
         if (!hiredGroomer) return;
         const updatedFoxes = { ...foxes };
         Object.keys(updatedFoxes).forEach(id => {
@@ -1341,7 +1337,7 @@ export const useGameStore = create<GameState>()(
       },
 
       trainAllFoxes: () => {
-        const { foxes, hiredTrainer } = get();
+        const { hiredTrainer } = get();
         if (!hiredTrainer) return;
         const updatedFoxes = { ...foxes };
         Object.keys(updatedFoxes).forEach(id => {
@@ -1544,7 +1540,7 @@ export const useGameStore = create<GameState>()(
         )
       })),
             runShows: () => {
-        const { shows, foxes, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
+        const { shows, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
         const newShowReports: ShowReport[] = [];
         let newGold = get().gold;
         let newBisWins = get().bisWins;
