@@ -392,6 +392,22 @@ interface GameState {
 
 
 export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'altered-champion',
+    name: 'Altered Champion',
+    description: 'Have an altered fox reach 50 lifetime points.',
+    rewardText: '2,000 Gold',
+    reward: () => useGameStore.getState().addGold(2000),
+    condition: (state) => Object.values(state.foxes).some(f => f.isAltered && f.pointsLifetime >= 50)
+  },
+  {
+    id: 'altered-bis',
+    name: 'Altered Best In Show',
+    description: 'Win Best In Show with an altered fox.',
+    rewardText: '50 Gems',
+    reward: () => useGameStore.getState().addGems(50),
+    condition: (state) => Object.values(state.foxes).some(f => f.isAltered && f.bisWins >= 1)
+  },
 
   {
 
@@ -1570,6 +1586,7 @@ export const useGameStore = create<GameState>()(
             if (bisFox) {
               bisFox.pointsYear += 5;
               bisFox.pointsLifetime += 5;
+              bisFox.bisWins = (bisFox.bisWins || 0) + 1;
               newTotalPoints += 5;
               newBisWins++;
               newGold += config.bis;

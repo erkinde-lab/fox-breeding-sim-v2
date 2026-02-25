@@ -227,6 +227,7 @@ export interface Fox {
   silverIntensity: number;
   healthIssues: string[];
   pointsYear: number;
+  bisWins: number;
   pointsLifetime: number;
   parents: [string | null, string | null];
   birthYear: number;
@@ -389,6 +390,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     isAltered: data.isAltered || false,
     hasBeenRenamed: data.hasBeenRenamed || false,
     silverIntensity: silverIntensity,
+    bisWins: data.bisWins || 0,
     healthIssues: phenotype.healthIssues,
     pointsYear: 0,
     pointsLifetime: 0,
