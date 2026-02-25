@@ -2,18 +2,24 @@
 > fox-sim@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3002 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3002
-- Network:       http://192.168.0.2:3002
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquPersisting failed: Unable to open static sorted file referenced from 00000255.meta
-
-Caused by:
-    0: Unable to open static sorted file 00000254.sst
-    1: No such file or directory (os error 2)
-Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
-Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
-Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
-Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+✓ Ready in 1184ms
+○ Compiling / ...
+ GET / 200 in 6.5s (compile: 5.8s, render: 691ms)
+ GET / 200 in 472ms (compile: 48ms, render: 425ms)
+TutorialTour render { hasSeenTutorial: false, tutorialStep: null }
+ GET / 200 in 320ms (compile: 91ms, render: 229ms)
+TutorialTour render { hasSeenTutorial: false, tutorialStep: null }
+ GET / 200 in 95ms (compile: 6ms, render: 89ms)
+ GET / 200 in 277ms (compile: 74ms, render: 203ms)
+ GET / 200 in 86ms (compile: 4ms, render: 81ms)
+ GET / 200 in 100ms (compile: 5ms, render: 95ms)
+ GET / 200 in 80ms (compile: 6ms, render: 74ms)
+ GET / 200 in 125ms (compile: 8ms, render: 117ms)
+ GET / 200 in 95ms (compile: 6ms, render: 90ms)
+ GET /shop/adoption 200 in 1228ms (compile: 1184ms, render: 44ms)
+[?25h
