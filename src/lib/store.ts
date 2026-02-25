@@ -328,7 +328,7 @@ interface GameState {
 
   adminAddCurrency: (gold: number, gems: number) => void;
 
-  adminSetCurrency: (gold: number, gems: number) => void;
+  adminSetCurrency: (updates: { gold?: number; gems?: number }) => void;
 
   adminAddItem: (itemId: string, count: number) => void;
 
@@ -782,7 +782,6 @@ export const useGameStore = create<GameState>()(
         // Prevent retirement before 6 years old
         if (fox && fox.age < 6) {
 
-          alert('Foxes cannot be retired before they are 6 years old.');
 
           return state;
 
@@ -1551,7 +1550,7 @@ export const useGameStore = create<GameState>()(
 
       adminAddCurrency: (goldAmount, gemsAmount) => set((state) => ({ gold: state.gold + goldAmount, gems: state.gems + gemsAmount })),
 
-      adminSetCurrency: (gold, gems) => set({ gold, gems }),
+      adminSetCurrency: (updates) => set(updates),
 
       adminAddItem: (itemId, count) => set((state) => ({ inventory: { ...state.inventory, [itemId]: (state.inventory[itemId] || 0) + count } })),
 
@@ -1579,7 +1578,7 @@ export const useGameStore = create<GameState>()(
 
       version: 3,
 
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState: unknown, version: number) => {
         if (version < 2) {
           return undefined;
         }

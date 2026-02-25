@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState, useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -392,6 +393,3 @@ export default function CustomFoxPage() {
     );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-    return inputs.filter(Boolean).join(' ');
-}

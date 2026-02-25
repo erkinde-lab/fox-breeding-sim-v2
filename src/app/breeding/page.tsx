@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
@@ -228,6 +229,3 @@ export default function BreedingPage() {
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

@@ -1,0 +1,19 @@
+
+> fox-sim@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by an unknown process, using available port 3002 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://192.168.0.2:3002
+
+✓ Starting...
+⨯ Unable to acquPersisting failed: Unable to open static sorted file referenced from 00000255.meta
+
+Caused by:
+    0: Unable to open static sorted file 00000254.sst
+    1: No such file or directory (os error 2)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)

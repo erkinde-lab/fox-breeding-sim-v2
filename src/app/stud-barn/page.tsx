@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState, useMemo } from 'react';
 import { useGameStore } from '@/lib/store';
@@ -16,7 +17,7 @@ export default function StudBarnPage() {
 
   const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
   const availableNPCs = Object.values(npcStuds);
-  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 1);
+  const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const hasCalculator = inventory['calculator-access'] > 0;
   const hasGeneticist = hiredGeneticist;
@@ -79,7 +80,7 @@ export default function StudBarnPage() {
             ))}
             {eligibleVixens.length === 0 && (
               <div className="text-center py-10 opacity-40 border-2 border-dashed border-border rounded-2xl">
-                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Adult)</p>
+                <p className="text-xs font-bold text-foreground italic">No eligible vixens (Age 2+)</p>
               </div>
             )}
           </CardContent>
@@ -203,7 +204,7 @@ function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: impor
                <div className="space-y-1">
                   <div className="flex items-center gap-1 text-[8px] font-black text-muted-foreground/60 uppercase"><Activity size={8}/> Stats</div>
                   <div className="text-[9px] font-bold text-foreground">
-                    Avg: {Math.round(Object.values(fox.stats).reduce((a,b)=>a+b,0)/Object.values(fox.stats).length)}
+                    Avg: {Math.round(Object.values(fox.stats).reduce(((a: number, b: number) => a + b),0)/Object.values(fox.stats).length)}
                   </div>
                </div>
                <div className="space-y-1">
@@ -240,6 +241,3 @@ function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: impor
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

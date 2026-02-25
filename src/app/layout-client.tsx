@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
@@ -462,6 +463,3 @@ function MobileNavLink({ href, icon, label, onClick }: { href: string; icon: Rea
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

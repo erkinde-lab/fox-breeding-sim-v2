@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState } from 'react';
 import { useGameStore, MarketListing } from '@/lib/store';
@@ -226,6 +227,3 @@ function ListingCard({ listing, onAction, canAfford }: { listing: MarketListing,
   );
 }
 
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}

@@ -1,45 +1,51 @@
 'use client';
+import { cn } from '@/lib/utils';
+import { ScoreBreakdown } from '@/components/ScoreBreakdown';
+
 
 import React, { useState } from 'react';
 import { useGameStore, Show } from '@/lib/store';
+import {
+  Trophy, History, Search, Plus, Check, ChevronRight,
+  Settings, Trash2, Edit2, Users, Info, HelpCircle,
+  Activity, Sparkles, Dumbbell, Shield
+} from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Users, Info, Plus, Edit2, Trash2, Check, X, Search, ChevronRight, History, Settings } from 'lucide-react';
 import { isFoxEligibleForShow, ShowLevel, ShowClass } from '@/lib/showing';
-import { Fox } from '@/lib/genetics';
 
 export default function ShowsPage() {
   const {
-    runShows, year, joiningYear, season,
-    shows, showReports, foxes, enterFoxInShow, isAdmin, addShow, removeShow, updateShow,
-    generateSeasonalShows
+    foxes, shows, showReports, year, season, joiningYear, isAdmin,
+    addShow, removeShow, updateShow, enterFoxInShow, runShows, generateSeasonalShows
   } = useGameStore();
 
   const [activeTab, setActiveTab] = useState<'available' | 'amateur' | 'history' | 'manage'>('available');
   const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Admin state
-  const [newShowName, setNewShowName] = useState('');
-  const [newShowLevel, setNewShowLevel] = useState<ShowLevel>('Junior');
-  const [newShowClass, setNewShowClass] = useState<ShowClass>('Red Specialty');
+  // Admin Editing State
   const [editingShowId, setEditingShowId] = useState<string | null>(null);
+  const [newShowName, setNewShowName] = useState('');
+  const [newShowLevel, setNewShowLevel] = useState<ShowLevel>('Open');
+  const [newShowClass, setNewShowClass] = useState<ShowClass>('Best Adult Dog');
 
-  const isAmateurEligible = year <= (joiningYear || 1) + 1;
-  const foxList = Object.values(foxes);
+  const isAmateurEligible = year <= joiningYear + 1;
 
-  const filteredShows = shows.filter(s => {
-    if (activeTab === 'amateur') return s.level.startsWith('Amateur');
-    if (activeTab === 'available') return !s.level.startsWith('Amateur');
-    return true;
-  }).filter(s =>
-    s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    s.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredShows = shows.filter(show => {
+    const isAmateur = show.level.startsWith("Amateur");
+    if (activeTab === 'amateur' && !isAmateur) return false;
+    if (activeTab === 'available' && isAmateur) return false;
+
+    return show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           show.type.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const selectedShow = shows.find(s => s.id === selectedShowId);
-  const eligibleFoxes = selectedShow ? foxList.filter(f => isFoxEligibleForShow(f, selectedShow.level, selectedShow.type)) : [];
+  const eligibleFoxes = selectedShow
+    ? Object.values(foxes).filter(f => isFoxEligibleForShow(f, selectedShow.level, selectedShow.type))
+    : [];
 
   const handleAddShow = () => {
     if (!newShowName) return;
@@ -107,7 +113,7 @@ export default function ShowsPage() {
               (tab.adminOnly ? isAdmin : true) && (
                 <button
                   key={tab.id}
-                  onClick={() => { setActiveTab(tab.id as "available" | "amateur" | "history" | "manage"); setSelectedShowId(null); }}
+                  onClick={() => { setActiveTab(tab.id as any); setSelectedShowId(null); }}
                   disabled={tab.disabled}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all",
@@ -134,7 +140,7 @@ export default function ShowsPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {showReports.map((report, idx) => (
-                    <Card key={idx} className="folk-card border-border overflow-hidden">
+                    <Card key={idx} className="folk-card border-border overflow-hidden group">
                       <CardHeader className="bg-muted/30 pb-3 border-b border-border">
                         <div className="flex justify-between items-center">
                           <CardTitle className="text-sm font-black uppercase tracking-widest">{report.level} Show</CardTitle>
@@ -143,12 +149,28 @@ export default function ShowsPage() {
                       </CardHeader>
                       <CardContent className="p-4 space-y-3">
                         {report.results.slice(0, 3).map((res, i) => (
-                          <div key={i} className="flex justify-between items-center text-sm">
-                            <div className="flex items-center gap-2">
-                              <span className={cn("w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-black", i === 0 ? "bg-yellow-100 text-yellow-700" : i === 1 ? "bg-slate-100 text-slate-700" : "bg-orange-100 text-orange-700")}>{i + 1}</span>
-                              <span className="font-bold text-foreground">{foxes[res.foxId]?.name || `Fox #${res.foxId}`}</span>
+                          <div key={i} className="space-y-2">
+                            <div className="flex justify-between items-center text-sm">
+                              <div className="flex items-center gap-2">
+                                <span className={cn("w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-black", i === 0 ? "bg-yellow-100 text-yellow-700" : i === 1 ? "bg-slate-100 text-slate-700" : "bg-orange-100 text-orange-700")}>{i + 1}</span>
+                                <span className="font-bold text-foreground">{foxes[res.foxId]?.name || `Fox #${res.foxId}`}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="text-[9px] font-bold px-1.5 h-4">{res.class}</Badge>
+                                <span className="text-xs font-black text-muted-foreground">{res.score} pts</span>
+                              </div>
                             </div>
-                            <Badge variant="secondary" className="text-[9px] font-bold px-1.5 h-4">{res.class}</Badge>
+
+                            {res.breakdown && (
+                               <div className="hidden group-hover:grid grid-cols-3 gap-1 px-7 py-2 bg-muted/20 rounded-lg animate-in fade-in slide-in-from-top-1 duration-300">
+                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Base: <span className="text-foreground">{res.breakdown.base}</span></div>
+                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Groom: <span className="text-foreground">+{res.breakdown.grooming}</span></div>
+                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Train: <span className="text-foreground">+{res.breakdown.training}</span></div>
+                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Luck: <span className="text-foreground">+{res.breakdown.luck}</span></div>
+                                  {res.breakdown.veterinary > 0 && <div className="text-[8px] font-black uppercase text-muted-foreground/60">Vet: <span className="text-foreground">+{res.breakdown.veterinary}</span></div>}
+                                  {res.breakdown.penalties < 0 && <div className="text-[8px] font-black uppercase text-destructive">Penalty: <span className="text-destructive">{res.breakdown.penalties}</span></div>}
+                               </div>
+                            )}
                           </div>
                         ))}
                         {report.bestInShowFoxId && (
@@ -179,8 +201,8 @@ export default function ShowsPage() {
                         type="text"
                         value={newShowName}
                         onChange={(e) => setNewShowName(e.target.value)}
-                        placeholder="e.g. Autumn Red Classic"
-                        className="w-full bg-muted/50 border border-border p-3 rounded-xl"
+                        className="w-full bg-muted/50 border border-border p-3 rounded-xl focus:ring-2 focus:ring-primary outline-none"
+                        placeholder="e.g. Winter Classic"
                       />
                     </div>
                     <div className="space-y-2">
@@ -325,7 +347,7 @@ export default function ShowsPage() {
                                       : "bg-card border-border hover:border-primary/50 hover:bg-primary/5"
                                   )}
                                 >
-                                  <span className="text-sm font-black italic">{fox.name}</span>
+                                  <div className="flex flex-col"><span className="text-sm font-black italic">{fox.name}</span><div className="flex items-center gap-2 mt-0.5"><ScoreBreakdown fox={fox}><Info size={10} className="text-primary cursor-help" /></ScoreBreakdown><span className="text-[9px] font-bold text-muted-foreground uppercase">View Stats Breakdown</span></div></div>
                                   {isEntered ? <Check size={14} /> : <Plus size={14} />}
                                 </button>
                               );
@@ -348,8 +370,4 @@ export default function ShowsPage() {
       </div>
     </div>
   );
-}
-
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
 }

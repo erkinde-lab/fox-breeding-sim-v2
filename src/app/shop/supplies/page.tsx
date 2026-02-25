@@ -1,4 +1,5 @@
 'use client';
+import { cn } from '@/lib/utils';
 
 import React, { useState } from 'react';
 import { useGameStore } from '@/lib/store';
@@ -292,7 +293,3 @@ function UtensilsCustom(props: React.SVGProps<SVGSVGElement>) {
       </svg>
     )
   }
-
-function cn(...inputs: (string | boolean | undefined | null)[]) {
-  return inputs.filter(Boolean).join(' ');
-}
