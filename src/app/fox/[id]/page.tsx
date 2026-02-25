@@ -11,10 +11,10 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, Edit2, Save, X, Sparkles, Dumbbell, Utensils,
   ChevronDown, Heart, Activity, Calendar, Dna, Info,
-  Trophy, Check, ShoppingBag, Activity as ActivityIcon, Coins, Diamond
+  Trophy, Check, ShoppingBag, Activity as ActivityIcon, Coins, Diamond, Medal
 } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
-import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts } from '@/lib/genetics';
+import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts, getFormattedName } from '@/lib/genetics';
 import { useNotifications } from '@/components/NotificationProvider';
 
 export default function FoxProfilePage() {
@@ -176,7 +176,7 @@ export default function FoxProfilePage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
             <CardHeader className="bg-muted/30 pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {getFormattedName(fox)}</CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                <div className="space-y-4">
@@ -222,7 +222,7 @@ export default function FoxProfilePage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
           <Card className="w-full max-w-md folk-card border-2 border-primary/20 shadow-2xl rounded-[40px] overflow-hidden">
             <CardHeader className="bg-muted/30 pb-4">
-              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {fox.name}</CardTitle>
+              <CardTitle className="text-sm font-black uppercase tracking-widest">Sell {getFormattedName(fox)}</CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
                <div className="space-y-4">
@@ -303,7 +303,7 @@ export default function FoxProfilePage() {
                       </div>
                    ) : (
                       <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-black italic text-foreground tracking-tight uppercase">{fox.name}</h1>
+                        <h1 className="text-3xl font-black italic text-foreground tracking-tight uppercase flex items-center gap-2">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500" size={24} />}</h1>
                         {!isFoundational && !fox.hasBeenRenamed && (
                           <button onClick={() => setIsEditing(true)} className="p-2 text-muted-foreground hover:text-primary transition-colors">
                             <Edit2 size={16} />
@@ -563,7 +563,7 @@ function PedigreeTree({ foxId, foxes, depth = 0 }: { foxId: string | null; foxes
       }`}>
         {fox ? (
           <Link href={`/fox/${fox.id}`} className="w-full flex flex-col items-center">
-            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px] group-hover:text-primary transition-colors">{fox.name}</div>
+            <div className="font-black text-foreground uppercase tracking-tight truncate w-full text-[10px] group-hover:text-primary transition-colors">{getFormattedName(fox)}</div>
             <div className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest truncate w-full">{fox.phenotype}</div>
           </Link>
         ) : (

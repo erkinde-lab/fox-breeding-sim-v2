@@ -228,6 +228,11 @@ export interface Fox {
   healthIssues: string[];
   pointsYear: number;
   bisWins: number;
+  majors: number;
+  meritScore: number;
+  prefixTitle?: string;
+  suffixTitle?: string;
+
   pointsLifetime: number;
   parents: [string | null, string | null];
   birthYear: number;
@@ -391,6 +396,11 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     hasBeenRenamed: data.hasBeenRenamed || false,
     silverIntensity: silverIntensity,
     bisWins: data.bisWins || 0,
+    majors: data.majors || 0,
+    meritScore: data.meritScore || 0,
+    prefixTitle: data.prefixTitle,
+    suffixTitle: data.suffixTitle,
+
     healthIssues: phenotype.healthIssues,
     pointsYear: 0,
     pointsLifetime: 0,
@@ -744,4 +754,14 @@ export function calculateBreedingOutcomes(m: Fox, f: Fox, foxes: Record<string, 
     probabilities,
     predictedCOI: Math.round(calculateCOI(m.id, foxes, f.id) * 100) / 100
   };
+}
+export function getFormattedName(fox: Fox): string {
+  let name = fox.name;
+  if (fox.prefixTitle) {
+    name = `${fox.prefixTitle} ${name}`;
+  }
+  if (fox.suffixTitle) {
+    name = `${name} ${fox.suffixTitle}`;
+  }
+  return name;
 }

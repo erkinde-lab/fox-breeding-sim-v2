@@ -5,11 +5,11 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown, Crown } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown, Crown, Medal } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
-import { isHungry, isGroomed, isTrained, Fox } from '@/lib/genetics';
+import { isHungry, isGroomed, isTrained, Fox, getFormattedName } from '@/lib/genetics';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type SortOption = 'id' | 'name' | 'age' | 'points';
@@ -242,7 +242,7 @@ function FoxCard({ fox, season }: { fox: Fox, season: string }) {
 
                 <div className="p-5 flex-1 flex flex-col gap-1">
                     <div className="flex justify-between items-start gap-2">
-                        <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{fox.name}</h3>
+                        <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors flex items-center gap-1">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500 shrink-0" size={14} />}</h3>
                         <div className="flex items-center gap-1 text-primary font-black text-xs">
                             <Trophy size={12} />
                             <span>{fox.pointsLifetime}</span>
@@ -324,7 +324,7 @@ function HallOfFame({ foxes }: { foxes: Fox[] }) {
                             </div>
                             <div className="p-5 flex-1 flex flex-col gap-3">
                                 <div className="flex justify-between items-start gap-2">
-                                    <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors">{fox.name}</h3>
+                                    <h3 className="font-black italic text-lg text-foreground tracking-tight truncate group-hover:text-primary transition-colors flex items-center gap-1">{getFormattedName(fox)} {(fox.bisWins || 0) > 0 && <Medal className="text-yellow-500 shrink-0" size={14} />}</h3>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="bg-muted/50 rounded-xl p-2 text-center">

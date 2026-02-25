@@ -645,6 +645,17 @@ export const useGameStore = create<GameState>()(
 
         if (nextIndex === 0) {
 
+
+          // Award Rankings (NW/RW)
+          const foxesForRanking = Object.values(updatedFoxes).sort((a, b) => b.pointsYear - a.pointsYear);
+          foxesForRanking.forEach((fox, index) => {
+            if (index === 0 && fox.pointsYear > 0) {
+              fox.suffixTitle = fox.suffixTitle ? `${fox.suffixTitle} NW` : 'NW';
+            } else if (index < 10 && fox.pointsYear > 0) {
+              fox.suffixTitle = fox.suffixTitle ? `${fox.suffixTitle} RW` : 'RW';
+            }
+          });
+
           Object.keys(updatedFoxes).forEach(id => {
 
             updatedFoxes[id].age += 1;
