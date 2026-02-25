@@ -700,6 +700,8 @@ export const useGameStore = create<GameState>()(
 
 
         if (nextSeason === 'Spring') {
+          const newBreedingRecords: BreedingRecord[] = [];
+
           state.pregnancyList.forEach(preg => {
             const mother = updatedFoxes[preg.motherId];
             const kits: WhelpingReport['kits'] = [];
@@ -782,7 +784,7 @@ export const useGameStore = create<GameState>()(
 
 
       breedFoxes: (dogId, vixenId) => {
-        const { npcStuds, season, pregnancyList } = get();
+        const { foxes, npcStuds, gold, year, season, pregnancyList } = get();
         const dog = foxes[dogId] || npcStuds[dogId];
         const vixen = foxes[vixenId];
 
@@ -1284,7 +1286,8 @@ export const useGameStore = create<GameState>()(
 
         return {
           foxes: {
-            ...state.foxes, [foxId]: updatedFox
+            ...state.foxes,
+            [foxId]: updatedFox
           }
         };
       }),

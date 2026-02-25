@@ -22,7 +22,7 @@ export default function FoxProfilePage() {
   const router = useRouter();
   const { addNotification } = useNotifications();
   const { 
-    foxes, breedingHistory, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox, spayNeuterFox,
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox, spayNeuterFox,
     isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox
   } = useGameStore();
 
@@ -48,6 +48,7 @@ export default function FoxProfilePage() {
   const groomed = isGroomed(fox);
   const trained = isTrained(fox);
   const activeBoosts = getActiveBoosts(fox);
+  const foxHistory = (breedingHistory || []).filter(h => h.sireId === fox.id || h.damId === fox.id);
   const foxHistory = (breedingHistory || []).filter(h => h.sireId === fox.id || h.damId === fox.id);
 
   const handleRename = () => {
