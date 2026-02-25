@@ -1,6 +1,6 @@
 import { Fox, getActiveBoosts, isHungry, isGroomed, isTrained } from './genetics';
 
-export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior";
+export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior" | "Altered Junior" | "Altered Open" | "Altered Senior" | "Altered Amateur Junior" | "Altered Amateur Open" | "Altered Amateur Senior";
 export type ShowClass = 
     'Best Juvenile Dog' | 'Best Juvenile Vixen' | 'Best Adult Dog' | 'Best Adult Vixen' |
     'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
@@ -99,6 +99,9 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     const eligibleFoxes = foxes.filter(f => {
       if (f.isRetired || f.healthIssues.length > 0 || isHungry(f)) return false;
       
+      const isAlteredShow = level.startsWith("Altered");
+      if (isAlteredShow !== !!f.isAltered) return false;
+
       const isDog = f.gender === 'Dog';
       const isNewborn = f.age === 0 && (season === 'Spring' || season === 'Summer');
       const isJuvenile = f.age === 0 && !isNewborn;
@@ -128,7 +131,7 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
 
     const finalEligible = eligibleFoxes.filter(f => {
         if (level.startsWith("Amateur") && f.age === 0) return false;
-        const baseLevel = level.replace("Amateur ", "");
+        const baseLevel = level.replace("Altered ", "").replace("Amateur ", "");
         if (baseLevel === "Junior") return f.pointsLifetime < 5;
         if (baseLevel === "Senior") return f.pointsLifetime > 10;
         return true;
@@ -171,6 +174,9 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
   const eligibleFoxes = foxes.filter(f => {
     if (f.isRetired || f.healthIssues.length > 0) return false;
 
+    const isAlteredShow = level.startsWith("Altered");
+    if (isAlteredShow !== !!f.isAltered) return false;
+
     const isDog = f.gender === 'Dog';
     const isNewborn = f.age === 0 && (season === 'Spring' || season === 'Summer');
     const isJuvenile = f.age === 0 && !isNewborn;
@@ -200,7 +206,7 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
 
   const finalEligible = eligibleFoxes.filter(f => {
       if (level.startsWith("Amateur") && f.age === 0) return false;
-      const baseLevel = level.replace("Amateur ", "");
+      const baseLevel = level.replace("Altered ", "").replace("Amateur ", "");
       if (baseLevel === "Junior") return f.pointsLifetime < 5;
       if (baseLevel === "Senior") return f.pointsLifetime > 10;
       return true;
@@ -237,6 +243,10 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
 export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: ShowClass, season: string): boolean {
   if (fox.isRetired || fox.healthIssues.length > 0 || isHungry(fox) || !fox.hasBeenRenamed) return false;
 
+  // Altered restriction
+  const isAlteredShow = level.startsWith("Altered");
+  if (isAlteredShow !== !!fox.isAltered) return false;
+
   const isDog = fox.gender === 'Dog';
   const isNewborn = fox.age === 0 && (season === 'Spring' || season === 'Summer');
   const isJuvenile = fox.age === 0 && !isNewborn;
@@ -267,7 +277,7 @@ export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: Show
   if (!classMatch) return false;
 
   if (level.startsWith("Amateur") && fox.age === 0) return false;
-  const baseLevel = level.replace("Amateur ", "");
+  const baseLevel = level.replace("Altered ", "").replace("Amateur ", "");
   if (baseLevel === "Junior") return fox.pointsLifetime < 5;
   if (baseLevel === "Senior") return fox.pointsLifetime > 10;
 

@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   ArrowLeft, Edit2, Save, X, Sparkles, Dumbbell, Utensils,
   ChevronDown, Heart, Activity, Calendar, Dna, Info,
-  Trophy, Check, ShoppingBag, Activity as ActivityIcon
+  Trophy, Check, ShoppingBag, Activity as ActivityIcon, Coins, Diamond
 } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { isHungry, isGroomed, isTrained, calculateCOI, Fox, getActiveBoosts } from '@/lib/genetics';
@@ -22,16 +22,13 @@ export default function FoxProfilePage() {
   const router = useRouter();
   const { addNotification } = useNotifications();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox,
-    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, listFoxOnMarket, cancelListing, marketListings, updateFox
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox, spayNeuterFox,
+    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFeed, setSelectedFeed] = useState('supplies');
   const [isFeedDropdownOpen, setIsFeedDropdownOpen] = useState(false);
-  const [isListing, setIsListing] = useState(false);
-  const [listPrice, setListPrice] = useState(1000);
-  const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
   const [isListing, setIsListing] = useState(false);
   const [listPrice, setListPrice] = useState(1000);
   const [listCurrency, setListCurrency] = useState<'gold' | 'gems'>('gold');
@@ -41,11 +38,6 @@ export default function FoxProfilePage() {
   const [newName, setNewName] = useState(fox?.name || '');
 
   if (!fox) return <div className="py-20 text-center font-black uppercase tracking-widest text-muted-foreground">Fox not found</div>;
-
-  const foxIds = Object.keys(foxes).sort();
-  const currentIndex = foxIds.indexOf(fox.id);
-  const prevId = currentIndex > 0 ? foxIds[currentIndex - 1] : null;
-  const nextId = currentIndex < foxIds.length - 1 ? foxIds[currentIndex + 1] : null;
 
   const foxIds = Object.keys(foxes).sort();
   const currentIndex = foxIds.indexOf(fox.id);
@@ -89,23 +81,9 @@ export default function FoxProfilePage() {
     }
   };
 
-  const handleList = () => {
-    listFoxOnMarket(fox.id, listPrice, listCurrency);
-    setIsListing(false);
-    addNotification("Fox listed on marketplace!", "success");
-    router.push("/shop/marketplace");
-  };
 
-  const handleRetire = () => {
-    if (fox.age < 6) {
-      addNotification("Foxes must be at least 6 years old to retire.", "destructive");
-      return;
-    }
-    if (confirm("Retire this fox? This cannot be undone.")) {
-      retireFox(fox.id);
-      router.push("/kennel");
-    }
-  };
+
+
 
   const feedOptions = [
     { id: 'supplies', label: 'Premium Feed' },
@@ -121,11 +99,6 @@ export default function FoxProfilePage() {
 
   const handleFeed = () => {
     applyItem(selectedFeed, fox.id);
-  };
-
-  const handleSetPreferredFeed = (feedId: string) => {
-    updateFox(fox.id, { preferredFeed: feedId });
-    setSelectedFeed(feedId);
   };
 
   const handleSetPreferredFeed = (feedId: string) => {
@@ -179,6 +152,20 @@ export default function FoxProfilePage() {
                 className={`rounded-xl font-black uppercase tracking-widest text-[10px] h-9 ${fox.age < 6 ? "opacity-50 grayscale cursor-not-allowed" : ""}`}
               >
                 Retire/Sell
+              </Button>
+              <Button
+                onClick={() => {
+                  if(fox.age < 1) {
+                    addNotification("Foxes must be at least 1 year old to be altered.", "destructive");
+                    return;
+                  }
+                  if(confirm("Spay/Neuter this fox? This is permanent and will remove them from breeding.")) { spayNeuterFox(fox.id); }
+                }}
+                variant="outline"
+                disabled={fox.isAltered}
+                className="rounded-xl font-black uppercase tracking-widest text-[10px] h-9"
+              >
+                {fox.isAltered ? "Altered" : "Spay/Neuter"}
               </Button>
             </>
           )}

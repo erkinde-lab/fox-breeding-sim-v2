@@ -235,6 +235,7 @@ export interface Fox {
   studFee: number;
   isNPC?: boolean;
   lastFed?: number; lastGroomed?: number; lastTrained?: number; isStillborn?: boolean;
+  isAltered: boolean;
   boosts?: Record<string, number>;
   preferredFeed?: string;
 }
@@ -385,6 +386,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     genotypeRevealed: data.genotypeRevealed || false,
     pedigreeAnalyzed: data.pedigreeAnalyzed ?? (data.parents ? (data.parents[0] === null && data.parents[1] === null) : true),
     isRetired: data.isRetired || false,
+    isAltered: data.isAltered || false,
     hasBeenRenamed: data.hasBeenRenamed || false,
     silverIntensity: silverIntensity,
     healthIssues: phenotype.healthIssues,

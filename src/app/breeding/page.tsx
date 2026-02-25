@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
+import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function BreedingPage() {
   const { foxes, breedFoxes, season, inventory, hiredGeneticist, pregnancyList } = useGameStore();
@@ -18,8 +19,8 @@ export default function BreedingPage() {
   const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
-  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
-  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && !f.isAltered && f.age >= 2);
+  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && !f.isAltered && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedDog && selectedVixen) {

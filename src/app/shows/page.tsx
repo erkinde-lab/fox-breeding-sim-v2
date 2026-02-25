@@ -21,7 +21,7 @@ export default function ShowsPage() {
     addShow, removeShow, updateShow, enterFoxInShow, runShows, generateSeasonalShows
   } = useGameStore();
 
-  const [activeTab, setActiveTab] = useState<'available' | 'amateur' | 'history' | 'manage'>('available');
+  const [activeTab, setActiveTab] = useState<'amateur' | 'junior' | 'open' | 'senior' | 'altered' | 'history' | 'manage'>('junior');
   const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -34,9 +34,22 @@ export default function ShowsPage() {
   const isAmateurEligible = year <= joiningYear + 1;
 
   const filteredShows = shows.filter(show => {
-    const isAmateur = show.level.startsWith("Amateur");
-    if (activeTab === 'amateur' && !isAmateur) return false;
-    if (activeTab === 'available' && isAmateur) return false;
+    const isAltered = show.level.startsWith("Altered");
+    const isAmateur = show.level.includes("Amateur");
+    const baseLevel = show.level.replace("Altered ", "").replace("Amateur ", "");
+
+    if (activeTab === 'history' || activeTab === 'manage') return true;
+
+    if (activeTab === 'altered') {
+      if (!isAltered) return false;
+    } else {
+      if (isAltered) return false;
+      if (activeTab === 'amateur' && !isAmateur) return false;
+      if (activeTab !== 'amateur' && isAmateur) return false;
+      if (activeTab === 'junior' && baseLevel !== 'Junior') return false;
+      if (activeTab === 'open' && baseLevel !== 'Open') return false;
+      if (activeTab === 'senior' && baseLevel !== 'Senior') return false;
+    }
 
     return show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
            show.type.toLowerCase().includes(searchQuery.toLowerCase());
@@ -105,8 +118,11 @@ export default function ShowsPage() {
         <div className="lg:col-span-3 space-y-4">
           <nav className="flex flex-col gap-1">
             {[
-              { id: 'available', label: 'Pro Circuit', icon: Trophy },
               { id: 'amateur', label: 'Amateur Arena', icon: Users, disabled: !isAmateurEligible },
+              { id: 'junior', label: 'Junior Circuit', icon: Trophy },
+              { id: 'open', label: 'Open Circuit', icon: Trophy },
+              { id: 'senior', label: 'Senior Circuit', icon: Trophy },
+              { id: 'altered', label: 'Altered Arena', icon: Trophy },
               { id: 'history', label: 'Recent Results', icon: History },
               { id: 'manage', label: 'Admin: Manage', icon: Settings, adminOnly: true },
             ].map(tab => (
@@ -212,7 +228,7 @@ export default function ShowsPage() {
                         onChange={(e) => setNewShowLevel(e.target.value as any)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
-                        {["Junior", "Open", "Senior", "Championship", "Amateur Junior", "Amateur Open", "Amateur Senior"].map(l => (
+                        {["Junior", "Open", "Senior", "Championship", "Amateur Junior", "Amateur Open", "Amateur Senior", "Altered Junior", "Altered Open", "Altered Senior", "Altered Amateur Junior", "Altered Amateur Open", "Altered Amateur Senior"].map(l => (
                           <option key={l} value={l}>{l}</option>
                         ))}
                       </select>
