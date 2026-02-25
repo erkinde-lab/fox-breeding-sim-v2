@@ -121,6 +121,56 @@ export default function HelpPage() {
           </Card>
         </section>
 
+
+        {/* Breeding Guide & Terminology */}
+        <section className="space-y-6">
+          <SectionHeader icon={Heart} label="Breeding Guide & Terminology" />
+          <Card className="folk-card border-border bg-card">
+            <CardContent className="pt-8 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic">How to Breed</h3>
+                  <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-2 leading-relaxed">
+                    <li><strong>Preparation:</strong> Breeding only occurs during the <span className="text-primary font-bold">Winter</span> season.</li>
+                    <li><strong>Selection:</strong> Navigate to the <span className="font-bold">Breeding Center</span>. Select a <span className="text-blue-500 font-bold">Sire (Dog)</span> and a <span className="text-pink-500 font-bold">Dam (Vixen)</span>.</li>
+                    <li><strong>Eligibility:</strong> Both foxes must be at least <span className="font-bold text-foreground">2 years old</span>, healthy, and not retired. A vixen can only be bred once per season.</li>
+                    <li><strong>Simulation:</strong> Use the <span className="font-bold">Breeding Calculator</span> (or hire a <span className="font-bold">Geneticist</span>) to see potential outcomes and COI.</li>
+                    <li><strong>Commitment:</strong> Press <span className="font-bold text-foreground">"Commit Breeding"</span> to finalize the pair.</li>
+                    <li><strong>Whelping:</strong> Kits will be born in the <span className="text-green-600 font-bold">Spring</span> season.</li>
+                  </ol>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic">Common Terms</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      { term: "Sire", def: "The male parent (Dog)." },
+                      { term: "Dam", def: "The female parent (Vixen)." },
+                      { term: "Litter", def: "The group of kits born from one breeding." },
+                      { term: "Whelping", def: "The act of giving birth." },
+                      { term: "COI", def: "Coefficient of Inbreeding. Measures relatedness." },
+                      { term: "Kit", def: "A newborn fox (Spring/Summer)." },
+                      { term: "Juvenile", def: "A young fox (Autumn/Winter)." },
+                      { term: "Serviced", def: "A vixen that has already been bred." },
+                    ].map(item => (
+                      <div key={item.term} className="p-2 bg-muted/40 rounded-xl border border-border">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-primary block">{item.term}</span>
+                        <p className="text-[10px] text-muted-foreground font-medium leading-tight">{item.def}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                <p className="text-xs text-muted-foreground italic leading-relaxed">
+                  <strong>Pro Tip:</strong> High COI pairings (above 15%) carry a significant risk of lower stats or stillborn kits. Always check the Breeding Insights panel before committing!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Showing Your Foxes */}
         <section className="space-y-6">
           <SectionHeader icon={Trophy} label="Showing Your Foxes" />
