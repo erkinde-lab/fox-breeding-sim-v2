@@ -3,15 +3,14 @@ import { cn } from '@/lib/utils';
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
+import { TutorialTour } from '@/components/TutorialTour';
 import Link from 'next/link';
 import {
-  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
-  Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
+  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
   Diamond, Calendar, Info, Star, MessageSquare,
-  User, ExternalLink, HelpCircle, Rocket, UserPlus, Utensils,
-  Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus, LayoutDashboard
+  User, ExternalLink, HelpCircle, Rocket, UserPlus, Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const {
@@ -73,7 +72,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
           )}
         </div>
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r">
+          <div id="tutorial-currency" className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r">
             <span className="flex items-center gap-1.5"><Coins size={12} className="text-yellow-200" /> {gold.toLocaleString()} Gold</span>
             <Link href="/shop/gems" className="flex items-center gap-1.5 hover:text-cyan-200 transition-colors group">
               <Diamond size={12} className="text-cyan-200 group-hover:scale-110 transition-transform" />
@@ -317,6 +316,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       {/* Main Content */}
       <main className="flex-1 w-full p-4 sm:p-6 lg:p-8">
         {children}
+        <TutorialTour />
       </main>
 
       {/* Site Map & Legal Footer */}

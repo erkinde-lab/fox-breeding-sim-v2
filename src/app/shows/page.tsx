@@ -129,7 +129,7 @@ export default function ShowsPage() {
               (tab.adminOnly ? isAdmin : true) && (
                 <button
                   key={tab.id}
-                  onClick={() => { setActiveTab(tab.id as any); setSelectedShowId(null); }}
+                  onClick={() => { setActiveTab(tab.id as 'amateur' | 'junior' | 'open' | 'senior' | 'altered' | 'history' | 'manage'); setSelectedShowId(null); }}
                   disabled={tab.disabled}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all",
@@ -225,7 +225,7 @@ export default function ShowsPage() {
                       <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Level</label>
                       <select
                         value={newShowLevel}
-                        onChange={(e) => setNewShowLevel(e.target.value as any)}
+                        onChange={(e) => setNewShowLevel(e.target.value as ShowLevel)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
                         {["Junior", "Open", "Senior", "Championship", "Amateur Junior", "Amateur Open", "Amateur Senior", "Altered Junior", "Altered Open", "Altered Senior", "Altered Amateur Junior", "Altered Amateur Open", "Altered Amateur Senior"].map(l => (
@@ -237,7 +237,7 @@ export default function ShowsPage() {
                       <label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Class</label>
                       <select
                         value={newShowClass}
-                        onChange={(e) => setNewShowClass(e.target.value as any)}
+                        onChange={(e) => setNewShowClass(e.target.value as ShowClass)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
                         {["Best Juvenile Dog", "Best Juvenile Vixen", "Best Adult Dog", "Best Adult Vixen", "Red Specialty", "Silver Specialty", "Gold Specialty", "Cross Specialty", "Exotic Specialty"].map(c => (
