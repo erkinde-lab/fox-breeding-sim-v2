@@ -193,6 +193,18 @@ export interface AdminLog {
 
 
 
+
+export interface BreedingRecord {
+  id: string;
+  sireId: string;
+  damId: string;
+  sireName: string;
+  damName: string;
+  year: number;
+  season: string;
+  kits: { id?: string; name: string; phenotype: string; isStillborn: boolean }[];
+}
+
 export interface WhelpingReport {
   motherName: string;
   fatherName: string;
@@ -224,6 +236,7 @@ interface GameState {
   whelpingReports: WhelpingReport[];
 
   pregnancyList: Pregnancy[];
+  breedingHistory: BreedingRecord[];
 
   kennelCapacity: number;
 
@@ -495,6 +508,7 @@ export const useGameStore = create<GameState>()(
       whelpingReports: [],
 
           pregnancyList: [],
+  breedingHistory: [],
 
       kennelCapacity: 10,
 
@@ -639,15 +653,14 @@ export const useGameStore = create<GameState>()(
 
 
         if (nextSeason === 'Spring') {
+          const newBreedingRecords: BreedingRecord[] = [];
 
           state.pregnancyList.forEach(preg => {
-
             const mother = updatedFoxes[preg.motherId];
             const kits: WhelpingReport['kits'] = [];
+            const historyKits: BreedingRecord['kits'] = [];
 
             if (!mother) return;
-
-
 
             const kitCount = (typeof window !== 'undefined' ? Math.floor(Math.random() * 4) : 3) + 2;
 
@@ -656,14 +669,9 @@ export const useGameStore = create<GameState>()(
               const kitPhenotype = getPhenotype(kitGenotype, calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity));
 
               if (kitPhenotype.isLethal) {
-                kits.push({
-                  name: "Stillborn Fox",
-                  phenotype: "Stillborn",
-                  baseColor: "-",
-                  pattern: "-",
-                  eyeColor: "-",
-                  isStillborn: true
-                });
+                const kitData = { name: "Stillborn Fox", phenotype: "Stillborn", baseColor: "-", pattern: "-", eyeColor: "-", isStillborn: true };
+                kits.push(kitData);
+                historyKits.push({ name: kitData.name, phenotype: kitData.phenotype, isStillborn: true });
               } else {
                 const kit = createFox({
                   parents: [preg.motherId, preg.fatherId],
@@ -683,11 +691,21 @@ export const useGameStore = create<GameState>()(
                   eyeColor: kit.eyeColor,
                   isStillborn: false
                 });
+                historyKits.push({ id: kit.id, name: kit.name, phenotype: kit.phenotype, isStillborn: false });
               }
             }
 
             whelpingReports.push({ motherName: mother.name, fatherName: preg.fatherName, kits });
-
+            newBreedingRecords.push({
+              id: Math.random().toString(36).substring(2, 9),
+              sireId: preg.fatherId,
+              damId: preg.motherId,
+              sireName: preg.fatherName,
+              damName: mother.name,
+              year: nextYear,
+              season: nextSeason,
+              kits: historyKits
+            });
           });
 
         } else {
@@ -709,6 +727,7 @@ export const useGameStore = create<GameState>()(
           whelpingReports: [...whelpingReports, ...state.whelpingReports].slice(0, 10),
 
           pregnancyList: nextPregnancyList,
+          breedingHistory: [...newBreedingRecords, ...(state.breedingHistory || [])].slice(0, 50),
           npcStuds: generateNPCStuds(nextYear, nextSeason)
         };
       });
@@ -1589,7 +1608,7 @@ export const useGameStore = create<GameState>()(
 
       name: 'red-fox-sim-storage',
 
-      version: 3,
+      version: 4,
 
       migrate: (persistedState: unknown, version: number) => {
         if (version < 2) {

@@ -30,3 +30,4 @@ https://nextjs.org/telemetry
  GET /breeding 200 in 105ms (compile: 4ms, render: 100ms)
  GET /kennel 200 in 111ms (compile: 8ms, render: 103ms)
  GET /members 200 in 100ms (compile: 4ms, render: 95ms)
+ GET /kennel 200 in 2.8s (compile: 1332ms, render: 1461ms)

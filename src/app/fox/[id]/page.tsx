@@ -23,7 +23,7 @@ export default function FoxProfilePage() {
   const { addNotification } = useNotifications();
   const { 
     foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox,
-    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, listFoxOnMarket, cancelListing, marketListings, updateFox
+    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, breedingHistory, breedingHistory, listFoxOnMarket, cancelListing, marketListings, updateFox, breedingHistory, breedingHistory
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +56,8 @@ export default function FoxProfilePage() {
   const groomed = isGroomed(fox);
   const trained = isTrained(fox);
   const activeBoosts = getActiveBoosts(fox);
+  const foxHistory = (breedingHistory || []).filter(h => h.sireId === fox.id || h.damId === fox.id);
+  const foxHistory = (breedingHistory || []).filter(h => h.sireId === fox.id || h.damId === fox.id);
 
   const handleRename = () => {
     if (newName.trim()) {
@@ -515,6 +517,57 @@ export default function FoxProfilePage() {
           </Card>
         </div>
       </div>
+
+            {/* Breeding History */}
+      {!isFoundational && foxHistory.length > 0 && (
+        <Card className="folk-card border-2 border-border shadow-sm rounded-[48px] overflow-hidden">
+          <CardHeader className="bg-muted/30 p-8 border-b border-border">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-pink-500/10 rounded-xl text-pink-500"><Heart size={20} /></div>
+              <CardTitle className="text-xl font-black italic tracking-tight uppercase">Breeding History</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8 space-y-6">
+            <div className="grid grid-cols-1 gap-6">
+              {foxHistory.map((record) => {
+                const isSire = record.sireId === fox.id;
+                const mateName = isSire ? record.damName : record.sireName;
+                const mateId = isSire ? record.damId : record.sireId;
+
+                return (
+                  <div key={record.id} className="p-6 rounded-3xl bg-muted/20 border border-border/50 flex flex-col md:flex-row gap-6">
+                    <div className="md:w-1/3">
+                      <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Mated With</div>
+                      {mateId ? (
+                        <Link href={`/fox/${mateId}`} className="font-black italic text-lg text-foreground hover:text-primary transition-colors">{mateName}</Link>
+                      ) : (
+                        <span className="font-black italic text-lg text-foreground">{mateName}</span>
+                      )}
+                      <div className="text-xs font-bold text-muted-foreground mt-1">Year {record.year}, {record.season}</div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Offspring Produced</div>
+                      <div className="flex flex-wrap gap-2">
+                        {record.kits.map((kit, idx) => (
+                          <div key={idx} className="px-3 py-1.5 rounded-xl bg-card border border-border shadow-sm flex items-center gap-2">
+                            {kit.id ? (
+                              <Link href={`/fox/${kit.id}`} className="text-xs font-bold hover:text-primary transition-colors">{kit.name}</Link>
+                            ) : (
+                              <span className="text-xs font-bold text-muted-foreground/60">{kit.name}</span>
+                            )}
+                            <Badge variant="outline" className="text-[8px] uppercase font-black">{kit.phenotype}</Badge>
+                            {kit.isStillborn && <span className="text-[8px] font-black text-destructive uppercase italic">Stillborn</span>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Full Width Pedigree at bottom */}
       <Card className="folk-card border-2 border-border shadow-sm rounded-[48px] overflow-hidden">
