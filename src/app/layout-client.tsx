@@ -4,15 +4,14 @@ import { cn } from '@/lib/utils';
 import { CookieConsent } from "@/components/CookieConsent";
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
+import { TutorialTour } from '@/components/TutorialTour';
 import Link from 'next/link';
 import {
-  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, ShoppingCart,
-  Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
+  Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
   Diamond, Calendar, Info, Star, MessageSquare,
-  User, ExternalLink, HelpCircle, Rocket, UserPlus, Utensils,
-  Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus, LayoutDashboard
+  User, ExternalLink, HelpCircle, Rocket, UserPlus, Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const {
@@ -74,7 +73,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
           )}
         </div>
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r">
+          <div id="tutorial-currency" className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r">
             <span className="flex items-center gap-1.5"><Coins size={12} className="text-yellow-200" /> {gold.toLocaleString()} Gold</span>
             <Link href="/shop/gems" className="flex items-center gap-1.5 hover:text-cyan-200 transition-colors group">
               <Diamond size={12} className="text-cyan-200 group-hover:scale-110 transition-transform" />
@@ -118,22 +117,23 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
           <div className="flex justify-between items-center h-20">
             {/* Logo and Desktop Nav */}
             <div className="flex items-center gap-12">
-              <Link href="/" className="flex items-center gap-3 group shrink-0">
-                <div
-                  className="p-3 bg-apricot rounded-[1.2rem] group-hover:bg-fire-400 transition-all group-hover:rotate-6 shadow-xl shadow-apricot/20 cursor-help"
+              <div className="flex items-center gap-3 group shrink-0">
+                <button
+                  className="p-3 bg-apricot rounded-[1.2rem] hover:bg-fire-400 transition-all hover:rotate-6 shadow-xl shadow-apricot/20 cursor-help border-none outline-none"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleAdminMode();
                   }}
+                  title="Toggle Admin Mode"
                 >
                   <PawPrint size={28} className="text-white" />
-                </div>
-                <div className="flex flex-col">
+                </button>
+                <Link href="/" className="flex flex-col hover:opacity-80 transition-opacity">
                   <span className="text-2xl font-folksy tracking-tight leading-none text-foreground">Red Fox</span>
                   <span className="text-[11px] font-black tracking-[0.3em] text-secondary uppercase leading-none mt-1 opacity-80">Simulator v2</span>
-                </div>
-              </Link>
+                </Link>
+              </div>
 
               <nav className="hidden xl:flex items-center gap-2 flex-1 justify-center max-w-5xl">
                 {/* Main Dropdown */}
@@ -318,6 +318,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       {/* Main Content */}
       <main className="flex-1 w-full p-4 sm:p-6 lg:p-8">
         {children}
+        <TutorialTour />
       </main>
 
       {/* Site Map & Legal Footer */}

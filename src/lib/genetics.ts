@@ -73,16 +73,16 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const isRedGoldBase = baseColorName === 'Red' || baseColorName === 'Gold';
 
   // Helper flags
-  const isAmber = hasG && hasP;
   const isPearlAmber = hasG && hasP && hasSS;
-  const isSapphire = hasP && hasSS && !hasG;
-  const isBurgundy = hasG && !hasP;
-  const isPearl = hasP && !hasSS && !hasG;
+  const isSapphire = !hasG && hasP && hasSS;
+  const isAmber = hasG && hasP && !hasSS;
+  const isPearl = !hasG && hasP && !hasSS;
+  const isBurgundy = hasG && !hasP && !hasSS;
   const isMansfieldPearl = hasSS && !hasP && !hasG;
 
   let underlyingName = "";
 
-  if (isFifi) {
+  if (isFifi && !hasSS) {
     // Fire Expression
     if (aCount === 2) { // Alaskan base
       if (hasG) underlyingName = "Champagne";
@@ -107,33 +107,25 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   }
 
   if (!underlyingName) {
-    if (isPearlAmber) {
-      if (baseColorName === "Red") underlyingName = "Pearl Amber Red";
-      else if (baseColorName === "Gold" || baseColorName === "Gold Cross") underlyingName = "Pearl Amber Gold";
-      else underlyingName = "Pearl Amber";
-    } else if (isAmber) {
-      underlyingName = "Amber";
-    } else if (isSapphire) {
-      underlyingName = "Sapphire";
-    } else if (isBurgundy) {
-      underlyingName = "Burgundy";
-    } else if (isPearl) {
-      underlyingName = "Pearl";
-    } else if (isMansfieldPearl) {
-      underlyingName = "Mansfield Pearl";
-    }
+    if (isPearlAmber) underlyingName = "Pearl Amber";
+    else if (isSapphire) underlyingName = "Sapphire";
+    else if (isAmber) underlyingName = "Amber";
+    else if (isPearl) underlyingName = "Pearl";
+    else if (isBurgundy) underlyingName = "Burgundy";
+    else if (isMansfieldPearl) underlyingName = "Mansfield Pearl";
 
-    // Suffix/Masking logic
     if (underlyingName) {
-        if (baseColorName === "Red" && (underlyingName === "Burgundy" || underlyingName === "Pearl" || underlyingName === "Mansfield Pearl")) {
-          underlyingName = ""; // Masked
-        } else if (baseColorName === "Alaskan Silver" && hasG) {
-          underlyingName = "Champagne";
-        } else if (baseColorName === "Silver Cross" && hasG) {
-          underlyingName = "Pink Cross";
-        } else if (isRedGoldBase && !underlyingName.startsWith("Pearl Amber") && underlyingName !== "Sapphire" && underlyingName !== "Amber") {
-          underlyingName = `${underlyingName} ${baseColorName}`;
-        }
+      if (underlyingName === "Pearl Amber" || underlyingName === "Sapphire") {
+        // No base color appended
+      } else if (baseColorName === "Alaskan Silver" && hasG && underlyingName === "Burgundy") {
+        underlyingName = "Champagne";
+      } else if (baseColorName === "Silver Cross" && hasG && underlyingName === "Burgundy") {
+        underlyingName = "Pink Cross";
+      } else if (isRedGoldBase) {
+        underlyingName = `${underlyingName} ${baseColorName}`;
+      } else if (isCrossBase) {
+        underlyingName = `${underlyingName} Cross`;
+      }
     }
   }
 
@@ -167,9 +159,13 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   // Eye Color Logic
   let eyeColor = providedEyeColor;
   if (!eyeColor) {
-    let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
-    if (eyePoolName.startsWith("Pearl Amber")) eyePoolName = "Pearl Amber";
-    eyeColor = getRandomEyeColor(eyePoolName);
+    if (isPearlAmber) {
+      eyeColor = "Green";
+    } else {
+      let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
+      if (eyePoolName.startsWith("Pearl Amber")) eyePoolName = "Pearl Amber";
+      eyeColor = getRandomEyeColor(eyePoolName);
+    }
   }
 
   // W locus logic
@@ -192,7 +188,11 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
     geneticName: displayName,
     description: `A beautiful ${displayName} with ${eyeColor.toLowerCase().replace(" - blue heterochromia", " and blue heterochromic")} eyes.`,
     isLethal,
-    healthIssues: isMansfieldPearl ? ['Chediak-Hygashi syndrome: high risk of vixen dying if pregnant'] : [],
+    healthIssues: [
+      ...(hasSS ? ['Chediak-Hygashi syndrome: high risk of vixen dying if pregnant'] : []),
+      ...(hasC ? ['Photosensitivity and reduced vision'] : []),
+      ...(hasL ? ['Higher incidence of deafness and vision irregularities'] : [])
+    ],
   };
 }
 
@@ -591,7 +591,7 @@ export const PHENOTYPE_EYE_COLORS: Record<string, string[]> = {
   'Champagne': ['Blue'],
   'Fawn Glow': ['Blue'],
   'Sapphire': ['Grey', 'Green', 'Blue'],
-  'Pearl Amber': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pearl Amber': ['Amber', 'Green', 'Grey', 'Blue'],
   'Pearl Amber Red': ['Amber', 'Green', 'Grey'],
   'Pearl Amber Gold': ['Amber', 'Green', 'Grey'],
   'Cross': ['Brown', 'Light Brown', 'Amber'],

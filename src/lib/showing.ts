@@ -42,14 +42,14 @@ export function calculateScore(fox: Fox, hasGroomer: boolean = false, hasTrainer
   let penalties = 0;
 
   // Base traits sum
-  let head = stats.head + (activeBoosts['head'] || 0);
-  let topline = stats.topline + (activeBoosts['topline'] || 0);
-  let forequarters = stats.forequarters + (activeBoosts['forequarters'] || 0);
-  let hindquarters = stats.hindquarters + (activeBoosts['hindquarters'] || 0);
-  let tail = stats.tail + (activeBoosts['tail'] || 0);
-  let coatQuality = stats.coatQuality + (activeBoosts['coatQuality'] || 0);
-  let temperament = stats.temperament + (activeBoosts['temperament'] || 0);
-  let presence = stats.presence + (activeBoosts['presence'] || 0);
+  const head = stats.head + (activeBoosts['head'] || 0);
+  const topline = stats.topline + (activeBoosts['topline'] || 0);
+  const forequarters = stats.forequarters + (activeBoosts['forequarters'] || 0);
+  const hindquarters = stats.hindquarters + (activeBoosts['hindquarters'] || 0);
+  const tail = stats.tail + (activeBoosts['tail'] || 0);
+  const coatQuality = stats.coatQuality + (activeBoosts['coatQuality'] || 0);
+  const temperament = stats.temperament + (activeBoosts['temperament'] || 0);
+  const presence = stats.presence + (activeBoosts['presence'] || 0);
 
   const rawBase = head + topline + forequarters + hindquarters + tail + coatQuality + temperament + presence;
 

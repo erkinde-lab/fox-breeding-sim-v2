@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useGameStore } from '@/lib/store';
+import { useGameStore, BreedingRecord } from '@/lib/store';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,8 +22,8 @@ export default function FoxProfilePage() {
   const router = useRouter();
   const { addNotification } = useNotifications();
   const { 
-    foxes, foundationFoxes, npcStuds, applyItem, renameFox, sellFox, retireFox,
-    isAdmin, toggleStudStatus, hiredGroomer, hiredGeneticist, season, listFoxOnMarket, cancelListing, marketListings, updateFox, listFoxOnMarket, cancelListing, marketListings, updateFox
+    foxes, foundationFoxes, npcStuds, applyItem, renameFox, retireFox, spayNeuterFox,
+    toggleStudStatus, season, listFoxOnMarket, updateFox, breedingHistory
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -44,8 +44,6 @@ export default function FoxProfilePage() {
 
   const foxIds = Object.keys(foxes).sort();
   const currentIndex = foxIds.indexOf(fox.id);
-  const prevId = currentIndex > 0 ? foxIds[currentIndex - 1] : null;
-  const nextId = currentIndex < foxIds.length - 1 ? foxIds[currentIndex + 1] : null;
 
   const foxIds = Object.keys(foxes).sort();
   const currentIndex = foxIds.indexOf(fox.id);
@@ -56,6 +54,7 @@ export default function FoxProfilePage() {
   const groomed = isGroomed(fox);
   const trained = isTrained(fox);
   const activeBoosts = getActiveBoosts(fox);
+  const foxHistory = (breedingHistory || []).filter(h => h.sireId === fox.id || h.damId === fox.id);
 
   const handleRename = () => {
     if (newName.trim()) {
@@ -78,7 +77,7 @@ export default function FoxProfilePage() {
     router.push("/shop/marketplace");
   };
 
-  const handleRetire = () => {
+    const handleRetire = () => {
     if (fox.age < 6) {
       addNotification("Foxes must be at least 6 years old to retire.", "destructive");
       return;
