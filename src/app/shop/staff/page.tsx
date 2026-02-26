@@ -14,22 +14,10 @@ export default function StaffPage() {
     hiredTrainer, hireTrainer,
     hiredGeneticist, hireGeneticist,
     hiredNutritionist, hireNutritionist,
-    hiredHandler, hireHandler,
     gems
   } = useGameStore();
 
   const staff = [
-    {
-      id: 'handler',
-      name: 'Show Handler',
-      description: 'Lifts the limit of entering only one fox per class in shows. Professional handlers allow you to manage multiple foxes in the same ring simultaneously.',
-      cost: 75,
-      hired: hiredHandler,
-      onHire: hireHandler,
-      icon: <UserPlus size={48} />,
-      color: 'cyan',
-      bonus: 'Unlimited Entries'
-    },
     {
       id: 'groomer',
       name: 'Professional Groomer',

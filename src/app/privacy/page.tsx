@@ -67,10 +67,39 @@ export default function PrivacyPage() {
           </Card>
         </section>
 
+                <section id="do-not-sell" className="space-y-4">
+          <div className="flex items-center gap-3 text-earth-900">
+            <Shield className="text-moss-600" size={24} />
+            <h2 className="text-2xl font-bold">4. CCPA: Do Not Sell My Info</h2>
+          </div>
+          <Card className="folk-card">
+            <CardContent className="pt-6 text-earth-700 leading-relaxed">
+              <p>
+                Under the California Consumer Privacy Act (CCPA), California residents have the right to opt-out of the "sale" of their personal information.
+                <span className="font-bold">Red Fox Breeding Simulator does not sell your personal information</span> to third parties for money or other valuable consideration.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
+            <Lock className="text-moss-600" size={24} />
+            <h2 className="text-2xl font-bold">5. Right to Erasure & Portability</h2>
+          </div>
+          <Card className="folk-card">
+            <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
+              <p>
+                You have the right to request that we <span className="font-bold uppercase tracking-wide">delete</span> your account and all associated data.
+                Additionally, you may request a machine-readable <span className="font-bold uppercase tracking-wide">export</span> of your data.
+                To initiate either process, please send an email to the support address below with the subject "Data Request".
+              </p>
+            </CardContent>
+          </Card>
+        </section><section className="space-y-4">
+          <div className="flex items-center gap-3 text-earth-900">
             <UserCheck className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">4. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold">6. Children's Privacy</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 text-earth-700 leading-relaxed text-sm">
@@ -82,7 +111,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Mail className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">5. Contact Information</h2>
+            <h2 className="text-2xl font-bold">7. Contact Information</h2>
           </div>
           <Card className="folk-card border-moss-100 bg-moss-50/30">
             <CardContent className="pt-6 text-center">
