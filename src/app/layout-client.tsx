@@ -1,7 +1,6 @@
 'use client';
 import { cn } from '@/lib/utils';
 
-import { CookieConsent } from "@/components/CookieConsent";
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import { TutorialTour } from '@/components/TutorialTour';
@@ -9,7 +8,7 @@ import Link from 'next/link';
 import {
   Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
   Diamond, Calendar, Info, Star, MessageSquare,
-  User, ExternalLink, HelpCircle, Rocket, UserPlus, Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus,
+  User, ExternalLink, HelpCircle, Rocket, UserPlus, Store, Baby, CheckSquare, Shield, FastForward, Search, Moon, Sun, Plus, X
 } from 'lucide-react';
 
 
@@ -41,21 +40,26 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
     initializeGame();
 
     function handleClickOutside(event: MouseEvent) {
-      if (mainRef.current && !mainRef.current.contains(event.target as Node)) setIsMainOpen(false);
-      if (kennelRef.current && !kennelRef.current.contains(event.target as Node)) setIsKennelOpen(false);
-      if (breedingRef.current && !breedingRef.current.contains(event.target as Node)) setIsBreedingOpen(false);
-      if (showsRef.current && !showsRef.current.contains(event.target as Node)) setIsShowsOpen(false);
-      if (shopsRef.current && !shopsRef.current.contains(event.target as Node)) setIsShopsOpen(false);
-      if (communityRef.current && !communityRef.current.contains(event.target as Node)) setIsCommunityOpen(false);
-      if (supportRef.current && !supportRef.current.contains(event.target as Node)) setIsSupportOpen(false);
-      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
-        // Keep mobile menu handling separate if needed
+      const target = event.target as Node;
+
+      // If mobile menu is open, don't let handleClickOutside close individual categories
+      // as they share state and it will cause sub-links to collapse before navigation
+      if (isMobileMenuOpen) {
+        if (mobileMenuRef.current && mobileMenuRef.current.contains(target)) return;
       }
+
+      if (mainRef.current && !mainRef.current.contains(target)) setIsMainOpen(false);
+      if (kennelRef.current && !kennelRef.current.contains(target)) setIsKennelOpen(false);
+      if (breedingRef.current && !breedingRef.current.contains(target)) setIsBreedingOpen(false);
+      if (showsRef.current && !showsRef.current.contains(target)) setIsShowsOpen(false);
+      if (shopsRef.current && !shopsRef.current.contains(target)) setIsShopsOpen(false);
+      if (communityRef.current && !communityRef.current.contains(target)) setIsCommunityOpen(false);
+      if (supportRef.current && !supportRef.current.contains(target)) setIsSupportOpen(false);
     }
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [initializeGame]);
+  }, [initializeGame, isMobileMenuOpen]);
 
   return (
     <div className={`min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500 ${isDarkMode ? 'dark' : ''}`}>
@@ -221,6 +225,8 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
                 >
                   <DropdownLink href="/help" icon={<HelpCircle size={16} />} label="Help Center" onClick={() => setIsSupportOpen(false)} />
                   <DropdownLink href="/faq" icon={<Info size={16} />} label="FAQ" onClick={() => setIsSupportOpen(false)} />
+                  <DropdownLink href="/privacy" icon={<Shield size={16} />} label="Privacy Policy" onClick={() => setIsSupportOpen(false)} />
+                  <DropdownLink href="/tos" icon={<Shield size={16} />} label="Terms of Service" onClick={() => setIsSupportOpen(false)} />
                   <DropdownLink href="/coming-soon" icon={<Rocket size={16} />} label="Roadmap" onClick={() => setIsSupportOpen(false)} />
                   <DropdownLink href="/contact" icon={<MessageSquare size={16} />} label="Contact Staff" onClick={() => setIsSupportOpen(false)} />
                 </Dropdown>
@@ -250,68 +256,17 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               </div>
             </div>
 
-            {/* Mobile Menu Trigger Only */}
+            {/* Mobile Menu Trigger */}
             <button
-              className="xl:hidden p-2 text-foreground/70 hover:bg-muted rounded-lg ml-auto"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              type="button"
+              className="xl:hidden p-2 text-foreground/70 hover:bg-muted rounded-lg ml-auto relative z-[60]"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              aria-label="Toggle mobile menu"
             >
               <Menu size={24} />
             </button>
           </div>
 
-          {/* Mobile Navigation Menu */}
-                    {/* Mobile Navigation Menu */}
-          {isMobileMenuOpen && (
-            <div className="xl:hidden fixed top-20 left-0 right-0 bottom-0 z-[100] bg-background border-t border-border overflow-y-auto animate-in slide-in-from-top duration-300 shadow-2xl" ref={mobileMenuRef}>
-              <div className="flex flex-col gap-1 mt-2">
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Main</div>
-                <MobileNavLink href="/" icon={<Home size={18} />} label="Home" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/news" icon={<Info size={18} />} label="Game News" onClick={() => setIsMobileMenuOpen(false)} />
-                {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Kennel</div>
-                <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Breeding</div>
-                <MobileNavLink href="/breeding" icon={<Heart size={18} />} label="Breeding Center" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/stud-barn" icon={<Shield size={18} />} label="Stud Barn" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Shows</div>
-                <MobileNavLink href="/shows" icon={<Trophy size={18} />} label="Competitive Shows" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/quests" icon={<CheckSquare size={18} />} label="Quests & Achievements" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Shops</div>
-                <MobileNavLink href="/shop/adoption" icon={<Baby size={18} />} label="Foundation Adoption" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/supplies" icon={<Package size={18} />} label="Supplies & Feeds" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/staff" icon={<UserPlus size={18} />} label="Staff & Services" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/marketplace" icon={<Store size={18} />} label="Marketplace" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/shop/custom" icon={<Star size={18} />} label="Custom Foxes" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Community</div>
-                <MobileNavLink href="/forum" icon={<MessageSquare size={18} />} label="Forums" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/members" icon={<User size={18} />} label="Members" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="px-4 py-2 text-xs font-semibold text-foreground/40 uppercase tracking-wider border-t border-border mt-1">Support</div>
-                <MobileNavLink href="/help" icon={<HelpCircle size={18} />} label="Help Center" onClick={() => setIsMobileMenuOpen(false)} />
-                <MobileNavLink href="/faq" icon={<Info size={18} />} label="FAQ" onClick={() => setIsMobileMenuOpen(false)} />
-
-                <div className="mt-4 px-4 flex items-center justify-between text-[10px] text-foreground/40">
-                  <span className="flex items-center gap-1 font-mono">
-                    <Calendar size={12} /> Year {year}, {season}
-                  </span>
-                  {isAdmin && (
-                    <button
-                      onClick={() => advanceTime()}
-                      className="px-2 py-0.5 bg-primary rounded transition text-primary-foreground font-bold hover:bg-primary/80"
-                    >
-                      Next Season
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </header>
 
@@ -387,13 +342,15 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
 
             <div className="space-y-6">
               <h4 className="text-foreground font-folksy text-lg flex items-center gap-2 pb-3 border-b border-border">
-                Community
+                Support & Community
               </h4>
               <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
+                <li><Link href="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
+                <li><Link href="/faq" className="hover:text-primary transition-colors">Foundation Wiki</Link></li>
                 <li><Link href="/forum" className="hover:text-primary transition-colors">Discussion Forums</Link></li>
                 <li><Link href="/members" className="hover:text-primary transition-colors">Staff Directory</Link></li>
-                <li><Link href="/tos" className="hover:text-primary transition-colors">Terms of Policy</Link></li>
-                <li><Link href="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
+                <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/tos" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
@@ -414,7 +371,99 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
           </div>
         </div>
       </footer>
-      <CookieConsent />
+
+      {/* Mobile Navigation Menu Refined */}
+      {isMobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90] xl:hidden animate-in fade-in duration-300"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Right Side Drawer */}
+          <div
+            className="xl:hidden fixed top-0 right-0 bottom-0 w-[300px] z-[100] bg-background shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-border"
+            ref={mobileMenuRef}
+          >
+            {/* Drawer Header */}
+            <div className="h-20 flex items-center justify-between px-6 border-b border-border bg-muted/30">
+              <div className="flex flex-col">
+                <span className="text-xl font-folksy tracking-tight text-foreground">Menu</span>
+                <span className="text-[10px] font-black tracking-[0.2em] text-secondary uppercase opacity-70">Navigation</span>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 hover:bg-muted rounded-full transition-colors text-foreground/50 hover:text-foreground"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Menu Links */}
+            <div className="flex-1 overflow-y-auto py-4">
+              <div className="flex flex-col gap-1">
+                <div className="px-6 py-2 text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">Quick Links</div>
+                <MobileNavLink href="/" icon={<Home size={18} />} label="Home" onClick={() => setIsMobileMenuOpen(false)} />
+                <MobileNavLink href="/news" icon={<Info size={18} />} label="Game News" onClick={() => setIsMobileMenuOpen(false)} />
+                {isAdmin && <MobileNavLink href="/admin" icon={<Settings size={18} />} label="Admin Panel" onClick={() => setIsMobileMenuOpen(false)} />}
+
+                <MobileCategory label="Kennel" icon={<Home size={18} />} isOpen={isKennelOpen} setIsOpen={setIsKennelOpen}>
+                  <MobileNavLink href="/kennel" icon={<PawPrint size={18} />} label="My Foxes" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/inventory" icon={<Package size={18} />} label="Inventory" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+
+                <MobileCategory label="Breeding" icon={<Heart size={18} />} isOpen={isBreedingOpen} setIsOpen={setIsBreedingOpen}>
+                  <MobileNavLink href="/breeding" icon={<Heart size={18} />} label="Breeding Center" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/stud-barn" icon={<Shield size={18} />} label="Stud Barn" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+
+                <MobileCategory label="Shows" icon={<Trophy size={18} />} isOpen={isShowsOpen} setIsOpen={setIsShowsOpen}>
+                  <MobileNavLink href="/shows" icon={<Trophy size={18} />} label="Competitive Shows" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/quests" icon={<CheckSquare size={18} />} label="Quests & Achievements" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+
+                <MobileCategory label="Shops" icon={<ShoppingBag size={18} />} isOpen={isShopsOpen} setIsOpen={setIsShopsOpen}>
+                  <MobileNavLink href="/shop/adoption" icon={<Baby size={18} />} label="Foundation Adoption" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/shop/supplies" icon={<Package size={18} />} label="Supplies & Feeds" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/shop/staff" icon={<UserPlus size={18} />} label="Staff & Services" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/shop/marketplace" icon={<Store size={18} />} label="Marketplace" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/shop/custom" icon={<Star size={18} />} label="Custom Foxes" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+
+                <MobileCategory label="Community" icon={<Users size={18} />} isOpen={isCommunityOpen} setIsOpen={setIsCommunityOpen}>
+                  <MobileNavLink href="/forum" icon={<MessageSquare size={18} />} label="Forums" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/members" icon={<User size={18} />} label="Members" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+
+                <MobileCategory label="Support" icon={<LifeBuoy size={18} />} isOpen={isSupportOpen} setIsOpen={setIsSupportOpen}>
+                  <MobileNavLink href="/help" icon={<HelpCircle size={18} />} label="Help Center" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/faq" icon={<Info size={18} />} label="FAQ" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/privacy" icon={<Shield size={18} />} label="Privacy Policy" onClick={() => setIsMobileMenuOpen(false)} />
+                  <MobileNavLink href="/tos" icon={<Shield size={18} />} label="Terms of Service" onClick={() => setIsMobileMenuOpen(false)} />
+                </MobileCategory>
+              </div>
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="p-6 bg-muted/30 border-t border-border mt-auto">
+              <div className="flex items-center justify-between text-[10px] text-foreground/50 font-black uppercase tracking-widest">
+                <span className="flex items-center gap-2">
+                  <Calendar size={12} className="text-secondary" /> Year {year}, {season}
+                </span>
+                {isAdmin && (
+                  <button
+                    onClick={() => advanceTime()}
+                    className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-lg shadow-primary/20"
+                  >
+                    Advance
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -456,15 +505,37 @@ function DropdownLink({ href, icon, label, onClick }: { href: string; icon: Reac
   );
 }
 
+function MobileCategory({ label, icon, isOpen, setIsOpen, children }: { label: string; icon: React.ReactNode; isOpen: boolean; setIsOpen: (v: boolean) => void; children: React.ReactNode }) {
+  return (
+    <div className="border-t border-border">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-4 text-xs font-black uppercase tracking-widest text-foreground/70 hover:bg-muted transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          {icon}
+          <span>{label}</span>
+        </div>
+        <ChevronDown size={14} className={cn("transition-transform duration-200", isOpen ? "rotate-180" : "")} />
+      </button>
+      {isOpen && (
+        <div className="bg-muted/30 pb-2">
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function MobileNavLink({ href, icon, label, onClick }: { href: string; icon: React.ReactNode; label: string; onClick: () => void }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors text-foreground/80 hover:text-primary"
+      className="flex items-center gap-3 px-8 py-3 rounded-lg hover:bg-muted transition-colors text-foreground/80 hover:text-primary"
     >
       {icon}
-      <span className="font-medium">{label}</span>
+      <span className="text-xs font-bold uppercase tracking-wide">{label}</span>
     </Link>
   );
 }

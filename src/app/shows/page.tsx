@@ -21,7 +21,7 @@ export default function ShowsPage() {
     addShow, removeShow, updateShow, enterFoxInShow, runShows, generateSeasonalShows
   } = useGameStore();
 
-  const [activeTab, setActiveTab] = useState<'available' | 'amateur' | 'history' | 'manage'>('available');
+  const [activeTab, setActiveTab] = useState<'available' | 'amateur' | 'altered' | 'history' | 'manage'>('available');
   const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -35,11 +35,14 @@ export default function ShowsPage() {
 
   const filteredShows = shows.filter(show => {
     const isAmateur = show.level.startsWith("Amateur");
+    const isAltered = show.level.startsWith("Altered");
+
     if (activeTab === 'amateur' && !isAmateur) return false;
-    if (activeTab === 'available' && isAmateur) return false;
+    if (activeTab === 'altered' && !isAltered) return false;
+    if (activeTab === 'available' && (isAmateur || isAltered)) return false;
 
     return show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-           show.type.toLowerCase().includes(searchQuery.toLowerCase());
+      show.type.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const selectedShow = shows.find(s => s.id === selectedShowId);
@@ -87,7 +90,7 @@ export default function ShowsPage() {
               Year {year} • {season}
             </Badge>
             {isAmateurEligible && (
-               <Badge variant="outline" className="bg-secondary/5 text-secondary border-secondary/20 font-black px-3 py-1 uppercase tracking-widest text-[10px]">
+              <Badge variant="outline" className="bg-secondary/5 text-secondary border-secondary/20 font-black px-3 py-1 uppercase tracking-widest text-[10px]">
                 Amateur Qualified
               </Badge>
             )}
@@ -107,13 +110,14 @@ export default function ShowsPage() {
             {[
               { id: 'available', label: 'Pro Circuit', icon: Trophy },
               { id: 'amateur', label: 'Amateur Arena', icon: Users, disabled: !isAmateurEligible },
+              { id: 'altered', label: 'Altered Arena', icon: Sparkles },
               { id: 'history', label: 'Recent Results', icon: History },
               { id: 'manage', label: 'Admin: Manage', icon: Settings, adminOnly: true },
             ].map(tab => (
               (tab.adminOnly ? isAdmin : true) && (
                 <button
                   key={tab.id}
-                  onClick={() => { setActiveTab(tab.id as 'amateur' | 'junior' | 'open' | 'senior' | 'altered' | 'history' | 'manage'); setSelectedShowId(null); }}
+                  onClick={() => { setActiveTab(tab.id as 'available' | 'amateur' | 'altered' | 'history' | 'manage'); setSelectedShowId(null); }}
                   disabled={tab.disabled}
                   className={cn(
                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all",
@@ -162,22 +166,22 @@ export default function ShowsPage() {
                             </div>
 
                             {res.breakdown && (
-                               <div className="hidden group-hover:grid grid-cols-3 gap-1 px-7 py-2 bg-muted/20 rounded-lg animate-in fade-in slide-in-from-top-1 duration-300">
-                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Base: <span className="text-foreground">{res.breakdown.base}</span></div>
-                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Groom: <span className="text-foreground">+{res.breakdown.grooming}</span></div>
-                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Train: <span className="text-foreground">+{res.breakdown.training}</span></div>
-                                  <div className="text-[8px] font-black uppercase text-muted-foreground/60">Luck: <span className="text-foreground">+{res.breakdown.luck}</span></div>
-                                  {res.breakdown.veterinary > 0 && <div className="text-[8px] font-black uppercase text-muted-foreground/60">Vet: <span className="text-foreground">+{res.breakdown.veterinary}</span></div>}
-                                  {res.breakdown.penalties < 0 && <div className="text-[8px] font-black uppercase text-destructive">Penalty: <span className="text-destructive">{res.breakdown.penalties}</span></div>}
-                               </div>
+                              <div className="hidden group-hover:grid grid-cols-3 gap-1 px-7 py-2 bg-muted/20 rounded-lg animate-in fade-in slide-in-from-top-1 duration-300">
+                                <div className="text-[8px] font-black uppercase text-muted-foreground/60">Base: <span className="text-foreground">{res.breakdown.base}</span></div>
+                                <div className="text-[8px] font-black uppercase text-muted-foreground/60">Groom: <span className="text-foreground">+{res.breakdown.grooming}</span></div>
+                                <div className="text-[8px] font-black uppercase text-muted-foreground/60">Train: <span className="text-foreground">+{res.breakdown.training}</span></div>
+                                <div className="text-[8px] font-black uppercase text-muted-foreground/60">Luck: <span className="text-foreground">+{res.breakdown.luck}</span></div>
+                                {res.breakdown.veterinary > 0 && <div className="text-[8px] font-black uppercase text-muted-foreground/60">Vet: <span className="text-foreground">+{res.breakdown.veterinary}</span></div>}
+                                {res.breakdown.penalties < 0 && <div className="text-[8px] font-black uppercase text-destructive">Penalty: <span className="text-destructive">{res.breakdown.penalties}</span></div>}
+                              </div>
                             )}
                           </div>
                         ))}
                         {report.bestInShowFoxId && (
-                           <div className="pt-3 mt-3 border-t border-border flex items-center justify-between">
-                              <span className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-1"><Trophy size={12}/> Best In Show</span>
-                              <span className="text-xs font-black italic">{foxes[report.bestInShowFoxId]?.name}</span>
-                           </div>
+                          <div className="pt-3 mt-3 border-t border-border flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase text-primary tracking-widest flex items-center gap-1"><Trophy size={12} /> Best In Show</span>
+                            <span className="text-xs font-black italic">{foxes[report.bestInShowFoxId]?.name}</span>
+                          </div>
                         )}
                       </CardContent>
                     </Card>
@@ -212,7 +216,7 @@ export default function ShowsPage() {
                         onChange={(e) => setNewShowLevel(e.target.value as ShowLevel)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
-                        {["Junior", "Open", "Senior", "Championship", "Amateur Junior", "Amateur Open", "Amateur Senior"].map(l => (
+                        {["Junior", "Open", "Senior", "Championship", "Amateur Junior", "Amateur Open", "Amateur Senior", "Altered Junior", "Altered Open", "Altered Senior"].map(l => (
                           <option key={l} value={l}>{l}</option>
                         ))}
                       </select>
@@ -224,7 +228,7 @@ export default function ShowsPage() {
                         onChange={(e) => setNewShowClass(e.target.value as ShowClass)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
-                        {["Best Juvenile Dog", "Best Juvenile Vixen", "Best Adult Dog", "Best Adult Vixen", "Red Specialty", "Silver Specialty", "Gold Specialty", "Cross Specialty", "Exotic Specialty"].map(c => (
+                        {["Best Juvenile Dog", "Best Juvenile Vixen", "Best Adult Dog", "Best Adult Vixen", "Red Specialty", "Silver Specialty", "Gold Specialty", "Cross Specialty", "Exotic Specialty", "White Marked Specialty"].map(c => (
                           <option key={c} value={c}>{c}</option>
                         ))}
                       </select>
@@ -242,33 +246,33 @@ export default function ShowsPage() {
               </Card>
 
               <div className="space-y-4">
-                 <div className="flex justify-between items-center">
-                    <h3 className="text-2xl font-black italic text-foreground tracking-tight">Active Shows</h3>
-                    <Button variant="outline" onClick={generateSeasonalShows} size="sm" className="font-black uppercase tracking-widest text-[10px] h-8 rounded-lg border-primary/20 text-primary">Reset to Defaults</Button>
-                 </div>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {shows.map(s => (
-                      <Card key={s.id} className="folk-card border-border group">
-                        <div className="p-4 flex items-center justify-between">
-                           <div>
-                              <p className="font-bold text-foreground">{s.name}</p>
-                              <div className="flex gap-2 mt-1">
-                                 <Badge variant="outline" className="text-[8px] uppercase">{s.level}</Badge>
-                                 <Badge variant="outline" className="text-[8px] uppercase">{s.type}</Badge>
-                              </div>
-                           </div>
-                           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Button variant="ghost" size="icon" onClick={() => handleEditShow(s)} className="text-primary">
-                                 <Edit2 size={16} />
-                              </Button>
-                              <Button variant="ghost" size="icon" onClick={() => removeShow(s.id)} className="text-destructive">
-                                 <Trash2 size={16} />
-                              </Button>
-                           </div>
+                <div className="flex justify-between items-center">
+                  <h3 className="text-2xl font-black italic text-foreground tracking-tight">Active Shows</h3>
+                  <Button variant="outline" onClick={generateSeasonalShows} size="sm" className="font-black uppercase tracking-widest text-[10px] h-8 rounded-lg border-primary/20 text-primary">Reset to Defaults</Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {shows.map(s => (
+                    <Card key={s.id} className="folk-card border-border group">
+                      <div className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-bold text-foreground">{s.name}</p>
+                          <div className="flex gap-2 mt-1">
+                            <Badge variant="outline" className="text-[8px] uppercase">{s.level}</Badge>
+                            <Badge variant="outline" className="text-[8px] uppercase">{s.type}</Badge>
+                          </div>
                         </div>
-                      </Card>
-                    ))}
-                 </div>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="icon" onClick={() => handleEditShow(s)} className="text-primary">
+                            <Edit2 size={16} />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={() => removeShow(s.id)} className="text-destructive">
+                            <Trash2 size={16} />
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -323,14 +327,14 @@ export default function ShowsPage() {
 
               <div className="xl:col-span-4">
                 {selectedShow ? (
-                  <Card className="folk-card border-2 border-primary/20 shadow-xl sticky top-24">
+                  <Card className="folk-card border-2 border-primary/20 shadow-xl sticky top-24 !overflow-visible">
                     <CardHeader className="bg-primary/5 border-b border-primary/10">
                       <CardTitle className="text-sm font-black uppercase tracking-widest text-primary">Enter {selectedShow.type}</CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 space-y-4">
                       <div className="space-y-2">
                         {eligibleFoxes.length === 0 ? (
-                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.<br/>Foxes must be named, fed, healthy, and not retired.</p>
+                          <p className="text-xs text-muted-foreground italic p-4 bg-muted/30 rounded-xl border border-dashed border-border text-center leading-relaxed">No qualified foxes found for this show.<br />Foxes must be named, fed, healthy, and not retired.</p>
                         ) : (
                           <div className="flex flex-col gap-2">
                             {eligibleFoxes.map(fox => {

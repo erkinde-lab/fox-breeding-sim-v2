@@ -1,9 +1,9 @@
 import { Fox, getActiveBoosts, isHungry, isGroomed, isTrained } from './genetics';
 
-export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior";
-export type ShowClass = 
-    'Best Juvenile Dog' | 'Best Juvenile Vixen' | 'Best Adult Dog' | 'Best Adult Vixen' |
-    'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty';
+export type ShowLevel = "Junior" | "Open" | "Senior" | "Championship" | "Amateur Junior" | "Amateur Open" | "Amateur Senior" | "Altered Junior" | "Altered Open" | "Altered Senior";
+export type ShowClass =
+  'Best Juvenile Dog' | 'Best Juvenile Vixen' | 'Best Adult Dog' | 'Best Adult Vixen' |
+  'Red Specialty' | 'Silver Specialty' | 'Gold Specialty' | 'Cross Specialty' | 'Exotic Specialty' | 'White Marked Specialty';
 
 export interface ScoreBreakdown {
   base: number;
@@ -21,6 +21,7 @@ export interface ShowResult {
   pointsAwarded: number;
   class: ShowClass;
   breakdown?: ScoreBreakdown;
+  isMajor?: boolean;
 }
 
 export interface ShowReport {
@@ -35,7 +36,7 @@ export function calculateScore(fox: Fox, hasGroomer: boolean = false, hasTrainer
   const { stats } = fox;
   const activeBoosts = getActiveBoosts(fox);
   const hungry = isHungry(fox);
-  
+
   let groomingBonus = 0;
   let trainingBonus = 0;
   let vetBonus = 0;
@@ -55,13 +56,13 @@ export function calculateScore(fox: Fox, hasGroomer: boolean = false, hasTrainer
 
   if (isGroomed(fox)) groomingBonus += 5;
   if (isTrained(fox)) trainingBonus += 6; // 3 temp + 3 presence
-  
+
   if (hasVeterinarian) vetBonus += 5;
 
   if (hungry) penalties -= 40; // -5 across all 8 stats
 
   const luckBonus = Math.floor(Math.random() * stats.luck) + 1;
-  
+
   const total = Math.max(0, rawBase + groomingBonus + trainingBonus + vetBonus + penalties + luckBonus);
 
   return {
@@ -79,7 +80,7 @@ export function calculateScore(fox: Fox, hasGroomer: boolean = false, hasTrainer
 
 export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: string, hasGroomer: boolean = false, hasTrainer: boolean = false, hasVeterinarian: boolean = false): ShowReport {
   const results: ShowResult[] = [];
-  
+
   const classes: ShowClass[] = [
     'Best Juvenile Dog',
     'Best Juvenile Vixen',
@@ -89,7 +90,8 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
     'Silver Specialty',
     'Gold Specialty',
     'Cross Specialty',
-    'Exotic Specialty'
+    'Exotic Specialty',
+    'White Marked Specialty'
   ];
 
   let bestInShowScore = -1;
@@ -98,40 +100,44 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
   classes.forEach(cls => {
     const eligibleFoxes = foxes.filter(f => {
       if (f.isRetired || f.healthIssues.length > 0 || isHungry(f)) return false;
-      
+
       const isDog = f.gender === 'Dog';
       const isNewborn = f.age === 0 && (season === 'Spring' || season === 'Summer');
       const isJuvenile = f.age === 0 && !isNewborn;
-      
+
       if (cls === 'Best Juvenile Dog') return isDog && isJuvenile;
       if (cls === 'Best Juvenile Vixen') return !isDog && isJuvenile;
       if (cls === 'Best Adult Dog') return isDog && !isJuvenile;
       if (cls === 'Best Adult Vixen') return !isDog && !isJuvenile;
-      
+
       const a = [...f.genotype.A].sort().join('');
       const b = [...f.genotype.B].sort().join('');
-      
+
       if (cls === 'Red Specialty') return a === 'AA' && b === 'BB';
       if (cls === 'Silver Specialty') return a === 'aa' || b === 'bb' || (a === 'Aa' && b === 'bb');
       if (cls === 'Gold Specialty') return a === 'AA' && b === 'Bb';
       if (cls === 'Cross Specialty') return a === 'Aa' && b !== 'bb';
       if (cls === 'Exotic Specialty') {
-          const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
-          return loci.some(l => {
-              const alleles = f.genotype[l];
-              if (!alleles) return false;
-              return alleles.some(al => al.toLowerCase() === al);
-          });
+        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+        return loci.some(l => {
+          const alleles = f.genotype[l];
+          if (!alleles) return false;
+          return alleles.some(al => al.toLowerCase() === al);
+        });
+      }
+      if (cls === 'White Marked Specialty') {
+        const alleles = f.genotype.W || ['w', 'w'];
+        return alleles.some(a => ['W', 'WM', 'WG', 'WP'].includes(a));
       }
       return false;
     });
 
     const finalEligible = eligibleFoxes.filter(f => {
-        if (level.startsWith("Amateur") && f.age === 0) return false;
-        const baseLevel = level.replace("Amateur ", "");
-        if (baseLevel === "Junior") return f.pointsLifetime < 5;
-        if (baseLevel === "Senior") return f.pointsLifetime > 10;
-        return true;
+      if (level.startsWith("Amateur") && f.age === 0) return false;
+      const baseLevel = level.replace("Amateur ", "");
+      if (baseLevel === "Junior") return f.pointsLifetime < 5;
+      if (baseLevel === "Senior") return f.pointsLifetime > 10;
+      return true;
     });
 
     const scored = finalEligible.map(f => {
@@ -188,22 +194,31 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
     if (showClass === 'Gold Specialty') return a === 'AA' && b === 'Bb';
     if (showClass === 'Cross Specialty') return a === 'Aa' && b !== 'bb';
     if (showClass === 'Exotic Specialty') {
-        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
-        return loci.some(l => {
-            const alleles = f.genotype[l];
-            if (!alleles) return false;
-            return alleles.some(al => al.toLowerCase() === al);
-        });
+      const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+      return loci.some(l => {
+        const alleles = f.genotype[l];
+        if (!alleles) return false;
+        return alleles.some(al => al.toLowerCase() === al);
+      });
+    }
+    if (showClass === 'White Marked Specialty') {
+      const alleles = f.genotype.W || ['w', 'w'];
+      return alleles.some(a => ['W', 'WM', 'WG', 'WP'].includes(a));
     }
     return false;
   });
 
   const finalEligible = eligibleFoxes.filter(f => {
-      if (level.startsWith("Amateur") && f.age === 0) return false;
-      const baseLevel = level.replace("Amateur ", "");
-      if (baseLevel === "Junior") return f.pointsLifetime < 5;
-      if (baseLevel === "Senior") return f.pointsLifetime > 10;
-      return true;
+    // Strict Altered vs Intact locking
+    const isShowAltered = level.startsWith("Altered");
+    if (isShowAltered && !f.isAltered) return false;
+    if (!isShowAltered && f.isAltered) return false;
+
+    if (level.startsWith("Amateur") && f.age === 0) return false;
+    const baseLevel = level.replace("Amateur ", "").replace("Altered ", "");
+    if (baseLevel === "Junior") return f.pointsLifetime < 5;
+    if (baseLevel === "Senior") return f.pointsLifetime > 10;
+    return true;
   });
 
   const scored = finalEligible.map(f => {
@@ -255,19 +270,28 @@ export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: Show
     else if (showClass === 'Gold Specialty') classMatch = a === 'AA' && b === 'Bb';
     else if (showClass === 'Cross Specialty') classMatch = a === 'Aa' && b !== 'bb';
     else if (showClass === 'Exotic Specialty') {
-        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
-        classMatch = loci.some(l => {
-            const alleles = fox.genotype[l];
-            if (!alleles) return false;
-            return alleles.some(al => al.toLowerCase() === al);
-        });
+      const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+      classMatch = loci.some(l => {
+        const alleles = fox.genotype[l];
+        if (!alleles) return false;
+        return alleles.some(al => al.toLowerCase() === al);
+      });
+    }
+    else if (showClass === 'White Marked Specialty') {
+      const wAlleles = fox.genotype.W || ['w', 'w'];
+      classMatch = wAlleles.some(a => ['W', 'WM', 'WG', 'WP'].includes(a));
     }
   }
 
   if (!classMatch) return false;
 
+  // Strict Altered vs Intact locking
+  const isShowAltered = level.startsWith("Altered");
+  if (isShowAltered && !fox.isAltered) return false;
+  if (!isShowAltered && fox.isAltered) return false;
+
   if (level.startsWith("Amateur") && fox.age === 0) return false;
-  const baseLevel = level.replace("Amateur ", "");
+  const baseLevel = level.replace("Amateur ", "").replace("Altered ", "");
   if (baseLevel === "Junior") return fox.pointsLifetime < 5;
   if (baseLevel === "Senior") return fox.pointsLifetime > 10;
 

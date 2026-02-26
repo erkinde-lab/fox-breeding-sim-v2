@@ -56,7 +56,7 @@ export default function AdminPanel() {
       const stats = foxes[selectedFoxId].stats;
       const targetId = selectedFoxId;
       Promise.resolve().then(() => {
-        setModStats(stats as Stats);
+        setModStats(stats as any);
         lastSyncedId.current = targetId;
       });
     }
@@ -71,7 +71,7 @@ export default function AdminPanel() {
     } else {
       finalEyeColor = whiteMarkingEffect;
     }
-    
+
     const phenotypeName = getPhenotype(spawnGenotype, silverIntensity, finalEyeColor).name;
     adminSpawnFox(phenotypeName, spawnGender, spawnGenotype);
     showNotification({
@@ -167,7 +167,7 @@ export default function AdminPanel() {
                     <div>
                       <div className="font-black italic text-lg text-foreground tracking-tight">{member.name}</div>
                       <div className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-2">
-                         ID: {member.id} • Joined: {new Date(member.joined).toLocaleDateString()}
+                        ID: {member.id} • Joined: {new Date(member.joined).toLocaleDateString()}
 
                       </div>
                     </div>
@@ -177,13 +177,13 @@ export default function AdminPanel() {
                       <AlertTriangle size={14} className="text-amber-500" /> Warn
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => {
-                       showNotification({
-                         title: "Ban Member",
-                         message: `Are you sure you want to ban ${member.name}? This action is permanent.`,
-                         type: "error",
-                         confirmLabel: "Ban Member",
-                         onConfirm: () => banMember(member.id)
-                       });
+                      showNotification({
+                        title: "Ban Member",
+                        message: `Are you sure you want to ban ${member.name}? This action is permanent.`,
+                        type: "error",
+                        confirmLabel: "Ban Member",
+                        onConfirm: () => banMember(member.id)
+                      });
                     }} className="h-9 gap-2 font-black uppercase tracking-widest text-[9px] hover:bg-destructive hover:text-white">
                       <UserX size={14} /> Ban
                     </Button>

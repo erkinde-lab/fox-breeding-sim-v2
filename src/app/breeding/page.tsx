@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Heart, AlertCircle, Calculator, Lock } from 'lucide-react';
+import { FoxIllustration } from '@/components/FoxIllustration';
 
 export default function BreedingPage() {
   const { foxes, breedFoxes, season, inventory, hiredGeneticist, pregnancyList } = useGameStore();
@@ -18,8 +19,8 @@ export default function BreedingPage() {
   const hasGeneticist = hiredGeneticist;
 
   const foxList = Object.values(foxes);
-  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && f.age >= 2);
-  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
+  const dogs = foxList.filter(f => f.gender === 'Dog' && !f.isRetired && !f.isAltered && f.age >= 2);
+  const vixens = foxList.filter(f => f.gender === 'Vixen' && !f.isRetired && !f.isAltered && f.age >= 2);
 
   const handleBreed = () => {
     if (selectedDog && selectedVixen) {
@@ -27,7 +28,7 @@ export default function BreedingPage() {
         alert("You need to hire Geneticist staff member or purchase Breeding Calculator to access breeding insights!");
         return;
       }
-      
+
       breedFoxes(selectedDog, selectedVixen);
       setSelectedDog(null);
       setSelectedVixen(null);
@@ -138,8 +139,8 @@ export default function BreedingPage() {
                   className={cn(
                     "p-4 rounded-2xl border-2 transition-all duration-300 group flex items-center gap-4",
                     isServiced ? "opacity-50 grayscale cursor-not-allowed bg-muted/10 border-border" :
-                    selectedVixen === f.id ? "bg-card border-primary shadow-md -translate-x-1 cursor-pointer" :
-                    "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50 cursor-pointer"
+                      selectedVixen === f.id ? "bg-card border-primary shadow-md -translate-x-1 cursor-pointer" :
+                        "bg-muted/30 border-transparent hover:border-border hover:bg-muted/50 cursor-pointer"
                   )}
                 >
                   <div className="w-12 h-12 bg-background rounded-xl flex items-center justify-center shrink-0 border border-border/50">

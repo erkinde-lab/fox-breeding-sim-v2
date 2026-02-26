@@ -229,11 +229,16 @@ export interface Fox {
   pointsYear: number;
   pointsLifetime: number;
   parents: [string | null, string | null];
+  parentNames: [string | null, string | null];
   birthYear: number;
   coi: number;
   isAtStud: boolean;
   studFee: number;
   isNPC?: boolean;
+  isAltered?: boolean;
+  prefixTitle?: string;
+  bisWins?: number;
+  majors?: number;
   lastFed?: number; lastGroomed?: number; lastTrained?: number; isStillborn?: boolean;
   boosts?: Record<string, number>;
   preferredFeed?: string;
@@ -322,7 +327,7 @@ export function calculateCOI(foxIdOrSireId: string, foxes: Record<string, { pare
     damId = maybeDamId;
   } else {
     const fox = foxes[foxIdOrSireId];
-    if (!fox || !fox.parents[0] || !fox.parents[1]) return 0;
+    if (!fox || !fox.parents?.[0] || !fox.parents?.[1]) return 0;
     sireId = fox.parents[0];
     damId = fox.parents[1];
   }
@@ -333,8 +338,8 @@ export function calculateCOI(foxIdOrSireId: string, foxes: Record<string, { pare
     if (!f) return [currentPath.concat(id)];
 
     const paths: string[][] = [currentPath.concat(id)];
-    if (f.parents[0]) paths.push(...getPaths(f.parents[0], depth + 1, currentPath.concat(id)));
-    if (f.parents[1]) paths.push(...getPaths(f.parents[1], depth + 1, currentPath.concat(id)));
+    if (f.parents?.[0]) paths.push(...getPaths(f.parents[0], depth + 1, currentPath.concat(id)));
+    if (f.parents?.[1]) paths.push(...getPaths(f.parents[1], depth + 1, currentPath.concat(id)));
     return paths;
   };
 
@@ -391,6 +396,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     pointsYear: 0,
     pointsLifetime: 0,
     parents: data.parents ?? [null, null],
+    parentNames: data.parentNames ?? [null, null],
     birthYear: data.birthYear ?? 0,
     coi: data.coi ?? 0,
     isAtStud: data.isAtStud ?? false,
@@ -404,7 +410,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
 export function createFoundationalFox(random: () => number = Math.random, gender?: "Dog" | "Vixen"): Fox {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
-  
+
   const baseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'], B: ['B', 'B'] }, // Red
     { A: ['A', 'A'], B: ['B', 'b'] }, // Gold
@@ -452,18 +458,18 @@ export function createFoundationalFox(random: () => number = Math.random, gender
 export function createFoundationFoxCollection(random: () => number = Math.random): Fox[] {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
-  
+
   const redBaseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'] as [string, string], B: ['B', 'B'] as [string, string] }, // Red
     { A: ['A', 'A'] as [string, string], B: ['B', 'b'] as [string, string] }, // Gold
   ];
-  
+
   const crossGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'a'] as [string, string], B: ['B', 'B'] as [string, string] }, // Gold Cross
     { A: ['A', 'a'] as [string, string], B: ['B', 'b'] as [string, string] }, // Silver Cross
     { A: ['A', 'a'] as [string, string], B: ['b', 'b'] as [string, string] }, // Standard Silver
   ];
-  
+
   const otherGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'] as [string, string], B: ['b', 'b'] as [string, string] }, // Standard Silver
     { A: ['a', 'a'] as [string, string], B: ['B', 'B'] as [string, string] }, // Alaskan Silver
@@ -472,27 +478,27 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   ];
 
   const foxes: Fox[] = [];
-  
+
   // Rule 1: Ensure at least one red base fox
   const redBaseGenotype = redBaseGenotypes[Math.floor(safeRandom() * redBaseGenotypes.length)];
   foxes.push(createFoundationalFoxWithGenotype(redBaseGenotype, safeRandom));
-  
+
   // Rule 2: Ensure at least one cross fox
   const crossGenotype = crossGenotypes[Math.floor(safeRandom() * crossGenotypes.length)];
   foxes.push(createFoundationalFoxWithGenotype(crossGenotype, safeRandom));
-  
+
   // Generate remaining 4 foxes
   for (let i = 0; i < 4; i++) {
     const allGenotypes = [...redBaseGenotypes, ...crossGenotypes, ...otherGenotypes];
     const genotype = allGenotypes[Math.floor(safeRandom() * allGenotypes.length)];
     foxes.push(createFoundationalFoxWithGenotype(genotype, safeRandom));
   }
-  
+
   // Rule 3: Ensure only one black fox (intensity 1)
   const blackFoxIndices = foxes
     .map((fox, index) => ({ fox, index }))
     .filter(({ fox }) => fox.silverIntensity === 1);
-  
+
   // If more than one black fox, convert extras to intensity 2-5
   if (blackFoxIndices.length > 1) {
     for (let i = 1; i < blackFoxIndices.length; i++) {
@@ -500,19 +506,19 @@ export function createFoundationFoxCollection(random: () => number = Math.random
       foxes[index] = { ...foxes[index], silverIntensity: Math.floor(safeRandom() * 4) + 2 };
     }
   }
-  
+
   // Shuffle the array to randomize positions
   for (let i = foxes.length - 1; i > 0; i--) {
     const j = Math.floor(safeRandom() * (i + 1));
     [foxes[i], foxes[j]] = [foxes[j], foxes[i]];
   }
-  
+
   return foxes;
 }
 
 function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Dog" | "Vixen"): Fox {
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
-  
+
   const genotype = getInitialGenotype();
   Object.assign(genotype, baseGenotype);
 
@@ -639,11 +645,11 @@ export function getBaseEyeColors(genotype: Genotype, silverIntensity: number = 3
   const tempGenotype = { ...genotype };
   const W = tempGenotype.W || ['w', 'w'];
   const L = tempGenotype.L || ['l', 'l'];
-  
+
   // Temporarily remove W and L to get base pelt
   delete tempGenotype.W;
   delete tempGenotype.L;
-  
+
   const phenotype = getPhenotype(tempGenotype, silverIntensity);
   let eyePoolName = phenotype.baseColor === "Albino" ? "Albino" : phenotype.baseColor;
   if (eyePoolName.startsWith("Pearl Amber")) eyePoolName = "Pearl Amber";
@@ -654,45 +660,45 @@ export function getBaseEyeColors(genotype: Genotype, silverIntensity: number = 3
 export function getWhiteMarkingOptions(genotype: Genotype): string[] {
   const W = genotype.W || ['w', 'w'];
   const L = genotype.L || ['l', 'l'];
-  
+
   const options: string[] = [];
-  
+
   // White marking options (W locus)
   if (W.some(a => a !== 'w')) {
     options.push("Blue", "Blue Heterochromia");
   }
-  
+
   // Leucistic options (L locus) - can have any base eye color
   if (L.some(a => a === 'l')) {
     // Leucistic foxes can have any eye color from their base pelt
     options.push("Any Base Color");
   }
-  
+
   return options;
 }
 
 export function getValidEyeColors(genotype: Genotype, silverIntensity: number = 3): string[] {
   const baseColors = getBaseEyeColors(genotype, silverIntensity);
   const whiteOptions = getWhiteMarkingOptions(genotype);
-  
+
   const W = genotype.W || ['w', 'w'];
   const L = genotype.L || ['l', 'l'];
-  
+
   // If no white markings or leucism, return base colors only
   if (!W.some(a => a !== 'w') && !L.some(a => a === 'l')) {
     return baseColors;
   }
-  
+
   // If has white markings but no leucism
   if (W.some(a => a !== 'w') && !L.some(a => a === 'l')) {
     return [...baseColors, "Blue", "Blue Heterochromia"];
   }
-  
+
   // If has leucism (with or without white markings)
   if (L.some(a => a === 'l')) {
     return baseColors; // Leucistic foxes can have any base eye color
   }
-  
+
   return baseColors;
 }
 
@@ -706,17 +712,17 @@ export function getEyeColorHex(eyeColor: string, baseColor?: string): string {
     'Blue': '#4169E1',
     'Red': '#DC143C',
   };
-  
+
   // Handle dynamic heterochromia
   if (eyeColor === 'Blue Heterochromia' && baseColor) {
     const baseHex = colorMap[baseColor] || '#8B4513';
     return `linear-gradient(45deg, #4169E1 50%, ${baseHex} 50%)`;
   }
-  
+
   if (eyeColor === 'Blue Heterochromia') {
     return 'linear-gradient(45deg, #4169E1 50%, #8B4513 50%)';
   }
-  
+
   return colorMap[eyeColor] || '#8B4513';
 }
 

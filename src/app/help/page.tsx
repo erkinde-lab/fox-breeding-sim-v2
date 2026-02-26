@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, AlertTriangle, Info } from 'lucide-react';
+import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, AlertTriangle, Info, Crown } from 'lucide-react';
 
 const SectionHeader = ({ icon: Icon, label }: { icon: React.ElementType; label: string }) => (
   <h2 className="text-2xl font-folksy text-foreground flex items-center gap-2" style={{ fontWeight: 400 }}>
@@ -31,14 +31,12 @@ const loci = [
     name: 'Agouti (A)',
     alleles: 'A (dominant) / a (recessive)',
     effect: 'Controls the base color distribution across the coat. A_ results in warmer base colors (Red, Gold). aa produces darker, less pigmented silver tones (Alaskan Silver). Combined with B, it determines which of the nine base color classes a fox falls into.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
   },
   {
     key: 'B',
     name: 'Black (B)',
     alleles: 'B (dominant) / b (recessive)',
     effect: 'Modifies intensity of the black pigment in the base color. BB results in deep black/red coats (Red or Alaskan Silver). bb dilutes black pigment, shifting toward standard silver tones. Works together with Agouti to build the base color grid.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
   },
   {
     key: 'C',
@@ -53,28 +51,26 @@ const loci = [
     name: 'Burgundy (G)',
     alleles: 'G (dominant) / g (recessive)',
     effect: 'gg produces a warm, reddish-brown dilution called Burgundy. When combined with Pearl (pp), it creates the Amber phenotype. With both Pearl and Mansfield Pearl (pp + ss), it produces Pearl Amber with distinctive green eyes.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
   },
   {
     key: 'P',
     name: 'Pearl (P)',
     alleles: 'P (dominant) / p (recessive)',
     effect: 'pp creates the Pearl phenotype — a soft, pale coat with reduced pigment intensity. Pearl interacts heavily with Burgundy and Mansfield Pearl to produce Amber, Sapphire, and Pearl Amber combinations. On a pure Red base, Pearl expression is masked.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
   },
   {
     key: 'SS',
     name: 'Mansfield Pearl (SS)',
     alleles: 'S (dominant) / s (recessive)',
-    effect: 'ss (homozygous) produces the Mansfield Pearl phenotype — a distinct pale/silvery dilution. Combined with Pearl, it produces Sapphire. With both Pearl and Burgundy, it creates Pearl Amber. Mansfield Pearl also suppresses Fire Factor expression.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
+    effect: 'ss (homozygous) produces the Mansfield Pearl phenotype — a distinct pale/silvery dilution. Combined with Pearl, it produces Sapphire. With both Pearl and Burgundy, it creates Pearl Amber. Mansfield Pearl also suppresses Fire Factor expression. Any color derived from the Mansfield Pearl gene (Sapphire, Pearl Amber, Mansfield Pearl itself) also carries this health burden.',
+    health: 'Foxes carrying ss are affected by Chédiak–Higashi Syndrome — a real condition that impairs immune function and causes abnormal pigment granule distribution (which produces the diluted coat). Affected foxes have increased susceptibility to infections. Females with ss have high-risk pregnancies due to a tendency for internal bleeding, and may require medical intervention to carry litters to term.',
+    healthSeverity: 'lethal',
   },
   {
     key: 'Fire',
     name: 'Fire Factor (Fire)',
     alleles: 'FI (dominant) / fi (recessive)',
     effect: 'fifi (homozygous) produces the Fire Factor — a striking orange-gold flush of color across the coat, most visible on silver and cross bases. The resulting phenotype depends on the base: Wildfire (Red), Golden Sunrise (Gold), Colicott (Alaskan Silver), Fire Cross (Cross bases). Fire is suppressed by Mansfield Pearl.',
-    health: 'Chediak-Hygashi syndrome: high risk of vixen dying if pregnant',
   },
   {
     key: 'W',
@@ -332,6 +328,10 @@ export default function HelpPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   When two foxes breed, each parent randomly contributes <em>one</em> of their two alleles at each locus to each kit. The Breeding Calculator simulates 1,000 trials to estimate likely phenotype outcomes and flag high-inbreeding risks.
                 </p>
+                <div className="flex gap-2 items-start p-3 rounded-xl border bg-muted/40 border-border">
+                  <Info size={14} className="text-muted-foreground shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground leading-relaxed"><strong className="text-foreground">A note on realism: </strong>This game aims to model fox genetics as accurately as possible. However, some coat colors are not yet fully understood in real-world research, so their underlying genetics have been reasonably simplified for playability. Where simplifications have been made, the visual result and general inheritance pattern are still grounded in observed phenotypes.</p>
+                </div>
               </div>
 
               <hr className="border-border" />

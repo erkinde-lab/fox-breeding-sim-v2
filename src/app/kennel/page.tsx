@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown } from 'lucide-react';
+import { Trophy, Info, LayoutDashboard, PawPrint, Utensils, Home, Sparkles, Dumbbell, Heart, ArrowRight, Search, ArrowUpDown, Activity as ActivityIcon } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
 import { Dashboard } from '@/components/Dashboard';
 import { Button } from '@/components/ui/button';
@@ -42,8 +42,8 @@ function KennelContent() {
             .filter(fox => {
                 const query = searchQuery.toLowerCase();
                 return fox.name.toLowerCase().includes(query) ||
-                       fox.phenotype.toLowerCase().includes(query) ||
-                       fox.id.toLowerCase().includes(query);
+                    fox.phenotype.toLowerCase().includes(query) ||
+                    fox.id.toLowerCase().includes(query);
             })
             .sort((a, b) => {
                 if (sortBy === 'name') return a.name.localeCompare(b.name);
@@ -118,11 +118,10 @@ function KennelContent() {
                             <button
                                 key={tab.id}
                                 onClick={() => handleTabChange(tab.id)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                                    activeTab === tab.id
-                                    ? "bg-card text-foreground shadow-sm border border-border/50"
-                                    : "text-muted-foreground hover:text-foreground"
-                                }`}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id
+                                        ? "bg-card text-foreground shadow-sm border border-border/50"
+                                        : "text-muted-foreground hover:text-foreground"
+                                    }`}
                             >
                                 <tab.icon size={14} />
                                 {tab.label}
@@ -168,9 +167,9 @@ function KennelGrid({ foxes, type, isFiltered, season }: { foxes: Fox[], type: s
                 </h3>
                 <p className="text-muted-foreground text-sm font-medium mt-1 mb-8">
                     {isFiltered ? "Try adjusting your search query." :
-                     type === 'adult' ? "You don't have any adult foxes yet." :
-                     type === 'young' ? "No kits in the nursery right now." :
-                     "The retirement home is empty."}
+                        type === 'adult' ? "You don't have any adult foxes yet." :
+                            type === 'young' ? "No kits in the nursery right now." :
+                                "The retirement home is empty."}
                 </p>
                 {!isFiltered && type !== 'retired' && (
                     <Link href={type === 'young' ? "/breeding" : "/shop/adoption"}>
@@ -215,6 +214,7 @@ function FoxCard({ fox, season }: { fox: Fox, season: string }) {
                             <Utensils size={12} className={hungry ? "text-muted-foreground/20" : "text-primary"} />
                             <Sparkles size={12} className={!groomed ? "text-muted-foreground/20" : "text-secondary"} />
                             <Dumbbell size={12} className={!trained ? "text-muted-foreground/20" : "text-orange-500"} />
+                            {fox.isAltered && <ActivityIcon size={12} className="text-purple-500" />}
                         </div>
                     </div>
 
