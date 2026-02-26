@@ -24,28 +24,30 @@ For a beginner admin, **Umami Cloud** is the recommended choice. It offers the b
 ### 1. Umami (Recommended)
 *   **Best for:** Simulation games with high interaction counts.
 *   **Why:** Umami Cloud starts at $9/month for 100k events. Unlike pageviews, "events" allow you to track specific actions (e.g., "Fox Bred") without extra cost.
-*   **Pros:** Clean interface, simple script installation, and if you ever want to hit $0 cost, the self-hosting setup is the most popular in the developer community.
+*   **Pros:** Clean interface, simple script installation, and if you ever want to hit $0 cost, the self-hosting setup is highly accessible.
 *   **Cons:** The free tier is limited (10k events), but the first paid tier is very affordable.
 
-### 2. Pirsch
-*   **Best for:** Those who want a European-hosted, lightweight solution.
-*   **Pros:** Very fast, strictly GDPR compliant, and scales its pricing smoothly ($6 for 10k, ~$12 for 100k).
-*   **Cons:** Interface is slightly more "technical" than Fathom or Umami. No easy "one-click" self-host path compared to Umami.
+---
 
-### 3. Fathom Analytics
-*   **Best for:** Maximum simplicity ("Set it and forget it").
-*   **Pros:** One of the pioneers of privacy-first analytics. Their dashboard is famous for being "one page" and impossible to get lost in.
-*   **Cons:** Most expensive starting point ($15/mo). No free tier.
+## How Free Self-Hosting Works (Umami)
 
-### 4. Simple Analytics
-*   **Best for:** Users who hate cookie banners.
-*   **Pros:** They are the "loudest" about privacy and have a very cool AI feature that lets you ask questions about your data (e.g., "Which page is most popular on Tuesdays?").
-*   **Cons:** Pricing is on the higher side ($15/mo). Free tier has a strict 30-day data history limit.
+If you want to keep your costs at **$0 forever**, you can "self-host" Umami. This means you run the software yourself rather than paying Umami to host it for you.
 
-### 5. Plausible
-*   **Best for:** Feature-rich tracking and open-source enthusiasts.
-*   **Pros:** Extremely powerful and well-regarded. Great for deep dives into where users are coming from.
-*   **Cons:** Most expensive for high-traffic sites ($19/mo for 100k views).
+### The "Beginner-Friendly" Free Path
+The most popular way to self-host Umami for free is by combining two services:
+
+1.  **Vercel (The Server):** You can deploy the Umami "code" to Vercel for free. Vercel is the same platform that often hosts Next.js sites (like this game).
+2.  **Supabase or Neon (The Database):** Umami needs a place to store its data. Both Supabase and Neon offer a "Free Tier" of PostgreSQL databases that are more than enough for a starting game.
+
+**Pros of Self-Hosting:**
+*   **Cost:** $0/month.
+*   **Control:** You own 100% of the data on your own database.
+*   **No Limits:** You aren't strictly capped by Umami's "event" limits (though you are limited by the database size, which usually fits millions of rows).
+
+**Cons of Self-Hosting:**
+*   **Setup Time:** It takes about 30–60 minutes to set up (connecting the database to Vercel).
+*   **Maintenance:** If Umami releases a big update, you have to click "Update" in Vercel yourself.
+*   **No Support:** You can't email Umami support if something breaks; you'll have to check their community forums.
 
 ---
 
@@ -53,7 +55,7 @@ For a beginner admin, **Umami Cloud** is the recommended choice. It offers the b
 
 1.  **Simulation Game Traffic:** In games like *Alacrity* or *DogDayzz*, users click much more than on a standard blog. 100,000 pageviews can be reached quickly. Umami's $9 tier handles this much cheaper than Plausible ($19) or Fathom ($15).
 2.  **Beginner Friendly:** The Umami dashboard uses clear graphs and simple lists. You don't need to be a data scientist to understand it.
-3.  **Growth Path:** If the game becomes a huge hit and costs start rising, Umami's "Self-Hosted" version is very easy to set up on services like Railway or Render for a flat $5/month or even free.
+3.  **Growth Path:** Start on the Cloud version for ease of use. If the game grows and the $9/month becomes $50/month, you can migrate your data to the **Free Self-Hosted** version anytime.
 
 ## Next Steps for the Admin
 
