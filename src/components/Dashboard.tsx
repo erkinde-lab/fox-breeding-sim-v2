@@ -93,10 +93,16 @@ export function Dashboard() {
           <CardContent>
             {whelpingReports.length > 0 ? (
               <div className="space-y-4">
-                <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest bg-muted/30 px-3 py-1 rounded-md inline-block">
-                  {whelpingReports[0].motherName} & {whelpingReports[0].fatherName}&apos;s Litter
-                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest bg-muted/30 px-3 py-1 rounded-md inline-block">
+                    {whelpingReports[0].motherName} & {whelpingReports[0].fatherName}&apos;s Litter
+                  </p>
+                  {whelpingReports[0].vixenDied && (
+                    <Badge variant="destructive" className="font-black text-[10px] uppercase tracking-widest px-3">Vixen Died during Whelping</Badge>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 gap-2">
+                  {whelpingReports[0].kits.length === 0 && !whelpingReports[0].vixenDied && <p className="text-xs italic text-muted-foreground">No kits were born.</p>}
                   {whelpingReports[0].kits.map((kit, i) => (
                     <div key={i} className="flex justify-between items-center p-4 bg-muted/20 hover:bg-muted/40 transition-colors rounded-2xl border border-border/50 group">
                       <span className="font-bold text-foreground italic group-hover:text-primary transition-colors">{kit.name}</span>

@@ -29,9 +29,9 @@ const generateNPCStuds = (year: number, season: string): Record<string, Fox> => 
   }
   return nextNpcStuds;
 };
-import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, getActiveBoosts, getPhenotype, LOCI, Genotype, Stats, Fox, getInitialGenotype, breed } from '@/lib/genetics';
+import { createFox, createFoundationalFox, createFoundationFoxCollection, calculateSilverIntensity, calculateCOI, generateStats, getInitialGenotype, getPhenotype, LOCI, Genotype, Stats, Fox, breed } from '@/lib/genetics';
 
-import { runShow, runSpecificShow, ShowReport, ShowLevel, ShowClass } from './showing';
+import { runSpecificShow, ShowReport, ShowLevel, ShowClass } from './showing';
 export interface Show { id: string; name: string; level: ShowLevel; type: ShowClass; entries: string[]; isRun: boolean; }
 
 
@@ -209,6 +209,7 @@ export interface WhelpingReport {
   motherName: string;
   fatherName: string;
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
+  vixenDied?: boolean;
 }
 
 interface GameState {
@@ -290,6 +291,9 @@ interface GameState {
   isDarkMode: boolean;
 
 
+  hasSeenTutorial: boolean;
+  tutorialStep: number | null;
+
 
   // Actions
 
@@ -338,6 +342,9 @@ interface GameState {
   addShow: (show: Show) => void;
   removeShow: (showId: string) => void;
   updateShow: (showId: string, updates: Partial<Show>) => void;
+
+  setTutorialStep: (step: number | null) => void;
+  completeTutorial: () => void;
 
   toggleAdminMode: () => void;
 
@@ -608,6 +615,9 @@ export const useGameStore = create<GameState>()(
       members: [],
 
       adminLogs: [],
+      hasSeenTutorial: false,
+      tutorialStep: null,
+
 
       isDarkMode: false,
 
@@ -615,6 +625,27 @@ export const useGameStore = create<GameState>()(
 
       checkAchievements: () => {
         const state = get();
+
+        // Apply titles to all foxes
+        const updatedFoxes = { ...state.foxes };
+        let changed = false;
+        Object.values(updatedFoxes).forEach(fox => {
+            const isAltered = !!fox.isAltered;
+            let newTitle = fox.prefixTitle;
+            if (fox.pointsLifetime >= 250 && (fox.bisWins || 0) >= 3) {
+                newTitle = isAltered ? "DAGCH" : "DGCH";
+            } else if (fox.pointsLifetime >= 100 && (fox.bisWins || 0) >= 1) {
+                newTitle = isAltered ? "AGCH" : "GCH";
+            } else if (fox.pointsLifetime >= 30 && (fox.majors || 0) >= 2) {
+                newTitle = isAltered ? "ACH" : "CH";
+            }
+            if (newTitle !== fox.prefixTitle) {
+                fox.prefixTitle = newTitle;
+                changed = true;
+            }
+        });
+        if (changed) set({ foxes: updatedFoxes });
+
         ACHIEVEMENTS.forEach((ach) => {
           if (!state.unlockedAchievements.includes(ach.id) && ach.condition(state)) {
             ach.reward();
@@ -643,6 +674,7 @@ export const useGameStore = create<GameState>()(
         const updatedFoxes = { ...state.foxes };
 
         const whelpingReports: WhelpingReport[] = [];
+        const newBreedingRecords: BreedingRecord[] = [];
 
         const nextPregnancyList: Pregnancy[] = [];
 
@@ -699,6 +731,13 @@ export const useGameStore = create<GameState>()(
 
             if (!mother) return;
 
+            const isMansfieldPearlVixen = mother.genotype.SS?.filter(x => x === 's').length === 2;
+            if (isMansfieldPearlVixen && Math.random() < 0.2) {
+                delete updatedFoxes[mother.id];
+                whelpingReports.push({ motherName: mother.name, fatherName: preg.fatherName, kits: [], vixenDied: true });
+                return;
+            }
+
             const kitCount = (typeof window !== 'undefined' ? Math.floor(Math.random() * 4) : 3) + 2;
 
             for (let i = 0; i < kitCount; i++) {
@@ -710,9 +749,13 @@ export const useGameStore = create<GameState>()(
                 kits.push(kitData);
                 historyKits.push({ name: kitData.name, phenotype: kitData.phenotype, isStillborn: true });
               } else {
+                const kitCOI = calculateCOI(preg.fatherId, updatedFoxes, preg.motherId);
+                const kitStats = generateStats(mother.stats, preg.fatherStats, kitCOI);
                 const kit = createFox({
                   parents: [preg.motherId, preg.fatherId],
                   genotype: kitGenotype,
+                  stats: kitStats,
+                  coi: kitCOI,
                   silverIntensity: calculateSilverIntensity(mother.silverIntensity, preg.fatherSilverIntensity),
                   age: 0,
                   birthYear: nextYear,
@@ -833,8 +876,7 @@ export const useGameStore = create<GameState>()(
 
       retireFox: (id) => set((state) => ({
         foxes: {
-          ...state.foxes,
-          [id]: { ...state.foxes[id], isRetired: true }
+          ...state.foxes, [id]: { ...state.foxes[id], isRetired: true }
         }
       })),
 
@@ -962,6 +1004,9 @@ export const useGameStore = create<GameState>()(
 
 
 
+      setTutorialStep: (step) => set({ tutorialStep: step }),
+      completeTutorial: () => set({ hasSeenTutorial: true, tutorialStep: null }),
+
       renameFox: (id, newName) => set((state) => {
         const allFoxes = [
           ...Object.values(state.foxes),
@@ -1034,72 +1079,33 @@ export const useGameStore = create<GameState>()(
 
         const { year, season } = get();
         set({ npcStuds: generateNPCStuds(year, season) });
-        const { foxes } = get();
+        const { members } = get();
 
         get().checkAdoptionReset();
 
-        if (Object.keys(foxes).length > 0) return;
+        // If it's a brand new game state (no members), initialize default settings
+        if (members.length === 0) {
+          const defaultMembers: Member[] = [
+            { id: '1', name: 'RedFoxMaster', level: 45, joined: 'Spring, Year 1', points: 12500, avatarColor: 'bg-orange-500', isBanned: false, warnings: [] },
+            { id: '2', name: 'SilverVixen', level: 38, joined: 'Summer, Year 1', points: 9800, avatarColor: 'bg-slate-400', isBanned: false, warnings: [] },
+            { id: '3', name: 'ArcticBreeder', level: 32, joined: 'Autumn, Year 1', points: 7200, avatarColor: 'bg-blue-100', isBanned: false, warnings: [] },
+            { id: '4', name: 'CrossFoxExpert', level: 29, joined: 'Winter, Year 1', points: 6500, avatarColor: 'bg-amber-700', isBanned: false, warnings: [] },
+            { id: '5', name: 'GeneticsGuru', level: 25, joined: 'Spring, Year 2', points: 5100, avatarColor: 'bg-purple-500', isBanned: false, warnings: [] },
+          ];
 
+          set({
+            foxes: {},
+            gold: 10000,
+            gems: 100,
+            members: defaultMembers,
+            hasSeenTutorial: false,
+            tutorialStep: 0
+          });
 
-
-        const defaultMembers: Member[] = [
-
-          { id: '1', name: 'RedFoxMaster', level: 45, joined: 'Spring, Year 1', points: 12500, avatarColor: 'bg-orange-500', isBanned: false, warnings: [] },
-
-          { id: '2', name: 'SilverVixen', level: 38, joined: 'Summer, Year 1', points: 9800, avatarColor: 'bg-slate-400', isBanned: false, warnings: [] },
-
-          { id: '3', name: 'ArcticBreeder', level: 32, joined: 'Autumn, Year 1', points: 7200, avatarColor: 'bg-blue-100', isBanned: false, warnings: [] },
-
-          { id: '4', name: 'CrossFoxExpert', level: 29, joined: 'Winter, Year 1', points: 6500, avatarColor: 'bg-amber-700', isBanned: false, warnings: [] },
-
-          { id: '5', name: 'GeneticsGuru', level: 25, joined: 'Spring, Year 2', points: 5100, avatarColor: 'bg-purple-500', isBanned: false, warnings: [] },
-
-        ];
-
-
-
-        const starterStats = () => ({
-
-          head: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          topline: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          forequarters: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          hindquarters: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          tail: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          coatQuality: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          temperament: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          presence: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          luck: (typeof window !== 'undefined' ? Math.floor(Math.random() * 15) : 10) + 5,
-
-          fertility: (typeof window !== 'undefined' ? Math.floor(Math.random() * 50) : 40) + 25,
-
-        });
-
-
-
-        const dogGenotype = getInitialGenotype();
-
-        const dog = createFox({ name: 'Starter Dog', gender: 'Dog', genotype: dogGenotype, stats: starterStats() });
-
-
-
-        const vixenGenotype = getInitialGenotype();
-
-        const vixen = createFox({ name: 'Starter Vixen', gender: 'Vixen', genotype: vixenGenotype, stats: starterStats() });
-
-
-
-        set({ foxes: { [dog.id]: dog, [vixen.id]: vixen }, gold: 10000, gems: 100, members: defaultMembers });
-
-        get().advanceTime();
-
+          if (year === 1 && season === 'Spring') {
+            get().advanceTime();
+          }
+        }
       },
 
 
@@ -1230,9 +1236,7 @@ export const useGameStore = create<GameState>()(
 
           foxes: {
 
-            ...state.foxes,
-
-            [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
+            ...state.foxes, [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee }
 
           }
 
@@ -1334,7 +1338,7 @@ export const useGameStore = create<GameState>()(
 
       feedAllFoxes: () => {
 
-        const { foxes, hiredNutritionist } = get();
+        const { hiredNutritionist } = get();
 
         if (!hiredNutritionist) return;
 
@@ -1359,7 +1363,7 @@ export const useGameStore = create<GameState>()(
       })),
 
       groomAllFoxes: () => {
-        const { foxes, hiredGroomer } = get();
+        const { hiredGroomer } = get();
         if (!hiredGroomer) return;
         const updatedFoxes = { ...foxes };
         Object.keys(updatedFoxes).forEach(id => {
@@ -1369,7 +1373,7 @@ export const useGameStore = create<GameState>()(
       },
 
       trainAllFoxes: () => {
-        const { foxes, hiredTrainer } = get();
+        const { hiredTrainer } = get();
         if (!hiredTrainer) return;
         const updatedFoxes = { ...foxes };
         Object.keys(updatedFoxes).forEach(id => {
@@ -1572,7 +1576,7 @@ export const useGameStore = create<GameState>()(
         )
       })),
             runShows: () => {
-        const { shows, foxes, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
+        const { foxes, shows, year, season, showConfig, hiredGroomer, hiredTrainer, hiredVeterinarian } = get();
         const newShowReports: ShowReport[] = [];
         let newGold = get().gold;
         let newBisWins = get().bisWins;
@@ -1598,6 +1602,7 @@ export const useGameStore = create<GameState>()(
             if (fox) {
               fox.pointsYear += res.pointsAwarded;
               fox.pointsLifetime += res.pointsAwarded;
+              if (res.isMajor) fox.majors = (fox.majors || 0) + 1;
               newTotalPoints += res.pointsAwarded;
               if (res.place === 1) {
                 newGold += config.first;
@@ -1606,6 +1611,16 @@ export const useGameStore = create<GameState>()(
                 if ( (show.level === 'Senior' || show.level === 'Altered Senior') && !newSeniorWinners.includes(fox.id)) {
                   newSeniorWinners.push(fox.id);
                 }
+              }
+
+              // Apply prefix titles
+              const isAltered = !!fox.isAltered;
+              if (fox.pointsLifetime >= 250 && (fox.bisWins || 0) >= 3) {
+                fox.prefixTitle = isAltered ? "DAGCH" : "DGCH";
+              } else if (fox.pointsLifetime >= 100 && (fox.bisWins || 0) >= 1) {
+                fox.prefixTitle = isAltered ? "AGCH" : "GCH";
+              } else if (fox.pointsLifetime >= 30 && (fox.majors || 0) >= 2) {
+                fox.prefixTitle = isAltered ? "ACH" : "CH";
               }
             }
           });
@@ -1619,6 +1634,16 @@ export const useGameStore = create<GameState>()(
               newTotalPoints += 5;
               newBisWins++;
               newGold += config.bis;
+
+              // Re-check prefix titles after BIS
+              const isAltered = !!bisFox.isAltered;
+              if (bisFox.pointsLifetime >= 250 && (bisFox.bisWins || 0) >= 3) {
+                bisFox.prefixTitle = isAltered ? "DAGCH" : "DGCH";
+              } else if (bisFox.pointsLifetime >= 100 && (bisFox.bisWins || 0) >= 1) {
+                bisFox.prefixTitle = isAltered ? "AGCH" : "GCH";
+              } else if (bisFox.pointsLifetime >= 30 && (bisFox.majors || 0) >= 2) {
+                bisFox.prefixTitle = isAltered ? "ACH" : "CH";
+              }
             }
           }
         });

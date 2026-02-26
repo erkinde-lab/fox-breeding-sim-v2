@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense, useMemo } from 'react';
+import React, { useState, Suspense, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useGameStore } from '@/lib/store';
 import Link from 'next/link';
@@ -19,21 +19,19 @@ function KennelContent() {
     const router = useRouter();
     const { foxes, kennelCapacity, expandKennel, season } = useGameStore();
 
-    const [activeTab, setActiveTab] = useState('dashboard');
+
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('id');
 
-    useEffect(() => {
-        const tab = searchParams.get('tab');
-        if (tab && ['dashboard', 'adult', 'young', 'retired'].includes(tab)) {
-            setActiveTab(tab);
-        } else {
-            setActiveTab('dashboard');
+    const tabParam = searchParams.get('tab');
+    const activeTab = useMemo(() => {
+        if (tabParam && ['dashboard', 'adult', 'young', 'retired', 'hof'].includes(tabParam)) {
+            return tabParam;
         }
-    }, [searchParams]);
+        return 'dashboard';
+    }, [tabParam]);
 
     const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
         router.push(`/kennel?tab=${tab}`, { scroll: false });
     };
 
