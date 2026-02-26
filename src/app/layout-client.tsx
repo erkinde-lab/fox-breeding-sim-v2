@@ -1,6 +1,7 @@
 'use client';
 import { cn } from '@/lib/utils';
 
+import { CookieConsent } from "@/components/CookieConsent";
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import { TutorialTour } from '@/components/TutorialTour';
@@ -402,12 +403,18 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               <span className="flex items-center gap-2 text-sagebrush"><Shield size={16} className="opacity-70" /> Verified Kennel System</span>
               <span className="opacity-50 border-l border-moab/20 pl-8">Build v2.4.1</span>
             </div>
-            <div className="opacity-50">
-              &copy; 2024 Red Fox Breeding Simulator.
+            <div className="flex flex-col items-center md:items-end gap-2 text-right">
+              <div className="opacity-50">
+                &copy; 2024 Red Fox Breeding Simulator.
+              </div>
+              <Link href="/privacy#do-not-sell" className="opacity-40 hover:opacity-100 hover:text-fire-600 transition-all uppercase tracking-widest text-[9px]">
+                Do Not Sell My Personal Information
+              </Link>
             </div>
           </div>
         </div>
       </footer>
+      <CookieConsent />
     </div>
   );
 }

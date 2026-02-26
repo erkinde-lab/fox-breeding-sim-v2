@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, Crown, AlertTriangle, Info } from 'lucide-react';
+import { HelpCircle, Book, Zap, Heart, Microscope, Trophy, AlertTriangle, Info } from 'lucide-react';
 
 const SectionHeader = ({ icon: Icon, label }: { icon: React.ElementType; label: string }) => (
   <h2 className="text-2xl font-folksy text-foreground flex items-center gap-2" style={{ fontWeight: 400 }}>
@@ -179,13 +179,12 @@ export default function HelpPage() {
               <InfoTile icon={Trophy} color="bg-primary/10 text-primary border-primary/20" title="How Shows Work">
                 Shows run automatically each season. Every fox you own is evaluated across 8 physical and behavioral traits. A composite score is calculated and compared against all other entrants. Placements earn <strong>Gold</strong> and contribute to your kennel reputation.
               </InfoTile>
-              <InfoTile icon={Trophy} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Circuits">
+              <InfoTile icon={Zap} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Classes">
                 <ul className="list-disc list-inside space-y-1 mt-1">
-                  <li><strong>Amateur Arena</strong>: For new players (Year 1 & 2 only). Restricts foxes to 0 lifetime points.</li>
-                  <li><strong>Junior Circuit</strong>: For foxes with 0–15 lifetime points.</li>
-                  <li><strong>Open Circuit</strong>: For foxes with 16–40 lifetime points.</li>
-                  <li><strong>Senior Circuit</strong>: For foxes with 41+ lifetime points. The premier circuit for earning titles.</li>
-                  <li><strong>Altered Arena</strong>: A dedicated space for spayed/neutered foxes, featuring all the same tiers.</li>
+                  <li><strong>Kits</strong> are not eligible to show — they must age into juveniles first.</li>
+                  <li><strong>Juvenile</strong> foxes compete in the Juvenile class.</li>
+                  <li><strong>Junior</strong> shows are for adult foxes that have earned fewer than 5 lifetime points.</li>
+                  <li>As foxes accumulate points they advance to <strong>Open</strong> and <strong>Champion</strong> classes, which offer higher payouts.</li>
                 </ul>
               </InfoTile>
               <InfoTile icon={Info} color="bg-muted text-muted-foreground border-border" title="Improving Show Performance">

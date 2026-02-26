@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Search, SlidersHorizontal, ShoppingBag, Coins, Diamond, User, ArrowLeftRight, Trash2, Edit2, Check, X } from 'lucide-react';
 import { FoxIllustration } from '@/components/FoxIllustration';
-import { getFormattedName } from '@/lib/genetics';
 
 export default function MarketplacePage() {
   const { marketListings, gold, gems, buyFromMarket, cancelListing, updateMarketListing } = useGameStore();
@@ -122,7 +121,7 @@ export default function MarketplacePage() {
                 <div className="flex justify-between items-center w-full">
                    <div className="flex-1 min-w-0">
                       <p className="font-bold text-foreground text-sm truncate uppercase tracking-tight italic">
-                        {l.type === 'fox' ? getFormattedName(l.foxData!) : l.targetId.replace(/-/g, ' ')}
+                        {l.type === 'fox' ? l.foxData?.name : l.targetId.replace(/-/g, ' ')}
                       </p>
                       {editingId === l.id ? (
                          <div className="flex items-center gap-2 mt-1">
@@ -193,7 +192,7 @@ function ListingCard({ listing, onAction, canAfford }: { listing: MarketListing,
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
             <h4 className="font-bold text-foreground truncate uppercase italic">
-              {isFox ? getFormattedName(listing.foxData!) : listing.targetId.replace(/-/g, ' ')}
+              {isFox ? listing.foxData!.name : listing.targetId.replace(/-/g, ' ')}
             </h4>
           </div>
           <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest truncate mb-2">
