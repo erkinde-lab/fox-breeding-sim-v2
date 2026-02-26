@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Shield, Eye, Lock, Globe, UserCheck, Mail } from 'lucide-react';
+import { Shield, Eye, Lock, Globe, UserCheck, Mail, Cookie } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,7 +29,26 @@ export default function PrivacyPage() {
               <ul className="space-y-2 list-disc pl-5">
                 <li><span className="font-bold">Account Data:</span> Email and username.</li>
                 <li><span className="font-bold">Transaction Data:</span> Payments via Stripe/PayPal (we do not store card numbers).</li>
-                <li><span className="font-bold">Usage Data:</span> Game actions and page views via [ANALYTICS_TOOL].</li>
+                <li><span className="font-bold">Usage Data:</span> We collect anonymous usage data (like page views and game actions) to improve your experience.</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="space-y-4">
+          <div className="flex items-center gap-3 text-earth-900">
+            <Cookie className="text-moss-600" size={24} />
+            <h2 className="text-2xl font-bold">2. Cookies & Analytics</h2>
+          </div>
+          <Card className="folk-card">
+            <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
+              <p>
+                We value your privacy and aim to be as transparent as possible. We use <span className="font-bold">Umami Analytics</span> to help us understand how players interact with the game.
+              </p>
+              <ul className="space-y-2 list-disc pl-5">
+                <li><span className="font-bold">No Cookies:</span> Umami does not use cookies and does not collect any personally identifiable information.</li>
+                <li><span className="font-bold">Privacy First:</span> All data is anonymized. We do not track you across other websites.</li>
+                <li><span className="font-bold">Compliance:</span> This setup is fully compliant with <span className="font-bold">GDPR</span>, <span className="font-bold">CCPA (CPRA)</span>, and other international privacy laws without requiring a cookie banner.</li>
               </ul>
             </CardContent>
           </Card>
@@ -38,7 +57,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Lock className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">2. How We Use Data</h2>
+            <h2 className="text-2xl font-bold">3. How We Use Data</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 space-y-2 text-earth-700">
@@ -56,7 +75,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Globe className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">3. Your Rights (GDPR & CCPA)</h2>
+            <h2 className="text-2xl font-bold">4. Your Rights (GDPR & CCPA)</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 text-earth-700 leading-relaxed">
@@ -67,10 +86,10 @@ export default function PrivacyPage() {
           </Card>
         </section>
 
-                <section id="do-not-sell" className="space-y-4">
+        <section id="do-not-sell" className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Shield className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">4. CCPA: Do Not Sell My Info</h2>
+            <h2 className="text-2xl font-bold">5. CCPA: Do Not Sell My Info</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 text-earth-700 leading-relaxed">
@@ -85,7 +104,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Lock className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">5. Right to Erasure & Portability</h2>
+            <h2 className="text-2xl font-bold">6. Right to Erasure & Portability</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
@@ -96,10 +115,12 @@ export default function PrivacyPage() {
               </p>
             </CardContent>
           </Card>
-        </section><section className="space-y-4">
+        </section>
+
+        <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <UserCheck className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">6. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold">7. Children's Privacy</h2>
           </div>
           <Card className="folk-card">
             <CardContent className="pt-6 text-earth-700 leading-relaxed text-sm">
@@ -111,7 +132,7 @@ export default function PrivacyPage() {
         <section className="space-y-4">
           <div className="flex items-center gap-3 text-earth-900">
             <Mail className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">7. Contact Information</h2>
+            <h2 className="text-2xl font-bold">8. Contact Information</h2>
           </div>
           <Card className="folk-card border-moss-100 bg-moss-50/30">
             <CardContent className="pt-6 text-center">
