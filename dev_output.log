@@ -12,21 +12,10 @@ This information is used to shape Next.js' roadmap and prioritize features.
 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
 https://nextjs.org/telemetry
 
-✓ Ready in 1185ms
+✓ Ready in 1097ms
 ○ Compiling / ...
- GET / 200 in 9.0s (compile: 8.0s, render: 1000ms)
- GET / 200 in 131ms (compile: 7ms, render: 123ms)
- GET /shop/supplies 200 in 1311ms (compile: 1118ms, render: 194ms)
- GET /breeding 200 in 1219ms (compile: 1087ms, render: 132ms)
- GET /kennel 200 in 2.1s (compile: 1819ms, render: 287ms)
- GET /members 200 in 825ms (compile: 730ms, render: 94ms)
- GET / 200 in 582ms (compile: 95ms, render: 487ms)
- GET /shop/supplies 200 in 361ms (compile: 31ms, render: 329ms)
- GET /breeding 200 in 135ms (compile: 25ms, render: 110ms)
- GET /kennel 200 in 1600ms (compile: 1090ms, render: 510ms)
- GET /members 200 in 94ms (compile: 13ms, render: 81ms)
- GET / 200 in 92ms (compile: 7ms, render: 85ms)
- GET /shop/supplies 200 in 164ms (compile: 6ms, render: 158ms)
- GET /breeding 200 in 105ms (compile: 4ms, render: 100ms)
- GET /kennel 200 in 111ms (compile: 8ms, render: 103ms)
- GET /members 200 in 100ms (compile: 4ms, render: 95ms)
+ GET / 200 in 6.9s (compile: 6.0s, render: 923ms)
+ GET / 200 in 222ms (compile: 27ms, render: 195ms)
+ GET /shop/gems 200 in 1555ms (compile: 1440ms, render: 114ms)
+ GET /settings 404 in 895ms (compile: 736ms, render: 159ms)
+ GET /shows/rankings 404 in 87ms (compile: 7ms, render: 79ms)

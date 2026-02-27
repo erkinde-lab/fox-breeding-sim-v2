@@ -121,7 +121,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
       else underlyingName = "Pearl";
     } else {
       underlyingName = baseColorName;
-      if (underlyingName === 'Alaskan Silver' || underlyingName === 'Standard Silver'  ) {
+      if (underlyingName === 'Alaskan Silver' || underlyingName === 'Standard Silver' || underlyingName === 'Double Silver') {
         underlyingName = silverIntensity === 1 ? 'Black' : 'Silver';
       }
     }
@@ -725,3 +725,5 @@ export function calculateBreedingOutcomes(m: Fox, f: Fox, foxes: Record<string, 
     predictedCOI: Math.round(calculateCOI(m.id, foxes, f.id) * 100) / 100
   };
 }
+
+declare var process: any;
