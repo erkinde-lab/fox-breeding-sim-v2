@@ -147,13 +147,8 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   // Eye Color Logic
   let eyeColor = providedEyeColor;
   if (!eyeColor) {
-    if (isAmber) {
-      eyeColor = "Green";
-    } else {
-      let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
-      if (eyePoolName.includes("Amber")) eyePoolName = "Amber";
-      eyeColor = getRandomEyeColor(eyePoolName);
-    }
+    let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
+    eyeColor = getRandomEyeColor(eyePoolName);
   }
 
   // W locus logic
@@ -566,9 +561,9 @@ export const EYE_COLOR_WEIGHTS: Record<string, number> = {
 export const PHENOTYPE_EYE_COLORS: Record<string, string[]> = {
   'Red': ['Brown', 'Light Brown', 'Amber'],
   'Gold': ['Brown', 'Light Brown', 'Amber'],
-  'Burgundy Red': ['Amber'],
-  'Burgundy Gold': ['Amber'],
-  'Burgundy Cross': ['Amber'],
+  'Burgundy Red': ['Light Brown', 'Amber', 'Green'],
+  'Burgundy Gold': ['Light Brown', 'Amber', 'Green'],
+  'Burgundy Cross': ['Light Brown', 'Amber', 'Green'],
   'Pearl Gold': ['Light Brown', 'Amber'],
   'Pearl Cross': ['Light Brown', 'Amber'],
   'Albino': ['Red'],
@@ -585,9 +580,9 @@ export const PHENOTYPE_EYE_COLORS: Record<string, string[]> = {
   'Amber': ['Amber', 'Grey', 'Green', 'Blue'],
   'Champagne': ['Blue'],
   'Fawn Glow': ['Blue'],
-  'Amber Red': ['Amber', 'Green', 'Grey'],
-  'Amber Gold': ['Amber', 'Green', 'Grey'],
-  'Amber Cross': ['Amber', 'Grey', 'Green'],
+  'Amber Red': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Amber Gold': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Amber Cross': ['Amber', 'Grey', 'Green', 'Blue'],
   'Wildfire': ['Brown', 'Light Brown', 'Amber'],
   'Golden Sunrise': ['Brown', 'Light Brown', 'Amber'],
   'Fire Cross': ['Brown', 'Light Brown', 'Amber', 'Green'],
@@ -636,7 +631,6 @@ export function getBaseEyeColors(genotype: Genotype, silverIntensity: number = 3
 
   const phenotype = getPhenotype(tempGenotype, silverIntensity);
   let eyePoolName = phenotype.baseColor === "Albino" ? "Albino" : phenotype.baseColor;
-  if (eyePoolName.includes("Amber")) eyePoolName = "Amber";
 
   return [...(PHENOTYPE_EYE_COLORS[eyePoolName] || ['Brown'])];
 }
