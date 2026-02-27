@@ -171,7 +171,7 @@ export default function CustomFoxPage() {
                                                     )}
                                                 >
                                                     <span className="relative z-10">{formatAlleles(a1, a2)}</span>
-                                                    {locus.lethal?.includes([a1, a2].slice().sort().join("")) && (
+                                                    {locus.lethal?.([a1, a2]) && (
                                                         <div className="absolute top-0 right-0 p-1">
                                                             <div className="w-2 h-2 bg-red-500 rounded-full" />
                                                         </div>

@@ -206,7 +206,7 @@ export interface WhelpingReport {
   motherName: string;
   fatherName: string;
   kits: { name: string; phenotype: string; baseColor: string; pattern: string; eyeColor: string; isStillborn: boolean }[];
-  vixenDied?: boolean;
+
 }
 
 export interface BreedingRecord {
@@ -702,12 +702,6 @@ export const useGameStore = create<GameState>()(
 
               if (!mother) return;
 
-              const isMansfieldPearlVixen = mother.genotype.SS?.filter(x => x === 's').length === 2;
-              if (isMansfieldPearlVixen && Math.random() < 0.2) {
-                delete updatedFoxes[mother.id];
-                whelpingReports.push({ motherName: mother.name, fatherName: preg.fatherName, kits: [], vixenDied: true });
-                return;
-              }
 
               const kitCount = (typeof window !== 'undefined' ? Math.floor(Math.random() * 4) : 3) + 2;
 

@@ -118,7 +118,7 @@ export function runShow(level: ShowLevel, foxes: Fox[], year: number, season: st
       if (cls === 'Gold Specialty') return a === 'AA' && b === 'Bb';
       if (cls === 'Cross Specialty') return a === 'Aa' && b !== 'bb';
       if (cls === 'Exotic Specialty') {
-        const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+        const loci = ['C', 'G', 'P', 'Fire', 'L'];
         return loci.some(l => {
           const alleles = f.genotype[l];
           if (!alleles) return false;
@@ -194,7 +194,7 @@ export function runSpecificShow(level: ShowLevel, showClass: ShowClass, foxes: F
     if (showClass === 'Gold Specialty') return a === 'AA' && b === 'Bb';
     if (showClass === 'Cross Specialty') return a === 'Aa' && b !== 'bb';
     if (showClass === 'Exotic Specialty') {
-      const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+      const loci = ['C', 'G', 'P', 'Fire', 'L'];
       return loci.some(l => {
         const alleles = f.genotype[l];
         if (!alleles) return false;
@@ -270,7 +270,7 @@ export function isFoxEligibleForShow(fox: Fox, level: ShowLevel, showClass: Show
     else if (showClass === 'Gold Specialty') classMatch = a === 'AA' && b === 'Bb';
     else if (showClass === 'Cross Specialty') classMatch = a === 'Aa' && b !== 'bb';
     else if (showClass === 'Exotic Specialty') {
-      const loci = ['C', 'G', 'P', 'SS', 'Fire', 'L'];
+      const loci = ['C', 'G', 'P', 'Fire', 'L'];
       classMatch = loci.some(l => {
         const alleles = fox.genotype[l];
         if (!alleles) return false;
