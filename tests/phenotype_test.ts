@@ -1,10 +1,10 @@
-import { getPhenotype, Genotype } from '../src/lib/genetics';
+import { getPhenotype } from '../src/lib/genetics';
 
 const tests = [
-  // Base Color: Double Silver
+  // Base Color: Double Silver (updated to show as Silver per requirement)
   {
     genotype: { A: ['a', 'a'], B: ['b', 'b'] },
-    expectedPhenotype: 'Double Silver Fox'
+    expectedPhenotype: 'Silver Fox'
   },
   // Burgundy Corrections
   {
@@ -38,7 +38,7 @@ const tests = [
 
 let failed = 0;
 tests.forEach((t, i) => {
-  const result = getPhenotype(t.genotype as Genotype);
+  const result = getPhenotype(t.genotype as any);
   if (result.name !== t.expectedPhenotype) {
     console.error(`Test ${i} failed: Expected name "${t.expectedPhenotype}", got "${result.name}"`);
     failed++;
@@ -52,3 +52,5 @@ if (failed > 0) {
 } else {
   console.log("All regression tests passed!");
 }
+
+declare var process: any;

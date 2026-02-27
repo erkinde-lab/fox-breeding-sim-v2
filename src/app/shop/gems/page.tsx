@@ -54,7 +54,7 @@ export default function GemStorePage() {
         <div className="max-w-6xl mx-auto space-y-12 pb-20">
             <div className="text-center space-y-4">
                 <h1 className="text-5xl font-folksy text-foreground tracking-tight flex items-center justify-center gap-4" style={{ fontWeight: 400 }}>
-                    <Diamond className="text-primary animate-pulse" size={48} /> Emerald Shop
+                    <Diamond className="text-primary animate-pulse" size={48} /> Gem Shop
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
                     Purchase premium gems to unlock custom designers, speed up time, and acquire legendary specialty items.
@@ -65,7 +65,7 @@ export default function GemStorePage() {
                 {GEM_PACKS.map((pack) => (
                     <Card key={pack.id} className={`folk-card border-border shadow-sm flex flex-col items-center p-6 bg-card relative ${pack.featured ? 'ring-2 ring-primary transition-transform hover:scale-105' : ''}`}>
                         {pack.featured && (
-                            <Badge className="absolute -top-3 bg-primary text-primary-foreground px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full">Most Popular</Badge>
+                            <Badge className="absolute top-0 -translate-y-1/2 bg-primary text-primary-foreground px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-full">Most Popular</Badge>
                         )}
 
                         <div className={`p-6 ${pack.color} rounded-full mb-6 mt-4`}>
@@ -109,9 +109,8 @@ export default function GemStorePage() {
                     <p className="opacity-80 font-medium">All transactions are encrypted and processed through our secure partner gateways. Your data and privacy are always protected.</p>
                 </div>
                 <div className="flex gap-4">
-                    <div className="h-10 w-16 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter">VISA</div>
-                    <div className="h-10 w-16 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter">MC</div>
-                    <div className="h-10 w-16 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter">PAYPAL</div>
+                    <div className="h-10 w-20 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">Stripe</div>
+                    <div className="h-10 w-20 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">PayPal</div>
                 </div>
             </section>
         </div>

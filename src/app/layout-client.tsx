@@ -311,7 +311,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
                 <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
                 <li><Link href="/news" className="hover:text-primary transition-colors">Game News</Link></li>
-                <li><Link href="/faq" className="hover:text-primary transition-colors">Foundation Wiki</Link></li>
+                <li><Link href="/faq" className="hover:text-primary transition-colors">Frequently Asked Questions</Link></li>
                 {isAdmin && <li><Link href="/admin" className="text-primary hover:text-fire-400 transition-colors">Admin Panel</Link></li>}
               </ul>
             </div>
@@ -346,7 +346,7 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
               </h4>
               <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
                 <li><Link href="/help" className="hover:text-primary transition-colors">Help Center</Link></li>
-                <li><Link href="/faq" className="hover:text-primary transition-colors">Foundation Wiki</Link></li>
+                <li><Link href="/faq" className="hover:text-primary transition-colors">Frequently Asked Questions</Link></li>
                 <li><Link href="/forum" className="hover:text-primary transition-colors">Discussion Forums</Link></li>
                 <li><Link href="/members" className="hover:text-primary transition-colors">Staff Directory</Link></li>
                 <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
