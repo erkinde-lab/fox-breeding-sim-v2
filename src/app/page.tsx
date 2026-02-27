@@ -34,7 +34,7 @@ export default function LandingPage() {
         <FeatureCard
           icon={<PawPrint size={32} className="text-apricot" />}
           title="Genetic Simulation"
-          description="Complex Agouti, Black, Albino, Burgundy, Pearl, Mansfield Pearl and Fire loci interaction."
+          description="Complex Agouti, Black, Albino, Burgundy, Pearl and Fire loci interaction."
         />
         <FeatureCard
           icon={<Trophy size={32} className="text-amber-500" />}
