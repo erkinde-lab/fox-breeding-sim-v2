@@ -214,6 +214,15 @@ interface GameState {
   isDarkMode: boolean;
   hasSeenTutorial: boolean;
   tutorialStep: number | null;
+  colorblindMode: boolean;
+  highContrast: boolean;
+  fontSize: "small" | "normal" | "large" | "xl";
+  useOpenDyslexic: boolean;
+  reducedMotion: boolean;
+  alwaysUnderlineLinks: boolean;
+  highVisibilityFocus: boolean;
+  simplifiedUI: boolean;
+  textSpacing: "normal" | "wide" | "extra";
 
   advanceTime: () => void;
   breedFoxes: (dogId: string, vixenId: string) => void;
@@ -235,6 +244,15 @@ interface GameState {
   initializeGame: () => void;
   setBannerUrl: (url: string) => void;
   setBannerPosition: (pos: string) => void;
+  toggleColorblindMode: () => void;
+  toggleHighContrast: () => void;
+  setFontSize: (size: "small" | "normal" | "large" | "xl") => void;
+  toggleOpenDyslexic: () => void;
+  toggleReducedMotion: () => void;
+  toggleAlwaysUnderlineLinks: () => void;
+  toggleHighVisibilityFocus: () => void;
+  toggleSimplifiedUI: () => void;
+  setTextSpacing: (spacing: "normal" | "wide" | "extra") => void;
   toggleDarkMode: () => void;
   checkAdoptionReset: () => void;
   buyFoundationalFox: () => void;
@@ -429,6 +447,15 @@ export const useGameStore = create<GameState>()(
       adminLogs: [],
       hasSeenTutorial: false,
       tutorialStep: null,
+      colorblindMode: false,
+      highContrast: false,
+      fontSize: "normal",
+      useOpenDyslexic: false,
+      reducedMotion: false,
+      alwaysUnderlineLinks: false,
+      highVisibilityFocus: false,
+      simplifiedUI: false,
+      textSpacing: "normal",
       isDarkMode: false,
 
       checkAchievements: () => {
@@ -1474,15 +1501,60 @@ export const useGameStore = create<GameState>()(
             m.id === memberId ? { ...m, isBanned: true } : m,
           ),
         })),
+      toggleColorblindMode: () =>
+        set((state: GameState) => ({ colorblindMode: !state.colorblindMode })),
+      toggleHighContrast: () =>
+        set((state: GameState) => ({ highContrast: !state.highContrast })),
+      setFontSize: (size: "small" | "normal" | "large" | "xl") =>
+        set({ fontSize: size }),
+      toggleOpenDyslexic: () =>
+        set((state: GameState) => ({
+          useOpenDyslexic: !state.useOpenDyslexic,
+        })),
+      toggleReducedMotion: () =>
+        set((state: GameState) => ({ reducedMotion: !state.reducedMotion })),
+      toggleAlwaysUnderlineLinks: () =>
+        set((state: GameState) => ({
+          alwaysUnderlineLinks: !state.alwaysUnderlineLinks,
+        })),
+      toggleHighVisibilityFocus: () =>
+        set((state: GameState) => ({
+          highVisibilityFocus: !state.highVisibilityFocus,
+        })),
+      toggleSimplifiedUI: () =>
+        set((state: GameState) => ({
+          simplifiedUI: !state.simplifiedUI,
+        })),
+      setTextSpacing: (spacing: "normal" | "wide" | "extra") =>
+        set({ textSpacing: spacing }),
       toggleDarkMode: () =>
         set((state: GameState) => ({ isDarkMode: !state.isDarkMode })),
     }),
     {
       name: "red-fox-sim-storage",
-      version: 3,
+      version: 5,
       migrate: (persistedState: unknown, version: number) => {
-        if (version < 2) return undefined;
-        return persistedState;
+        let state = persistedState as any;
+        if (version < 4) {
+          state = {
+            ...state,
+            colorblindMode: state.colorblindMode ?? false,
+            highContrast: state.highContrast ?? false,
+            fontSize: state.fontSize ?? "normal",
+            useOpenDyslexic: state.useOpenDyslexic ?? false,
+            reducedMotion: state.reducedMotion ?? false,
+            alwaysUnderlineLinks: state.alwaysUnderlineLinks ?? false,
+          };
+        }
+        if (version < 5) {
+          state = {
+            ...state,
+            highVisibilityFocus: state.highVisibilityFocus ?? false,
+            simplifiedUI: state.simplifiedUI ?? false,
+            textSpacing: state.textSpacing ?? "normal",
+          };
+        }
+        return state;
       },
       partialize: (state) => state,
     },
