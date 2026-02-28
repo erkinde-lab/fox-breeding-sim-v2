@@ -1,0 +1,102 @@
+<<<<<<< SEARCH
+              <InfoTile icon={Trophy} color="bg-primary/10 text-primary border-primary/20" title="How Shows Work">
+                Shows run automatically each season. Every fox you own is evaluated across 8 physical and behavioral traits. A composite score is calculated and compared against all other entrants. Placements earn <strong>Gold</strong> and contribute to your kennel reputation.
+              </InfoTile>
+              <InfoTile icon={Zap} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Classes">
+                <ul className="list-disc list-inside space-y-1 mt-1">
+                  <li><strong>Kits</strong> are not eligible to show — they must age into juveniles first.</li>
+                  <li><strong>Juvenile</strong> foxes compete in the Juvenile class.</li>
+                  <li><strong>Junior</strong> shows are for adult foxes that have earned fewer than 5 lifetime points.</li>
+                  <li>As foxes accumulate points they advance to <strong>Open</strong> and <strong>Champion</strong> classes, which offer higher payouts.</li>
+                </ul>
+              </InfoTile>
+=======
+              <InfoTile icon={Trophy} color="bg-primary/10 text-primary border-primary/20" title="How Shows Work">
+                Shows follow a hierarchical structure: <strong>Variety → Best of Sex → Best in Show</strong>. Players enter foxes into Variety shows (Red, Gold, Silver, Cross, Exotic, or White Mark). Winners automatically advance through the hierarchy, with each stage evaluated independently using fresh luck rolls.
+              </InfoTile>
+              <InfoTile icon={Zap} color="bg-secondary/10 text-secondary border-secondary/20" title="Show Classes">
+                <ul className="list-disc list-inside space-y-1 mt-1">
+                  <li><strong>Kits</strong> (Age 0) are not eligible to show.</li>
+                  <li><strong>Juvenile</strong> foxes (Autumn/Winter only) compete in the Juvenile variety classes.</li>
+                  <li><strong>Junior</strong> shows are for adult foxes with fewer than 5 lifetime points.</li>
+                  <li><strong>Open</strong> shows are for adult foxes with 5 to 10 lifetime points.</li>
+                  <li><strong>Senior</strong> shows are for adult foxes with more than 10 lifetime points.</li>
+                  <li><strong>Championship</strong> requires 16 points earned in the current year OR a Major win (BIS/RBIS).</li>
+                </ul>
+              </InfoTile>
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+                  <ul className="space-y-3">
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">CH / ACH (Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>30 Lifetime Points</strong> and <strong>2 Majors</strong>.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">GCH / AGCH (Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>100 Lifetime Points</strong> and <strong>1 Best in Show</strong> win.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">DGCH / DAGCH (Double Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>250 Lifetime Points</strong> and <strong>3 Best in Show</strong> wins.</span>
+                    </li>
+                  </ul>
+=======
+                  <ul className="space-y-3">
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">CH / ACH (Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>1 Major</strong> win.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">GCH / AGCH (Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>2 Major</strong> wins.</span>
+                    </li>
+                    <li className="p-3 bg-muted/30 rounded-xl border border-border">
+                      <span className="font-black text-primary block text-xs uppercase">DGCH / DAGCH (Double Grand Champion)</span>
+                      <span className="text-xs text-muted-foreground">Requires <strong>4 Major</strong> wins.</span>
+                    </li>
+                  </ul>
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Points & Majors</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Points scale based on the number of foxes in a class. The larger the competition, the more points are awarded.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg text-[10px] font-bold uppercase">
+                      <span>Field Size</span>
+                      <span>1st Place Points</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between px-2 text-xs"><span>1-4 Foxes</span> <span className="font-black">2 Pts</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>5-9 Foxes</span> <span>3 Pts + Major</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>10-19 Foxes</span> <span>5 Pts + Major</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>20+ Foxes</span> <span>7 Pts + Major</span></div>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground italic mt-2">
+                    * A <strong>Major</strong> is a 1st place win in a class of 5 or more foxes.
+                  </p>
+                </div>
+=======
+                <div className="space-y-4">
+                  <h3 className="font-black text-foreground text-lg italic uppercase tracking-tight">Points & Majors</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Points are awarded cumulatively as a fox advances through the hierarchical show stages.
+                  </p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center p-2 bg-muted/50 rounded-lg text-[10px] font-bold uppercase">
+                      <span>Achievement</span>
+                      <span>Points Awarded</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between px-2 text-xs"><span>Best of Variety (BOV/RBOV)</span> <span className="font-black">1 Pt</span></div>
+                      <div className="flex justify-between px-2 text-xs"><span>Best of Sex (BOS/RBOS)</span> <span className="font-black">+1 Pt</span></div>
+                      <div className="flex justify-between px-2 text-xs text-primary font-bold italic"><span>Best in Show (BIS/RBIS)</span> <span>+2 Pts (Major)</span></div>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground italic mt-2">
+                    * A <strong>Major</strong> is earned by winning Best in Show (BIS) or Reserve Best in Show (RBIS).
+                  </p>
+                </div>
+>>>>>>> REPLACE
