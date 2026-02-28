@@ -220,6 +220,9 @@ interface GameState {
   useOpenDyslexic: boolean;
   reducedMotion: boolean;
   alwaysUnderlineLinks: boolean;
+  highVisibilityFocus: boolean;
+  simplifiedUI: boolean;
+  textSpacing: "normal" | "wide" | "extra";
 
   advanceTime: () => void;
   breedFoxes: (dogId: string, vixenId: string) => void;
@@ -247,6 +250,9 @@ interface GameState {
   toggleOpenDyslexic: () => void;
   toggleReducedMotion: () => void;
   toggleAlwaysUnderlineLinks: () => void;
+  toggleHighVisibilityFocus: () => void;
+  toggleSimplifiedUI: () => void;
+  setTextSpacing: (spacing: "normal" | "wide" | "extra") => void;
   toggleDarkMode: () => void;
   checkAdoptionReset: () => void;
   buyFoundationalFox: () => void;
@@ -447,6 +453,9 @@ export const useGameStore = create<GameState>()(
       useOpenDyslexic: false,
       reducedMotion: false,
       alwaysUnderlineLinks: false,
+      highVisibilityFocus: false,
+      simplifiedUI: false,
+      textSpacing: "normal",
       isDarkMode: false,
 
       checkAchievements: () => {
@@ -1508,16 +1517,26 @@ export const useGameStore = create<GameState>()(
         set((state: GameState) => ({
           alwaysUnderlineLinks: !state.alwaysUnderlineLinks,
         })),
+      toggleHighVisibilityFocus: () =>
+        set((state: GameState) => ({
+          highVisibilityFocus: !state.highVisibilityFocus,
+        })),
+      toggleSimplifiedUI: () =>
+        set((state: GameState) => ({
+          simplifiedUI: !state.simplifiedUI,
+        })),
+      setTextSpacing: (spacing: "normal" | "wide" | "extra") =>
+        set({ textSpacing: spacing }),
       toggleDarkMode: () =>
         set((state: GameState) => ({ isDarkMode: !state.isDarkMode })),
     }),
     {
       name: "red-fox-sim-storage",
-      version: 4,
+      version: 5,
       migrate: (persistedState: unknown, version: number) => {
+        let state = persistedState as any;
         if (version < 4) {
-          const state = persistedState as any;
-          return {
+          state = {
             ...state,
             colorblindMode: state.colorblindMode ?? false,
             highContrast: state.highContrast ?? false,
@@ -1527,7 +1546,15 @@ export const useGameStore = create<GameState>()(
             alwaysUnderlineLinks: state.alwaysUnderlineLinks ?? false,
           };
         }
-        return persistedState;
+        if (version < 5) {
+          state = {
+            ...state,
+            highVisibilityFocus: state.highVisibilityFocus ?? false,
+            simplifiedUI: state.simplifiedUI ?? false,
+            textSpacing: state.textSpacing ?? "normal",
+          };
+        }
+        return state;
       },
       partialize: (state) => state,
     },

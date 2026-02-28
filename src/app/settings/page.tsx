@@ -13,6 +13,8 @@ import {
   Moon,
   Contrast,
   Accessibility,
+  CheckSquare,
+  Layout,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +34,12 @@ export default function SettingsPage() {
     toggleReducedMotion,
     alwaysUnderlineLinks,
     toggleAlwaysUnderlineLinks,
+    setTextSpacing,
+    textSpacing,
+    toggleSimplifiedUI,
+    simplifiedUI,
+    toggleHighVisibilityFocus,
+    highVisibilityFocus,
   } = useGameStore();
 
   return (
@@ -48,10 +56,16 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Visual Settings */}
-        <section className="folk-card p-8 space-y-6">
+        <section
+          className="folk-card p-8 space-y-6"
+          role="group"
+          aria-labelledby="visual-settings-title"
+        >
           <div className="flex items-center gap-3 mb-2">
             <Eye className="text-primary" size={24} />
-            <h2 className="text-2xl font-folksy">Visual Appearance</h2>
+            <h2 id="visual-settings-title" className="text-2xl font-folksy">
+              Visual Appearance
+            </h2>
           </div>
 
           <div className="space-y-4">
@@ -153,10 +167,16 @@ export default function SettingsPage() {
         </section>
 
         {/* Text & Fonts */}
-        <section className="folk-card p-8 space-y-6">
+        <section
+          className="folk-card p-8 space-y-6"
+          role="group"
+          aria-labelledby="visual-settings-title"
+        >
           <div className="flex items-center gap-3 mb-2">
             <Type className="text-primary" size={24} />
-            <h2 className="text-2xl font-folksy">Typography</h2>
+            <h2 id="typography-settings-title" className="text-2xl font-folksy">
+              Typography
+            </h2>
           </div>
 
           <div className="space-y-6">
@@ -176,6 +196,27 @@ export default function SettingsPage() {
                     )}
                   >
                     {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Text Spacing */}
+            <div>
+              <p className="font-bold mb-3">Text Spacing</p>
+              <div className="grid grid-cols-3 gap-2">
+                {(["normal", "wide", "extra"] as const).map((spacing) => (
+                  <button
+                    key={spacing}
+                    onClick={() => setTextSpacing(spacing)}
+                    className={cn(
+                      "py-2 rounded-xl text-xs font-bold uppercase transition-all border",
+                      textSpacing === spacing
+                        ? "bg-primary text-white border-primary"
+                        : "bg-muted/50 border-border hover:border-primary/50",
+                    )}
+                  >
+                    {spacing}
                   </button>
                 ))}
               </div>
@@ -217,10 +258,16 @@ export default function SettingsPage() {
         </section>
 
         {/* Accessibility Extras */}
-        <section className="folk-card p-8 space-y-6 md:col-span-2">
+        <section
+          className="folk-card p-8 space-y-6 md:col-span-2"
+          role="group"
+          aria-labelledby="extra-settings-title"
+        >
           <div className="flex items-center gap-3 mb-2">
             <Accessibility className="text-primary" size={24} />
-            <h2 className="text-2xl font-folksy">Additional Accessibility</h2>
+            <h2 id="extra-settings-title" className="text-2xl font-folksy">
+              Additional Accessibility
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -296,6 +343,77 @@ export default function SettingsPage() {
                   {alwaysUnderlineLinks && (
                     <Check size={12} className="text-primary" />
                   )}
+                </div>
+              </button>
+            </div>
+            {/* High Visibility Focus */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-4">
+                <div className="mt-1 p-2 bg-muted rounded-lg">
+                  <CheckSquare size={18} />
+                </div>
+                <div>
+                  <p className="font-bold">Enhanced Focus</p>
+                  <p className="text-xs text-muted-foreground">
+                    High-visibility outlines for keyboard focus
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={toggleHighVisibilityFocus}
+                className={cn(
+                  "w-14 h-8 rounded-full transition-colors flex items-center px-1",
+                  highVisibilityFocus
+                    ? "bg-primary"
+                    : "bg-muted border border-border",
+                )}
+                aria-label="Toggle Enhanced Focus"
+              >
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
+                    highVisibilityFocus
+                      ? "translate-x-6 bg-white"
+                      : "translate-x-0 bg-white shadow-sm",
+                  )}
+                >
+                  {highVisibilityFocus && (
+                    <Check size={12} className="text-primary" />
+                  )}
+                </div>
+              </button>
+            </div>
+
+            {/* Simplified UI */}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-4">
+                <div className="mt-1 p-2 bg-muted rounded-lg">
+                  <Layout size={18} />
+                </div>
+                <div>
+                  <p className="font-bold">Simplified UI</p>
+                  <p className="text-xs text-muted-foreground">
+                    Remove complex shadows and gradients
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={toggleSimplifiedUI}
+                className={cn(
+                  "w-14 h-8 rounded-full transition-colors flex items-center px-1",
+                  simplifiedUI ? "bg-primary" : "bg-muted border border-border",
+                )}
+                aria-label="Toggle Simplified UI"
+              >
+                <div
+                  className={cn(
+                    "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
+                    simplifiedUI
+                      ? "translate-x-6 bg-white"
+                      : "translate-x-0 bg-white shadow-sm",
+                  )}
+                >
+                  {simplifiedUI && <Check size={12} className="text-primary" />}
                 </div>
               </button>
             </div>

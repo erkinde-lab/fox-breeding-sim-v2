@@ -52,6 +52,9 @@ export default function LayoutClient({
     useOpenDyslexic,
     reducedMotion,
     alwaysUnderlineLinks,
+    highVisibilityFocus,
+    simplifiedUI,
+    textSpacing,
     gold,
     gems,
     year,
@@ -117,20 +120,59 @@ export default function LayoutClient({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [initializeGame, isMobileMenuOpen]);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    const classes = ["font-size-" + fontSize, "text-spacing-" + textSpacing];
+    if (isDarkMode) classes.push("dark");
+    if (colorblindMode) classes.push("colorblind-mode");
+    if (highContrast) classes.push("high-contrast");
+    if (useOpenDyslexic) classes.push("use-opendyslexic");
+    if (reducedMotion) classes.push("reduced-motion");
+    if (alwaysUnderlineLinks) classes.push("underline-links");
+    if (highVisibilityFocus) classes.push("high-visibility-focus");
+    if (simplifiedUI) classes.push("simplified-ui");
+
+    // Remove old classes
+    const allPossible = [
+      "dark",
+      "colorblind-mode",
+      "high-contrast",
+      "use-opendyslexic",
+      "reduced-motion",
+      "underline-links",
+      "high-visibility-focus",
+      "simplified-ui",
+      "font-size-small",
+      "font-size-normal",
+      "font-size-large",
+      "font-size-xl",
+      "text-spacing-normal",
+      "text-spacing-wide",
+      "text-spacing-extra",
+    ];
+    root.classList.remove(...allPossible);
+    root.classList.add(...classes);
+  }, [
+    isDarkMode,
+    colorblindMode,
+    highContrast,
+    fontSize,
+    useOpenDyslexic,
+    reducedMotion,
+    alwaysUnderlineLinks,
+    highVisibilityFocus,
+    simplifiedUI,
+    textSpacing,
+  ]);
+
   return (
-    <div
-      className={`min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500 ${cn(
-        isDarkMode && "dark",
-        colorblindMode && "colorblind-mode",
-        highContrast && "high-contrast",
-        `font-size-${fontSize}`,
-        useOpenDyslexic && "use-opendyslexic",
-        reducedMotion && "reduced-motion",
-        alwaysUnderlineLinks && "underline-links",
-      )}`}
-    >
+    <div className="min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500">
       {/* Top Utility Bar */}
-      <div className="bg-moab text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm">
+      <div
+        className="bg-moab text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
+        role="region"
+        aria-label="User and Game Status"
+      >
         <div className="flex items-center gap-6">
           <span className="flex items-center gap-2">
             <Calendar size={12} className="opacity-70" /> Year {year},{" "}

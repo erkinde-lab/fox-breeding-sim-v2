@@ -40,24 +40,24 @@
   --card-foreground: #34495E;
   --popover: #ffffff;
   --popover-foreground: #34495E;
-  --primary: #E6A57E;
+  --primary: #B8623D;
   --primary-foreground: #ffffff;
-  --secondary: #8FA08E;
+  --secondary: #5A725A;
   --secondary-foreground: #ffffff;
   --muted: #f5f1ed;
   --muted-foreground: #5c4a3c;
-  --accent: #B59D85;
+  --accent: #8C735B;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #d9c5b2;
   --input: #d9c5b2;
-  --ring: #E6A57E;
+  --ring: #B8623D;
   --banner-overlay: rgba(253, 248, 243, 0.9);
   --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
   --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
-  --shadow-primary: rgba(230, 165, 126, 0.35);
-  --shadow-secondary: rgba(143, 160, 142, 0.25);
+  --shadow-primary: rgba(184, 98, 61, 0.35);
+  --shadow-secondary: rgba(90, 114, 90, 0.25);
 }
 
 .dark {
@@ -69,7 +69,7 @@
   --popover-foreground: #D1D5D1;
   --primary: #C58C6A;
   --primary-foreground: #121612;
-  --secondary: #5D6D5D;
+  --secondary: #8FA08E;
   --secondary-foreground: #ffffff;
   --muted: #242B24;
   --muted-foreground: #7A8A7A;
@@ -325,4 +325,38 @@ h6 {
 /* Always Underline Links */
 .underline-links a {
   text-decoration: underline !important;
+}
+
+/* High Visibility Focus */
+.high-visibility-focus *:focus-visible {
+  outline: 4px solid var(--primary) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  z-index: 50 !important;
+}
+
+/* Simplified UI Overrides */
+.simplified-ui * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background-image: none !important;
+}
+
+/* Text Spacing Presets */
+.text-spacing-normal {
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: 1.5;
+}
+
+.text-spacing-wide {
+  letter-spacing: 0.1em;
+  word-spacing: 0.2em;
+  line-height: 1.8;
+}
+
+.text-spacing-extra {
+  letter-spacing: 0.15em;
+  word-spacing: 0.3em;
+  line-height: 2;
 }
