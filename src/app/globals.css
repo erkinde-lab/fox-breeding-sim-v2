@@ -34,50 +34,50 @@
 }
 
 :root {
-  --background: #FDF8F3;
-  --foreground: #34495E;
+  --background: #fdf8f3;
+  --foreground: #34495e;
   --card: #ffffff;
-  --card-foreground: #34495E;
+  --card-foreground: #34495e;
   --popover: #ffffff;
-  --popover-foreground: #34495E;
-  --primary: #B8623D;
+  --popover-foreground: #34495e;
+  --primary: #e6a57e;
   --primary-foreground: #ffffff;
-  --secondary: #5A725A;
+  --secondary: #8fa08e;
   --secondary-foreground: #ffffff;
   --muted: #f5f1ed;
   --muted-foreground: #5c4a3c;
-  --accent: #8C735B;
+  --accent: #b59d85;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #d9c5b2;
   --input: #d9c5b2;
-  --ring: #B8623D;
+  --ring: #e6a57e;
   --banner-overlay: rgba(253, 248, 243, 0.9);
   --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
   --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
-  --shadow-primary: rgba(184, 98, 61, 0.35);
-  --shadow-secondary: rgba(90, 114, 90, 0.25);
+  --shadow-primary: rgba(230, 165, 126, 0.35);
+  --shadow-secondary: rgba(143, 160, 142, 0.25);
 }
 
 .dark {
   --background: #121612;
-  --foreground: #D1D5D1;
-  --card: #1C231C;
-  --card-foreground: #D1D5D1;
-  --popover: #1C231C;
-  --popover-foreground: #D1D5D1;
-  --primary: #C58C6A;
+  --foreground: #d1d5d1;
+  --card: #1c231c;
+  --card-foreground: #d1d5d1;
+  --popover: #1c231c;
+  --popover-foreground: #d1d5d1;
+  --primary: #c58c6a;
   --primary-foreground: #121612;
-  --secondary: #8FA08E;
+  --secondary: #8fa08e;
   --secondary-foreground: #ffffff;
-  --muted: #242B24;
-  --muted-foreground: #7A8A7A;
-  --accent: #2C352C;
-  --accent-foreground: #F1F5F1;
+  --muted: #242b24;
+  --muted-foreground: #7a8a7a;
+  --accent: #2c352c;
+  --accent-foreground: #f1f5f1;
   --border: #243024;
   --input: #243024;
-  --ring: #C58C6A;
+  --ring: #c58c6a;
   --banner-overlay: rgba(18, 22, 18, 0.85);
   --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
@@ -110,7 +110,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-rounded) !important;
   font-weight: 500;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 
 h1,
@@ -239,42 +241,51 @@ h6 {
 
 /* Universal Colorblind Theme (using a high-contrast palette often used for accessibility) */
 .colorblind-mode {
-  --primary: #0072B2; /* Vermillion */
-  --secondary: #009E73; /* Bluish Green */
-  --accent: #E69F00; /* Orange */
-  --ring: #0072B2;
+  --primary: #0072b2; /* Vermillion */
+  --secondary: #009e73; /* Bluish Green */
+  --accent: #e69f00; /* Orange */
+  --ring: #0072b2;
   --shadow-primary: rgba(0, 114, 178, 0.35);
   --shadow-secondary: rgba(0, 158, 115, 0.25);
 }
 
 /* High Contrast Theme */
-.high-contrast {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #000000;
-  --card-foreground: #ffffff;
-  --popover: #000000;
-  --popover-foreground: #ffffff;
-  --primary: #ffff00;
-  --primary-foreground: #000000;
-  --secondary: #00ffff;
-  --secondary-foreground: #000000;
-  --muted: #1a1a1a;
-  --muted-foreground: #ffffff;
-  --accent: #ff00ff;
-  --accent-foreground: #000000;
-  --border: #ffffff;
-  --input: #ffffff;
-  --ring: #ffff00;
-  --banner-overlay: rgba(0, 0, 0, 0.9);
-  --card-shadow: none;
-  --card-shadow-hover: none;
-  --shadow-primary: rgba(255, 255, 0, 0.5);
-  --shadow-secondary: rgba(0, 255, 255, 0.5);
+html.high-contrast,
+html.high-contrast body,
+html.high-contrast #root,
+html.high-contrast main {
+  --background: #000000 !important;
+  --foreground: #ffffff !important;
+  --card: #000000 !important;
+  --card-foreground: #ffffff !important;
+  --popover: #000000 !important;
+  --popover-foreground: #ffffff !important;
+  --primary: #ffff00 !important;
+  --primary-foreground: #000000 !important;
+  --secondary: #00ffff !important;
+  --secondary-foreground: #000000 !important;
+  --muted: #1a1a1a !important;
+  --muted-foreground: #ffffff !important;
+  --accent: #ff00ff !important;
+  --accent-foreground: #000000 !important;
+  --border: #ffffff !important;
+  --input: #ffffff !important;
+  --ring: #ffff00 !important;
+  --banner-overlay: rgba(0, 0, 0, 0.9) !important;
+  --card-shadow: none !important;
+  --card-shadow-hover: none !important;
+  --shadow-primary: rgba(255, 255, 0, 0.5) !important;
+  --shadow-secondary: rgba(0, 255, 255, 0.5) !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  background-image: none !important;
 }
 
-.high-contrast * {
+html.high-contrast * {
   border-color: #ffffff !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 /* Font Size Presets */
@@ -293,23 +304,17 @@ h6 {
 
 /* OpenDyslexic Support */
 @font-face {
-  font-family: 'OpenDyslexic';
-  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/OpenDyslexic-Regular.otf') format('opentype');
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff") format("woff");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-.use-opendyslexic {
-  font-family: 'OpenDyslexic', sans-serif !important;
-}
-
-.use-opendyslexic h1,
-.use-opendyslexic h2,
-.use-opendyslexic h3,
-.use-opendyslexic h4,
-.use-opendyslexic h5,
-.use-opendyslexic h6 {
-  font-family: 'OpenDyslexic', sans-serif !important;
+html.use-opendyslexic,
+html.use-opendyslexic * {
+  font-family: "OpenDyslexic", sans-serif !important;
 }
 
 /* Reduced Motion */
@@ -331,7 +336,9 @@ h6 {
 .high-visibility-focus *:focus-visible {
   outline: 4px solid var(--primary) !important;
   outline-offset: 4px !important;
-  box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8), 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.3) !important;
   z-index: 50 !important;
 }
 

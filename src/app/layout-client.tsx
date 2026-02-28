@@ -1,44 +1,46 @@
 "use client";
-import { cn } from "@/lib/utils";
 
 import React, { useState, useEffect, useRef } from "react";
-import { useGameStore } from "@/lib/store";
-import { TutorialTour } from "@/components/TutorialTour";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useGameStore } from "@/lib/store";
 import {
   Menu,
+  X,
+  ChevronDown,
+  Calendar,
+  Coins,
+  Diamond,
+  Plus,
+  Moon,
+  Sun,
+  Settings,
+  HelpCircle,
   Home,
-  PawPrint,
   Heart,
   Trophy,
   ShoppingBag,
-  Settings,
   Users,
-  LifeBuoy,
-  ChevronDown,
-  Package,
-  Coins,
-  Diamond,
-  Calendar,
-  Info,
-  Star,
   MessageSquare,
   User,
-  ExternalLink,
-  HelpCircle,
-  Rocket,
+  Info,
+  Shield,
+  LifeBuoy,
+  LogOut,
+  FastForward,
+  CheckSquare,
+  Package,
+  PawPrint,
+  ShieldCheck,
   UserPlus,
   Store,
+  Star,
   Baby,
-  CheckSquare,
-  Shield,
-  FastForward,
-  Search,
-  Moon,
-  Sun,
-  Plus,
-  X,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { TutorialTour } from "@/components/TutorialTour";
+import { ColorblindFilters } from "@/components/ColorblindFilters";
 
 export default function LayoutClient({
   children,
@@ -46,6 +48,15 @@ export default function LayoutClient({
   children: React.ReactNode;
 }) {
   const {
+    gold,
+    gems,
+    year,
+    season,
+    advanceTime,
+    isAdmin,
+    isDarkMode,
+    toggleDarkMode,
+    // Accessibility Settings
     colorblindMode,
     highContrast,
     fontSize,
@@ -55,121 +66,92 @@ export default function LayoutClient({
     highVisibilityFocus,
     simplifiedUI,
     textSpacing,
-    gold,
-    gems,
-    year,
-    season,
-    advanceTime,
-    initializeGame,
-    isAdmin,
-    toggleAdminMode,
-    bannerUrl,
-    bannerPosition,
-    isDarkMode,
-    toggleDarkMode,
   } = useGameStore();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const [isMainOpen, setIsMainOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isKennelOpen, setIsKennelOpen] = useState(false);
   const [isBreedingOpen, setIsBreedingOpen] = useState(false);
   const [isShowsOpen, setIsShowsOpen] = useState(false);
   const [isShopsOpen, setIsShopsOpen] = useState(false);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const mainRef = useRef<HTMLDivElement>(null);
-  const kennelRef = useRef<HTMLDivElement>(null);
-  const breedingRef = useRef<HTMLDivElement>(null);
-  const showsRef = useRef<HTMLDivElement>(null);
-  const shopsRef = useRef<HTMLDivElement>(null);
-  const communityRef = useRef<HTMLDivElement>(null);
-  const supportRef = useRef<HTMLDivElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+
+  // Handle accessibility classes on HTML element
+  useEffect(() => {
+    const root = document.documentElement;
+
+    // Cleanup old classes
+    const classesToRemove = [
+      'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly',
+      'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly',
+      'high-contrast', 'use-opendyslexic', 'reduced-motion',
+      'underline-links', 'high-visibility-focus', 'simplified-ui'
+    ];
+    root.classList.remove(...classesToRemove);
+    root.classList.remove('font-size-small', 'font-size-normal', 'font-size-large', 'font-size-xl');
+    root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
+
+    // Apply new classes
+    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
+    if (highContrast) root.classList.add('high-contrast');
+    if (useOpenDyslexic) root.classList.add('use-opendyslexic');
+    if (reducedMotion) root.classList.add('reduced-motion');
+    if (alwaysUnderlineLinks) root.classList.add('underline-links');
+    if (highVisibilityFocus) root.classList.add('high-visibility-focus');
+    if (simplifiedUI) root.classList.add('simplified-ui');
+
+    root.classList.add(`font-size-${fontSize}`);
+    root.classList.add(`text-spacing-${textSpacing}`);
+
+    // Apply SVG filter for colorblindness
+    if (colorblindMode !== 'none') {
+      root.style.filter = `url(#${colorblindMode})`;
+    } else {
+      root.style.filter = '';
+    }
+  }, [
+    colorblindMode, highContrast, fontSize, useOpenDyslexic,
+    reducedMotion, alwaysUnderlineLinks, highVisibilityFocus,
+    simplifiedUI, textSpacing
+  ]);
 
   useEffect(() => {
-    initializeGame();
-
-    function handleClickOutside(event: MouseEvent) {
-      const target = event.target as Node;
-
-      // If mobile menu is open, don't let handleClickOutside close individual categories
-      // as they share state and it will cause sub-links to collapse before navigation
-      if (isMobileMenuOpen) {
-        if (mobileMenuRef.current && mobileMenuRef.current.contains(target))
-          return;
-      }
-
-      if (mainRef.current && !mainRef.current.contains(target))
-        setIsMainOpen(false);
-      if (kennelRef.current && !kennelRef.current.contains(target))
-        setIsKennelOpen(false);
-      if (breedingRef.current && !breedingRef.current.contains(target))
-        setIsBreedingOpen(false);
-      if (showsRef.current && !showsRef.current.contains(target))
-        setIsShowsOpen(false);
-      if (shopsRef.current && !shopsRef.current.contains(target))
-        setIsShopsOpen(false);
-      if (communityRef.current && !communityRef.current.contains(target))
-        setIsCommunityOpen(false);
-      if (supportRef.current && !supportRef.current.contains(target))
-        setIsSupportOpen(false);
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
+  }, [isDarkMode]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [initializeGame, isMobileMenuOpen]);
+  }, []);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    const classes = ["font-size-" + fontSize, "text-spacing-" + textSpacing];
-    if (isDarkMode) classes.push("dark");
-    if (colorblindMode) classes.push("colorblind-mode");
-    if (highContrast) classes.push("high-contrast");
-    if (useOpenDyslexic) classes.push("use-opendyslexic");
-    if (reducedMotion) classes.push("reduced-motion");
-    if (alwaysUnderlineLinks) classes.push("underline-links");
-    if (highVisibilityFocus) classes.push("high-visibility-focus");
-    if (simplifiedUI) classes.push("simplified-ui");
-
-    // Remove old classes
-    const allPossible = [
-      "dark",
-      "colorblind-mode",
-      "high-contrast",
-      "use-opendyslexic",
-      "reduced-motion",
-      "underline-links",
-      "high-visibility-focus",
-      "simplified-ui",
-      "font-size-small",
-      "font-size-normal",
-      "font-size-large",
-      "font-size-xl",
-      "text-spacing-normal",
-      "text-spacing-wide",
-      "text-spacing-extra",
-    ];
-    root.classList.remove(...allPossible);
-    root.classList.add(...classes);
-  }, [
-    isDarkMode,
-    colorblindMode,
-    highContrast,
-    fontSize,
-    useOpenDyslexic,
-    reducedMotion,
-    alwaysUnderlineLinks,
-    highVisibilityFocus,
-    simplifiedUI,
-    textSpacing,
-  ]);
+  const bannerUrl =
+    "https://images.unsplash.com/photo-1474511320721-9a6ee39b4c18?auto=format&fit=crop&q=80&w=2000";
+  const bannerPosition = "40%";
 
   return (
     <div className="min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500">
+      <ColorblindFilters />
+      <TutorialTour />
       {/* Top Utility Bar */}
       <div
-        className="bg-moab text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
+        className="bg-stone-900 text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
         role="region"
         aria-label="User and Game Status"
       >
@@ -248,581 +230,429 @@ export default function LayoutClient({
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-ink max-w-2xl">
-              <h2 className="text-5xl sm:text-7xl font-folksy tracking-tight leading-[0.85] text-earth-900">
-                Welcome
-                <br />
-                Home
-              </h2>
-              <div className="h-1.5 lg:w-24 bg-apricot mt-6 mb-4 rounded-full"></div>
-              <p className="font-bold sm:text-xl tracking-tight uppercase font-rounded text-foreground/80 drop-shadow-sm">
-                Professional Red Fox Breeding Simulation
-              </p>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-4 group mb-4"
+              >
+                <div className="relative">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 group-hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
+                    <PawPrint
+                      className="text-white -rotate-3 group-hover:-rotate-6 transition-transform"
+                      size={40}
+                    />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg">
+                    <Star className="text-white" size={12} />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-4xl sm:text-6xl font-folksy tracking-tight leading-none">
+                    Red Fox <span className="text-primary">Simulator</span>
+                  </h1>
+                  <p className="text-xs sm:text-sm font-black uppercase tracking-[0.3em] opacity-60 mt-2">
+                    Est. {year} • Rare Genetics • Show Excellence
+                  </p>
+                </div>
+              </Link>
             </div>
           </div>
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 p-8 hidden lg:block opacity-20 pointer-events-none">
+          <PawPrint size={120} className="rotate-12" />
         </div>
       </div>
 
-      {/* Navigation Header */}
-      <header className="bg-background/80 backdrop-blur-md text-foreground sticky top-0 z-50 border-b border-border shadow-sm transition-colors duration-500">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo and Desktop Nav */}
-            <div className="flex items-center gap-12">
-              <div className="flex items-center gap-3 group shrink-0">
-                <button
-                  className="p-3 bg-apricot rounded-[1.2rem] hover:bg-fire-400 transition-all hover:rotate-6 shadow-xl shadow-apricot/20 cursor-help border-none outline-none"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleAdminMode();
-                  }}
-                  title="Toggle Admin Mode"
-                >
-                  <PawPrint size={28} className="text-white" />
-                </button>
-                <Link
-                  href="/"
-                  className="flex flex-col hover:opacity-80 transition-opacity"
-                >
-                  <span className="text-2xl font-folksy tracking-tight leading-none text-foreground">
-                    Red Fox
-                  </span>
-                  <span className="text-[11px] font-black tracking-[0.3em] text-secondary uppercase leading-none mt-1 opacity-80">
-                    Simulator v2
-                  </span>
-                </Link>
-              </div>
-
-              <nav className="hidden xl:flex items-center gap-2 flex-1 justify-center max-w-5xl">
-                {/* Main Dropdown */}
-                <Dropdown
-                  label="Main"
-                  icon={<Home size={18} />}
-                  isOpen={isMainOpen}
-                  setIsOpen={setIsMainOpen}
-                  dropdownRef={mainRef}
-                >
-                  <DropdownLink
-                    href="/news"
-                    icon={<Info size={16} />}
-                    label="Game News"
-                    onClick={() => setIsMainOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Kennel Dropdown */}
-                <Dropdown
-                  label="Kennel"
-                  icon={<Home size={18} />}
-                  isOpen={isKennelOpen}
-                  setIsOpen={setIsKennelOpen}
-                  dropdownRef={kennelRef}
-                >
-                  <DropdownLink
-                    href="/kennel"
-                    icon={<PawPrint size={16} />}
-                    label="My Foxes"
-                    onClick={() => setIsKennelOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/inventory"
-                    icon={<Package size={16} />}
-                    label="Inventory"
-                    onClick={() => setIsKennelOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Breeding Dropdown */}
-                <Dropdown
-                  label="Breeding"
-                  icon={<Heart size={18} />}
-                  isOpen={isBreedingOpen}
-                  setIsOpen={setIsBreedingOpen}
-                  dropdownRef={breedingRef}
-                >
-                  <DropdownLink
-                    href="/breeding"
-                    icon={<Heart size={16} />}
-                    label="Breeding Center"
-                    onClick={() => setIsBreedingOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/stud-barn"
-                    icon={<Shield size={16} />}
-                    label="Stud Barn"
-                    onClick={() => setIsBreedingOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Shows Dropdown */}
-                <Dropdown
-                  label="Shows"
-                  icon={<Trophy size={18} />}
-                  isOpen={isShowsOpen}
-                  setIsOpen={setIsShowsOpen}
-                  dropdownRef={showsRef}
-                >
-                  <DropdownLink
-                    href="/shows"
-                    icon={<Trophy size={16} />}
-                    label="Competitive Shows"
-                    onClick={() => setIsShowsOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/quests"
-                    icon={<CheckSquare size={16} />}
-                    label="Quests & Achievements"
-                    onClick={() => setIsShowsOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Shops Dropdown */}
-                <Dropdown
-                  label="Shops"
-                  icon={<ShoppingBag size={18} />}
-                  isOpen={isShopsOpen}
-                  setIsOpen={setIsShopsOpen}
-                  dropdownRef={shopsRef}
-                >
-                  <DropdownLink
-                    href="/shop/adoption"
-                    icon={<Baby size={16} />}
-                    label="Foundation Adoption"
-                    onClick={() => setIsShopsOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/shop/supplies"
-                    icon={<Package size={16} />}
-                    label="Supplies & Feeds"
-                    onClick={() => setIsShopsOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/shop/staff"
-                    icon={<UserPlus size={16} />}
-                    label="Staff & Services"
-                    onClick={() => setIsShopsOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/shop/marketplace"
-                    icon={<Store size={16} />}
-                    label="Marketplace"
-                    onClick={() => setIsShopsOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/shop/custom"
-                    icon={<Star size={16} />}
-                    label="Custom Foxes"
-                    onClick={() => setIsShopsOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Community Dropdown */}
-                <Dropdown
-                  label="Community"
-                  icon={<Users size={18} />}
-                  isOpen={isCommunityOpen}
-                  setIsOpen={setIsCommunityOpen}
-                  dropdownRef={communityRef}
-                >
-                  <DropdownLink
-                    href="/forum"
-                    icon={<MessageSquare size={16} />}
-                    label="Forums"
-                    onClick={() => setIsCommunityOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/members"
-                    icon={<User size={16} />}
-                    label="Members"
-                    onClick={() => setIsCommunityOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/coming-soon"
-                    icon={<ExternalLink size={16} />}
-                    label="Discord Server"
-                    onClick={() => setIsCommunityOpen(false)}
-                  />
-                </Dropdown>
-
-                {/* Support Dropdown */}
-                <Dropdown
-                  label="Support"
-                  icon={<LifeBuoy size={18} />}
-                  isOpen={isSupportOpen}
-                  setIsOpen={setIsSupportOpen}
-                  dropdownRef={supportRef}
-                >
-                  <DropdownLink
-                    href="/help"
-                    icon={<HelpCircle size={16} />}
-                    label="Help Center"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/faq"
-                    icon={<Info size={16} />}
-                    label="FAQ"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/privacy"
-                    icon={<Shield size={16} />}
-                    label="Privacy Policy"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/tos"
-                    icon={<Shield size={16} />}
-                    label="Terms of Service"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/coming-soon"
-                    icon={<Rocket size={16} />}
-                    label="Roadmap"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                  <DropdownLink
-                    href="/contact"
-                    icon={<MessageSquare size={16} />}
-                    label="Contact Staff"
-                    onClick={() => setIsSupportOpen(false)}
-                  />
-                </Dropdown>
-              </nav>
-
-              {/* Desktop Search / Utility */}
-              <div className="hidden xl:flex items-center gap-4 ml-auto">
-                <div className="flex items-center gap-2 mr-2">
-                  <button className="flex items-center gap-2 px-5 py-2 hover:bg-muted rounded-full text-foreground/70 font-black text-[10px] uppercase tracking-widest transition-all">
-                    <User size={14} /> Login
-                  </button>
-                  <button className="flex items-center gap-2 px-5 py-2 bg-secondary hover:bg-secondary/80 rounded-full text-white font-black text-[10px] uppercase tracking-widest transition-all shadow-md shadow-secondary/10">
-                    <UserPlus size={14} /> Register
-                  </button>
-                </div>
-
-                <div className="h-8 w-px bg-border mx-1"></div>
-
-                {isAdmin && (
-                  <Link
-                    href="/admin"
-                    className="flex items-center gap-2 px-6 py-2.5 bg-primary hover:bg-primary/80 rounded-full text-primary-foreground font-black text-[10px] uppercase tracking-widest transition-all shadow-lg shadow-primary/20"
-                  >
-                    <Settings size={14} /> Admin Access
-                  </Link>
+      {/* Main Navigation */}
+      <nav className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-sagebrush/10 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-20">
+            {/* Desktop Navigation */}
+            <div className="hidden xl:flex items-center gap-2">
+              <Link
+                href="/kennel"
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
+                  pathname === "/kennel"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "text-foreground hover:bg-muted opacity-80 hover:opacity-100",
                 )}
-                <button className="p-2.5 bg-muted rounded-full text-foreground/70 hover:bg-primary/10 hover:text-primary transition-colors">
-                  <Search size={20} />
-                </button>
-              </div>
+              >
+                <Home size={18} /> Kennel
+              </Link>
+
+              <div className="h-6 w-px bg-border mx-2" />
+
+              <Dropdown
+                label="Shops"
+                icon={<ShoppingBag size={18} />}
+                isOpen={isShopsOpen}
+                setIsOpen={setIsShopsOpen}
+                dropdownRef={useRef(null)}
+              >
+                <DropdownLink
+                  href="/shop/adoption"
+                  icon={<Baby size={16} />}
+                  label="Foundations"
+                  onClick={() => setIsShopsOpen(false)}
+                />
+                <DropdownLink
+                  href="/shop/supplies"
+                  icon={<Package size={16} />}
+                  label="Supplies"
+                  onClick={() => setIsShopsOpen(false)}
+                />
+                <DropdownLink
+                  href="/shop/staff"
+                  icon={<UserPlus size={16} />}
+                  label="Staff"
+                  onClick={() => setIsShopsOpen(false)}
+                />
+                <DropdownLink
+                  href="/shop/marketplace"
+                  icon={<Store size={16} />}
+                  label="Market"
+                  onClick={() => setIsShopsOpen(false)}
+                />
+                <DropdownLink
+                  href="/shop/custom"
+                  icon={<Star size={16} />}
+                  label="Customs"
+                  onClick={() => setIsShopsOpen(false)}
+                />
+              </Dropdown>
+
+              <Dropdown
+                label="Shows"
+                icon={<Trophy size={18} />}
+                isOpen={isShowsOpen}
+                setIsOpen={setIsShowsOpen}
+                dropdownRef={useRef(null)}
+              >
+                <DropdownLink
+                  href="/shows"
+                  icon={<Trophy size={16} />}
+                  label="Arena"
+                  onClick={() => setIsShowsOpen(false)}
+                />
+                <DropdownLink
+                  href="/quests"
+                  icon={<CheckSquare size={16} />}
+                  label="Quests"
+                  onClick={() => setIsShowsOpen(false)}
+                />
+              </Dropdown>
+
+              <Dropdown
+                label="Breeding"
+                icon={<Heart size={18} />}
+                isOpen={isBreedingOpen}
+                setIsOpen={setIsBreedingOpen}
+                dropdownRef={useRef(null)}
+              >
+                <DropdownLink
+                  href="/breeding"
+                  icon={<Heart size={16} />}
+                  label="Center"
+                  onClick={() => setIsBreedingOpen(false)}
+                />
+                <DropdownLink
+                  href="/stud-barn"
+                  icon={<Shield size={16} />}
+                  label="Studs"
+                  onClick={() => setIsBreedingOpen(false)}
+                />
+              </Dropdown>
+
+              <Dropdown
+                label="Community"
+                icon={<Users size={18} />}
+                isOpen={isCommunityOpen}
+                setIsOpen={setIsCommunityOpen}
+                dropdownRef={useRef(null)}
+              >
+                <DropdownLink
+                  href="/forum"
+                  icon={<MessageSquare size={16} />}
+                  label="Forums"
+                  onClick={() => setIsCommunityOpen(false)}
+                />
+                <DropdownLink
+                  href="/members"
+                  icon={<User size={16} />}
+                  label="Search"
+                  onClick={() => setIsCommunityOpen(false)}
+                />
+              </Dropdown>
             </div>
 
-            {/* Mobile Menu Trigger */}
-            <button
-              type="button"
-              className="xl:hidden p-2 text-foreground/70 hover:bg-muted rounded-lg ml-auto relative z-[60]"
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              aria-label="Toggle mobile menu"
-            >
-              <Menu size={24} />
-            </button>
+            {/* Logo area (center/left on mobile) */}
+            <div className="flex items-center xl:hidden">
+              <Link href="/" className="font-folksy text-2xl text-primary">
+                RF<span className="text-secondary">Sim</span>
+              </Link>
+            </div>
+
+            {/* Profile/Actions Area */}
+            <div className="flex items-center gap-3">
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-3 p-1.5 pr-4 rounded-[1.5rem] border border-border bg-card hover:bg-muted transition-all shadow-sm"
+                >
+                  <div className="w-10 h-10 rounded-2xl bg-sagebrush/20 flex items-center justify-center text-sagebrush">
+                    <User size={20} />
+                  </div>
+                  <div className="hidden sm:block text-left">
+                    <p className="text-xs font-black uppercase tracking-wider leading-none">
+                      Kennel #123
+                    </p>
+                    <p className="text-[10px] text-muted-foreground font-bold mt-1 uppercase">
+                      Pro Member
+                    </p>
+                  </div>
+                  <ChevronDown
+                    size={14}
+                    className={cn(
+                      "transition-transform",
+                      isProfileOpen ? "rotate-180" : "",
+                    )}
+                  />
+                </button>
+
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-3 w-64 rounded-[2rem] bg-card border-2 border-primary/10 py-3 shadow-2xl z-[60] animate-in fade-in zoom-in slide-in-from-top-4">
+                    <div className="px-6 py-4 border-b border-border mb-2">
+                      <p className="text-xs font-black uppercase text-primary">
+                        Your Account
+                      </p>
+                      <p className="text-[10px] text-muted-foreground font-bold mt-0.5">
+                        Member since Year 1
+                      </p>
+                    </div>
+                    <DropdownLink
+                      href="/kennel"
+                      icon={<PawPrint size={16} />}
+                      label="Dashboard"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <DropdownLink
+                      href="/inventory"
+                      icon={<Package size={16} />}
+                      label="Inventory"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <DropdownLink
+                      href="/settings"
+                      icon={<Settings size={16} />}
+                      label="Settings"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <div className="my-2 border-t border-border mx-4" />
+                    <button className="w-full flex items-center gap-3 px-6 py-3 text-red-500 hover:bg-red-50 transition-colors">
+                      <LogOut size={16} />
+                      <span className="text-xs font-black uppercase tracking-wide">
+                        Logout
+                      </span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"
+              >
+                <Menu size={24} />
+              </button>
+            </div>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Main Content */}
-      <main className="flex-1 w-full p-4 sm:p-6 lg:p-8">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative">
         {children}
-        <TutorialTour />
       </main>
 
-      {/* Site Map & Legal Footer */}
-      <footer className="bg-card text-foreground border-t border-border pt-8 transition-colors duration-500">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-12 mb-10">
-            {/* Branding Column */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-sagebrush rounded-2xl">
-                  <PawPrint size={24} className="text-white" />
+      {/* Footer */}
+      <footer className="bg-card border-t border-border py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-12">
+            <div className="col-span-2 lg:col-span-2">
+              <Link href="/" className="inline-flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
+                  <PawPrint size={24} />
                 </div>
-                <span className="text-2xl font-folksy text-foreground tracking-tight">
-                  Red Fox Simulator
+                <span className="font-folksy text-2xl">
+                  Red Fox <span className="text-primary">Sim</span>
                 </span>
-              </div>
-              <p className="text-[13px] leading-relaxed max-w-xs font-medium text-foreground opacity-70">
-                The world&apos;s premier digital kennel management system for
-                red fox enthusiasts. Compete, breed, and build your legacy in
-                our thriving community.
+              </Link>
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-6">
+                The premier fox breeding and showing simulator. Dive into
+                complex genetics, compete for prestige, and build your legacy.
               </p>
               <div className="flex gap-4">
-                <button className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all text-foreground/70 border border-border">
-                  <MessageSquare size={18} />
-                </button>
-                <button className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all text-foreground/70 border border-border">
-                  <Users size={18} />
-                </button>
-                <button className="w-12 h-12 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all text-foreground/70 border border-border">
-                  <ExternalLink size={18} />
-                </button>
+                {/* Social placeholders */}
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center hover:bg-primary/20 transition-colors cursor-pointer"
+                  >
+                    <div className="w-4 h-4 bg-muted-foreground/40 rounded-sm" />
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className="space-y-6">
-              <h4 className="text-foreground font-folksy text-lg flex items-center gap-2 pb-3 border-b border-border">
-                Game Center
-              </h4>
-              <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/news"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Game News
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/faq"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Frequently Asked Questions
-                  </Link>
-                </li>
-                {isAdmin && (
-                  <li>
-                    <Link
-                      href="/admin"
-                      className="text-primary hover:text-fire-400 transition-colors"
-                    >
-                      Admin Panel
-                    </Link>
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            <div className="space-y-6">
-              <h4 className="text-foreground font-folksy text-lg flex items-center gap-2 pb-3 border-b border-border">
+            <div>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 text-foreground/40">
                 Kennel
               </h4>
-              <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
+              <ul className="space-y-4 text-sm font-bold">
                 <li>
                   <Link
-                    href="/kennel?tab=dashboard"
-                    className="hover:text-primary transition-colors"
+                    href="/kennel"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     Dashboard
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/kennel"
-                    className="hover:text-primary transition-colors"
-                  >
-                    My Foxes
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     href="/inventory"
-                    className="hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Stockpile
+                    Inventory
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/breeding"
-                    className="hover:text-primary transition-colors"
+                    href="/stud-barn"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Breeding Center
+                    Stud Barn
                   </Link>
                 </li>
               </ul>
             </div>
 
-            <div className="space-y-6">
-              <h4 className="text-foreground font-folksy text-lg flex items-center gap-2 pb-3 border-b border-border">
-                Economy
+            <div>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 text-foreground/40">
+                Game
               </h4>
-              <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
-                <li>
-                  <Link
-                    href="/shop/adoption"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Foundation Adopt
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/shop/marketplace"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Player Market
-                  </Link>
-                </li>
+              <ul className="space-y-4 text-sm font-bold">
                 <li>
                   <Link
                     href="/shop/supplies"
-                    className="hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Supplies & Feeds
+                    Market
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/shop/custom"
-                    className="hover:text-primary transition-colors"
+                    href="/shows"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Custom Designer
+                    Show Arena
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/forum"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Forums
                   </Link>
                 </li>
               </ul>
             </div>
 
-            <div className="space-y-6">
-              <h4 className="text-foreground font-folksy text-lg flex items-center gap-2 pb-3 border-b border-border">
-                Support & Community
+            <div>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] mb-6 text-foreground/40">
+                Support
               </h4>
-              <ul className="space-y-3 text-xs font-bold uppercase tracking-widest text-foreground opacity-60">
+              <ul className="space-y-4 text-sm font-bold">
                 <li>
                   <Link
                     href="/help"
-                    className="hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     Help Center
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/faq"
-                    className="hover:text-primary transition-colors"
+                    href="/tos"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Frequently Asked Questions
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/forum"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Discussion Forums
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/members"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Staff Directory
+                    Terms
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/privacy"
-                    className="hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/tos"
-                    className="hover:text-primary transition-colors"
-                  >
-                    Terms of Service
+                    Privacy
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center py-6 border-t border-border gap-6 text-[11px] font-bold uppercase tracking-[0.2em] text-foreground opacity-60">
-            <div className="flex items-center gap-8">
-              <span className="flex items-center gap-2 text-sagebrush">
-                <Shield size={16} className="opacity-70" /> Verified Kennel
-                System
+          <div className="mt-12 sm:mt-16 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-6">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              © {new Date().getFullYear()} Red Fox Simulator. All rights
+              reserved.
+            </p>
+            <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest">
+              <span className="flex items-center gap-2">
+                <ShieldCheck size={14} className="text-secondary" /> Secure
+                Gameplay
               </span>
-              <span className="opacity-50 border-l border-moab/20 pl-8">
-                Build v2.4.1
+              <span className="flex items-center gap-2">
+                <Heart size={14} className="text-primary" /> Community Driven
               </span>
-            </div>
-            <div className="flex flex-col items-center md:items-end gap-2 text-right">
-              <div className="opacity-50">
-                &copy; 2024 Red Fox Breeding Simulator.
-              </div>
-              <Link
-                href="/privacy#do-not-sell"
-                className="opacity-40 hover:opacity-100 hover:text-fire-600 transition-all uppercase tracking-widest text-[9px]"
-              >
-                Do Not Sell My Personal Information
-              </Link>
             </div>
           </div>
         </div>
       </footer>
 
-      {/* Mobile Navigation Menu Refined */}
+      {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
         <>
-          {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90] xl:hidden animate-in fade-in duration-300"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[70] animate-in fade-in"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-
-          {/* Right Side Drawer */}
-          <div
-            className="xl:hidden fixed top-0 right-0 bottom-0 w-[300px] z-[100] bg-background shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 border-l border-border"
-            ref={mobileMenuRef}
-          >
+          <div className="fixed inset-y-0 right-0 w-[320px] bg-card z-[80] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
             {/* Drawer Header */}
-            <div className="h-20 flex items-center justify-between px-6 border-b border-border bg-muted/30">
-              <div className="flex flex-col">
-                <span className="text-xl font-folksy tracking-tight text-foreground">
-                  Menu
-                </span>
-                <span className="text-[10px] font-black tracking-[0.2em] text-secondary uppercase opacity-70">
-                  Navigation
-                </span>
+            <div className="p-6 border-b border-border flex items-center justify-between bg-primary/5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white">
+                  <PawPrint size={20} />
+                </div>
+                <div>
+                  <h4 className="font-folksy text-lg text-foreground">Menu</h4>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary/60">
+                    Navigation
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 hover:bg-muted rounded-full transition-colors text-foreground/50 hover:text-foreground"
+                className="p-2.5 hover:bg-muted rounded-2xl transition-colors border border-border"
               >
-                <X size={20} />
+                <X size={24} />
               </button>
             </div>
 
-            {/* Menu Links */}
-            <div className="flex-1 overflow-y-auto py-4">
-              <div className="flex flex-col gap-1">
-                <div className="px-6 py-2 text-[10px] font-black text-foreground/40 uppercase tracking-[0.2em]">
-                  Quick Links
-                </div>
-                <MobileNavLink
-                  href="/"
-                  icon={<Home size={18} />}
-                  label="Home"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
-                <MobileNavLink
-                  href="/news"
-                  icon={<Info size={18} />}
-                  label="Game News"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                />
+            {/* Drawer Content */}
+            <div className="flex-grow overflow-y-auto custom-scrollbar">
+              <div className="p-4 space-y-2">
                 {isAdmin && (
                   <MobileNavLink
                     href="/admin"
