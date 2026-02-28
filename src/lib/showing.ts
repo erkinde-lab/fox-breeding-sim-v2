@@ -380,10 +380,3 @@ export function isFoxEligibleForShow(
 
   return true;
 }
-
-export function runSpecificShow(): any {
-  return null;
-}
-export function runShow(): any {
-  return null;
-}

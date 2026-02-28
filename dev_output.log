@@ -11,3 +11,6 @@
 ○ Compiling / ...
  GET / 200 in 5.0s (compile: 4.6s, render: 393ms)
  GET /shows 200 in 1292ms (compile: 1134ms, render: 158ms)
+ HEAD /help 200 in 2.6s (compile: 2.3s, render: 306ms)
+ HEAD /help 200 in 112ms (compile: 6ms, render: 106ms)
+ GET /help 200 in 131ms (compile: 11ms, render: 120ms)
