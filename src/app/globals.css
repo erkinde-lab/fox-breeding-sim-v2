@@ -235,3 +235,94 @@ h6 {
   display: none;
   /* Chrome, Safari and Opera */
 }
+/* Accessibility Themes */
+
+/* Universal Colorblind Theme (using a high-contrast palette often used for accessibility) */
+.colorblind-mode {
+  --primary: #0072B2; /* Vermillion */
+  --secondary: #009E73; /* Bluish Green */
+  --accent: #E69F00; /* Orange */
+  --ring: #0072B2;
+  --shadow-primary: rgba(0, 114, 178, 0.35);
+  --shadow-secondary: rgba(0, 158, 115, 0.25);
+}
+
+/* High Contrast Theme */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #00ffff;
+  --secondary-foreground: #000000;
+  --muted: #1a1a1a;
+  --muted-foreground: #ffffff;
+  --accent: #ff00ff;
+  --accent-foreground: #000000;
+  --border: #ffffff;
+  --input: #ffffff;
+  --ring: #ffff00;
+  --banner-overlay: rgba(0, 0, 0, 0.9);
+  --card-shadow: none;
+  --card-shadow-hover: none;
+  --shadow-primary: rgba(255, 255, 0, 0.5);
+  --shadow-secondary: rgba(0, 255, 255, 0.5);
+}
+
+.high-contrast * {
+  border-color: #ffffff !important;
+}
+
+/* Font Size Presets */
+.font-size-small {
+  font-size: 14px;
+}
+.font-size-normal {
+  font-size: 16px;
+}
+.font-size-large {
+  font-size: 18px;
+}
+.font-size-xl {
+  font-size: 20px;
+}
+
+/* OpenDyslexic Support */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('https://cdn.jsdelivr.net/npm/opendyslexic@1.0.3/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.use-opendyslexic {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+.use-opendyslexic h1,
+.use-opendyslexic h2,
+.use-opendyslexic h3,
+.use-opendyslexic h4,
+.use-opendyslexic h5,
+.use-opendyslexic h6 {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+/* Reduced Motion */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Always Underline Links */
+.underline-links a {
+  text-decoration: underline !important;
+}

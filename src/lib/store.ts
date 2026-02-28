@@ -214,6 +214,12 @@ interface GameState {
   isDarkMode: boolean;
   hasSeenTutorial: boolean;
   tutorialStep: number | null;
+  colorblindMode: boolean;
+  highContrast: boolean;
+  fontSize: "small" | "normal" | "large" | "xl";
+  useOpenDyslexic: boolean;
+  reducedMotion: boolean;
+  alwaysUnderlineLinks: boolean;
 
   advanceTime: () => void;
   breedFoxes: (dogId: string, vixenId: string) => void;
@@ -235,6 +241,12 @@ interface GameState {
   initializeGame: () => void;
   setBannerUrl: (url: string) => void;
   setBannerPosition: (pos: string) => void;
+  toggleColorblindMode: () => void;
+  toggleHighContrast: () => void;
+  setFontSize: (size: "small" | "normal" | "large" | "xl") => void;
+  toggleOpenDyslexic: () => void;
+  toggleReducedMotion: () => void;
+  toggleAlwaysUnderlineLinks: () => void;
   toggleDarkMode: () => void;
   checkAdoptionReset: () => void;
   buyFoundationalFox: () => void;
@@ -429,6 +441,12 @@ export const useGameStore = create<GameState>()(
       adminLogs: [],
       hasSeenTutorial: false,
       tutorialStep: null,
+      colorblindMode: false,
+      highContrast: false,
+      fontSize: "normal",
+      useOpenDyslexic: false,
+      reducedMotion: false,
+      alwaysUnderlineLinks: false,
       isDarkMode: false,
 
       checkAchievements: () => {
@@ -1474,14 +1492,41 @@ export const useGameStore = create<GameState>()(
             m.id === memberId ? { ...m, isBanned: true } : m,
           ),
         })),
+      toggleColorblindMode: () =>
+        set((state: GameState) => ({ colorblindMode: !state.colorblindMode })),
+      toggleHighContrast: () =>
+        set((state: GameState) => ({ highContrast: !state.highContrast })),
+      setFontSize: (size: "small" | "normal" | "large" | "xl") =>
+        set({ fontSize: size }),
+      toggleOpenDyslexic: () =>
+        set((state: GameState) => ({
+          useOpenDyslexic: !state.useOpenDyslexic,
+        })),
+      toggleReducedMotion: () =>
+        set((state: GameState) => ({ reducedMotion: !state.reducedMotion })),
+      toggleAlwaysUnderlineLinks: () =>
+        set((state: GameState) => ({
+          alwaysUnderlineLinks: !state.alwaysUnderlineLinks,
+        })),
       toggleDarkMode: () =>
         set((state: GameState) => ({ isDarkMode: !state.isDarkMode })),
     }),
     {
       name: "red-fox-sim-storage",
-      version: 3,
+      version: 4,
       migrate: (persistedState: unknown, version: number) => {
-        if (version < 2) return undefined;
+        if (version < 4) {
+          const state = persistedState as any;
+          return {
+            ...state,
+            colorblindMode: state.colorblindMode ?? false,
+            highContrast: state.highContrast ?? false,
+            fontSize: state.fontSize ?? "normal",
+            useOpenDyslexic: state.useOpenDyslexic ?? false,
+            reducedMotion: state.reducedMotion ?? false,
+            alwaysUnderlineLinks: state.alwaysUnderlineLinks ?? false,
+          };
+        }
         return persistedState;
       },
       partialize: (state) => state,
