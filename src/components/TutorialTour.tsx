@@ -1,71 +1,101 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { useGameStore } from '@/lib/store';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { X, ChevronRight, ChevronLeft, Info, HelpCircle, Heart, Trophy, ShoppingBag, Home, Diamond, ShieldCheck } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
+import React, { useEffect } from "react";
+import { useGameStore } from "@/lib/store";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import {
+  X,
+  ChevronRight,
+  ChevronLeft,
+  Info,
+  HelpCircle,
+  Heart,
+  Trophy,
+  ShoppingBag,
+  Home,
+  Diamond,
+  Settings,
+  ShieldCheck,
+} from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const steps = [
   {
     title: "Welcome to Red Fox Simulator!",
-    content: "We're excited to have you! You've been given 10,000 Gold and 100 Gems to start building your fox legacy. Let's take a quick tour.",
+    content:
+      "We're excited to have you! You've been given 10,000 Gold and 100 Gems to start building your fox legacy. Let's take a quick tour.",
     icon: <Info className="text-primary" size={24} />,
     path: "/",
   },
   {
     title: "The Rules of the Game",
-    content: "Your goal is to breed, raise, and show high-quality red foxes. Keep them healthy, compete in shows for gold, and build a world-class kennel through careful genetic selection.",
+    content:
+      "Your goal is to breed, raise, and show high-quality red foxes. Keep them healthy, compete in shows for gold, and build a world-class kennel through careful genetic selection.",
     icon: <ShieldCheck className="text-secondary" size={24} />,
     path: "/",
   },
   {
     title: "Your First Foxes",
-    content: "Start your breeding program at the Adoption Kennel. Here you can find 'Foundational' foxes with known pedigrees to get you started.",
+    content:
+      "Start your breeding program at the Adoption Kennel. Here you can find 'Foundational' foxes with known pedigrees to get you started.",
     icon: <Heart className="text-red-500" size={24} />,
     path: "/shop/adoption",
   },
   {
     title: "The Custom Designer",
-    content: "Want a specific look or genetic trait? Use your Gems here to design a fox from scratch with a precise genetic blueprint.",
+    content:
+      "Want a specific look or genetic trait? Use your Gems here to design a fox from scratch with a precise genetic blueprint.",
     icon: <Diamond className="text-cyan-500" size={24} />,
     path: "/shop/custom",
   },
   {
     title: "Supplies & Feed",
-    content: "Foxes need daily care. Buy basic kibble or premium specialty feeds here. Some feeds even provide temporary stat bonuses for shows!",
+    content:
+      "Foxes need daily care. Buy basic kibble or premium specialty feeds here. Some feeds even provide temporary stat bonuses for shows!",
     icon: <ShoppingBag className="text-amber-500" size={24} />,
     path: "/shop/supplies",
   },
   {
     title: "Kennel Management",
-    content: "This is your home base. Here you'll feed, groom, and train your foxes. Healthy, well-cared-for foxes perform significantly better in the show ring.",
+    content:
+      "This is your home base. Here you'll feed, groom, and train your foxes. Healthy, well-cared-for foxes perform significantly better in the show ring.",
     icon: <Home className="text-sagebrush" size={24} />,
     path: "/kennel",
   },
   {
     title: "The Show Arena",
-    content: "Test your foxes against the community! Entering shows earns you Gold and increases your kennel's reputation based on your fox's physical traits.",
+    content:
+      "Test your foxes against the community! Entering shows earns you Gold and increases your kennel's reputation based on your fox's physical traits.",
     icon: <Trophy className="text-yellow-500" size={24} />,
     path: "/shows",
   },
   {
     title: "Breeding & Studs",
-    content: "Breed your vixens with your own dogs or hire high-quality NPC studs. Study genotypes carefully to produce the best possible offspring.",
+    content:
+      "Breed your vixens with your own dogs or hire high-quality NPC studs. Study genotypes carefully to produce the best possible offspring.",
     icon: <Heart className="text-pink-500" size={24} />,
     path: "/stud-barn",
   },
   {
+    title: "Personalization & Accessibility",
+    content:
+      "We want everyone to enjoy the game. Head to the Settings page to adjust font sizes, contrast, colorblind themes, and more to suit your needs.",
+    icon: <Settings className="text-stone-600" size={24} />,
+    path: "/settings",
+  },
+  {
     title: "Help & Resources",
-    content: "Genetics and showing can be complex. If you have questions, our Help Center and FAQ contain detailed guides on everything from loci to show classes.",
+    content:
+      "Genetics and showing can be complex. If you have questions, our Help Center and FAQ contain detailed guides on everything from loci to show classes.",
     icon: <HelpCircle className="text-blue-500" size={24} />,
     path: "/help",
-  }
+  },
 ];
 
 export function TutorialTour() {
-  const { tutorialStep, setTutorialStep, completeTutorial, hasSeenTutorial } = useGameStore();
+  const { tutorialStep, setTutorialStep, completeTutorial, hasSeenTutorial } =
+    useGameStore();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -123,16 +153,22 @@ export function TutorialTour() {
                 {currentStep.icon}
               </div>
               <div>
-                <h3 className="font-folksy text-xl text-foreground leading-none">{currentStep.title}</h3>
+                <h3 className="font-folksy text-xl text-foreground leading-none">
+                  {currentStep.title}
+                </h3>
                 <div className="flex items-center gap-2 mt-1.5">
                   <div className="h-1.5 w-24 bg-muted rounded-full overflow-hidden">
                     <motion.div
                       className="h-full bg-primary"
                       initial={{ width: 0 }}
-                      animate={{ width: `${((tutorialStep + 1) / steps.length) * 100}%` }}
+                      animate={{
+                        width: `${((tutorialStep + 1) / steps.length) * 100}%`,
+                      }}
                     />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">Step {tutorialStep + 1} / {steps.length}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary/60">
+                    Step {tutorialStep + 1} / {steps.length}
+                  </span>
                 </div>
               </div>
             </div>
@@ -167,7 +203,8 @@ export function TutorialTour() {
                   onClick={handleBack}
                   className="rounded-2xl font-bold gap-2 px-4 h-10 border-2"
                 >
-                  <ChevronLeft size={16} /> <span className="hidden sm:inline">Back</span>
+                  <ChevronLeft size={16} />{" "}
+                  <span className="hidden sm:inline">Back</span>
                 </Button>
               )}
               <Button
@@ -175,7 +212,8 @@ export function TutorialTour() {
                 onClick={handleNext}
                 className="rounded-2xl font-black uppercase tracking-widest px-8 h-10 gap-2 shadow-lg shadow-primary/20"
               >
-                {tutorialStep === steps.length - 1 ? "Finish" : "Next"} <ChevronRight size={16} />
+                {tutorialStep === steps.length - 1 ? "Finish" : "Next"}{" "}
+                <ChevronRight size={16} />
               </Button>
             </div>
           </div>

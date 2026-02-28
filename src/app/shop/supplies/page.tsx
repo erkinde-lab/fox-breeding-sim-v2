@@ -140,8 +140,8 @@ export default function SuppliesPage() {
 
   const tabs = [
     { id: "all", label: "All", icon: LayoutGrid },
-    { id: "feeds", label: "Feeds", icon: UtensilsCustom },
     { id: "items", label: "Items", icon: Package },
+    { id: "feeds", label: "Feeds", icon: UtensilsCustom },
   ] as const;
 
   return (
