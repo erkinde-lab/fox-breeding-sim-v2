@@ -577,10 +577,34 @@ export default function LayoutClient({
               <ul className="space-y-4 text-sm font-bold">
                 <li>
                   <Link
+                    href="/news"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    News
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/credits"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Credits
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/help"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     Help Center
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Contact
                   </Link>
                 </li>
                 <li>
