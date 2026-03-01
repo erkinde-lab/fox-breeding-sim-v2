@@ -126,8 +126,8 @@ export interface Achievement {
   name: string;
   description: string;
   rewardText: string;
-  reward: () => void;
-  condition: (state: GameState) => boolean;
+  reward: (state: any) => void;
+  condition: (state: any) => boolean;
 }
 export interface ShowConfig {
   bis: number;
@@ -172,6 +172,49 @@ export interface BreedingRecord {
   kits: string[];
 }
 
+export interface NewsItem {
+  id: string;
+  date: string;
+  title: string;
+  content: string;
+  category: string;
+}
+
+export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: "first-fox",
+    name: "First Fox",
+    description: "Adopt your first foundational fox to start your kennel journey.",
+    rewardText: "1,000 Gold",
+    condition: (state) => Object.keys(state.foxes).length >= 1,
+    reward: (state) => state.addGold(1000),
+  },
+  {
+    id: "master-breeder",
+    name: "Master Breeder",
+    description: "Successfully manage a growing population of foxes.",
+    rewardText: "Premium Feed x5",
+    condition: (state) => Object.keys(state.foxes).length >= 5,
+    reward: (state) => state.adminAddItem("premium_feed", 5),
+  },
+  {
+    id: "show-winner",
+    name: "Show Winner",
+    description: "Reach the pinnacle of competitive showing.",
+    rewardText: "Champion Ribbon",
+    condition: (state) => state.bisWins >= 1,
+    reward: (state) => state.adminAddItem("champion_ribbon", 1),
+  },
+  {
+    id: "millionaire",
+    name: "Millionaire",
+    description: "Amass a fortune through careful kennel management.",
+    rewardText: "Gold Statue",
+    condition: (state) => state.gold >= 50000,
+    reward: (state) => state.adminAddItem("gold_statue", 1),
+  },
+];
+
 interface GameState {
   foxes: Record<string, Fox>;
   gold: number;
@@ -214,7 +257,7 @@ interface GameState {
   isDarkMode: boolean;
   hasSeenTutorial: boolean;
   tutorialStep: number | null;
-  colorblindMode: boolean;
+  colorblindMode: string;
   highContrast: boolean;
   fontSize: "small" | "normal" | "large" | "xl";
   useOpenDyslexic: boolean;
@@ -223,6 +266,8 @@ interface GameState {
   highVisibilityFocus: boolean;
   simplifiedUI: boolean;
   textSpacing: "normal" | "wide" | "extra";
+  broadcast: string | null;
+  news: NewsItem[];
 
   advanceTime: () => void;
   breedFoxes: (dogId: string, vixenId: string) => void;
@@ -244,7 +289,7 @@ interface GameState {
   initializeGame: () => void;
   setBannerUrl: (url: string) => void;
   setBannerPosition: (pos: string) => void;
-  toggleColorblindMode: () => void;
+  toggleColorblindMode: (mode: string) => void;
   toggleHighContrast: () => void;
   setFontSize: (size: "small" | "normal" | "large" | "xl") => void;
   toggleOpenDyslexic: () => void;
@@ -297,69 +342,33 @@ interface GameState {
   trainFox: (foxId: string) => void;
   groomAllFoxes: () => void;
   trainAllFoxes: () => void;
+  addForumCategory: (name: string, description: string, icon: string) => void;
   addForumPost: (
     categoryId: string,
+    author: string,
     title: string,
     content: string,
-    author: string,
   ) => void;
   addForumReply: (postId: string, author: string, content: string) => void;
+  deleteForumPost: (postId: string) => void;
+  deleteForumReply: (postId: string, replyId: string) => void;
   togglePinPost: (postId: string) => void;
-  addForumCategory: (name: string, description: string, icon: string) => void;
-  updateShowConfig: (level: string, updates: Partial<ShowConfig>) => void;
-  listFoxOnMarket: (
-    foxId: string,
-    price: number,
-    currency: "gold" | "gems",
-  ) => void;
-  listItemOnMarket: (
+  setBroadcast: (message: string | null) => void;
+  addNews: (title: string, content: string, category: string) => void;
+  deleteNews: (id: string) => void;
+  adminUpdateMemberInventory: (
+    memberId: string,
     itemId: string,
-    price: number,
-    currency: "gold" | "gems",
+    count: number,
   ) => void;
-  cancelListing: (listingId: string) => void;
-  updateMarketListing: (
-    listingId: string,
-    updates: Partial<MarketListing>,
-  ) => void;
+  adminRemoveItemFromInventory: (memberId: string, itemId: string) => void;
   buyFromMarket: (listingId: string) => void;
+  cancelListing: (listingId: string) => void;
+  updateMarketListing: (listingId: string, updates: Partial<MarketListing>) => void;
+  listItemOnMarket: (type: "fox" | "item", targetId: string, price: number, currency: "gold" | "gems") => void;
+  listFoxOnMarket: (foxId: string, price: number, currency: "gold" | "gems") => void;
   checkAchievements: () => void;
 }
-
-export const ACHIEVEMENTS: Achievement[] = [
-  {
-    id: "first-fox",
-    name: "First Fox",
-    description: "Adopt your first foundational fox.",
-    rewardText: "1,000 Gold",
-    reward: () => useGameStore.getState().addGold(1000),
-    condition: (state) => Object.keys(state.foxes).length >= 1,
-  },
-  {
-    id: "master-breeder",
-    name: "Master Breeder",
-    description: "Have 5 foxes in your kennel.",
-    rewardText: "50 Gems",
-    reward: () => useGameStore.getState().addGems(50),
-    condition: (state) => Object.keys(state.foxes).length >= 5,
-  },
-  {
-    id: "show-winner",
-    name: "Show Winner",
-    description: "Win a Best in Show award.",
-    rewardText: "5,000 Gold",
-    reward: () => useGameStore.getState().addGold(5000),
-    condition: (state) => state.bisWins >= 1,
-  },
-  {
-    id: "millionaire",
-    name: "Gold Rush",
-    description: "Accumulate 50,000 Gold.",
-    rewardText: "100 Gems",
-    reward: () => useGameStore.getState().addGems(100),
-    condition: (state) => state.gold >= 50000,
-  },
-];
 
 export const useGameStore = create<GameState>()(
   persist(
@@ -370,7 +379,7 @@ export const useGameStore = create<GameState>()(
       year: 1,
       joiningYear: 1,
       season: "Spring",
-      inventory: { supplies: 5, "genetic-test": 2, "pedigree-analysis": 2 },
+      inventory: {},
       foodUses: {},
       seniorShowWinners: [],
       showReports: [],
@@ -386,49 +395,36 @@ export const useGameStore = create<GameState>()(
       totalFoxesCount: 0,
       forumCategories: [
         {
-          id: "staff",
-          name: "Staff Announcements & Feedback",
-          description: "Official news and feedback from the development team.",
+          id: "announcements",
+          name: "Announcements",
+          description: "Official game updates and news.",
           icon: "Megaphone",
         },
         {
           id: "general",
           name: "General Discussion",
-          description: "Talk about anything fox-related!",
+          description: "Talk about anything related to foxes.",
           icon: "MessageSquare",
         },
         {
-          id: "breeding",
-          name: "Breeding Tips",
-          description: "Share your genetic discoveries.",
-          icon: "Heart",
-        },
-        {
-          id: "shows",
-          name: "Show Results",
-          description: "Celebrate your wins!",
-          icon: "Trophy",
-        },
-        {
-          id: "market",
-          name: "Trading",
-          description: "Buy, sell, and trade foxes.",
+          id: "trading",
+          name: "Trading & Sales",
+          description: "Buy and sell foxes or items.",
           icon: "Store",
+        },
+        {
+          id: "help",
+          name: "Help & Support",
+          description: "Get help from other players and staff.",
+          icon: "LifeBuoy",
         },
       ],
       forumPosts: [],
       isAdmin: false,
       showConfig: {
-        "Amateur Junior": { bis: 1000, first: 500, second: 250, third: 100 },
-        "Amateur Open": { bis: 2500, first: 1000, second: 500, third: 250 },
-        "Amateur Senior": { bis: 5000, first: 2500, second: 1000, third: 500 },
-        "Altered Junior": { bis: 1000, first: 500, second: 250, third: 100 },
-        "Altered Open": { bis: 2500, first: 1000, second: 500, third: 250 },
-        "Altered Senior": { bis: 5000, first: 2500, second: 1000, third: 500 },
-        Junior: { bis: 1000, first: 500, second: 250, third: 100 },
-        Open: { bis: 2500, first: 1000, second: 500, third: 250 },
-        Senior: { bis: 5000, first: 2500, second: 1000, third: 500 },
-        Championship: { bis: 10000, first: 5000, second: 2500, third: 1000 },
+        Pro: { bis: 2000, first: 1000, second: 500, third: 250 },
+        Amateur: { bis: 1000, first: 500, second: 250, third: 125 },
+        Altered: { bis: 1500, first: 750, second: 375, third: 185 },
       },
       marketListings: [],
       unlockedAchievements: [],
@@ -438,16 +434,28 @@ export const useGameStore = create<GameState>()(
       hiredGeneticist: false,
       hiredNutritionist: false,
       bannerUrl:
-        "https://images.unsplash.com/photo-1474511320723-9a56873867b5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80",
-      bannerPosition: "50%",
+        "https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=2070&auto=format&fit=crop",
+      bannerPosition: "50% 50%",
       foundationFoxes: [],
       soldFoundationalSlots: [],
-      lastAdoptionReset: "",
-      members: [],
+      lastAdoptionReset: new Date().toISOString(),
+      members: [
+        {
+          id: "player-1",
+          name: "Angmar",
+          level: 10,
+          joined: "2026-02-15",
+          points: 1500,
+          avatarColor: "bg-fire-500",
+          isBanned: false,
+          warnings: [],
+        },
+      ],
       adminLogs: [],
+      isDarkMode: false,
       hasSeenTutorial: false,
-      tutorialStep: null,
-      colorblindMode: false,
+      tutorialStep: 0,
+      colorblindMode: "none",
       highContrast: false,
       fontSize: "normal",
       useOpenDyslexic: false,
@@ -456,39 +464,19 @@ export const useGameStore = create<GameState>()(
       highVisibilityFocus: false,
       simplifiedUI: false,
       textSpacing: "normal",
-      isDarkMode: false,
+      broadcast: null,
+      news: [
+        {
+          id: "1",
+          date: "February 20, 2026",
+          title: "Marketplace Beta Launch",
+          content:
+            "The player-to-player marketplace is now live! You can now list your foxes and items for sale in exchange for Gold or Gems.",
+          category: "Update",
+        },
+      ],
 
-      checkAchievements: () => {
-        const state = get();
-        const updatedFoxes = { ...state.foxes };
-        let changed = false;
-        Object.values(updatedFoxes).forEach((fox) => {
-          const isAltered = !!fox.isAltered;
-          let newTitle = fox.prefixTitle;
-          const majors = fox.majors || 0;
-          if (majors >= 4) newTitle = isAltered ? "DAGCH" : "DGCH";
-          else if (majors >= 2) newTitle = isAltered ? "AGCH" : "GCH";
-          else if (majors >= 1) newTitle = isAltered ? "ACH" : "CH";
-          if (newTitle !== fox.prefixTitle) {
-            fox.prefixTitle = newTitle;
-            changed = true;
-          }
-        });
-        if (changed) set({ foxes: updatedFoxes });
-        ACHIEVEMENTS.forEach((ach) => {
-          if (
-            !state.unlockedAchievements.includes(ach.id) &&
-            ach.condition(state)
-          ) {
-            ach.reward();
-            set((s) => ({
-              unlockedAchievements: [...s.unlockedAchievements, ach.id],
-            }));
-          }
-        });
-      },
-
-      advanceTime: () => {
+      advanceTime: () =>
         set((state) => {
           const seasons: ("Spring" | "Summer" | "Autumn" | "Winter")[] = [
             "Spring",
@@ -496,748 +484,271 @@ export const useGameStore = create<GameState>()(
             "Autumn",
             "Winter",
           ];
-          const currentIndex = seasons.indexOf(state.season);
-          const nextIndex = (currentIndex + 1) % 4;
-          const nextSeason = seasons[nextIndex];
-          const nextYear = nextIndex === 0 ? state.year + 1 : state.year;
+          const currentIdx = seasons.indexOf(state.season);
+          const nextIdx = (currentIdx + 1) % 4;
+          const nextSeason = seasons[nextIdx];
+          const nextYear = nextIdx === 0 ? state.year + 1 : state.year;
+
           const updatedFoxes = { ...state.foxes };
-          let whelpingReports: WhelpingReport[] = [];
-          let nextPregnancyList: Pregnancy[] = [];
           Object.keys(updatedFoxes).forEach((id) => {
-            updatedFoxes[id].lastFed = undefined;
-            updatedFoxes[id].lastGroomed = undefined;
-            updatedFoxes[id].lastTrained = undefined;
+            const fox = updatedFoxes[id];
+            if (nextIdx === 0) {
+              fox.age += 1;
+              fox.pointsYear = 0;
+            }
           });
-          if (nextIndex === 0) {
-            Object.keys(updatedFoxes).forEach((id) => {
-              updatedFoxes[id].age += 1;
-              updatedFoxes[id].pointsYear = 0;
-              if (updatedFoxes[id].age >= 10) updatedFoxes[id].isRetired = true;
-            });
-          }
-          let kitsCreatedThisTurn = 0;
-          if (nextSeason === "Spring" && state.pregnancyList.length > 0) {
-            state.pregnancyList.forEach((preg) => {
-              const mother = state.foxes[preg.motherId];
-              let kits: {
-                name: string;
-                phenotype: string;
-                baseColor: string;
-                pattern: string;
-                eyeColor: string;
-                isStillborn: boolean;
-              }[] = [];
-              if (!mother) return;
-              const kitCount =
-                (typeof window !== "undefined"
-                  ? Math.floor(Math.random() * 4)
-                  : 3) + 2;
-              for (let i = 0; i < kitCount; i++) {
-                const kitGenotype = breed(mother.genotype, preg.fatherGenotype);
-                const kitPhenotype = getPhenotype(
-                  kitGenotype,
-                  calculateSilverIntensity(
-                    mother.silverIntensity,
-                    preg.fatherSilverIntensity,
-                  ),
-                );
-                if (kitPhenotype.isLethal) {
-                  kits.push({
-                    name: "Stillborn Fox",
-                    phenotype: "Stillborn",
-                    baseColor: "-",
-                    pattern: "-",
-                    eyeColor: "-",
-                    isStillborn: true,
-                  });
-                } else {
-                  const kitCOI = calculateCOI(
-                    preg.fatherId,
-                    updatedFoxes,
-                    preg.motherId,
-                  );
-                  const kitStats = generateStats(
-                    mother.stats,
-                    preg.fatherStats,
-                    kitCOI,
-                  );
+
+          const newWhelpingReports: WhelpingReport[] = [];
+          const nextPregnancyList = state.pregnancyList.filter((preg) => {
+            if (preg.dueYear === nextYear && preg.dueSeason === nextSeason) {
+              const mother = updatedFoxes[preg.motherId];
+              if (mother) {
+                const litterSize = Math.floor(Math.random() * 4) + 1;
+                const kits: Fox[] = [];
+                for (let i = 0; i < litterSize; i++) {
+                  const kitGenotype = breed(mother.genotype, preg.fatherGenotype);
                   const kit = createFox({
-                    id: (
-                      state.totalFoxesCount +
-                      kitsCreatedThisTurn +
-                      1
-                    ).toString(),
-                    parents: [preg.motherId, preg.fatherId],
-                    parentNames: [mother.name, preg.fatherName],
                     genotype: kitGenotype,
-                    stats: kitStats,
-                    coi: kitCOI,
-                    silverIntensity: calculateSilverIntensity(
-                      mother.silverIntensity,
-                      preg.fatherSilverIntensity,
-                    ),
-                    age: 0,
-                    birthYear: nextYear,
+                    gender: Math.random() > 0.5 ? "Dog" : "Vixen"
                   });
-                  kitsCreatedThisTurn++;
-                  if (state.hiredGeneticist) kit.genotypeRevealed = true;
                   updatedFoxes[kit.id] = kit;
-                  kits.push({
-                    name: kit.name,
-                    phenotype: kit.phenotype,
-                    baseColor: kit.baseColor,
-                    pattern: kit.pattern,
-                    eyeColor: kit.eyeColor,
-                    isStillborn: false,
-                  });
+                  kits.push(kit);
                 }
+                newWhelpingReports.push({
+                  motherName: mother.name,
+                  fatherName: preg.fatherName,
+                  kits: kits.map((k) => ({
+                    name: k.name,
+                    phenotype: k.phenotype,
+                    baseColor: k.baseColor,
+                    pattern: k.pattern,
+                    eyeColor: k.eyeColor,
+                    isStillborn: k.isStillborn || false,
+                  })),
+                });
               }
-              whelpingReports.push({
-                motherName: mother.name,
-                fatherName: preg.fatherName,
-                kits,
-              });
-            });
-          } else {
-            nextPregnancyList.push(...state.pregnancyList);
-          }
+              return false;
+            }
+            return true;
+          });
+
           return {
             season: nextSeason,
             year: nextYear,
             foxes: updatedFoxes,
-            totalFoxesCount: state.totalFoxesCount + kitsCreatedThisTurn,
+            pregnancyList: nextPregnancyList,
             whelpingReports: [
-              ...whelpingReports,
+              ...newWhelpingReports,
               ...state.whelpingReports,
             ].slice(0, 10),
-            pregnancyList: nextPregnancyList,
-            npcStuds:
-              nextSeason === "Spring"
-                ? generateNPCStuds(nextYear, nextSeason)
-                : state.npcStuds,
+            npcStuds: generateNPCStuds(nextYear, nextSeason),
+            shows: [],
           };
-        });
-        get().generateSeasonalShows();
-      },
+        }),
 
-      breedFoxes: (dogId, vixenId) => {
-        const { foxes, npcStuds, season, pregnancyList } = get();
-        const dog = foxes[dogId] || npcStuds[dogId];
-        const vixen = foxes[vixenId];
-        if (!dog || !vixen || season !== "Winter") return;
-        if (
-          dog.gender !== "Dog" ||
-          vixen.gender !== "Vixen" ||
-          dog.isAltered ||
-          vixen.isAltered ||
-          dog.age < 2 ||
-          vixen.age < 2 ||
-          dog.isRetired ||
-          vixen.isRetired
-        )
-          return;
-        if (pregnancyList.some((p) => p.motherId === vixenId)) return;
-        set((state) => ({
-          pregnancyList: [
-            ...state.pregnancyList,
-            {
-              motherId: vixenId,
-              fatherId: dogId,
-              fatherName: dog.name,
-              fatherGenotype: dog.genotype,
-              fatherStats: dog.stats,
-              fatherSilverIntensity: dog.silverIntensity,
-              dueYear: state.year + 1,
-              dueSeason: "Spring",
-            },
-          ],
-        }));
-      },
+      breedFoxes: (dogId, vixenId) =>
+        set((state) => {
+          const dog = state.foxes[dogId] || state.npcStuds[dogId];
+          const vixen = state.foxes[vixenId];
+          if (!dog || !vixen) return state;
+
+          const seasons: ("Spring" | "Summer" | "Autumn" | "Winter")[] = [
+            "Spring",
+            "Summer",
+            "Autumn",
+            "Winter",
+          ];
+          const currentIdx = seasons.indexOf(state.season);
+          const dueIdx = (currentIdx + 1) % 4;
+          const dueSeason = seasons[dueIdx];
+          const dueYear = dueIdx === 0 ? state.year + 1 : state.year;
+
+          if (dog.isNPC) {
+            if (state.gold < (dog.studFee || 0)) return state;
+          }
+
+          return {
+            gold: dog.isNPC ? state.gold - (dog.studFee || 0) : state.gold,
+            pregnancyList: [
+              ...state.pregnancyList,
+              {
+                motherId: vixenId,
+                fatherId: dogId,
+                fatherName: dog.name,
+                fatherGenotype: dog.genotype,
+                fatherStats: dog.stats,
+                fatherSilverIntensity: dog.silverIntensity,
+                dueYear,
+                dueSeason,
+              },
+            ],
+          };
+        }),
 
       addGold: (amount) => set((state) => ({ gold: state.gold + amount })),
       addGems: (amount) => set((state) => ({ gems: state.gems + amount })),
       addFox: (fox) =>
-        set((state) => ({
-          foxes: {
-            ...state.foxes,
-            [fox.id]: state.hiredGeneticist
-              ? { ...fox, genotypeRevealed: true }
-              : fox,
-          },
-        })),
-      retireFox: (id) =>
-        set((state) => ({
-          foxes: {
-            ...state.foxes,
-            [id]: { ...state.foxes[id], isRetired: true },
-          },
-        })),
+        set((state) => ({ foxes: { ...state.foxes, [fox.id]: fox } })),
       sellFox: (id) =>
         set((state) => {
-          const fox = state.foxes[id];
-          if (fox && fox.age < 6) return state;
-          const newFoxes = { ...state.foxes };
-          delete newFoxes[id];
-          return { foxes: newFoxes, gold: state.gold + 500 };
+          const { [id]: _, ...remainingFoxes } = state.foxes;
+          return { foxes: remainingFoxes, gold: state.gold + 500 };
         }),
-
+      retireFox: (id) =>
+        set((state) => ({
+          foxes: { ...state.foxes, [id]: { ...state.foxes[id], isRetired: true } },
+        })),
       buyItem: (itemId, price, currency, quantity = 1) =>
         set((state) => {
-          if (currency === "gold" && state.gold < price) return state;
-          if (currency === "gems" && state.gems < price) return state;
+          const totalCost = price * quantity;
+          if (currency === "gold" && state.gold < totalCost) return state;
+          if (currency === "gems" && state.gems < totalCost) return state;
+
           return {
-            gold: currency === "gold" ? state.gold - price : state.gold,
-            gems: currency === "gems" ? state.gems - price : state.gems,
+            gold: currency === "gold" ? state.gold - totalCost : state.gold,
+            gems: currency === "gems" ? state.gems - totalCost : state.gems,
             inventory: {
               ...state.inventory,
               [itemId]: (state.inventory[itemId] || 0) + quantity,
             },
           };
         }),
-
       applyItem: (itemId, foxId) =>
         set((state) => {
+          if (!state.inventory[itemId] || state.inventory[itemId] <= 0)
+            return state;
           const fox = state.foxes[foxId];
           if (!fox) return state;
-          const newFox = { ...fox };
-          const newInventory = { ...state.inventory };
-          const newFoodUses = { ...state.foodUses };
-          if (
-            itemId === "supplies" ||
-            itemId === "standard-feed" ||
-            itemId.startsWith("feed-")
-          ) {
-            let uses = newFoodUses[itemId] || 0;
-            if (uses <= 0) {
-              if (!newInventory[itemId] || newInventory[itemId] <= 0)
-                return state;
-              newInventory[itemId]--;
-              uses =
-                itemId === "supplies" ? 8 : itemId === "standard-feed" ? 4 : 5;
-            }
-            newFoodUses[itemId] = uses - 1;
-            if (itemId === "supplies" || itemId === "standard-feed")
-              newFox.lastFed = Date.now();
-            else {
-              const statKey = itemId.replace("feed-", "") as keyof Stats;
-              newFox.stats = {
-                ...newFox.stats,
-                [statKey]: Math.min(100, (newFox.stats[statKey] || 0) + 2),
-              };
-              newFox.lastFed = Date.now();
-            }
-          } else {
-            if (!newInventory[itemId] || newInventory[itemId] <= 0)
-              return state;
-            if (itemId === "genetic-test") newFox.genotypeRevealed = true;
-            if (itemId === "pedigree-analysis") newFox.pedigreeAnalyzed = true;
-            newInventory[itemId]--;
-          }
-          return {
-            inventory: newInventory,
-            foodUses: newFoodUses,
-            foxes: { ...state.foxes, [foxId]: newFox },
-          };
-        }),
 
-      setTutorialStep: (step) => set({ tutorialStep: step }),
-      completeTutorial: () =>
-        set({ hasSeenTutorial: true, tutorialStep: null }),
-      renameFox: (id, newName) =>
-        set((state) => {
-          const allFoxes = [
-            ...Object.values(state.foxes),
-            ...Object.values(state.npcStuds),
-            ...state.foundationFoxes,
-          ];
-          if (
-            allFoxes.some(
-              (f) =>
-                f.id !== id && f.name.toLowerCase() === newName.toLowerCase(),
-            )
-          )
-            return state;
+          const updatedFox = { ...fox };
+          if (itemId === "gene_test") updatedFox.genotypeRevealed = true;
+          if (itemId === "stat_boost") {
+            Object.keys(updatedFox.stats).forEach((k) => {
+              updatedFox.stats[k as keyof Stats] = Math.min(
+                100,
+                updatedFox.stats[k as keyof Stats] + 5,
+              );
+            });
+          }
+
           return {
-            foxes: {
-              ...state.foxes,
-              [id]: { ...state.foxes[id], name: newName, hasBeenRenamed: true },
+            inventory: {
+              ...state.inventory,
+              [itemId]: state.inventory[itemId] - 1,
             },
+            foxes: { ...state.foxes, [foxId]: updatedFox },
           };
         }),
+      renameFox: (id, newName) =>
+        set((state) => ({
+          foxes: { ...state.foxes, [id]: { ...state.foxes[id], name: newName } },
+        })),
       updateFox: (id, updates) =>
         set((state) => ({
           foxes: { ...state.foxes, [id]: { ...state.foxes[id], ...updates } },
         })),
       spayNeuterFox: (id) =>
-        set((state) => {
-          const fox = state.foxes[id];
-          if (!fox || fox.isAltered || fox.isRetired) return state;
-          return {
-            foxes: {
-              ...state.foxes,
-              [id]: { ...fox, isAltered: true, isAtStud: false },
-            },
-          };
-        }),
-
-      checkAdoptionReset: () => {
-        const now = new Date().toISOString().slice(0, 13);
-        const state = get();
-        if (state.lastAdoptionReset !== now) {
-          let seedVal = now.split("").reduce((a, b) => a + b.charCodeAt(0), 0);
-          const seededRandom = () => {
-            const x = Math.sin(seedVal++) * 10000;
-            return x - Math.floor(x);
-          };
-          set({
-            foundationFoxes: createFoundationFoxCollection(seededRandom),
-            soldFoundationalSlots: [],
-            lastAdoptionReset: now,
-          });
-        }
-      },
+        set((state) => ({
+          foxes: { ...state.foxes, [id]: { ...state.foxes[id], isAltered: true } },
+        })),
 
       initializeGame: () => {
-        const currentShows = get().shows;
-        if (currentShows.length === 0) get().generateSeasonalShows();
-        const { year, season, foxes } = get();
-        set({ npcStuds: generateNPCStuds(year, season) });
-        const migratedFoxes = { ...foxes };
-        let needsMigration = false;
-        Object.keys(migratedFoxes).forEach((id) => {
-          if (!migratedFoxes[id].parentNames) {
-            migratedFoxes[id].parentNames = [null, null];
-            needsMigration = true;
-          }
-          if (
-            !migratedFoxes[id].hasBeenRenamed &&
-            migratedFoxes[id].name !== migratedFoxes[id].phenotype
-          ) {
-            migratedFoxes[id].hasBeenRenamed = true;
-            needsMigration = true;
-          }
-        });
-        if (needsMigration) set({ foxes: migratedFoxes });
-        if (get().hiredGeneticist) {
-          const updated = { ...get().foxes };
-          Object.keys(updated).forEach((id) => {
-            updated[id].genotypeRevealed = true;
-          });
-          set({ foxes: updated });
-        }
-        get().checkAdoptionReset();
-        if (get().members.length === 0) {
+        const { foxes } = get();
+        if (Object.keys(foxes).length === 0) {
           set({
             gold: 10000,
             gems: 100,
-            totalFoxesCount: 0,
-            hasSeenTutorial: false,
-            tutorialStep: 0,
+            foxes: {},
             members: [
               {
-                id: "1",
-                name: "RedFoxMaster",
-                level: 45,
-                joined: "Spring, Year 1",
-                points: 12500,
-                avatarColor: "bg-orange-500",
-                isBanned: false,
-                warnings: [],
-              },
-              {
-                id: "2",
-                name: "SilverVixen",
-                level: 38,
-                joined: "Summer, Year 1",
-                points: 9800,
-                avatarColor: "bg-slate-400",
-                isBanned: false,
-                warnings: [],
-              },
-              {
-                id: "3",
-                name: "ArcticBreeder",
-                level: 32,
-                joined: "Autumn, Year 1",
-                points: 7200,
-                avatarColor: "bg-blue-100",
-                isBanned: false,
-                warnings: [],
-              },
-              {
-                id: "4",
-                name: "CrossFoxExpert",
-                level: 29,
-                joined: "Winter, Year 1",
-                points: 6500,
-                avatarColor: "bg-amber-700",
-                isBanned: false,
-                warnings: [],
-              },
-              {
-                id: "5",
-                name: "GeneticsGuru",
-                level: 25,
-                joined: "Spring, Year 2",
-                points: 5100,
-                avatarColor: "bg-purple-500",
+                id: "player-1",
+                name: "Angmar",
+                level: 1,
+                joined: new Date().toISOString().split("T")[0],
+                points: 0,
+                avatarColor: "bg-fire-500",
                 isBanned: false,
                 warnings: [],
               },
             ],
           });
-          if (year === 1 && season === "Spring") get().advanceTime();
         }
       },
 
-      buyFoundationalFox: () =>
-        set((state) => {
-          if (state.gold < 1000) return state;
-          const fox = createFoundationalFox();
-          fox.id = (state.totalFoxesCount + 1).toString();
-          return {
-            gold: state.gold - 1000,
-            totalFoxesCount: state.totalFoxesCount + 1,
-            foxes: {
-              ...state.foxes,
-              [fox.id]: state.hiredGeneticist
-                ? { ...fox, genotypeRevealed: true }
-                : fox,
-            },
-          };
-        }),
-      buyFoundationalFoxById: (slotIndex) =>
-        set((state) => {
-          if (
-            state.gold < 1000 ||
-            state.soldFoundationalSlots.includes(slotIndex)
-          )
-            return state;
-          const fox = state.foundationFoxes[slotIndex];
-          if (!fox) return state;
-          const newFox = { ...fox, id: (state.totalFoxesCount + 1).toString() };
-          return {
-            gold: state.gold - 1000,
-            totalFoxesCount: state.totalFoxesCount + 1,
-            foxes: {
-              ...state.foxes,
-              [newFox.id]: state.hiredGeneticist
-                ? { ...newFox, genotypeRevealed: true }
-                : newFox,
-            },
-            soldFoundationalSlots: [...state.soldFoundationalSlots, slotIndex],
-          };
-        }),
-      buyCustomFoundationalFox: (genotype, gender, name, eyeColor) =>
-        set((state) => {
-          if (state.gems < 50) return state;
-          const fox = createFox({
-            id: (state.totalFoxesCount + 1).toString(),
-            name: name || "Custom Foundational",
-            genotype,
-            gender,
-            eyeColor,
-            parents: [null, null],
-            coi: 0,
-            pedigreeAnalyzed: true,
-            hasBeenRenamed: !!name,
-            stats: {
-              head: 25,
-              topline: 25,
-              forequarters: 25,
-              hindquarters: 25,
-              tail: 25,
-              coatQuality: 25,
-              temperament: 25,
-              presence: 25,
-              luck: 25,
-              fertility: 50,
-            },
+      setBannerUrl: (url) => set({ bannerUrl: url }),
+      setBannerPosition: (pos) => set({ bannerPosition: pos }),
+
+      checkAdoptionReset: () => {
+        const { lastAdoptionReset } = get();
+        const lastReset = new Date(lastAdoptionReset);
+        const now = new Date();
+        if (now.getTime() - lastReset.getTime() > 24 * 60 * 60 * 1000) {
+          set({
+            foundationFoxes: createFoundationFoxCollection(),
+            soldFoundationalSlots: [],
+            lastAdoptionReset: now.toISOString(),
           });
-          return {
-            gems: state.gems - 50,
-            totalFoxesCount: state.totalFoxesCount + 1,
-            foxes: {
-              ...state.foxes,
-              [fox.id]: state.hiredGeneticist
-                ? { ...fox, genotypeRevealed: true }
-                : fox,
-            },
-          };
-        }),
+        } else if (get().foundationFoxes.length === 0) {
+          set({
+            foundationFoxes: createFoundationFoxCollection(),
+          });
+        }
+      },
+
+      buyFoundationalFox: () => {
+        const { gold, foundationFoxes, soldFoundationalSlots } = get();
+        if (gold < 1000) return;
+        const availableSlots = foundationFoxes
+          .map((_, i) => i)
+          .filter((i) => !soldFoundationalSlots.includes(i));
+        if (availableSlots.length === 0) return;
+
+        const randomSlot =
+          availableSlots[Math.floor(Math.random() * availableSlots.length)];
+        const fox = foundationFoxes[randomSlot];
+
+        set((state) => ({
+          gold: state.gold - 1000,
+          foxes: { ...state.foxes, [fox.id]: fox },
+          soldFoundationalSlots: [...state.soldFoundationalSlots, randomSlot],
+        }));
+      },
+
+      buyFoundationalFoxById: (slotIndex) => {
+        const { gold, foundationFoxes, soldFoundationalSlots } = get();
+        if (gold < 1500 || soldFoundationalSlots.includes(slotIndex)) return;
+
+        const fox = foundationFoxes[slotIndex];
+        set((state) => ({
+          gold: state.gold - 1500,
+          foxes: { ...state.foxes, [fox.id]: fox },
+          soldFoundationalSlots: [...state.soldFoundationalSlots, slotIndex],
+        }));
+      },
+
+      buyCustomFoundationalFox: (genotype, gender, name, eyeColor) => {
+        const { gems } = get();
+        if (gems < 50) return;
+
+        const fox = createFox({
+          name: name || getPhenotype(genotype).name,
+          gender,
+          genotype,
+          eyeColor,
+        });
+
+        set((state) => ({
+          gems: state.gems - 50,
+          foxes: { ...state.foxes, [fox.id]: fox },
+        }));
+      },
+
       expandKennel: () =>
         set((state) => {
           if (state.gold < 5000) return state;
           return {
             gold: state.gold - 5000,
             kennelCapacity: state.kennelCapacity + 5,
-          };
-        }),
-      toggleStudStatus: (foxId, fee) =>
-        set((state) => {
-          const fox = state.foxes[foxId];
-          if (!fox || fox.gender !== "Dog" || fox.age < 2) return state;
-          return {
-            foxes: {
-              ...state.foxes,
-              [foxId]: { ...fox, isAtStud: !fox.isAtStud, studFee: fee },
-            },
-          };
-        }),
-
-      hireGroomer: () =>
-        set((state) => {
-          if (state.gems < 20) return state;
-          return { gems: state.gems - 20, hiredGroomer: true };
-        }),
-      hireVeterinarian: () =>
-        set((state) => {
-          if (state.gems < 50) return state;
-          return { gems: state.gems - 50, hiredVeterinarian: true };
-        }),
-      hireTrainer: () =>
-        set((state) => {
-          if (state.gems < 40) return state;
-          return { gems: state.gems - 40, hiredTrainer: true };
-        }),
-      hireGeneticist: () =>
-        set((state) => {
-          if (state.gems < 100) return state;
-          const updated = { ...state.foxes };
-          Object.keys(updated).forEach((id) => {
-            updated[id].genotypeRevealed = true;
-          });
-          return {
-            gems: state.gems - 100,
-            hiredGeneticist: true,
-            foxes: updated,
-          };
-        }),
-      hireNutritionist: () =>
-        set((state) => {
-          if (state.gems < 75) return state;
-          return { gems: state.gems - 75, hiredNutritionist: true };
-        }),
-      setBannerUrl: (url: string) => set({ bannerUrl: url }),
-      setBannerPosition: (pos: string) => set({ bannerPosition: pos }),
-      setFoxPreferredFeed: (foxId, feedId) =>
-        set((state) => ({
-          foxes: {
-            ...state.foxes,
-            [foxId]: { ...state.foxes[foxId], preferredFeed: feedId },
-          },
-        })),
-
-      feedAllFoxes: () => {
-        const { hiredNutritionist, foxes } = get();
-        if (hiredNutritionist)
-          Object.keys(foxes).forEach((id) =>
-            get().applyItem(foxes[id].preferredFeed || "supplies", id),
-          );
-      },
-      groomFox: (foxId) =>
-        set((state) => ({
-          foxes: {
-            ...state.foxes,
-            [foxId]: { ...state.foxes[foxId], lastGroomed: Date.now() },
-          },
-        })),
-      trainFox: (foxId) =>
-        set((state) => ({
-          foxes: {
-            ...state.foxes,
-            [foxId]: { ...state.foxes[foxId], lastTrained: Date.now() },
-          },
-        })),
-      groomAllFoxes: () => {
-        const { hiredGroomer, foxes } = get();
-        if (hiredGroomer) {
-          const updated = { ...foxes };
-          Object.keys(updated).forEach((id) => {
-            updated[id].lastGroomed = Date.now();
-          });
-          set({ foxes: updated });
-        }
-      },
-      trainAllFoxes: () => {
-        const { hiredTrainer, foxes } = get();
-        if (hiredTrainer) {
-          const updated = { ...foxes };
-          Object.keys(updated).forEach((id) => {
-            updated[id].lastTrained = Date.now();
-          });
-          set({ foxes: updated });
-        }
-      },
-
-      addForumPost: (categoryId, title, content, author) =>
-        set((state) => ({
-          forumPosts: [
-            ...state.forumPosts,
-            {
-              id: Math.random().toString(36).substring(2, 9),
-              categoryId,
-              author,
-              title,
-              content,
-              createdAt: new Date().toISOString(),
-              replies: [],
-            },
-          ],
-        })),
-      addForumReply: (postId, author, content) =>
-        set((state) => ({
-          forumPosts: state.forumPosts.map((post) =>
-            post.id === postId
-              ? {
-                  ...post,
-                  replies: [
-                    ...(post.replies || []),
-                    {
-                      id: Math.random().toString(36).substring(2, 9),
-                      author,
-                      content,
-                      createdAt: new Date().toISOString(),
-                    },
-                  ],
-                }
-              : post,
-          ),
-        })),
-      togglePinPost: (postId) =>
-        set((state) => ({
-          forumPosts: state.forumPosts.map((post) =>
-            post.id === postId ? { ...post, isPinned: !post.isPinned } : post,
-          ),
-        })),
-      addForumCategory: (name, description, icon) =>
-        set((state) => ({
-          forumCategories: [
-            ...state.forumCategories,
-            {
-              id: name.toLowerCase().replace(/\s+/g, "-"),
-              name,
-              description,
-              icon,
-            },
-          ],
-        })),
-      updateShowConfig: (level, updates) =>
-        set((state) => ({
-          showConfig: {
-            ...state.showConfig,
-            [level]: { ...state.showConfig[level], ...updates },
-          },
-        })),
-
-      listFoxOnMarket: (foxId, price, currency) =>
-        set((state) => {
-          const fox = state.foxes[foxId];
-          if (!fox) return state;
-          const newFoxes = { ...state.foxes };
-          delete newFoxes[foxId];
-          return {
-            marketListings: [
-              {
-                id: Math.random().toString(36).substring(2, 9),
-                sellerId: "player",
-                sellerName: "You",
-                type: "fox",
-                targetId: foxId,
-                price,
-                currency,
-                createdAt: new Date().toISOString(),
-                foxData: fox,
-              },
-              ...state.marketListings,
-            ],
-            foxes: newFoxes,
-          };
-        }),
-      listItemOnMarket: (itemId, price, currency) =>
-        set((state) => {
-          if (!state.inventory[itemId] || state.inventory[itemId] <= 0)
-            return state;
-          return {
-            marketListings: [
-              {
-                id: Math.random().toString(36).substring(2, 9),
-                sellerId: "player",
-                sellerName: "You",
-                type: "item",
-                targetId: itemId,
-                price,
-                currency,
-                createdAt: new Date().toISOString(),
-              },
-              ...state.marketListings,
-            ],
-            inventory: {
-              ...state.inventory,
-              [itemId]: state.inventory[itemId] - 1,
-            },
-          };
-        }),
-      updateMarketListing: (listingId, updates) =>
-        set((state) => ({
-          marketListings: state.marketListings.map((l) =>
-            l.id === listingId ? { ...l, ...updates } : l,
-          ),
-        })),
-      cancelListing: (listingId) =>
-        set((state) => {
-          const listing = state.marketListings.find((l) => l.id === listingId);
-          if (!listing || listing.sellerId !== "player") return state;
-          const newMarket = state.marketListings.filter(
-            (l) => l.id !== listingId,
-          );
-          if (listing.type === "fox" && listing.foxData)
-            return {
-              marketListings: newMarket,
-              foxes: { ...state.foxes, [listing.foxData.id]: listing.foxData },
-            };
-          return {
-            marketListings: newMarket,
-            inventory: {
-              ...state.inventory,
-              [listing.targetId]: (state.inventory[listing.targetId] || 0) + 1,
-            },
-          };
-        }),
-      buyFromMarket: (listingId) =>
-        set((state) => {
-          const listing = state.marketListings.find((l) => l.id === listingId);
-          if (!listing || listing.sellerId === "player") return state;
-          if (listing.currency === "gold" && state.gold < listing.price)
-            return state;
-          if (listing.currency === "gems" && state.gems < listing.price)
-            return state;
-          const newMarket = state.marketListings.filter(
-            (l) => l.id !== listingId,
-          );
-          const newGold =
-            listing.currency === "gold"
-              ? state.gold - listing.price
-              : state.gold;
-          const newGems =
-            listing.currency === "gems"
-              ? state.gems - listing.price
-              : state.gems;
-          if (listing.type === "fox" && listing.foxData)
-            return {
-              marketListings: newMarket,
-              gold: newGold,
-              gems: newGems,
-              foxes: { ...state.foxes, [listing.foxData.id]: listing.foxData },
-            };
-          return {
-            marketListings: newMarket,
-            gold: newGold,
-            gems: newGems,
-            inventory: {
-              ...state.inventory,
-              [listing.targetId]: (state.inventory[listing.targetId] || 0) + 1,
-            },
           };
         }),
 
@@ -1251,25 +762,16 @@ export const useGameStore = create<GameState>()(
             "Exotic",
             "White Mark",
           ];
-          const levels: ShowLevel[] = [
-            "Junior",
-            "Open",
-            "Senior",
-            "Amateur Junior",
-            "Amateur Open",
-            "Amateur Senior",
-            "Altered Junior",
-            "Altered Open",
-            "Altered Senior",
-          ];
-          const isChampionshipTime = state.season === "Winter";
+          const levels: ShowLevel[] = ["Open", "Amateur Open", "Altered Open"];
           const midweekShows: Show[] = [];
-          levels.forEach((lvl) => {
-            varieties.forEach((v) => {
+          const weekendShows: Show[] = [];
+
+          varieties.forEach((v) => {
+            levels.forEach((l) => {
               midweekShows.push({
-                id: Math.random().toString(36).substring(2, 9),
-                name: `Midweek ${lvl} ${v} Showcase`,
-                level: lvl,
+                id: `mid-${v}-${l}-${Math.random().toString(36).substr(2, 5)}`,
+                name: `${l} ${v} Show`,
+                level: l,
                 type: v,
                 entries: [],
                 isRun: false,
@@ -1277,13 +779,15 @@ export const useGameStore = create<GameState>()(
               });
             });
           });
-          const weekendShows: Show[] = [];
-          if (isChampionshipTime) {
+
+          if (state.season === "Autumn" || state.season === "Winter") {
             varieties.forEach((v) => {
               weekendShows.push({
-                id: Math.random().toString(36).substring(2, 9),
-                name: `Championship ${v} Final`,
-                level: "Championship",
+                id: `wknd-${v}-Junior-${Math.random()
+                  .toString(36)
+                  .substr(2, 5)}`,
+                name: `Junior ${v} National`,
+                level: "Junior",
                 type: v,
                 entries: [],
                 isRun: false,
@@ -1291,17 +795,17 @@ export const useGameStore = create<GameState>()(
               });
             });
           } else {
-            levels.forEach((lvl) => {
-              varieties.forEach((v) => {
-                weekendShows.push({
-                  id: Math.random().toString(36).substring(2, 9),
-                  name: `Weekend ${lvl} ${v} Showcase`,
-                  level: lvl,
-                  type: v,
-                  entries: [],
-                  isRun: false,
-                  isWeekend: true,
-                });
+            varieties.forEach((v) => {
+              weekendShows.push({
+                id: `wknd-${v}-Championship-${Math.random()
+                  .toString(36)
+                  .substr(2, 5)}`,
+                name: `${v} Championship`,
+                level: "Championship",
+                type: v,
+                entries: [],
+                isRun: false,
+                isWeekend: true,
               });
             });
           }
@@ -1368,6 +872,7 @@ export const useGameStore = create<GameState>()(
         const newShowReports: ShowReport[] = [];
         let newGold = get().gold;
         const updatedFoxes = { ...foxes };
+
         [false, true].forEach((isWeekend) => {
           circuits.forEach((circuit) => {
             const circuitShows = shows.filter((s) => {
@@ -1378,13 +883,16 @@ export const useGameStore = create<GameState>()(
                 !s.level.startsWith("Amateur") && !s.level.startsWith("Altered")
               );
             });
+
             const entriesByFox = new Map<string, Variety>();
             circuitShows.forEach((s) => {
               s.entries.forEach((id) => {
                 entriesByFox.set(id, s.type);
               });
             });
+
             if (entriesByFox.size === 0) return;
+
             const competitors: Competitor[] = Array.from(entriesByFox.keys())
               .map((id) => {
                 const f = updatedFoxes[id];
@@ -1405,7 +913,9 @@ export const useGameStore = create<GameState>()(
                 };
               })
               .filter(Boolean) as Competitor[];
+
             if (competitors.length === 0) return;
+
             const report = runHierarchicalShow(
               circuit,
               competitors,
@@ -1415,7 +925,9 @@ export const useGameStore = create<GameState>()(
               hiredTrainer,
               hiredVeterinarian,
             );
+
             newShowReports.push(report);
+
             report.results.forEach((res) => {
               const fox = updatedFoxes[res.foxId];
               if (fox) {
@@ -1432,6 +944,7 @@ export const useGameStore = create<GameState>()(
             });
           });
         });
+
         set({
           foxes: updatedFoxes,
           gold: newGold,
@@ -1501,8 +1014,8 @@ export const useGameStore = create<GameState>()(
             m.id === memberId ? { ...m, isBanned: true } : m,
           ),
         })),
-      toggleColorblindMode: () =>
-        set((state: GameState) => ({ colorblindMode: !state.colorblindMode })),
+      toggleColorblindMode: (mode) =>
+        set((state: GameState) => ({ colorblindMode: mode })),
       toggleHighContrast: () =>
         set((state: GameState) => ({ highContrast: !state.highContrast })),
       setFontSize: (size: "small" | "normal" | "large" | "xl") =>
@@ -1529,16 +1042,250 @@ export const useGameStore = create<GameState>()(
         set({ textSpacing: spacing }),
       toggleDarkMode: () =>
         set((state: GameState) => ({ isDarkMode: !state.isDarkMode })),
+      setTutorialStep: (step) => set({ tutorialStep: step }),
+      completeTutorial: () => set({ hasSeenTutorial: true, tutorialStep: null }),
+      addForumCategory: (name, description, icon) =>
+        set((state) => ({
+          forumCategories: [
+            ...state.forumCategories,
+            { id: Math.random().toString(36).substr(2, 9), name, description, icon }
+          ]
+        })),
+      addForumPost: (categoryId, author, title, content) =>
+        set((state) => ({
+          forumPosts: [
+            {
+              id: Math.random().toString(36).substring(2, 9),
+              categoryId,
+              author,
+              title,
+              content,
+              createdAt: new Date().toISOString(),
+              replies: [],
+            },
+            ...(state.forumPosts || []),
+          ],
+        })),
+      addForumReply: (postId, author, content) =>
+        set((state) => ({
+          forumPosts: (state.forumPosts || []).map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  replies: [
+                    ...(p.replies || []),
+                    {
+                      id: Math.random().toString(36).substring(2, 9),
+                      author,
+                      content,
+                      createdAt: new Date().toISOString(),
+                    },
+                  ],
+                }
+              : p,
+          ),
+        })),
+      deleteForumPost: (postId) =>
+        set((state) => ({
+          forumPosts: (state.forumPosts || []).filter((p) => p.id !== postId),
+        })),
+      deleteForumReply: (postId, replyId) =>
+        set((state) => ({
+          forumPosts: (state.forumPosts || []).map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  replies: p.replies?.filter((r) => r.id !== replyId),
+                }
+              : p,
+          ),
+        })),
+      togglePinPost: (postId) =>
+        set((state) => ({
+          forumPosts: (state.forumPosts || []).map((p) =>
+            p.id === postId ? { ...p, isPinned: !p.isPinned } : p
+          )
+        })),
+      setBroadcast: (message) => set({ broadcast: message }),
+      addNews: (title, content, category) =>
+        set((state) => ({
+          news: [
+            {
+              id: Math.random().toString(36).substring(2, 9),
+              date: new Date().toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              }),
+              title,
+              content,
+              category,
+            },
+            ...(state.news || []),
+          ],
+        })),
+      deleteNews: (id) =>
+        set((state) => ({
+          news: (state.news || []).filter((n) => n.id !== id),
+        })),
+      adminUpdateMemberInventory: (memberId, itemId, count) =>
+        set((state) => ({
+          inventory:
+            memberId === "player-1"
+              ? {
+                  ...state.inventory,
+                  [itemId]: (state.inventory[itemId] || 0) + count,
+                }
+              : state.inventory,
+        })),
+      adminRemoveItemFromInventory: (memberId, itemId) =>
+        set((state) => {
+          if (memberId !== "player-1") return state;
+          const { [itemId]: _, ...newInventory } = state.inventory;
+          return { inventory: newInventory };
+        }),
+      buyFromMarket: (listingId) =>
+        set((state) => {
+          const listing = (state.marketListings || []).find(l => l.id === listingId);
+          if (!listing) return state;
+          if (listing.currency === "gold" && state.gold < listing.price) return state;
+          if (listing.currency === "gems" && state.gems < listing.price) return state;
+
+          return {
+            gold: listing.currency === "gold" ? state.gold - listing.price : state.gold,
+            gems: listing.currency === "gems" ? state.gems - listing.price : state.gems,
+            marketListings: state.marketListings.filter(l => l.id !== listingId)
+          };
+        }),
+      cancelListing: (listingId) =>
+        set((state) => ({
+          marketListings: (state.marketListings || []).filter(l => l.id !== listingId)
+        })),
+      updateMarketListing: (listingId, updates) =>
+        set((state) => ({
+          marketListings: (state.marketListings || []).map(l => l.id === listingId ? { ...l, ...updates } : l)
+        })),
+      listItemOnMarket: (type, targetId, price, currency) =>
+        set((state) => ({
+          marketListings: [
+            ...(state.marketListings || []),
+            {
+              id: Math.random().toString(36).substr(2, 9),
+              sellerId: "player-1",
+              sellerName: "Angmar",
+              type,
+              targetId,
+              price,
+              currency,
+              createdAt: new Date().toISOString()
+            }
+          ]
+        })),
+      listFoxOnMarket: (foxId, price, currency) => {
+        get().listItemOnMarket("fox", foxId, price, currency);
+      },
+      toggleStudStatus: (foxId, fee) =>
+        set((state) => ({
+          foxes: {
+            ...state.foxes,
+            [foxId]: {
+              ...state.foxes[foxId],
+              isAtStud: !state.foxes[foxId].isAtStud,
+              studFee: fee,
+            },
+          },
+        })),
+      hireGroomer: () =>
+        set((state) => {
+          if (state.gems < 50 || state.hiredGroomer) return state;
+          return { gems: state.gems - 50, hiredGroomer: true };
+        }),
+      hireVeterinarian: () =>
+        set((state) => {
+          if (state.gems < 100 || state.hiredVeterinarian) return state;
+          return { gems: state.gems - 100, hiredVeterinarian: true };
+        }),
+      hireTrainer: () =>
+        set((state) => {
+          if (state.gems < 75 || state.hiredTrainer) return state;
+          return { gems: state.gems - 75, hiredTrainer: true };
+        }),
+      hireGeneticist: () =>
+        set((state) => {
+          if (state.gems < 100 || state.hiredGeneticist) return state;
+          return { gems: state.gems - 100, hiredGeneticist: true };
+        }),
+      hireNutritionist: () =>
+        set((state) => {
+          if (state.gems < 50 || state.hiredNutritionist) return state;
+          return { gems: state.gems - 50, hiredNutritionist: true };
+        }),
+      setFoxPreferredFeed: (foxId, feedId) =>
+        set((state) => ({
+          foxes: {
+            ...state.foxes,
+            [foxId]: { ...state.foxes[foxId], preferredFeed: feedId },
+          },
+        })),
+      feedAllFoxes: () =>
+        set((state) => {
+          const updatedFoxes = { ...state.foxes };
+          Object.keys(updatedFoxes).forEach((id) => {
+            updatedFoxes[id].lastFed = Date.now();
+          });
+          return { foxes: updatedFoxes };
+        }),
+      groomFox: (foxId) =>
+        set((state) => ({
+          foxes: {
+            ...state.foxes,
+            [foxId]: { ...state.foxes[foxId], lastGroomed: Date.now() },
+          },
+        })),
+      trainFox: (foxId) =>
+        set((state) => ({
+          foxes: {
+            ...state.foxes,
+            [foxId]: { ...state.foxes[foxId], lastTrained: Date.now() },
+          },
+        })),
+      groomAllFoxes: () =>
+        set((state) => {
+          const updatedFoxes = { ...state.foxes };
+          Object.keys(updatedFoxes).forEach((id) => {
+            updatedFoxes[id].lastGroomed = Date.now();
+          });
+          return { foxes: updatedFoxes };
+        }),
+      trainAllFoxes: () =>
+        set((state) => {
+          const updatedFoxes = { ...state.foxes };
+          Object.keys(updatedFoxes).forEach((id) => {
+            updatedFoxes[id].lastTrained = Date.now();
+          });
+          return { foxes: updatedFoxes };
+        }),
+      checkAchievements: () => {
+        const { foxes, gold, bisWins, unlockedAchievements } = get();
+        ACHIEVEMENTS.forEach((ach) => {
+          if (!unlockedAchievements.includes(ach.id) && ach.condition(get())) {
+            set((state) => ({
+              unlockedAchievements: [...state.unlockedAchievements, ach.id],
+            }));
+            ach.reward(get());
+          }
+        });
+      },
     }),
     {
       name: "red-fox-sim-storage",
-      version: 5,
+      version: 7,
       migrate: (persistedState: unknown, version: number) => {
         let state = persistedState as any;
         if (version < 4) {
           state = {
             ...state,
-            colorblindMode: state.colorblindMode ?? false,
+            colorblindMode: state.colorblindMode ?? "none",
             highContrast: state.highContrast ?? false,
             fontSize: state.fontSize ?? "normal",
             useOpenDyslexic: state.useOpenDyslexic ?? false,
@@ -1552,6 +1299,15 @@ export const useGameStore = create<GameState>()(
             highVisibilityFocus: state.highVisibilityFocus ?? false,
             simplifiedUI: state.simplifiedUI ?? false,
             textSpacing: state.textSpacing ?? "normal",
+          };
+        }
+        if (version < 7) {
+          state = {
+            ...state,
+            broadcast: state.broadcast ?? null,
+            news: state.news ?? [],
+            marketListings: state.marketListings ?? [],
+            forumPosts: state.forumPosts ?? [],
           };
         }
         return state;
