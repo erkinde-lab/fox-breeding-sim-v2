@@ -34,7 +34,7 @@ import {
   ShieldCheck,
   UserPlus,
   Store,
-  Star,
+  Star, Megaphone,
   Baby,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,7 @@ export default function LayoutClient({
     isAdmin,
     isDarkMode,
     toggleDarkMode,
+    toggleAdminMode,
     // Accessibility Settings
     colorblindMode,
     highContrast,
@@ -66,6 +67,7 @@ export default function LayoutClient({
     highVisibilityFocus,
     simplifiedUI,
     textSpacing,
+    broadcast,
   } = useGameStore();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -149,6 +151,15 @@ export default function LayoutClient({
     <div className="min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500">
       <ColorblindFilters />
       <TutorialTour />
+      {/* Global Broadcast Banner */}
+      {broadcast && (
+        <div className="bg-primary text-primary-foreground py-2.5 px-4 text-center text-[10px] font-black uppercase tracking-[0.2em] animate-in slide-in-from-top duration-500 border-b border-primary-foreground/10 relative z-[70]">
+          <div className="flex items-center justify-center gap-3">
+            <Megaphone size={14} className="animate-pulse" />
+            <span>{broadcast}</span>
+          </div>
+        </div>
+      )}
       {/* Top Utility Bar */}
       <div
         className="bg-stone-900 text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
@@ -236,10 +247,9 @@ export default function LayoutClient({
               >
                 <div className="relative">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 group-hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
-                    <PawPrint
-                      className="text-white -rotate-3 group-hover:-rotate-6 transition-transform"
-                      size={40}
-                    />
+                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} className="w-full h-full flex items-center justify-center">
+                      <PawPrint className="text-white -rotate-3 group-hover:-rotate-6 transition-transform" size={40} />
+                    </button>
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg">
                     <Star className="text-white" size={12} />
