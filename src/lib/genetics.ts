@@ -12,56 +12,56 @@ export interface LocusInfo {
 export const LOCI: Record<string, LocusInfo> = {
   A: {
     name: "Agouti",
-    description: "Controls the distribution of black pigment.",
+    description: "Controls the distribution of red and black pigment.",
     alleles: ["A", "a"],
     alleleDescriptions: {
-      A: "Allows red base pigment.",
-      a: "Restricts red base pigment, allowing silver/black phenotypes.",
+      A: "Dominant. Allows red pigment to express across the body.",
+      a: "Recessive. Restricts red pigment, leading to black or silver bases.",
     },
   },
   B: {
-    name: "Black",
-    description: "Controls the intensity of black pigment.",
+    name: "Black/Silver",
+    description: "Determines the intensity and silvering of black pigment.",
     alleles: ["B", "b"],
     alleleDescriptions: {
-      B: "Full pigment intensity.",
-      b: "Diluted pigment (Silvering).",
+      B: "Dominant. Deep black pigment with minimal silvering.",
+      b: "Recessive. Increases silvering/dilution of black pigment.",
     },
   },
   C: {
     name: "Albino",
-    description: "Recessive albinism locus.",
+    description: "Controls the production of all melanin (pigment).",
     alleles: ["C", "c"],
     alleleDescriptions: {
-      C: "Normal pigment.",
-      c: "Albino (Photosensitive). cc masks all other traits.",
+      C: "Dominant. Normal pigment production.",
+      c: "Recessive. Homozygous (cc) causes complete albinism and photosensitivity.",
     },
   },
   G: {
     name: "Burgundy",
-    description: "Recessive burgundy locus.",
+    description: "A recessive dilution affecting red and black pigments.",
     alleles: ["G", "g"],
     alleleDescriptions: {
-      G: "Normal pigment.",
-      g: "Burgundy pigment (gg results in Burgundy phenotype).",
+      G: "Dominant. Normal coloration.",
+      g: "Recessive. Homozygous (gg) results in rich burgundy tones.",
     },
   },
   P: {
     name: "Pearl",
-    description: "Recessive pearl locus.",
+    description: "A recessive dilution creating a pearlescent sheen.",
     alleles: ["P", "p"],
     alleleDescriptions: {
-      P: "Normal pigment.",
-      p: "Pearl pigment (pp results in Pearl phenotype).",
+      P: "Dominant. Normal coloration.",
+      p: "Recessive. Homozygous (pp) results in soft pearl phenotypes.",
     },
   },
   Fire: {
     name: "Fire Factor",
-    description: "Controls complex fire phenotypes.",
+    description: "Modifies base colors into vibrant 'Fire' phenotypes.",
     alleles: ["FI", "fi"],
     alleleDescriptions: {
-      FI: "Normal.",
-      fi: "Fire Factor (fifi results in Fire phenotypes).",
+      FI: "Dominant. Normal coloration.",
+      fi: "Recessive. Homozygous (fifi) creates Wildfire, Golden Sunrise, and Snow Glow.",
     },
   },
   W: {
@@ -86,11 +86,11 @@ export const LOCI: Record<string, LocusInfo> = {
   },
   L: {
     name: "Leucistic",
-    description: "Recessive leucism locus.",
+    description: "Recessive white spotting that can cover the whole body.",
     alleles: ["L", "l"],
     alleleDescriptions: {
-      L: "Normal pigment.",
-      l: "Leucistic (Deafness). ll results in white pelt with eye pigment.",
+      L: "Dominant. Normal pigment.",
+      l: "Recessive. Homozygous (ll) results in white fur but pigmented eyes (Deafness risk).",
     },
   },
 };
@@ -624,12 +624,14 @@ export function createFoundationFoxCollection(
     createFoundationalFoxWithGenotype(
       { A: ["A", "A"], B: ["B", "B"] },
       safeRandom,
+      safeRandom() > 0.5 ? "Dog" : "Vixen"
     ),
   ); // RED
   foxes.push(
     createFoundationalFoxWithGenotype(
       { A: ["A", "A"], B: ["B", "b"] },
       safeRandom,
+      safeRandom() > 0.5 ? "Dog" : "Vixen"
     ),
   ); // GOLD
   const crossGenotype =

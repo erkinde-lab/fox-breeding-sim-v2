@@ -1,0 +1,5 @@
+<<<<<<< SEARCH
+    const stud = foxes[selectedStudId] || npcStuds[selectedStudId];
+=======
+    const stud = foxes[selectedStudId] || (selectedStudId?.startsWith('npc-') ? npcStuds[selectedStudId] : null);
+>>>>>>> REPLACE

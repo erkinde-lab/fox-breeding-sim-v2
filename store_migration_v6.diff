@@ -1,0 +1,98 @@
+<<<<<<< SEARCH
+        const migratedFoxes = { ...foxes };
+        let needsMigration = false;
+        Object.keys(migratedFoxes).forEach((id) => {
+          if (!migratedFoxes[id].parentNames) {
+            migratedFoxes[id].parentNames = [null, null];
+            needsMigration = true;
+          }
+          if (
+            !migratedFoxes[id].hasBeenRenamed &&
+            migratedFoxes[id].name !== migratedFoxes[id].phenotype
+          ) {
+            migratedFoxes[id].hasBeenRenamed = true;
+            needsMigration = true;
+          }
+        });
+=======
+        const migratedFoxes = { ...foxes };
+        let needsMigration = false;
+        Object.keys(migratedFoxes).forEach((id) => {
+          if (!migratedFoxes[id].parentNames) {
+            migratedFoxes[id].parentNames = [null, null];
+            needsMigration = true;
+          }
+          if (!migratedFoxes[id].history) {
+            migratedFoxes[id].history = [];
+            needsMigration = true;
+          }
+          if (
+            !migratedFoxes[id].hasBeenRenamed &&
+            migratedFoxes[id].name !== migratedFoxes[id].phenotype
+          ) {
+            migratedFoxes[id].hasBeenRenamed = true;
+            needsMigration = true;
+          }
+        });
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+    {
+      name: "red-fox-sim-storage",
+      version: 5,
+      migrate: (persistedState: unknown, version: number) => {
+        let state = persistedState as any;
+        if (version < 4) {
+          state = {
+            ...state,
+            colorblindMode: state.colorblindMode ?? false,
+            highContrast: state.highContrast ?? false,
+            fontSize: state.fontSize ?? "normal",
+            useOpenDyslexic: state.useOpenDyslexic ?? false,
+            reducedMotion: state.reducedMotion ?? false,
+            alwaysUnderlineLinks: state.alwaysUnderlineLinks ?? false,
+          };
+        }
+        if (version < 5) {
+          state = {
+            ...state,
+            highVisibilityFocus: state.highVisibilityFocus ?? false,
+            simplifiedUI: state.simplifiedUI ?? false,
+            textSpacing: state.textSpacing ?? "normal",
+          };
+        }
+        return state;
+      },
+=======
+    {
+      name: "red-fox-sim-storage",
+      version: 6,
+      migrate: (persistedState: unknown, version: number) => {
+        let state = persistedState as any;
+        if (version < 4) {
+          state = {
+            ...state,
+            colorblindMode: state.colorblindMode ?? false,
+            highContrast: state.highContrast ?? false,
+            fontSize: state.fontSize ?? "normal",
+            useOpenDyslexic: state.useOpenDyslexic ?? false,
+            reducedMotion: state.reducedMotion ?? false,
+            alwaysUnderlineLinks: state.alwaysUnderlineLinks ?? false,
+          };
+        }
+        if (version < 5) {
+          state = {
+            ...state,
+            highVisibilityFocus: state.highVisibilityFocus ?? false,
+            simplifiedUI: state.simplifiedUI ?? false,
+            textSpacing: state.textSpacing ?? "normal",
+          };
+        }
+        if (version < 6) {
+           state = {
+             ...state,
+             npcStuds: {}, // Force regen
+           };
+        }
+        return state;
+      },
+>>>>>>> REPLACE

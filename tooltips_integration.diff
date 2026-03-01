@@ -1,0 +1,7 @@
+<<<<<<< SEARCH
+import { GeneticTooltip } from "@/components/GeneticTooltip";
+import { FoxHistory } from "@/components/FoxHistory";
+=======
+import { GeneticTooltip } from "@/components/GeneticTooltip";
+import { FoxHistory } from "@/components/FoxHistory";
+>>>>>>> REPLACE

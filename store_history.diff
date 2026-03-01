@@ -1,0 +1,198 @@
+<<<<<<< SEARCH
+          const updatedFoxes = { ...state.foxes };
+          let whelpingReports: WhelpingReport[] = [];
+          let nextPregnancyList: Pregnancy[] = [];
+          Object.keys(updatedFoxes).forEach((id) => {
+            updatedFoxes[id].lastFed = undefined;
+            updatedFoxes[id].lastGroomed = undefined;
+            updatedFoxes[id].lastTrained = undefined;
+          });
+          if (nextIndex === 0) {
+            Object.keys(updatedFoxes).forEach((id) => {
+              updatedFoxes[id].age += 1;
+              updatedFoxes[id].pointsYear = 0;
+              if (updatedFoxes[id].age >= 10) updatedFoxes[id].isRetired = true;
+            });
+          }
+=======
+          const updatedFoxes = { ...state.foxes };
+          let whelpingReports: WhelpingReport[] = [];
+          let nextPregnancyList: Pregnancy[] = [];
+          Object.keys(updatedFoxes).forEach((id) => {
+            updatedFoxes[id].lastFed = undefined;
+            updatedFoxes[id].lastGroomed = undefined;
+            updatedFoxes[id].lastTrained = undefined;
+          });
+          if (nextIndex === 0) {
+            Object.keys(updatedFoxes).forEach((id) => {
+              updatedFoxes[id].age += 1;
+              updatedFoxes[id].pointsYear = 0;
+              updatedFoxes[id].history = [
+                ...(updatedFoxes[id].history || []),
+                {
+                  year: nextYear,
+                  season: "Spring",
+                  event: `Aged to ${updatedFoxes[id].age} years old.`,
+                  type: "life",
+                },
+              ];
+              if (updatedFoxes[id].age >= 10 && !updatedFoxes[id].isRetired) {
+                updatedFoxes[id].isRetired = true;
+                updatedFoxes[id].history.push({
+                  year: nextYear,
+                  season: "Spring",
+                  event: "Retired from active showing and breeding.",
+                  type: "life",
+                });
+              }
+            });
+          }
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+      renameFox: (id, newName) =>
+        set((state) => {
+          const allFoxes = [
+            ...Object.values(state.foxes),
+            ...Object.values(state.npcStuds),
+            ...state.foundationFoxes,
+          ];
+          if (
+            allFoxes.some(
+              (f) =>
+                f.id !== id && f.name.toLowerCase() === newName.toLowerCase(),
+            )
+          )
+            return state;
+          return {
+            foxes: {
+              ...state.foxes,
+              [id]: { ...state.foxes[id], name: newName, hasBeenRenamed: true },
+            },
+          };
+        }),
+=======
+      renameFox: (id, newName) =>
+        set((state) => {
+          const allFoxes = [
+            ...Object.values(state.foxes),
+            ...Object.values(state.npcStuds),
+            ...state.foundationFoxes,
+          ];
+          if (
+            allFoxes.some(
+              (f) =>
+                f.id !== id && f.name.toLowerCase() === newName.toLowerCase(),
+            )
+          )
+            return state;
+          const fox = state.foxes[id];
+          const oldName = fox.name;
+          return {
+            foxes: {
+              ...state.foxes,
+              [id]: {
+                ...fox,
+                name: newName,
+                hasBeenRenamed: true,
+                history: [
+                  ...(fox.history || []),
+                  {
+                    year: state.year,
+                    season: state.season,
+                    event: `Renamed from ${oldName} to ${newName}.`,
+                    type: "life",
+                  },
+                ],
+              },
+            },
+          };
+        }),
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+            report.results.forEach((res) => {
+              const fox = updatedFoxes[res.foxId];
+              if (fox) {
+                fox.pointsYear += res.pointsAwarded;
+                fox.pointsLifetime += res.pointsAwarded;
+                if (res.isMajor) fox.majors = (fox.majors || 0) + 1;
+                if (res.title === "BIS") {
+                  fox.bisWins = (fox.bisWins || 0) + 1;
+                  newGold += showConfig[res.level]?.bis || 1000;
+                }
+                if (res.title === "BOV")
+                  newGold += showConfig[res.level]?.first || 500;
+              }
+            });
+=======
+            report.results.forEach((res) => {
+              const fox = updatedFoxes[res.foxId];
+              if (fox) {
+                fox.pointsYear += res.pointsAwarded;
+                fox.pointsLifetime += res.pointsAwarded;
+                if (res.isMajor) fox.majors = (fox.majors || 0) + 1;
+                if (res.title === "BIS") {
+                  fox.bisWins = (fox.bisWins || 0) + 1;
+                  newGold += showConfig[res.level]?.bis || 1000;
+                }
+                if (res.title === "BOV")
+                  newGold += showConfig[res.level]?.first || 500;
+
+                fox.history = [
+                  ...(fox.history || []),
+                  {
+                    year,
+                    season,
+                    event: `Placed ${res.placement} in ${res.level} ${res.variety} show (${res.pointsAwarded} pts).${res.title ? " Awarded " + res.title + "!" : ""}`,
+                    type: "show",
+                  },
+                ];
+              }
+            });
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+                  const kit = createFox({
+                    id: (
+                      state.totalFoxesCount +
+                      kitsCreatedThisTurn +
+                      1
+                    ).toString(),
+                    parents: [preg.motherId, preg.fatherId],
+                    parentNames: [mother.name, preg.fatherName],
+                    genotype: kitGenotype,
+                    stats: kitStats,
+                    coi: kitCOI,
+                    silverIntensity: calculateSilverIntensity(
+                      mother.silverIntensity,
+                      preg.fatherSilverIntensity,
+                    ),
+                    age: 0,
+                    birthYear: nextYear,
+                  });
+=======
+                  const kit = createFox({
+                    id: (
+                      state.totalFoxesCount +
+                      kitsCreatedThisTurn +
+                      1
+                    ).toString(),
+                    parents: [preg.motherId, preg.fatherId],
+                    parentNames: [mother.name, preg.fatherName],
+                    genotype: kitGenotype,
+                    stats: kitStats,
+                    coi: kitCOI,
+                    silverIntensity: calculateSilverIntensity(
+                      mother.silverIntensity,
+                      preg.fatherSilverIntensity,
+                    ),
+                    age: 0,
+                    birthYear: nextYear,
+                    history: [
+                      {
+                        year: nextYear,
+                        season: "Spring",
+                        event: `Born to ${mother.name} and ${preg.fatherName} (COI: ${kitCOI}%).`,
+                        type: "life",
+                      },
+                    ],
+                  });
+>>>>>>> REPLACE

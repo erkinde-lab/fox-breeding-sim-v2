@@ -46,13 +46,14 @@ const generateNPCStuds = (
   const nextNpcStuds: Record<string, Fox> = {};
   const usedPhenotypes = new Set<string>();
 
-  while (Object.keys(nextNpcStuds).length < 4) {
+  while (Object.keys(nextNpcStuds).length < 6) {
     const stud = createFoundationalFox(npcSeededRandom, "Dog");
     if (usedPhenotypes.has(stud.phenotype)) continue;
 
     usedPhenotypes.add(stud.phenotype);
     stud.isNPC = true;
     stud.genotypeRevealed = true;
+    stud.id = `npc-${stud.phenotype.replace(/\s+/g, "-").toLowerCase()}-${totalSeasonNumber}`;
     stud.name = `${stud.phenotype} Stud Season ${totalSeasonNumber}`;
     stud.studFee = 500 + Math.floor(npcSeededRandom() * 1000);
     Object.keys(stud.stats).forEach((key) => {
@@ -512,7 +513,24 @@ export const useGameStore = create<GameState>()(
             Object.keys(updatedFoxes).forEach((id) => {
               updatedFoxes[id].age += 1;
               updatedFoxes[id].pointsYear = 0;
-              if (updatedFoxes[id].age >= 10) updatedFoxes[id].isRetired = true;
+              updatedFoxes[id].history = [
+                ...(updatedFoxes[id].history || []),
+                {
+                  year: nextYear,
+                  season: "Spring",
+                  event: `Aged to ${updatedFoxes[id].age} years old.`,
+                  type: "life",
+                },
+              ];
+              if (updatedFoxes[id].age >= 10 && !updatedFoxes[id].isRetired) {
+                updatedFoxes[id].isRetired = true;
+                updatedFoxes[id].history.push({
+                  year: nextYear,
+                  season: "Spring",
+                  event: "Retired from active showing and breeding.",
+                  type: "life",
+                });
+              }
             });
           }
           let kitsCreatedThisTurn = 0;
@@ -578,6 +596,14 @@ export const useGameStore = create<GameState>()(
                     ),
                     age: 0,
                     birthYear: nextYear,
+                    history: [
+                      {
+                        year: nextYear,
+                        season: "Spring",
+                        event: `Born to ${mother.name} and ${preg.fatherName} (COI: ${kitCOI}%).`,
+                        type: "life",
+                      },
+                    ],
                   });
                   kitsCreatedThisTurn++;
                   if (state.hiredGeneticist) kit.genotypeRevealed = true;
@@ -592,6 +618,28 @@ export const useGameStore = create<GameState>()(
                   });
                 }
               }
+              updatedFoxes[preg.motherId].history = [
+                ...(updatedFoxes[preg.motherId].history || []),
+                {
+                  year: nextYear,
+                  season: "Spring",
+                  event: `Produced a litter of ${kits.length} kit(s) with ${preg.fatherName}.`,
+                  type: "breeding",
+                },
+              ];
+              const father = updatedFoxes[preg.fatherId] || state.npcStuds[preg.fatherId];
+              if (father && !father.isNPC) {
+                updatedFoxes[preg.fatherId].history = [
+                  ...(updatedFoxes[preg.fatherId].history || []),
+                  {
+                    year: nextYear,
+                    season: "Spring",
+                    event: `Sired a litter of ${kits.length} kit(s) with ${mother.name}.`,
+                    type: "breeding",
+                  },
+                ];
+              }
+
               whelpingReports.push({
                 motherName: mother.name,
                 fatherName: preg.fatherName,
@@ -757,10 +805,25 @@ export const useGameStore = create<GameState>()(
             )
           )
             return state;
+          const fox = state.foxes[id];
+          const oldName = fox.name;
           return {
             foxes: {
               ...state.foxes,
-              [id]: { ...state.foxes[id], name: newName, hasBeenRenamed: true },
+              [id]: {
+                ...fox,
+                name: newName,
+                hasBeenRenamed: true,
+                history: [
+                  ...(fox.history || []),
+                  {
+                    year: state.year,
+                    season: state.season,
+                    event: `Renamed from ${oldName} to ${newName}.`,
+                    type: "life",
+                  },
+                ],
+              },
             },
           };
         }),
@@ -807,6 +870,10 @@ export const useGameStore = create<GameState>()(
         Object.keys(migratedFoxes).forEach((id) => {
           if (!migratedFoxes[id].parentNames) {
             migratedFoxes[id].parentNames = [null, null];
+            needsMigration = true;
+          }
+          if (!migratedFoxes[id].history) {
+            migratedFoxes[id].history = [];
             needsMigration = true;
           }
           if (
@@ -1428,6 +1495,16 @@ export const useGameStore = create<GameState>()(
                 }
                 if (res.title === "BOV")
                   newGold += showConfig[res.level]?.first || 500;
+
+                fox.history = [
+                  ...(fox.history || []),
+                  {
+                    year,
+                    season,
+                    event: `Placed ${res.placement} in ${res.level} ${res.variety} show (${res.pointsAwarded} pts).${res.title ? " Awarded " + res.title + "!" : ""}`,
+                    type: "show",
+                  },
+                ];
               }
             });
           });
@@ -1532,7 +1609,7 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: "red-fox-sim-storage",
-      version: 5,
+      version: 6,
       migrate: (persistedState: unknown, version: number) => {
         let state = persistedState as any;
         if (version < 4) {
@@ -1553,6 +1630,12 @@ export const useGameStore = create<GameState>()(
             simplifiedUI: state.simplifiedUI ?? false,
             textSpacing: state.textSpacing ?? "normal",
           };
+        }
+        if (version < 6) {
+           state = {
+             ...state,
+             npcStuds: {}, // Force regen
+           };
         }
         return state;
       },
