@@ -38,6 +38,8 @@ import {
   Fox,
   getActiveBoosts,
 } from "@/lib/genetics";
+import { GeneticTooltip } from "@/components/GeneticTooltip";
+import { FoxHistory } from "@/components/FoxHistory";
 import { useNotifications } from "@/components/NotificationProvider";
 
 export default function FoxProfilePage() {
@@ -633,17 +635,16 @@ export default function FoxProfilePage() {
               {fox.genotypeRevealed ? (
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(fox.genotype).map(([locus, alleles]) => (
-                    <div
-                      key={locus}
-                      className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-blue-500/30 transition-colors"
-                    >
-                      <span className="text-[10px] font-black text-muted-foreground/60 uppercase">
-                        {locus}
-                      </span>
-                      <span className="font-mono text-xs font-black text-foreground">
-                        {alleles.join("")}
-                      </span>
-                    </div>
+                    <GeneticTooltip key={locus} locus={locus} alleles={alleles}>
+                      <div className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-blue-500/30 transition-colors w-full cursor-help">
+                        <span className="text-[10px] font-black text-muted-foreground/60 uppercase">
+                          {locus}
+                        </span>
+                        <span className="font-mono text-xs font-black text-foreground">
+                          {alleles.join("")}
+                        </span>
+                      </div>
+                    </GeneticTooltip>
                   ))}
                 </div>
               ) : (
