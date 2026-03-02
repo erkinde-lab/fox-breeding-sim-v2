@@ -37,7 +37,7 @@ export default function MembersPage() {
         {filteredMembers.map((member) => (
           <Card key={member.id} className={`overflow-hidden hover:shadow-md transition-shadow folk-card ${member.isBanned ? 'opacity-50 grayscale' : ''}`}>
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
-              <div className={`w-12 h-12 ${member.avatarColor} rounded-full flex items-center justify-center text-white border-2 border-white shadow-sm`}>
+              <div className={`w-12 h-12 ${member.avatarColor} rounded-full flex items-center justify-center text-primary-foreground border-2 border-white shadow-sm`}>
                 <User size={24} />
               </div>
               <div className="flex-1">
@@ -53,12 +53,12 @@ export default function MembersPage() {
             <CardContent>
               <div className="flex justify-between items-center text-sm pt-2 border-t border-border mt-2">
                 <div className="flex items-center gap-1 text-foreground">
-                  <Trophy size={14} className="text-yellow-500" />
+                  <Trophy size={14} className="text-accent" />
                   <span className="font-bold">{member.points.toLocaleString()} pts</span>
                 </div>
                 <div className="flex gap-2 items-center">
                   {member.warnings.length > 0 && (
-                    <div className="text-amber-500 flex items-center gap-1" title={`${member.warnings.length} Warnings`}>
+                    <div className="text-accent flex items-center gap-1" title={`${member.warnings.length} Warnings`}>
                       <AlertTriangle size={14} />
                     </div>
                   )}
@@ -66,7 +66,7 @@ export default function MembersPage() {
                     <Badge variant="destructive" className="text-[8px] uppercase">Banned</Badge>
                   )}
                   <div className="flex items-center gap-1 text-muted-foreground text-xs">
-                    <Star size={12} className="text-orange-400 fill-orange-400" />
+                    <Star size={12} className="text-accent fill-accent" />
                     Top 1%
                   </div>
                 </div>

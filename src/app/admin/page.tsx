@@ -174,7 +174,7 @@ export default function AdminPanel() {
                   </div>
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="outline" size="sm" onClick={() => handleWarn(member.id)} className="h-9 gap-2 font-black uppercase tracking-widest text-[9px]">
-                      <AlertTriangle size={14} className="text-amber-500" /> Warn
+                      <AlertTriangle size={14} className="text-accent" /> Warn
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => {
                       showNotification({
@@ -184,7 +184,7 @@ export default function AdminPanel() {
                         confirmLabel: "Ban Member",
                         onConfirm: () => banMember(member.id)
                       });
-                    }} className="h-9 gap-2 font-black uppercase tracking-widest text-[9px] hover:bg-destructive hover:text-white">
+                    }} className="h-9 gap-2 font-black uppercase tracking-widest text-[9px] hover:bg-destructive hover:text-primary-foreground">
                       <UserX size={14} /> Ban
                     </Button>
                   </div>
@@ -201,20 +201,20 @@ export default function AdminPanel() {
             <CardHeader><CardTitle className="font-black italic text-foreground tracking-tight">Currency Management</CardTitle></CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-2xl">
+                <div className="flex items-center justify-between p-4 bg-accent/5 border border-accent/20 rounded-2xl">
                   <div className="flex items-center gap-3">
-                    <Coins className="text-yellow-600" />
-                    <span className="font-black uppercase text-xs tracking-widest text-yellow-800">Gold Reserve</span>
+                    <Coins className="text-accent" />
+                    <span className="font-black uppercase text-xs tracking-widest text-accent">Gold Reserve</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <input type="number" value={editGold} onChange={e => setEditGold(parseInt(e.target.value))} className="w-24 p-2 bg-background border border-border rounded-lg text-right font-mono" />
                     <Button onClick={() => adminSetCurrency({ gold: editGold })} size="sm">Set</Button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-2xl">
+                <div className="flex items-center justify-between p-4 bg-accent/5 border border-accent/20 rounded-2xl">
                   <div className="flex items-center gap-3">
-                    <Heart className="text-cyan-600" />
-                    <span className="font-black uppercase text-xs tracking-widest text-cyan-800">Gem Reserve</span>
+                    <Heart className="text-accent" />
+                    <span className="font-black uppercase text-xs tracking-widest text-accent">Gem Reserve</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <input type="number" value={editGems} onChange={e => setEditGems(parseInt(e.target.value))} className="w-24 p-2 bg-background border border-border rounded-lg text-right font-mono" />
@@ -241,7 +241,7 @@ export default function AdminPanel() {
               <Button onClick={() => {
                 adminAddItem(addItemId, addItemCount);
                 showNotification({ title: "Items Added", message: `Successfully injected ${addItemCount}x ${addItemId} into inventory.`, type: "success" });
-              }} className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/10">Inject into Inventory</Button>
+              }} className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/10">Inject into Inventory</Button>
             </CardContent>
           </Card>
         </div>
@@ -313,7 +313,7 @@ export default function AdminPanel() {
                 </div>
               </div>
 
-              <Button onClick={handleSpawnFox} className="w-full h-14 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
+              <Button onClick={handleSpawnFox} className="w-full h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20 flex items-center justify-center gap-3">
                 <Plus size={20} /> Spawn Specified Fox
               </Button>
             </CardContent>
@@ -346,7 +346,7 @@ export default function AdminPanel() {
                     ))}
                   </div>
                 )}
-                <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full bg-secondary hover:bg-secondary/90 text-white font-black uppercase tracking-widest h-12 rounded-2xl shadow-lg shadow-secondary/10">Save Stat Changes</Button>
+                <Button disabled={!selectedFoxId} onClick={handleUpdateStats} className="w-full bg-secondary hover:bg-secondary/90 text-primary-foreground font-black uppercase tracking-widest h-12 rounded-2xl shadow-lg shadow-secondary/10">Save Stat Changes</Button>
               </div>
             </CardContent>
           </Card>

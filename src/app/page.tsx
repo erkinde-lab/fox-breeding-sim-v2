@@ -37,7 +37,7 @@ export default function LandingPage() {
           description="Complex Agouti, Black, Albino, Burgundy, Pearl and Fire loci interaction."
         />
         <FeatureCard
-          icon={<Trophy size={32} className="text-amber-500" />}
+          icon={<Trophy size={32} className="text-accent" />}
           title="Competitive Shows"
           description="Compete in Junior, Open, Senior, and Championship levels across multiple specialty classes."
         />
@@ -47,18 +47,18 @@ export default function LandingPage() {
           description="Strategic breeding with detailed COI tracking, health management, and genetic testing."
         />
         <FeatureCard
-          icon={<ShoppingBag size={32} className="text-moab" />}
+          icon={<ShoppingBag size={32} className="text-accent" />}
           title="Economy & Staff"
           description="Manage your gold and gems. Hire professional Staff to improve your kennel quality."
         />
       </div>
 
-      <div className="bg-moab rounded-[4rem] p-16 text-white overflow-hidden relative shadow-2xl shadow-moab/20">
+      <div className="bg-moab rounded-[4rem] p-16 text-primary-foreground overflow-hidden relative shadow-2xl shadow-moab/20">
         <div className="relative z-10 max-w-xl">
           <h2 className="text-4xl font-folksy mb-6 leading-tight">Ready to start your journey?</h2>
-          <p className="text-white/80 text-lg mb-10 font-medium">Join our charming community of breeders and start discovering rare color morphs today.</p>
+          <p className="text-primary-foreground/80 text-lg mb-10 font-medium">Join our charming community of breeders and start discovering rare color morphs today.</p>
           <Link href="/shop/adoption">
-            <Button className="bg-white text-moab hover:bg-oatmeal border-none transition-all shadow-xl">
+            <Button className="bg-card text-accent hover:bg-background border-none transition-all shadow-xl">
               Adopt Your First Fox
             </Button>
           </Link>

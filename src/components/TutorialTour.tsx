@@ -39,21 +39,21 @@ const steps = [
     title: "Your First Foxes",
     content:
       "Start your breeding program at the Adoption Kennel. Here you can find 'Foundational' foxes with known pedigrees to get you started.",
-    icon: <Heart className="text-red-500" size={24} />,
+    icon: <Heart className="text-destructive" size={24} />,
     path: "/shop/adoption",
   },
   {
     title: "The Custom Designer",
     content:
       "Want a specific look or genetic trait? Use your Gems here to design a fox from scratch with a precise genetic blueprint.",
-    icon: <Diamond className="text-cyan-500" size={24} />,
+    icon: <Diamond className="text-accent" size={24} />,
     path: "/shop/custom",
   },
   {
     title: "Supplies & Feed",
     content:
       "Foxes need daily care. Buy basic kibble or premium specialty feeds here. Some feeds even provide temporary stat bonuses for shows!",
-    icon: <ShoppingBag className="text-amber-500" size={24} />,
+    icon: <ShoppingBag className="text-accent" size={24} />,
     path: "/shop/supplies",
   },
   {
@@ -67,28 +67,28 @@ const steps = [
     title: "The Show Arena",
     content:
       "Test your foxes against the community! Entering shows earns you Gold and increases your kennel's reputation based on your fox's physical traits.",
-    icon: <Trophy className="text-yellow-500" size={24} />,
+    icon: <Trophy className="text-accent" size={24} />,
     path: "/shows",
   },
   {
     title: "Breeding & Studs",
     content:
       "Breed your vixens with your own dogs or hire high-quality NPC studs. Study genotypes carefully to produce the best possible offspring.",
-    icon: <Heart className="text-pink-500" size={24} />,
+    icon: <Heart className="text-primary" size={24} />,
     path: "/stud-barn",
   },
   {
     title: "Personalization & Accessibility",
     content:
       "We want everyone to enjoy the game. Head to the Settings page to adjust font sizes, contrast, colorblind themes, and more to suit your needs.",
-    icon: <Settings className="text-stone-600" size={24} />,
+    icon: <Settings className="text-muted-foreground" size={24} />,
     path: "/settings",
   },
   {
     title: "Help & Resources",
     content:
       "Genetics and showing can be complex. If you have questions, our Help Center and FAQ contain detailed guides on everything from loci to show classes.",
-    icon: <HelpCircle className="text-blue-500" size={24} />,
+    icon: <HelpCircle className="text-secondary" size={24} />,
     path: "/help",
   },
 ];

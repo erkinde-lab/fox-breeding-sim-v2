@@ -32,7 +32,7 @@ const SPECIALTY_ITEMS = [
     description: "Reveals the full genotype of a fox.",
     price: 500,
     currency: "gold" as const,
-    icon: <Microscope className="w-8 h-8 text-blue-500" />,
+    icon: <Microscope className="w-8 h-8 text-secondary" />,
   },
   {
     id: "medicine",
@@ -40,7 +40,7 @@ const SPECIALTY_ITEMS = [
     description: "Helps manage health issues and complications.",
     price: 200,
     currency: "gold" as const,
-    icon: <Pill className="w-8 h-8 text-red-500" />,
+    icon: <Pill className="w-8 h-8 text-destructive" />,
   },
   {
     id: "calculator-access",
@@ -48,7 +48,7 @@ const SPECIALTY_ITEMS = [
     description: "Unlock the ability to predict breeding outcomes.",
     price: 1000,
     currency: "gold" as const,
-    icon: <Calculator className="w-8 h-8 text-purple-500" />,
+    icon: <Calculator className="w-8 h-8 text-secondary" />,
   },
   {
     id: "pedigree-analysis",
@@ -57,7 +57,7 @@ const SPECIALTY_ITEMS = [
       "Calculate and reveal the Inbreeding Coefficient (COI) of a fox.",
     price: 750,
     currency: "gold" as const,
-    icon: <Heart className="w-8 h-8 text-pink-500" />,
+    icon: <Heart className="w-8 h-8 text-primary" />,
   },
 ];
 
@@ -213,7 +213,7 @@ export default function SuppliesPage() {
                       Owned: {inventory[item.id] || 0}
                     </span>
                     <span className="font-black text-foreground flex items-center gap-1">
-                      <Coins size={14} className="text-yellow-600" />{" "}
+                      <Coins size={14} className="text-accent" />{" "}
                       {item.price}
                     </span>
                   </div>
@@ -310,7 +310,7 @@ export default function SuppliesPage() {
                     <span className="truncate">
                       Held: {inventory[feed.id] || 0}
                     </span>
-                    <span className="text-yellow-600 flex items-center gap-0.5 shrink-0">
+                    <span className="text-accent flex items-center gap-0.5 shrink-0">
                       <Coins size={12} /> 150
                     </span>
                   </div>
@@ -398,7 +398,7 @@ function KibbleCard({
             <span className="text-[10px] font-black text-muted-foreground uppercase block tracking-widest">
               Price
             </span>
-            <span className="text-xl font-black text-yellow-600 flex items-center gap-1 justify-end">
+            <span className="text-xl font-black text-accent flex items-center gap-1 justify-end">
               <Coins size={18} /> {price}
             </span>
           </div>

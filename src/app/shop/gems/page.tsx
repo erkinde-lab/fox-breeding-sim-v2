@@ -14,8 +14,8 @@ const GEM_PACKS = [
         amount: 100,
         price: '$4.99',
         bonus: null,
-        icon: <Diamond className="text-cyan-400" size={32} />,
-        color: 'bg-cyan-500/10'
+        icon: <Diamond className="text-accent" size={32} />,
+        color: 'bg-accent/10'
     },
     {
         id: 'pack-2',
@@ -23,8 +23,8 @@ const GEM_PACKS = [
         amount: 250,
         price: '$9.99',
         bonus: '+10% Bonus Included',
-        icon: <Zap className="text-yellow-400" size={32} />,
-        color: 'bg-yellow-500/10'
+        icon: <Zap className="text-accent" size={32} />,
+        color: 'bg-accent/10'
     },
     {
         id: 'pack-3',
@@ -100,8 +100,8 @@ export default function GemStorePage() {
                 ))}
             </div>
 
-            <section className="bg-secondary text-white rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 shadow-xl">
-                <div className="p-5 bg-white/10 rounded-3xl backdrop-blur-md">
+            <section className="bg-secondary text-primary-foreground rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-8 shadow-xl">
+                <div className="p-5 bg-card/10 rounded-3xl backdrop-blur-md">
                     <ShieldCheck size={64} />
                 </div>
                 <div className="flex-1 space-y-2">
@@ -109,8 +109,8 @@ export default function GemStorePage() {
                     <p className="opacity-80 font-medium">All transactions are encrypted and processed through our secure partner gateways. Your data and privacy are always protected.</p>
                 </div>
                 <div className="flex gap-4">
-                    <div className="h-10 w-20 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">Stripe</div>
-                    <div className="h-10 w-20 bg-white/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">PayPal</div>
+                    <div className="h-10 w-20 bg-card/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">Stripe</div>
+                    <div className="h-10 w-20 bg-card/20 rounded-lg flex items-center justify-center font-black text-[10px] tracking-tighter uppercase">PayPal</div>
                 </div>
             </section>
         </div>

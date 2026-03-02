@@ -30,18 +30,18 @@ export function FoxIllustration({ phenotype, baseColor, pattern, eyeColor, size 
     if (b.includes('pearl') || b.includes('sapphire')) return { bg: 'bg-slate-400', icon: 'text-slate-500', border: 'border-slate-500' };
     if (b.includes('silver')) return { bg: 'bg-slate-700', icon: 'text-slate-800', border: 'border-slate-900' };
     if (b.includes('gold') || b.includes('sun glow')) return { bg: 'bg-amber-500', icon: 'text-amber-600', border: 'border-amber-700' };
-    if (b.includes('red')) return { bg: 'bg-orange-600', icon: 'text-orange-700', border: 'border-orange-800' };
+    if (b.includes('red')) return { bg: 'bg-orange-600', icon: 'text-primary', border: 'border-orange-800' };
     
     // Fallback using phenotype string for backward compatibility
-    if (p.includes('leucistic')) return { bg: 'bg-white', icon: 'text-slate-100', border: 'border-slate-200' };
+    if (p.includes('leucistic')) return { bg: 'bg-card', icon: 'text-slate-100', border: 'border-slate-200' };
     if (p.includes('platinum')) return { bg: 'bg-slate-200', icon: 'text-slate-400', border: 'border-slate-300' };
     
     return { bg: 'bg-orange-50', icon: 'text-orange-200', border: 'border-earth-100' };
   };
 
   const colors = getColors();
-  const eyeColorStyle = eyeColor?.toLowerCase() === 'blue' ? 'text-blue-500' : 
-                        eyeColor?.toLowerCase() === 'green' ? 'text-green-500' : 'text-amber-700';
+  const eyeColorStyle = eyeColor?.toLowerCase() === 'blue' ? 'text-secondary' :
+                        eyeColor?.toLowerCase() === 'green' ? 'text-secondary' : 'text-accent';
 
   return (
     <div className={`flex flex-col items-center justify-center rounded-2xl border-2 ${colors.border} ${colors.bg} relative transition-all duration-500 overflow-hidden`} 
@@ -68,8 +68,8 @@ export function FoxIllustration({ phenotype, baseColor, pattern, eyeColor, size 
       )}
       {pt !== 'none' && pt !== '' && (
         <div className="absolute inset-0 opacity-20 pointer-events-none">
-            <div className="w-full h-1/4 bg-white transform -rotate-45 translate-y-2 translate-x-4" />
-            <div className="w-full h-1/8 bg-white transform rotate-12 -translate-y-4" />
+            <div className="w-full h-1/4 bg-card transform -rotate-45 translate-y-2 translate-x-4" />
+            <div className="w-full h-1/8 bg-card transform rotate-12 -translate-y-4" />
         </div>
       )}
     </div>

@@ -50,7 +50,7 @@ export default function StudBarnPage() {
           <Shield className="text-primary" size={40} /> Stud Barn
         </h2>
         {!isWinter && (
-          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-white">
+          <Badge variant="destructive" className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-primary-foreground">
             <Shield size={14} /> Seasonal Lock: Winter Only
           </Badge>
         )}

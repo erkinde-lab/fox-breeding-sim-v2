@@ -173,7 +173,7 @@ export default function CustomFoxPage() {
                                                     <span className="relative z-10">{formatAlleles(a1, a2)}</span>
                                                     {locus.lethal?.([a1, a2]) && (
                                                         <div className="absolute top-0 right-0 p-1">
-                                                            <div className="w-2 h-2 bg-red-500 rounded-full" />
+                                                            <div className="w-2 h-2 bg-destructive rounded-full" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -374,7 +374,7 @@ export default function CustomFoxPage() {
                         </div>
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             {showSuccess && (
-                                <span className="text-green-600 font-bold flex items-center gap-2 animate-bounce">
+                                <span className="text-secondary font-bold flex items-center gap-2 animate-bounce">
                                     <Check size={24} /> Created!
                                 </span>
                             )}

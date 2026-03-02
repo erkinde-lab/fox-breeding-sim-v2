@@ -89,14 +89,14 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     isDarkMode
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {isDarkMode ? (
                     <Moon size={12} className="text-primary" />
                   ) : (
-                    <Sun size={12} className="text-amber-500" />
+                    <Sun size={12} className="text-accent" />
                   )}
                 </div>
               </button>
@@ -122,8 +122,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     highContrast
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {highContrast && <Check size={12} className="text-primary" />}
@@ -153,8 +153,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     colorblindMode
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {colorblindMode && (
@@ -191,7 +191,7 @@ export default function SettingsPage() {
                     className={cn(
                       "py-2 rounded-xl text-xs font-bold uppercase transition-all border",
                       fontSize === size
-                        ? "bg-primary text-white border-primary"
+                        ? "bg-primary text-primary-foreground border-primary"
                         : "bg-muted/50 border-border hover:border-primary/50",
                     )}
                   >
@@ -212,7 +212,7 @@ export default function SettingsPage() {
                     className={cn(
                       "py-2 rounded-xl text-xs font-bold uppercase transition-all border",
                       textSpacing === spacing
-                        ? "bg-primary text-white border-primary"
+                        ? "bg-primary text-primary-foreground border-primary"
                         : "bg-muted/50 border-border hover:border-primary/50",
                     )}
                   >
@@ -244,8 +244,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     useOpenDyslexic
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {useOpenDyslexic && (
@@ -298,8 +298,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     reducedMotion
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {reducedMotion && (
@@ -336,8 +336,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     alwaysUnderlineLinks
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {alwaysUnderlineLinks && (
@@ -373,8 +373,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     highVisibilityFocus
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {highVisibilityFocus && (
@@ -409,8 +409,8 @@ export default function SettingsPage() {
                   className={cn(
                     "w-6 h-6 rounded-full flex items-center justify-center transition-transform",
                     simplifiedUI
-                      ? "translate-x-6 bg-white"
-                      : "translate-x-0 bg-white shadow-sm",
+                      ? "translate-x-6 bg-card"
+                      : "translate-x-0 bg-card shadow-sm",
                   )}
                 >
                   {simplifiedUI && <Check size={12} className="text-primary" />}

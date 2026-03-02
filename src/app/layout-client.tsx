@@ -83,49 +83,35 @@ export default function LayoutClient({
   // Handle accessibility classes on HTML element
   useEffect(() => {
     const root = document.documentElement;
+    console.log("Applying classes:", { colorblindMode, highContrast, isDarkMode });
 
     // Cleanup old classes
     const classesToRemove = [
-      'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly',
-      'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly',
+      'colorblind-mode',
       'high-contrast', 'use-opendyslexic', 'reduced-motion',
-      'underline-links', 'high-visibility-focus', 'simplified-ui'
+      'underline-links', 'high-visibility-focus', 'simplified-ui', 'dark'
     ];
     root.classList.remove(...classesToRemove);
     root.classList.remove('font-size-small', 'font-size-normal', 'font-size-large', 'font-size-xl');
     root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
 
     // Apply new classes
-    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
+    if (colorblindMode) root.classList.add('colorblind-mode');
     if (highContrast) root.classList.add('high-contrast');
     if (useOpenDyslexic) root.classList.add('use-opendyslexic');
     if (reducedMotion) root.classList.add('reduced-motion');
     if (alwaysUnderlineLinks) root.classList.add('underline-links');
     if (highVisibilityFocus) root.classList.add('high-visibility-focus');
     if (simplifiedUI) root.classList.add('simplified-ui');
+    if (isDarkMode) root.classList.add('dark');
 
     root.classList.add(`font-size-${fontSize}`);
     root.classList.add(`text-spacing-${textSpacing}`);
-
-    // Apply SVG filter for colorblindness
-    if (colorblindMode !== 'none') {
-      root.style.filter = `url(#${colorblindMode})`;
-    } else {
-      root.style.filter = '';
-    }
   }, [
     colorblindMode, highContrast, fontSize, useOpenDyslexic,
     reducedMotion, alwaysUnderlineLinks, highVisibilityFocus,
-    simplifiedUI, textSpacing
+    simplifiedUI, textSpacing, isDarkMode
   ]);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -146,12 +132,12 @@ export default function LayoutClient({
   const bannerPosition = "40%";
 
   return (
-    <div className="min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500">
+    <div className="min-h-screen bg-background flex flex-col font-rounded selection:bg-primary/30 transition-colors duration-500">
       <ColorblindFilters />
       <TutorialTour />
       {/* Top Utility Bar */}
       <div
-        className="bg-stone-900 text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
+        className="bg-accent/20 text-[10px] font-black uppercase tracking-[0.2em] text-foreground py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
         role="region"
         aria-label="User and Game Status"
       >
@@ -163,7 +149,7 @@ export default function LayoutClient({
           {isAdmin && (
             <button
               onClick={() => advanceTime()}
-              className="hover:bg-white/10 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 border border-white/20"
+              className="hover:bg-foreground/10 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 border border-foreground/20"
             >
               <FastForward size={12} /> Advance Season
             </button>
@@ -172,31 +158,31 @@ export default function LayoutClient({
         <div className="flex items-center gap-6">
           <div
             id="tutorial-currency"
-            className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r"
+            className="flex items-center gap-4 border-foreground/20 sm:pr-6 sm:border-r"
           >
             <span className="flex items-center gap-1.5">
-              <Coins size={12} className="text-yellow-200" />{" "}
+              <Coins size={12} className="text-accent" />{" "}
               {gold.toLocaleString()} Gold
             </span>
             <Link
               href="/shop/gems"
-              className="flex items-center gap-1.5 hover:text-cyan-200 transition-colors group"
+              className="flex items-center gap-1.5 hover:text-accent transition-colors group"
             >
               <Diamond
                 size={12}
-                className="text-cyan-200 group-hover:scale-110 transition-transform"
+                className="text-accent group-hover:scale-110 transition-transform"
               />
               {gems.toLocaleString()} Gems
               <Plus
                 size={10}
-                className="bg-white/20 rounded-full p-0.5 ml-0.5"
+                className="bg-foreground/20 rounded-full p-0.5 ml-0.5"
               />
             </Link>
           </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => toggleDarkMode()}
-              className="p-1.5 rounded-full hover:bg-white/10 transition-colors border border-white/10"
+              className="p-1.5 rounded-full hover:bg-foreground/10 transition-colors border border-foreground/10"
               title={
                 isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
               }
@@ -221,7 +207,7 @@ export default function LayoutClient({
 
       {/* Site Banner */}
       <div
-        className="w-full h-[220px] sm:h-[320px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-sagebrush/20"
+        className="w-full h-[220px] sm:h-[320px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-secondary/20"
         style={{
           backgroundImage: `url(${bannerUrl})`,
           backgroundPosition: `center ${bannerPosition}`,
@@ -229,7 +215,7 @@ export default function LayoutClient({
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
-            <div className="text-ink max-w-2xl">
+            <div className="text-foreground max-w-2xl">
               <Link
                 href="/"
                 className="inline-flex items-center gap-4 group mb-4"
@@ -237,16 +223,16 @@ export default function LayoutClient({
                 <div className="relative">
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 group-hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
                     <PawPrint
-                      className="text-white -rotate-3 group-hover:-rotate-6 transition-transform"
+                      className="text-primary-foreground -rotate-3 group-hover:-rotate-6 transition-transform"
                       size={40}
                     />
                   </div>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg">
-                    <Star className="text-white" size={12} />
+                    <Star className="text-secondary-foreground" size={12} />
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-4xl sm:text-6xl font-folksy tracking-tight leading-none">
+                  <h1 className="text-4xl sm:text-6xl font-folksy tracking-tight leading-none text-foreground">
                     Red Fox <span className="text-primary">Simulator</span>
                   </h1>
                   <p className="text-xs sm:text-sm font-black uppercase tracking-[0.3em] opacity-60 mt-2">
@@ -265,7 +251,7 @@ export default function LayoutClient({
       </div>
 
       {/* Main Navigation */}
-      <nav className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-sagebrush/10 z-50">
+      <nav className="sticky top-0 bg-card border-b border-secondary/10 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             {/* Desktop Navigation */}
@@ -275,7 +261,7 @@ export default function LayoutClient({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
                   pathname === "/kennel"
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                     : "text-foreground hover:bg-muted opacity-80 hover:opacity-100",
                 )}
               >
@@ -401,7 +387,7 @@ export default function LayoutClient({
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-3 p-1.5 pr-4 rounded-[1.5rem] border border-border bg-card hover:bg-muted transition-all shadow-sm"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-sagebrush/20 flex items-center justify-center text-sagebrush">
+                  <div className="w-10 h-10 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary">
                     <User size={20} />
                   </div>
                   <div className="hidden sm:block text-left">
@@ -450,7 +436,7 @@ export default function LayoutClient({
                       onClick={() => setIsProfileOpen(false)}
                     />
                     <div className="my-2 border-t border-border mx-4" />
-                    <button className="w-full flex items-center gap-3 px-6 py-3 text-red-500 hover:bg-red-50 transition-colors">
+                    <button className="w-full flex items-center gap-3 px-6 py-3 text-destructive hover:bg-destructive/10 transition-colors">
                       <LogOut size={16} />
                       <span className="text-xs font-black uppercase tracking-wide">
                         Logout
@@ -462,7 +448,7 @@ export default function LayoutClient({
 
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"
+                className="xl:hidden p-3 rounded-2xl bg-primary text-primary-foreground shadow-lg shadow-primary/20"
               >
                 <Menu size={24} />
               </button>
@@ -482,7 +468,7 @@ export default function LayoutClient({
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-12">
             <div className="col-span-2 lg:col-span-2">
               <Link href="/" className="inline-flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-primary-foreground">
                   <PawPrint size={24} />
                 </div>
                 <span className="font-folksy text-2xl">
@@ -632,7 +618,7 @@ export default function LayoutClient({
             {/* Drawer Header */}
             <div className="p-6 border-b border-border flex items-center justify-between bg-primary/5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-primary-foreground">
                   <PawPrint size={20} />
                 </div>
                 <div>

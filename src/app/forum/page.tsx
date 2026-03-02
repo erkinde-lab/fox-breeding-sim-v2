@@ -11,10 +11,10 @@ import { Badge } from '@/components/ui/badge';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   Megaphone: <Megaphone className="w-6 h-6 text-apricot" />,
-  ShoppingBag: <ShoppingBag className="w-6 h-6 text-moab" />,
+  ShoppingBag: <ShoppingBag className="w-6 h-6 text-accent" />,
   Heart: <Heart className="w-6 h-6 text-sagebrush" />,
   MessageSquare: <MessageSquare className="w-6 h-6 text-ink/60" />,
-  Trophy: <Trophy className="w-6 h-6 text-amber-500" />,
+  Trophy: <Trophy className="w-6 h-6 text-accent" />,
   Store: <Store className="w-6 h-6 text-sagebrush" />,
 };
 

@@ -43,9 +43,9 @@ export default function ContactPage() {
         </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="folk-card border-cyan-100 bg-cyan-50/30">
+          <Card className="folk-card border-accent/20 bg-accent/5">
             <CardContent className="pt-6 text-center">
-              <Shield className="mx-auto text-cyan-600 mb-3" size={32} />
+              <Shield className="mx-auto text-accent mb-3" size={32} />
               <h4 className="font-bold text-earth-900">Report Abuse</h4>
               <p className="text-xs text-earth-500 mt-1">For harassment or TOS violations.</p>
             </CardContent>

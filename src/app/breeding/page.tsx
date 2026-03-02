@@ -77,7 +77,7 @@ export default function BreedingPage() {
         {!isWinter && (
           <Badge
             variant="destructive"
-            className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-white"
+            className="gap-2 px-4 py-2 rounded-xl shadow-lg shadow-destructive/20 font-black uppercase text-[10px] tracking-widest text-primary-foreground"
           >
             <AlertCircle size={14} /> Seasonal Lock: Winter Only
           </Badge>
@@ -96,7 +96,7 @@ export default function BreedingPage() {
         >
           <CardHeader>
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-400"></span> Select
+              <span className="w-2 h-2 rounded-full bg-secondary"></span> Select
               Sire (Dog)
             </CardTitle>
           </CardHeader>
@@ -198,7 +198,7 @@ export default function BreedingPage() {
         >
           <CardHeader>
             <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-pink-400"></span> Select
+              <span className="w-2 h-2 rounded-full bg-primary"></span> Select
               Dam (Vixen)
             </CardTitle>
           </CardHeader>
@@ -312,7 +312,7 @@ export default function BreedingPage() {
                       {outcomes.predictedCOI > 15 && (
                         <Badge
                           variant="destructive"
-                          className="font-black uppercase text-[9px] px-2 py-1 shadow-lg shadow-destructive/20 animate-pulse text-white"
+                          className="font-black uppercase text-[9px] px-2 py-1 shadow-lg shadow-destructive/20 animate-pulse text-primary-foreground"
                         >
                           High Risk
                         </Badge>

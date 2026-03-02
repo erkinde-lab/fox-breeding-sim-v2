@@ -319,11 +319,11 @@ function FoxCard({ fox, season }: { fox: Fox; season: string }) {
               <Dumbbell
                 size={12}
                 className={
-                  !trained ? "text-muted-foreground/20" : "text-orange-500"
+                  !trained ? "text-muted-foreground/20" : "text-primary"
                 }
               />
               {fox.isAltered && (
-                <ActivityIcon size={12} className="text-purple-500" />
+                <ActivityIcon size={12} className="text-secondary" />
               )}
             </div>
           </div>
@@ -332,7 +332,7 @@ function FoxCard({ fox, season }: { fox: Fox; season: string }) {
           <div className="absolute bottom-4 left-4">
             <Badge
               variant="outline"
-              className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === "Dog" ? "text-blue-500" : "text-rose-500"}`}
+              className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === "Dog" ? "text-secondary" : "text-primary"}`}
             >
               {fox.gender === "Dog" ? "Dog" : "Vixen"}
             </Badge>

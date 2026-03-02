@@ -93,7 +93,7 @@ export default function AdoptionPage() {
                 />
                 {isSold && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <span className="text-white font-black text-3xl uppercase tracking-widest -rotate-12 border-4 border-white px-4 py-1">
+                    <span className="text-primary-foreground font-black text-3xl uppercase tracking-widest -rotate-12 border-4 border-white px-4 py-1">
                       Sold
                     </span>
                   </div>
@@ -122,7 +122,7 @@ export default function AdoptionPage() {
                     <span className="text-muted-foreground uppercase tracking-widest">
                       Price
                     </span>
-                    <span className="text-yellow-600 flex items-center gap-1 font-black">
+                    <span className="text-accent flex items-center gap-1 font-black">
                       <Coins size={16} /> 1,000
                     </span>
                   </div>
@@ -155,7 +155,7 @@ export default function AdoptionPage() {
       </div>
 
       {currentFoxCount >= kennelCapacity && (
-        <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 text-center font-bold">
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-2xl text-destructive text-center font-bold">
           Your kennel is full! You cannot adopt more foxes right now.
         </div>
       )}

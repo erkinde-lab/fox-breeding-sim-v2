@@ -195,11 +195,11 @@ export default function HelpPage() {
                       <strong>Selection:</strong> Navigate to the{" "}
                       <span className="font-bold">Breeding Center</span>. Select
                       a{" "}
-                      <span className="text-blue-500 font-bold">
+                      <span className="text-secondary font-bold">
                         Sire (Dog)
                       </span>{" "}
                       and a{" "}
-                      <span className="text-pink-500 font-bold">
+                      <span className="text-primary font-bold">
                         Dam (Vixen)
                       </span>
                       .
@@ -227,7 +227,7 @@ export default function HelpPage() {
                     </li>
                     <li>
                       <strong>Whelping:</strong> Kits will be born in the{" "}
-                      <span className="text-green-600 font-bold">Spring</span>{" "}
+                      <span className="text-secondary font-bold">Spring</span>{" "}
                       season.
                     </li>
                   </ol>
@@ -511,7 +511,7 @@ export default function HelpPage() {
                   </p>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2 text-sm">
-                      <Badge className="bg-yellow-500/20 text-yellow-600 border-none font-black">
+                      <Badge className="bg-accent/20 text-accent border-none font-black">
                         NW
                       </Badge>
                       <span className="font-medium">

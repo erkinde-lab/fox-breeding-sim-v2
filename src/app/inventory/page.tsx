@@ -31,7 +31,7 @@ export default function InventoryPage() {
       </div>
 
       {listingItemId && (
-          <Card className="border-moss-200 bg-moss-50/50 folk-card">
+          <Card className="border-border bg-moss-50/50 folk-card">
               <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row gap-6 items-end">
                       <div className="flex-1 space-y-2">
@@ -43,12 +43,12 @@ export default function InventoryPage() {
                                 type="number" 
                                 value={listPrice} 
                                 onChange={(e) => setListPrice(parseInt(e.target.value) || 0)}
-                                className="flex-1 bg-white border border-moss-200 p-3 rounded-xl font-bold text-lg"
+                                className="flex-1 bg-card border border-border p-3 rounded-xl font-bold text-lg"
                             />
                             <select 
                                 value={listCurrency}
                                 onChange={(e) => setListCurrency(e.target.value as 'gold' | 'gems')}
-                                className="bg-white border border-moss-200 p-3 rounded-xl font-bold uppercase"
+                                className="bg-card border border-border p-3 rounded-xl font-bold uppercase"
                             >
                                 <option value="gold">Gold</option>
                                 <option value="gems">Gems</option>

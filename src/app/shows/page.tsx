@@ -575,7 +575,7 @@ export default function ShowsPage() {
                                 {show.isWeekend && (
                                   <Badge
                                     variant="secondary"
-                                    className="bg-orange-100 text-orange-700 text-[8px] font-black border-none"
+                                    className="bg-primary/10 text-primary text-[8px] font-black border-none"
                                   >
                                     WEEKEND
                                   </Badge>
@@ -607,12 +607,12 @@ export default function ShowsPage() {
                     </CardHeader>
                     <CardContent className="p-4 space-y-4">
                       {selectedShow.level === "Championship" && (
-                        <div className="bg-blue-50 p-3 rounded-xl border border-blue-100 flex items-start gap-2 mb-2">
+                        <div className="bg-secondary/10 p-3 rounded-xl border border-secondary/20 flex items-start gap-2 mb-2">
                           <Info
                             size={14}
-                            className="text-blue-600 shrink-0 mt-0.5"
+                            className="text-secondary shrink-0 mt-0.5"
                           />
-                          <p className="text-[10px] text-blue-700 leading-relaxed font-bold">
+                          <p className="text-[10px] text-secondary leading-relaxed font-bold">
                             Qualification Required: 16 pts this year or a major
                             win (BIS/RBIS).
                           </p>
@@ -638,7 +638,7 @@ export default function ShowsPage() {
                                   className={cn(
                                     "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left overflow-visible relative",
                                     isEntered
-                                      ? "bg-green-500/10 border-green-500/30 text-green-700"
+                                      ? "bg-secondary/10 border-secondary/30 text-secondary"
                                       : "bg-card border-border hover:border-primary/50 hover:bg-primary/5",
                                   )}
                                 >
