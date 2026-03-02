@@ -97,6 +97,8 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     addNotification("Settings saved successfully!", "success");
+    // Refresh to ensure all global styles are reapplied and state is fully synced
+    setTimeout(() => window.location.reload(), 1500);
   };
 
   return (
@@ -531,6 +533,7 @@ export default function SettingsPage() {
         >
           Cancel
         </Button>
+        <Button variant="ghost" className="px-6 rounded-xl font-bold text-muted-foreground hover:text-primary" onClick={() => window.location.reload()}>Refresh App</Button>
         <Button
           className="px-12 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 h-12"
           onClick={handleSave}
