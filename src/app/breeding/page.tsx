@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, AlertCircle, Calculator, Lock } from "lucide-react";
 import { FoxIllustration } from "@/components/FoxIllustration";
+import { BreedingTabs } from "@/components/BreedingTabs";
 
 export default function BreedingPage() {
   const {
@@ -67,6 +68,8 @@ export default function BreedingPage() {
 
   return (
     <div className="space-y-8 pb-20">
+      <BreedingTabs />
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2
           className="text-5xl font-folksy text-foreground tracking-tight"
@@ -146,6 +149,8 @@ export default function BreedingPage() {
                 <p className="text-xs font-bold text-muted-foreground/50 italic">
                   No eligible dogs (Age 2+)
                 </p>
+
+      <BreedingTabs />
               </div>
             )}
           </CardContent>
