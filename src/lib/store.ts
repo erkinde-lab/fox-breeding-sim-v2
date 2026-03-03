@@ -346,6 +346,28 @@ export const ACHIEVEMENTS: Achievement[] = [
 export const useGameStore = create<GameState>()(
   persist(
     (set, get) => ({
+      isDarkMode: false,
+      colorblindMode: 'none',
+      highContrast: false,
+      fontSize: 'normal',
+      useOpenDyslexic: false,
+      reducedMotion: false,
+      alwaysUnderlineLinks: false,
+      highVisibilityFocus: false,
+      simplifiedUI: false,
+      textSpacing: 'normal',
+
+      toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
+      setColorblindMode: (mode) => set({ colorblindMode: mode }),
+      toggleHighContrast: () => set((state) => ({ highContrast: !state.highContrast })),
+      setFontSize: (size) => set({ fontSize: size }),
+      toggleOpenDyslexic: () => set((state) => ({ useOpenDyslexic: !state.useOpenDyslexic })),
+      toggleReducedMotion: () => set((state) => ({ reducedMotion: !state.reducedMotion })),
+      toggleAlwaysUnderlineLinks: () => set((state) => ({ alwaysUnderlineLinks: !state.alwaysUnderlineLinks })),
+      toggleHighVisibilityFocus: () => set((state) => ({ highVisibilityFocus: !state.highVisibilityFocus })),
+      toggleSimplifiedUI: () => set((state) => ({ simplifiedUI: !state.simplifiedUI })),
+      setTextSpacing: (spacing) => set({ textSpacing: spacing }),
+
       foxes: {},
       gold: 10000,
       gems: 100,
@@ -1479,9 +1501,23 @@ export const useGameStore = create<GameState>()(
     }),
     {
       name: "red-fox-sim-storage",
-      version: 3,
-      migrate: (persistedState: unknown, version: number) => {
-        if (version < 2) return undefined;
+      version: 6,
+            migrate: (persistedState: any, version: number) => {
+        if (version < 6) {
+          return {
+            ...persistedState,
+            isDarkMode: persistedState.isDarkMode ?? false,
+            colorblindMode: persistedState.colorblindMode ?? 'none',
+            highContrast: persistedState.highContrast ?? false,
+            fontSize: persistedState.fontSize ?? 'normal',
+            useOpenDyslexic: persistedState.useOpenDyslexic ?? false,
+            reducedMotion: persistedState.reducedMotion ?? false,
+            alwaysUnderlineLinks: persistedState.alwaysUnderlineLinks ?? false,
+            highVisibilityFocus: persistedState.highVisibilityFocus ?? false,
+            simplifiedUI: persistedState.simplifiedUI ?? false,
+            textSpacing: persistedState.textSpacing ?? 'normal',
+          };
+        }
         return persistedState;
       },
       partialize: (state) => state,

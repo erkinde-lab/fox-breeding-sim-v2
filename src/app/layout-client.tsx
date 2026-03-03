@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import React, { useState, useEffect, useRef } from 'react';
 import { useGameStore } from '@/lib/store';
 import { TutorialTour } from '@/components/TutorialTour';
+import { ColorblindFilters } from '@/components/ColorblindFilters';
 import Link from 'next/link';
 import {
   Menu, Home, PawPrint, Heart, Trophy, ShoppingBag, Settings, Users, LifeBuoy, ChevronDown, Package, Coins,
@@ -13,9 +14,23 @@ import {
 
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
-  const {
-    gold, gems, year, season, advanceTime, initializeGame, isAdmin, toggleAdminMode,
-    bannerUrl, bannerPosition, isDarkMode, toggleDarkMode
+    const {
+    gold,
+    gems,
+    year,
+    season,
+    advanceTime,
+    isAdmin,
+    isDarkMode,
+    colorblindMode,
+    highContrast,
+    fontSize,
+    useOpenDyslexic,
+    reducedMotion,
+    alwaysUnderlineLinks,
+    highVisibilityFocus,
+    simplifiedUI,
+    textSpacing,
   } = useGameStore();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -35,6 +50,39 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
   const communityRef = useRef<HTMLDivElement>(null);
   const supportRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    // Cleanup old classes
+    const classesToRemove = [
+      'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly',
+      'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly',
+      'high-contrast', 'use-opendyslexic', 'reduced-motion',
+      'underline-links', 'high-visibility-focus', 'simplified-ui', 'dark'
+    ];
+    root.classList.remove(...classesToRemove);
+    root.classList.remove('font-size-small', 'font-size-normal', 'font-size-large', 'font-size-xl');
+    root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
+
+    // Apply new classes
+    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
+    if (highContrast) root.classList.add('high-contrast');
+    if (useOpenDyslexic) root.classList.add('use-opendyslexic');
+    if (reducedMotion) root.classList.add('reduced-motion');
+    if (alwaysUnderlineLinks) root.classList.add('underline-links');
+    if (highVisibilityFocus) root.classList.add('high-visibility-focus');
+    if (simplifiedUI) root.classList.add('simplified-ui');
+    if (isDarkMode) root.classList.add('dark');
+
+    root.classList.add(`font-size-${fontSize}`);
+    root.classList.add(`text-spacing-${textSpacing}`);
+  }, [
+    colorblindMode, highContrast, fontSize, useOpenDyslexic,
+    reducedMotion, alwaysUnderlineLinks, highVisibilityFocus,
+    simplifiedUI, textSpacing, isDarkMode
+  ]);
 
   useEffect(() => {
     initializeGame();
@@ -273,7 +321,8 @@ export default function LayoutClient({ children }: { children: React.ReactNode }
       {/* Main Content */}
       <main className="flex-1 w-full p-4 sm:p-6 lg:p-8">
         {children}
-        <TutorialTour />
+        <ColorblindFilters />
+      <TutorialTour />
       </main>
 
       {/* Site Map & Legal Footer */}

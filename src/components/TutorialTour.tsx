@@ -8,6 +8,18 @@ import { X, ChevronRight, ChevronLeft, Info, HelpCircle, Heart, Trophy, Shopping
 import { useRouter, usePathname } from 'next/navigation';
 
 const steps = [
+    {
+      target: 'body',
+      title: 'Personalization & Accessibility',
+      content: 'You can customize your experience in the Settings menu, including Dark Mode, high contrast, and other accessibility features.',
+      icon: <Accessibility className="text-primary" size={24} />,
+    },
+    {
+      target: 'body',
+      title: 'Personalization & Accessibility',
+      content: 'You can customize your experience in the Settings menu, including Dark Mode, high contrast, and other accessibility features.',
+      icon: <Accessibility className="text-primary" size={24} />,
+    },
   {
     title: "Welcome to Red Fox Simulator!",
     content: "We're excited to have you! You've been given 10,000 Gold and 100 Gems to start building your fox legacy. Let's take a quick tour.",

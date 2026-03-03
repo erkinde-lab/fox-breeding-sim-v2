@@ -34,25 +34,25 @@
 }
 
 :root {
-  --background: #FDF8F3;
-  --foreground: #34495E;
+  --background: #fdf8f3;
+  --foreground: #34495e;
   --card: #ffffff;
-  --card-foreground: #34495E;
+  --card-foreground: #34495e;
   --popover: #ffffff;
-  --popover-foreground: #34495E;
-  --primary: #E6A57E;
+  --popover-foreground: #34495e;
+  --primary: #e6a57e;
   --primary-foreground: #ffffff;
-  --secondary: #8FA08E;
+  --secondary: #8fa08e;
   --secondary-foreground: #ffffff;
   --muted: #f5f1ed;
   --muted-foreground: #5c4a3c;
-  --accent: #B59D85;
+  --accent: #b59d85;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #d9c5b2;
   --input: #d9c5b2;
-  --ring: #E6A57E;
+  --ring: #e6a57e;
   --banner-overlay: rgba(253, 248, 243, 0.9);
   --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
   --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
@@ -62,47 +62,97 @@
 
 .dark {
   --background: #121612;
-  --foreground: #D1D5D1;
-  --card: #1C231C;
-  --card-foreground: #D1D5D1;
-  --popover: #1C231C;
-  --popover-foreground: #D1D5D1;
-  --primary: #C58C6A;
+  --foreground: #d1d5d1;
+  --card: #1c231c;
+  --card-foreground: #d1d5d1;
+  --popover: #1c231c;
+  --popover-foreground: #d1d5d1;
+  --primary: #c58c6a;
   --primary-foreground: #121612;
-  --secondary: #5D6D5D;
+  --secondary: #8fa08e;
   --secondary-foreground: #ffffff;
-  --muted: #242B24;
-  --muted-foreground: #7A8A7A;
-  --accent: #2C352C;
-  --accent-foreground: #F1F5F1;
+  --muted: #242b24;
+  --muted-foreground: #7a8a7a;
+  --accent: #2c352c;
+  --accent-foreground: #f1f5f1;
   --border: #243024;
   --input: #243024;
-  --ring: #C58C6A;
+  --ring: #c58c6a;
   --banner-overlay: rgba(18, 22, 18, 0.85);
   --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
   --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  /* Use near-opaque black so badge shadows don't glow in dark mode */
   --shadow-primary: rgba(0, 0, 0, 0.4);
   --shadow-secondary: rgba(0, 0, 0, 0.3);
 }
 
-/* Override: In dark mode, Tailwind shadow-primary/* glows because --color-primary is warm orange.
-   We intercept by rewriting the composed shadow for elements that would receive a primary-colored shadow.
-   This targets the Tailwind v4 shadow composition: --tw-shadow is derived from --tw-shadow-color.
-   By setting --tw-shadow-color to a dark neutral, the glow becomes a proper shadow. */
-.dark [class*="shadow-primary"] {
-  --tw-shadow-color: rgba(0, 0, 0, 0.5);
-  --tw-shadow: var(--tw-shadow-colored);
+/* High Contrast: Light Mode Base (Black on White) */
+html.high-contrast:not(.dark),
+html.high-contrast:not(.dark) body {
+  --background: #ffffff !important;
+  --foreground: #000000 !important;
+  --card: #ffffff !important;
+  --card-foreground: #000000 !important;
+  --popover: #ffffff !important;
+  --popover-foreground: #000000 !important;
+  --primary: #0000ff !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: #008000 !important;
+  --secondary-foreground: #ffffff !important;
+  --muted: #f0f0f0 !important;
+  --muted-foreground: #000000 !important;
+  --accent: #800080 !important;
+  --accent-foreground: #ffffff !important;
+  --destructive: #ff0000 !important;
+  --destructive-foreground: #ffffff !important;
+  --border: #000000 !important;
+  --input: #000000 !important;
+  --ring: #0000ff !important;
+  --banner-overlay: rgba(255, 255, 255, 0.95) !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
 }
 
-.dark [class*="shadow-secondary"] {
-  --tw-shadow-color: rgba(0, 0, 0, 0.4);
-  --tw-shadow: var(--tw-shadow-colored);
+/* High Contrast: Dark Mode Base (White on Black) */
+html.high-contrast.dark,
+html.high-contrast.dark body {
+  --background: #000000 !important;
+  --foreground: #ffffff !important;
+  --card: #000000 !important;
+  --card-foreground: #ffffff !important;
+  --popover: #000000 !important;
+  --popover-foreground: #ffffff !important;
+  --primary: #ffff00 !important;
+  --primary-foreground: #000000 !important;
+  --secondary: #00ffff !important;
+  --secondary-foreground: #000000 !important;
+  --muted: #1a1a1a !important;
+  --muted-foreground: #ffffff !important;
+  --accent: #ff00ff !important;
+  --accent-foreground: #000000 !important;
+  --destructive: #ff0000 !important;
+  --destructive-foreground: #ffffff !important;
+  --border: #ffffff !important;
+  --input: #ffffff !important;
+  --ring: #ffff00 !important;
+  --banner-overlay: rgba(0, 0, 0, 0.9) !important;
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
 
-.dark [class*="shadow-destructive"] {
-  --tw-shadow-color: rgba(0, 0, 0, 0.5);
-  --tw-shadow: var(--tw-shadow-colored);
+html.high-contrast,
+html.high-contrast body,
+html.high-contrast #root,
+html.high-contrast main {
+  --card-shadow: none !important;
+  --card-shadow-hover: none !important;
+  background-image: none !important;
+}
+
+html.high-contrast * {
+  border-color: currentColor !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background-image: none !important;
 }
 
 body {
@@ -110,7 +160,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-rounded) !important;
   font-weight: 500;
-  transition: background-color 0.5s ease, color 0.5s ease;
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
 }
 
 h1,
@@ -153,14 +205,6 @@ h6 {
   gap: 0.5rem;
 }
 
-.folk-btn:hover {
-  transform: scale(1.05);
-}
-
-.folk-btn:active {
-  transform: scale(0.95);
-}
-
 .font-folksy {
   font-family: var(--font-folksy);
 }
@@ -169,69 +213,66 @@ h6 {
   font-family: var(--font-rounded);
 }
 
-/* Theme-safe badge/button shadow utilities */
-/* Replaces shadow-primary/* which glows orange in dark mode */
-.shadow-badge-primary {
-  box-shadow: 0 4px 12px -2px var(--shadow-primary);
+/* Font Size Presets */
+.font-size-small { font-size: 14px; }
+.font-size-normal { font-size: 16px; }
+.font-size-large { font-size: 18px; }
+.font-size-xl { font-size: 20px; }
+
+/* OpenDyslexic */
+@font-face {
+  font-family: "OpenDyslexic";
+  src: url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
-.shadow-badge-secondary {
-  box-shadow: 0 4px 12px -2px var(--shadow-secondary);
+html.use-opendyslexic,
+html.use-opendyslexic * {
+  font-family: "OpenDyslexic", sans-serif !important;
 }
 
-.shadow-btn-primary {
-  box-shadow: 0 8px 20px -6px var(--shadow-primary);
+/* Reduced Motion */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }
 
-.shadow-btn-secondary {
-  box-shadow: 0 8px 20px -6px var(--shadow-secondary);
+.underline-links a {
+  text-decoration: underline !important;
 }
 
-/* Custom Scrollbar Styles */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+.text-spacing-normal { letter-spacing: normal; line-height: 1.5; }
+.text-spacing-wide { letter-spacing: 0.1em; line-height: 1.8; }
+.text-spacing-extra { letter-spacing: 0.15em; line-height: 2; }
+
+/* High Visibility Focus Indicators */
+html.high-visibility-focus *:focus-visible {
+  outline: 4px solid var(--primary) !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 8px rgba(var(--primary), 0.3) !important;
 }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Simplified UI */
+html.simplified-ui .folk-card:hover {
+  transform: none !important;
 }
 
-*::-webkit-scrollbar-track {
-  background: transparent;
+html.simplified-ui .animate-bounce,
+html.simplified-ui .animate-pulse,
+html.simplified-ui .animate-spin {
+  animation: none !important;
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: var(--border);
-  border-radius: 20px;
-  border: 1px solid transparent;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background-color: var(--primary);
-  opacity: 0.8;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--border);
-  border-radius: 10px;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-  /* Chrome, Safari and Opera */
+html.simplified-ui .backdrop-blur-sm,
+html.simplified-ui .backdrop-blur-md,
+html.simplified-ui .backdrop-blur-lg {
+  backdrop-filter: none !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
 }
