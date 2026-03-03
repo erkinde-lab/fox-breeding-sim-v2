@@ -7,6 +7,12 @@ export interface LocusInfo {
   alleles: Allele[];
   alleleDescriptions: Record<string, string>;
   lethal?: (genotype: Allele[]) => boolean;
+  history?: {
+    year: number;
+    season: string;
+    event: string;
+    type: "show" | "breeding" | "life";
+  }[];
 }
 
 export const LOCI: Record<string, LocusInfo> = {

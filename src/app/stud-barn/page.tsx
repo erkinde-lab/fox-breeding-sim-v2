@@ -16,7 +16,7 @@ export default function StudBarnPage() {
   const [selectedStudId, setSelectedStudId] = useState<string | null>(null);
 
   const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
-  const availableNPCs = Object.values(npcStuds);
+  const availableNPCs = Object.values(npcStuds).filter(s => s.id !== "select-dam-id");
   const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const hasCalculator = inventory['calculator-access'] > 0;

@@ -1,5 +1,4 @@
 "use client";
-import { appendHistory } from "./history-utils";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
