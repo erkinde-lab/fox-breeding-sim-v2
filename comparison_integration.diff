@@ -1,0 +1,22 @@
+<<<<<<< SEARCH
+import { Dna, Trophy, Activity, Heart } from "lucide-react";
+import { calculateCOI } from "@/lib/genetics";
+
+export default function ComparisonPage() {
+=======
+import { Dna, Trophy, Activity, Heart } from "lucide-react";
+import { calculateCOI } from "@/lib/genetics";
+import { BreedingTabs } from "@/components/BreedingTabs";
+
+export default function ComparisonPage() {
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  return (
+    <div className="space-y-8 pb-20">
+      <div className="flex justify-between items-center">
+=======
+  return (
+    <div className="space-y-8 pb-20">
+      <BreedingTabs />
+      <div className="flex justify-between items-center">
+>>>>>>> REPLACE

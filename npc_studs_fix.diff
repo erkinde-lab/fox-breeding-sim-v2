@@ -1,0 +1,20 @@
+<<<<<<< SEARCH
+  while (Object.keys(nextNpcStuds).length < 4) {
+    const stud = createFoundationalFox(npcSeededRandom, "Dog");
+    if (usedPhenotypes.has(stud.phenotype)) continue;
+
+    usedPhenotypes.add(stud.phenotype);
+    stud.isNPC = true;
+    stud.genotypeRevealed = true;
+    stud.name = `${stud.phenotype} Stud Season ${totalSeasonNumber}`;
+=======
+  while (Object.keys(nextNpcStuds).length < 6) {
+    const stud = createFoundationalFox(npcSeededRandom, "Dog");
+    if (usedPhenotypes.has(stud.phenotype)) continue;
+
+    usedPhenotypes.add(stud.phenotype);
+    stud.isNPC = true;
+    stud.genotypeRevealed = true;
+    stud.id = `npc-${stud.phenotype.replace(/\s+/g, "-").toLowerCase()}-${totalSeasonNumber}`;
+    stud.name = `${stud.phenotype} Stud Season ${totalSeasonNumber}`;
+>>>>>>> REPLACE

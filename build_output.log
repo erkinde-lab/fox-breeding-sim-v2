@@ -1,0 +1,27 @@
+
+> fox-sim@0.1.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.9s
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/layout-client.tsx:104:9
+Type error: This comparison appears to be unintentional because the types 'boolean' and 'string' have no overlap.
+
+[0m [90m 102 |[39m
+ [90m 103 |[39m     [90m// Apply new classes[39m
+[31m[1m>[22m[39m[90m 104 |[39m     [36mif[39m (colorblindMode [33m!==[39m [32m'none'[39m) root[33m.[39mclassList[33m.[39madd(colorblindMode)[33m;[39m
+ [90m     |[39m         [31m[1m^[22m[39m
+ [90m 105 |[39m     [36mif[39m (highContrast) root[33m.[39mclassList[33m.[39madd([32m'high-contrast'[39m)[33m;[39m
+ [90m 106 |[39m     [36mif[39m (useOpenDyslexic) root[33m.[39mclassList[33m.[39madd([32m'use-opendyslexic'[39m)[33m;[39m
+ [90m 107 |[39m     [36mif[39m (reducedMotion) root[33m.[39mclassList[33m.[39madd([32m'reduced-motion'[39m)[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

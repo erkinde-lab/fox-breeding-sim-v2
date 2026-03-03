@@ -66,7 +66,12 @@ export default function LayoutClient({
     highVisibilityFocus,
     simplifiedUI,
     textSpacing,
+    initializeGame,
   } = useGameStore();
+
+  useEffect(() => {
+    initializeGame();
+  }, [initializeGame]);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isKennelOpen, setIsKennelOpen] = useState(false);
@@ -96,7 +101,7 @@ export default function LayoutClient({
     root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
 
     // Apply new classes
-    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
+    if (typeof colorblindMode === 'string' && colorblindMode !== 'none') root.classList.add(colorblindMode);
     if (highContrast) root.classList.add('high-contrast');
     if (useOpenDyslexic) root.classList.add('use-opendyslexic');
     if (reducedMotion) root.classList.add('reduced-motion');
@@ -108,7 +113,7 @@ export default function LayoutClient({
     root.classList.add(`text-spacing-${textSpacing}`);
 
     // Apply SVG filter for colorblindness
-    if (colorblindMode !== 'none') {
+    if (typeof colorblindMode === 'string' && colorblindMode !== 'none') {
       root.style.filter = `url(#${colorblindMode})`;
     } else {
       root.style.filter = '';

@@ -1,0 +1,24 @@
+<<<<<<< SEARCH
+import { Sparkles, Heart, Lock, AlertCircle } from "lucide-react";
+import { calculateCOI } from "@/lib/genetics";
+import Link from "next/link";
+
+export default function AutoMatchPage() {
+=======
+import { Sparkles, Heart, Lock, AlertCircle } from "lucide-react";
+import { calculateCOI } from "@/lib/genetics";
+import Link from "next/link";
+import { BreedingTabs } from "@/components/BreedingTabs";
+
+export default function AutoMatchPage() {
+>>>>>>> REPLACE
+<<<<<<< SEARCH
+  return (
+    <div className="space-y-8 pb-20">
+      <div>
+=======
+  return (
+    <div className="space-y-8 pb-20">
+      <BreedingTabs />
+      <div>
+>>>>>>> REPLACE

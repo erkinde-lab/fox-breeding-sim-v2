@@ -36,7 +36,7 @@ export default function StudBarnPage() {
   const outcomes = useMemo(() => {
     if (!selectedVixenId || !selectedStudId) return null;
     const vixen = foxes[selectedVixenId];
-    const stud = foxes[selectedStudId] || npcStuds[selectedStudId];
+    const stud = foxes[selectedStudId] || (selectedStudId?.startsWith('npc-') ? npcStuds[selectedStudId] : null);
     if (!vixen || !stud) return null;
     return calculateBreedingOutcomes(stud, vixen, foxes);
   }, [selectedVixenId, selectedStudId, foxes, npcStuds]);

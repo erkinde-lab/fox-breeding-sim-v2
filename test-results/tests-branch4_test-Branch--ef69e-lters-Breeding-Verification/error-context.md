@@ -1,0 +1,171 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e8]
+          - generic [ref=e10]:
+            - heading "Welcome to Red Fox Simulator!" [level=3] [ref=e11]
+            - generic [ref=e15]: Step 1 / 10
+        - button "Close tutorial" [ref=e16]:
+          - img [ref=e17]
+      - paragraph [ref=e21]: We're excited to have you! You've been given 10,000 Gold and 100 Gems to start building your fox legacy. Let's take a quick tour.
+      - generic [ref=e22]:
+        - button "Skip Tour" [ref=e23]
+        - button "Next" [ref=e25] [cursor=pointer]:
+          - text: Next
+          - img [ref=e26]
+    - region "User and Game Status" [ref=e28]:
+      - generic [ref=e30]:
+        - img [ref=e31]
+        - text: Year 1,
+        - generic [ref=e33]: Summer
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]:
+            - img [ref=e37]
+            - text: 10,000 Gold
+          - link "100 Gems" [ref=e42] [cursor=pointer]:
+            - /url: /shop/gems
+            - img [ref=e43]
+            - text: 100 Gems
+            - img [ref=e45]
+        - generic [ref=e46]:
+          - button "Switch to Dark Mode" [ref=e47]:
+            - img [ref=e48]
+          - link "Settings" [ref=e50] [cursor=pointer]:
+            - /url: /settings
+          - link "Help" [ref=e51] [cursor=pointer]:
+            - /url: /help
+    - generic [ref=e52]:
+      - link "Red Fox Simulator Est. 1 • Rare Genetics • Show Excellence" [ref=e56] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e57]:
+          - img [ref=e59]
+          - img [ref=e65]
+        - generic [ref=e67]:
+          - heading "Red Fox Simulator" [level=1] [ref=e68]
+          - paragraph [ref=e69]: Est. 1 • Rare Genetics • Show Excellence
+      - generic:
+        - img
+    - navigation [ref=e70]:
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - link "Kennel" [ref=e74] [cursor=pointer]:
+            - /url: /kennel
+            - img [ref=e75]
+            - text: Kennel
+          - button "Shops" [ref=e80]:
+            - img [ref=e81]
+            - generic [ref=e84]: Shops
+            - img [ref=e85]
+          - button "Shows" [ref=e88]:
+            - img [ref=e89]
+            - generic [ref=e95]: Shows
+            - img [ref=e96]
+          - button "Breeding" [ref=e99]:
+            - img [ref=e100]
+            - generic [ref=e102]: Breeding
+            - img [ref=e103]
+          - button "Community" [ref=e106]:
+            - img [ref=e107]
+            - generic [ref=e112]: Community
+            - img [ref=e113]
+        - 'button "Kennel #123 Pro Member" [ref=e117]':
+          - img [ref=e119]
+          - generic [ref=e122]:
+            - paragraph [ref=e123]: "Kennel #123"
+            - paragraph [ref=e124]: Pro Member
+          - img [ref=e125]
+    - main [ref=e127]:
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - link "Breeding Center" [ref=e130] [cursor=pointer]:
+            - /url: /breeding
+            - button "Breeding Center" [ref=e131]
+          - link "Comparison Tool" [ref=e132] [cursor=pointer]:
+            - /url: /breeding/comparison
+            - button "Comparison Tool" [ref=e133]
+          - link "Auto-Match" [ref=e134] [cursor=pointer]:
+            - /url: /breeding/auto-match
+            - button "Auto-Match" [ref=e135]
+        - generic [ref=e136]:
+          - heading "Breeding Center" [level=2] [ref=e137]
+          - generic [ref=e138]:
+            - img [ref=e139]
+            - text: "Seasonal Lock: Winter Only"
+        - generic [ref=e141]:
+          - generic [ref=e142]:
+            - heading "Select Sire (Dog)" [level=3] [ref=e144]: Select Sire (Dog)
+            - radiogroup "Select Dog" [ref=e146]:
+              - paragraph [ref=e148]: No eligible dogs (Age 2+)
+          - generic [ref=e149]:
+            - img [ref=e151]
+            - generic [ref=e153]:
+              - button "Commit Breeding" [disabled]
+              - paragraph [ref=e154]: Available in Winter
+          - generic [ref=e155]:
+            - heading "Select Dam (Vixen)" [level=3] [ref=e157]: Select Dam (Vixen)
+            - radiogroup "Select Vixen" [ref=e159]:
+              - paragraph [ref=e161]: No eligible vixens (Age 2+)
+    - contentinfo [ref=e162]:
+      - generic [ref=e163]:
+        - generic [ref=e164]:
+          - generic [ref=e165]:
+            - link "Red Fox Sim" [ref=e166] [cursor=pointer]:
+              - /url: /
+              - img [ref=e168]
+              - generic [ref=e173]: Red Fox Sim
+            - paragraph [ref=e174]: The premier fox breeding and showing simulator. Dive into complex genetics, compete for prestige, and build your legacy.
+          - generic [ref=e182]:
+            - heading "Kennel" [level=4] [ref=e183]
+            - list [ref=e184]:
+              - listitem [ref=e185]:
+                - link "Dashboard" [ref=e186] [cursor=pointer]:
+                  - /url: /kennel
+              - listitem [ref=e187]:
+                - link "Inventory" [ref=e188] [cursor=pointer]:
+                  - /url: /inventory
+              - listitem [ref=e189]:
+                - link "Stud Barn" [ref=e190] [cursor=pointer]:
+                  - /url: /stud-barn
+          - generic [ref=e191]:
+            - heading "Game" [level=4] [ref=e192]
+            - list [ref=e193]:
+              - listitem [ref=e194]:
+                - link "Market" [ref=e195] [cursor=pointer]:
+                  - /url: /shop/supplies
+              - listitem [ref=e196]:
+                - link "Show Arena" [ref=e197] [cursor=pointer]:
+                  - /url: /shows
+              - listitem [ref=e198]:
+                - link "Forums" [ref=e199] [cursor=pointer]:
+                  - /url: /forum
+          - generic [ref=e200]:
+            - heading "Support" [level=4] [ref=e201]
+            - list [ref=e202]:
+              - listitem [ref=e203]:
+                - link "Help Center" [ref=e204] [cursor=pointer]:
+                  - /url: /help
+              - listitem [ref=e205]:
+                - link "Terms" [ref=e206] [cursor=pointer]:
+                  - /url: /tos
+              - listitem [ref=e207]:
+                - link "Privacy" [ref=e208] [cursor=pointer]:
+                  - /url: /privacy
+        - generic [ref=e209]:
+          - paragraph [ref=e210]: © 2026 Red Fox Simulator. All rights reserved.
+          - generic [ref=e211]:
+            - generic [ref=e212]:
+              - img [ref=e213]
+              - text: Secure Gameplay
+            - generic [ref=e216]:
+              - img [ref=e217]
+              - text: Community Driven
+  - button "Open Next.js Dev Tools" [ref=e224] [cursor=pointer]:
+    - img [ref=e225]
+  - alert [ref=e228]
+```
