@@ -38,6 +38,8 @@ import {
   Fox,
   getActiveBoosts,
 } from "@/lib/genetics";
+import { GeneticTooltip } from "@/components/GeneticTooltip";
+import { FoxHistory } from "@/components/FoxHistory";
 import { useNotifications } from "@/components/NotificationProvider";
 
 export default function FoxProfilePage() {
@@ -633,17 +635,16 @@ export default function FoxProfilePage() {
               {fox.genotypeRevealed ? (
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(fox.genotype).map(([locus, alleles]) => (
-                    <div
-                      key={locus}
-                      className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-blue-500/30 transition-colors"
-                    >
-                      <span className="text-[10px] font-black text-muted-foreground/60 uppercase">
-                        {locus}
-                      </span>
-                      <span className="font-mono text-xs font-black text-foreground">
-                        {alleles.join("")}
-                      </span>
-                    </div>
+                    <GeneticTooltip key={locus} locus={locus} alleles={alleles}>
+                      <div className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-blue-500/30 transition-colors w-full cursor-help">
+                        <span className="text-[10px] font-black text-muted-foreground/60 uppercase">
+                          {locus}
+                        </span>
+                        <span className="font-mono text-xs font-black text-foreground">
+                          {alleles.join("")}
+                        </span>
+                      </div>
+                    </GeneticTooltip>
                   ))}
                 </div>
               ) : (
@@ -686,47 +687,10 @@ export default function FoxProfilePage() {
               </div>
 
               <div className="pt-6 border-t border-border">
-                <h4 className="text-[10px] font-black text-muted-foreground uppercase mb-3 tracking-[0.2em] flex items-center gap-2">
-                  <Calendar size={14} /> History
+                <h4 className="text-[10px] font-black text-muted-foreground uppercase mb-4 tracking-[0.2em] flex items-center gap-2">
+                  <Calendar size={14} /> Life Events & Records
                 </h4>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase">
-                      Birth Year
-                    </span>
-                    <span className="text-xs font-black font-mono">
-                      {fox.birthYear}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase">
-                      Lifetime Points
-                    </span>
-                    <span className="text-xs font-black font-mono">
-                      {fox.pointsLifetime.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-border/50">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[10px] font-black text-muted-foreground uppercase">
-                        COI
-                      </span>
-                      {!fox.pedigreeAnalyzed && !isFoundational && (
-                        <button
-                          onClick={handleAnalyze}
-                          className="text-xs text-primary hover:underline font-black uppercase tracking-tighter"
-                        >
-                          Analyze
-                        </button>
-                      )}
-                    </div>
-                    <span className="text-xs font-black font-mono">
-                      {fox.pedigreeAnalyzed
-                        ? `${calculateCOI(fox.id, foxes)}%`
-                        : "???"}
-                    </span>
-                  </div>
-                </div>
+                <FoxHistory history={fox.history} />
               </div>
             </CardContent>
           </Card>

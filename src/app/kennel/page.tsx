@@ -35,6 +35,7 @@ function KennelContent() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("id");
+  const [genderFilter, setGenderFilter] = useState<"all" | "Dog" | "Vixen">("all");
 
   const tabParam = searchParams.get("tab");
   const activeTab = useMemo(() => {
@@ -57,11 +58,12 @@ function KennelContent() {
     return foxList
       .filter((fox) => {
         const query = searchQuery.toLowerCase();
-        return (
+        const matchesQuery =
           fox.name.toLowerCase().includes(query) ||
           fox.phenotype.toLowerCase().includes(query) ||
-          fox.id.toLowerCase().includes(query)
-        );
+          fox.id.toLowerCase().includes(query);
+        const matchesGender = genderFilter === "all" || fox.gender === genderFilter;
+        return matchesQuery && matchesGender;
       })
       .sort((a, b) => {
         if (sortBy === "name") return a.name.localeCompare(b.name);
@@ -157,6 +159,19 @@ function KennelContent() {
                   <option value="name">Sort: Name</option>
                   <option value="age">Sort: Age</option>
                   <option value="points">Sort: Points</option>
+                </select>
+              </div>
+
+              <div className="relative">
+                <select
+                  value={genderFilter}
+                  onChange={(e) => setGenderFilter(e.target.value as any)}
+                  className="bg-card border border-border px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-primary/20 appearance-none cursor-pointer"
+                  aria-label="Filter by gender"
+                >
+                  <option value="all">All Genders</option>
+                  <option value="Dog">Dogs Only</option>
+                  <option value="Vixen">Vixens Only</option>
                 </select>
               </div>
             </div>
