@@ -2,12 +2,90 @@
 > fox-sim@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.2:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquire lock at /app/.next/dev/lock, is another instance of next dev running?
-  Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
-[?25h
+✓ Ready in 3.7s
+○ Compiling /shop/adoption ...
+⨯ ./src/lib/store.ts:2:1
+Module not found: Can't resolve './history-utils'
+[0m [90m 1 |[39m [32m"use client"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { appendHistory } [36mfrom[39m [32m"./history-utils"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mimport[39m { create } [36mfrom[39m [32m"zustand"[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { persist } [36mfrom[39m [32m"zustand/middleware"[39m[33m;[39m[0m
+
+
+
+Import traces:
+  #1 [Client Component Browser]:
+    ./src/lib/store.ts [Client Component Browser]
+    ./src/app/shop/adoption/page.tsx [Client Component Browser]
+    ./src/app/shop/adoption/page.tsx [Server Component]
+
+  #2 [Client Component SSR]:
+    ./src/lib/store.ts [Client Component SSR]
+    ./src/app/shop/adoption/page.tsx [Client Component SSR]
+    ./src/app/shop/adoption/page.tsx [Server Component]
+
+  #3 [Client Component Browser]:
+    ./src/lib/store.ts [Client Component Browser]
+    ./src/app/layout-client.tsx [Client Component Browser]
+    ./src/app/layout-client.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./src/lib/store.ts [Client Component SSR]
+    ./src/app/layout-client.tsx [Client Component SSR]
+    ./src/app/layout-client.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET /shop/adoption 500 in 4.8s (compile: 4.5s, render: 276ms)
+⨯ ./src/lib/store.ts:2:1
+Module not found: Can't resolve './history-utils'
+[0m [90m 1 |[39m [32m"use client"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { appendHistory } [36mfrom[39m [32m"./history-utils"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m [36mimport[39m { create } [36mfrom[39m [32m"zustand"[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { persist } [36mfrom[39m [32m"zustand/middleware"[39m[33m;[39m[0m
+
+
+
+Import traces:
+  #1 [Client Component Browser]:
+    ./src/lib/store.ts [Client Component Browser]
+    ./src/app/shop/adoption/page.tsx [Client Component Browser]
+    ./src/app/shop/adoption/page.tsx [Server Component]
+
+  #2 [Client Component SSR]:
+    ./src/lib/store.ts [Client Component SSR]
+    ./src/app/shop/adoption/page.tsx [Client Component SSR]
+    ./src/app/shop/adoption/page.tsx [Server Component]
+
+  #3 [Client Component Browser]:
+    ./src/lib/store.ts [Client Component Browser]
+    ./src/app/layout-client.tsx [Client Component Browser]
+    ./src/app/layout-client.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./src/lib/store.ts [Client Component SSR]
+    ./src/app/layout-client.tsx [Client Component SSR]
+    ./src/app/layout-client.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET /shop/adoption 500 in 106ms (compile: 86ms, render: 21ms)
+✓ Compiled in 96ms
+ GET /shop/adoption 200 in 730ms (compile: 305ms, render: 425ms)
+ GET / 200 in 1595ms (compile: 957ms, render: 638ms)
+ GET / 200 in 292ms (compile: 72ms, render: 220ms)
