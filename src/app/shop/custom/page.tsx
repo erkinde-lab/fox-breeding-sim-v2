@@ -162,12 +162,15 @@ export default function CustomFoxPage() {
                                             locus.alleles.map(a2 => (
                                                 <button
                                                     key={`${a1}${a2}`}
-                                                    onClick={() => setCustomGenotype(prev => ({ ...prev, [key]: [a1, a2] }))}
+                                                    onClick={() => !locus.lethal?.([a1, a2]) && setCustomGenotype(prev => ({ ...prev, [key]: [a1, a2] }))}
+                                                    disabled={locus.lethal?.([a1, a2])}
                                                     className={cn(
                                                         "relative h-12 text-sm border-2 rounded-xl transition-all font-black overflow-hidden flex items-center justify-center",
                                                         (currentGenotype[key]?.slice().sort().join('') === [a1, a2].slice().sort().join(''))
                                                             ? "bg-primary border-primary text-primary-foreground shadow-md scale-105"
-                                                            : "bg-card border-border hover:border-primary/40 text-muted-foreground"
+                                                            : locus.lethal?.([a1, a2])
+                                                            ? "bg-red-50 border-red-200 text-red-400 cursor-not-allowed opacity-60"
+                                                            : "bg-card border-border hover:border-primary/40 text-muted-foreground cursor-pointer"
                                                     )}
                                                 >
                                                     <span className="relative z-10">{formatAlleles(a1, a2)}</span>
