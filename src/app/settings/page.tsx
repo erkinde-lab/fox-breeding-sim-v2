@@ -35,37 +35,12 @@ const AVATAR_COLORS = [
   "bg-slate-700",
 ];
 
-const BANNER_URLS = [
-  {
-    name: "Classic Fox",
-    url: "https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=2070&auto=format&fit=crop",
-  },
-  {
-    name: "Forest Mist",
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2070&auto=format&fit=crop",
-  },
-  {
-    name: "Winter Den",
-    url: "https://images.unsplash.com/photo-1483356256511-b48749959172?q=80&w=2070&auto=format&fit=crop",
-  },
-  {
-    name: "Golden Field",
-    url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop",
-  },
-  {
-    name: "Night Prowl",
-    url: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070&auto=format&fit=crop",
-  },
-];
+
 
 export default function SettingsPage() {
   const { addNotification } = useNotifications();
   const {
     members,
-    bannerUrl,
-    bannerPosition,
-    setBannerUrl,
-    setBannerPosition,
     // Accessibility State
     colorblindMode,
     highContrast,
@@ -139,69 +114,7 @@ export default function SettingsPage() {
 
       {activeTab === "profile" ? (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Visual Personalization */}
-          <Card className="folk-card overflow-hidden">
-            <CardHeader className="bg-primary/5 border-b border-primary/10">
-              <CardTitle className="flex items-center gap-2 text-xl italic">
-                <Palette className="text-primary" size={20} /> Personalization
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-8 space-y-8">
-              <div className="space-y-4">
-                <label className="text-xs font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-                  <Camera size={14} /> Profile Banner
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {BANNER_URLS.map((b) => (
-                    <button
-                      key={b.name}
-                      onClick={() => setBannerUrl(b.url)}
-                      className={cn(
-                        "relative h-24 rounded-2xl overflow-hidden border-4 transition-all group",
-                        bannerUrl === b.url
-                          ? "border-primary shadow-lg scale-[0.98]"
-                          : "border-transparent opacity-70 hover:opacity-100",
-                      )}
-                    >
-                      <img
-                        src={b.url}
-                        alt={b.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">
-                          {b.name}
-                        </span>
-                      </div>
-                      {bannerUrl === b.url && (
-                        <div className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full">
-                          <Check size={12} />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              <div className="pt-6 border-t border-border space-y-4">
-                <label className="text-xs font-black uppercase text-muted-foreground tracking-widest flex items-center gap-2">
-                  <Monitor size={14} /> Banner Position
-                </label>
-                <div className="flex gap-2">
-                  {["0% 50%", "50% 50%", "100% 50%"].map((pos, i) => (
-                    <Button
-                      key={pos}
-                      variant={bannerPosition === pos ? "default" : "outline"}
-                      onClick={() => setBannerPosition(pos)}
-                      className="flex-1 h-12 rounded-xl font-bold uppercase tracking-widest text-[10px]"
-                    >
-                      {i === 0 ? "Top" : i === 1 ? "Center" : "Bottom"}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           <Card className="folk-card bg-muted/30 border-dashed border-2">
             <CardContent className="p-8 text-center space-y-4">

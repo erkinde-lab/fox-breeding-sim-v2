@@ -24,6 +24,29 @@ import {
 } from 'lucide-react';
 import { useNotifications } from '@/components/NotificationProvider';
 
+const BANNER_URLS = [
+  {
+    name: "Classic Fox",
+    url: "https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    name: "Forest Mist",
+    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    name: "Winter Den",
+    url: "https://images.unsplash.com/photo-1483356256511-b48749959172?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    name: "Golden Field",
+    url: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop",
+  },
+  {
+    name: "Night Prowl",
+    url: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2070&auto=format&fit=crop",
+  },
+];
+
 export default function AdminPanel() {
   const { showNotification, addNotification } = useNotifications();
   const {
@@ -40,6 +63,10 @@ export default function AdminPanel() {
     adminAddItem,
     setBroadcast,
     broadcast,
+    bannerUrl,
+    bannerPosition,
+    setBannerUrl,
+    setBannerPosition,
     news,
     addNews,
     deleteNews,
@@ -164,6 +191,55 @@ export default function AdminPanel() {
                 <Button onClick={handleUpdateBroadcast} className="w-full bg-fire-600 hover:bg-fire-500 font-black uppercase tracking-widest h-14 rounded-2xl shadow-lg shadow-fire-200">
                   Update Live Broadcast
                 </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="folk-card border-purple-100 bg-purple-50/10">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-2xl font-black italic flex items-center gap-3">
+                  <Package className="text-purple-600" size={24} /> Site-Wide Banner
+                </CardTitle>
+                <p className="text-xs text-muted-foreground font-medium">Change the decorative header banner visible to all players.</p>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {BANNER_URLS.map((b) => (
+                    <button
+                      key={b.name}
+                      onClick={() => {
+                        setBannerUrl(b.url);
+                        addNotification(`Site banner changed to ${b.name}`, 'success');
+                      }}
+                      className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${bannerUrl === b.url
+                          ? "border-primary shadow-md scale-[0.98]"
+                          : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
+                    >
+                      <img
+                        src={b.url}
+                        alt={b.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                        <span className="text-[8px] font-black text-white uppercase tracking-widest text-center px-1">
+                          {b.name}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                <div className="flex gap-2 pt-2">
+                  {["0% 50%", "50% 50%", "100% 50%"].map((pos, i) => (
+                    <Button
+                      key={pos}
+                      variant={bannerPosition === pos ? "default" : "outline"}
+                      onClick={() => setBannerPosition(pos)}
+                      className="flex-1 h-10 rounded-xl font-bold uppercase tracking-widest text-[9px] border-purple-200 hover:bg-purple-50"
+                    >
+                      {i === 0 ? "Top" : i === 1 ? "Center" : "Bottom"}
+                    </Button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
@@ -403,12 +479,12 @@ export default function AdminPanel() {
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">By <span className="text-primary">{post.author}</span> • {new Date(post.createdAt).toLocaleDateString()}</p>
                       </div>
                       <Button variant="ghost" className="text-muted-foreground/30 hover:text-destructive hover:bg-destructive/5 rounded-full p-2" onClick={() => {
-                         showNotification({
-                           title: 'Delete Post',
-                           message: 'Are you sure? All replies will also be permanently removed.',
-                           type: 'destructive',
-                           onConfirm: () => deleteForumPost(post.id)
-                         });
+                        showNotification({
+                          title: 'Delete Post',
+                          message: 'Are you sure? All replies will also be permanently removed.',
+                          type: 'destructive',
+                          onConfirm: () => deleteForumPost(post.id)
+                        });
                       }}>
                         <Trash2 size={22} />
                       </Button>
@@ -422,8 +498,8 @@ export default function AdminPanel() {
                         {post.replies.map(reply => (
                           <div key={reply.id} className="flex justify-between items-center bg-card p-4 rounded-2xl border border-border shadow-sm">
                             <div>
-                               <span className="font-black text-xs text-foreground mr-2">{reply.author}:</span>
-                               <span className="text-sm text-muted-foreground font-medium">{reply.content}</span>
+                              <span className="font-black text-xs text-foreground mr-2">{reply.author}:</span>
+                              <span className="text-sm text-muted-foreground font-medium">{reply.content}</span>
                             </div>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-muted-foreground/30 hover:text-destructive" onClick={() => deleteForumReply(post.id, reply.id)}>
                               <Trash2 size={16} />
@@ -469,19 +545,19 @@ export default function AdminPanel() {
                   </Button>
                 </div>
                 <Button className="w-full bg-foreground text-background font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => {
-                   showNotification({
-                     title: 'Set Balances',
-                     message: 'Set specific currency values (Staff Only):',
-                     showInput: true,
-                     inputPlaceholder: 'Gold, Gems (e.g. 500, 10)',
-                     onConfirm: (val) => {
-                       const [go, ge] = (val || "").split(',').map(s => parseInt(s.trim()));
-                       if (!isNaN(go) && !isNaN(ge)) {
-                         adminSetCurrency({ gold: go, gems: ge });
-                         addNotification('Balances updated.', 'info');
-                       }
-                     }
-                   });
+                  showNotification({
+                    title: 'Set Balances',
+                    message: 'Set specific currency values (Staff Only):',
+                    showInput: true,
+                    inputPlaceholder: 'Gold, Gems (e.g. 500, 10)',
+                    onConfirm: (val) => {
+                      const [go, ge] = (val || "").split(',').map(s => parseInt(s.trim()));
+                      if (!isNaN(go) && !isNaN(ge)) {
+                        adminSetCurrency({ gold: go, gems: ge });
+                        addNotification('Balances updated.', 'info');
+                      }
+                    }
+                  });
                 }}>Override Total Balances</Button>
               </CardContent>
             </Card>
@@ -519,32 +595,32 @@ export default function AdminPanel() {
         <TabsContent value="analytics" className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="folk-card p-10 text-center border-moss-100 bg-moss-50/10 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
-                  <History size={120} />
-               </div>
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Total Fox Population</p>
-               <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Object.keys(foxes).length}</h2>
-               <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-moss-100 rounded-full text-moss-700 font-black text-[10px] uppercase tracking-widest relative z-10">
-                  <TrendingUp size={12} /> Stable Growth
-               </div>
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+                <History size={120} />
+              </div>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Total Fox Population</p>
+              <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Object.keys(foxes).length}</h2>
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-moss-100 rounded-full text-moss-700 font-black text-[10px] uppercase tracking-widest relative z-10">
+                <TrendingUp size={12} /> Stable Growth
+              </div>
             </Card>
 
             <Card className="folk-card p-10 text-center border-amber-100 bg-amber-50/10 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
-                  <Coins size={120} />
-               </div>
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Economic Velocity</p>
-               <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Math.floor(gold / 1000)}k</h2>
-               <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10">Total Circulating Gold</p>
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+                <Coins size={120} />
+              </div>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Economic Velocity</p>
+              <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Math.floor(gold / 1000)}k</h2>
+              <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10">Total Circulating Gold</p>
             </Card>
 
             <Card className="folk-card p-10 text-center border-fire-100 bg-fire-50/10 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
-                  <Shield size={120} />
-               </div>
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Active Reports</p>
-               <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">0</h2>
-               <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10 italic">System is Secure</p>
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+                <Shield size={120} />
+              </div>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Active Reports</p>
+              <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">0</h2>
+              <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10 italic">System is Secure</p>
             </Card>
           </div>
 
@@ -568,8 +644,8 @@ export default function AdminPanel() {
                     <div key={log.id} className="p-6 flex items-start gap-6 hover:bg-muted/10 transition-colors">
                       <div className="mt-1">
                         {log.action.includes('Spawn') ? <Plus className="text-moss-500" /> :
-                         log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle className="text-fire-600" /> :
-                         <History className="text-cyan-600" />}
+                          log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle className="text-fire-600" /> :
+                            <History className="text-cyan-600" />}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-3">

@@ -3,14 +3,16 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { useGameStore } from '@/lib/store';
 import { PawPrint, Trophy, Heart, ShoppingBag } from 'lucide-react';
 
 export default function LandingPage() {
+  const { toggleAdminMode } = useGameStore();
   return (
     <div className="space-y-16 py-12">
       <div className="text-center space-y-6">
         <h1 className="text-6xl sm:text-8xl font-folksy text-earth-900 tracking-tight leading-[0.85]">
-          Welcome to <span className="text-apricot">Red Fox</span><br />Breeding Simulator
+          Welcome to <span className="text-primary">Red Fox</span><br />Breeding Simulator
         </h1>
         <p className="text-xl text-ink max-w-2xl mx-auto font-medium opacity-80 leading-relaxed">
           Experience the art of fox genetics and competitive showing. Build your kennel,
@@ -32,7 +34,7 @@ export default function LandingPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <FeatureCard
-          icon={<PawPrint size={32} className="text-apricot" />}
+          icon={<PawPrint size={32} className="text-primary" />}
           title="Genetic Simulation"
           description="Complex Agouti, Black, Albino, Burgundy, Pearl and Fire loci interaction."
         />
@@ -63,9 +65,9 @@ export default function LandingPage() {
             </Button>
           </Link>
         </div>
-        <div className="absolute top-0 right-0 p-12 opacity-10 rotate-12">
+        <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} className="absolute top-0 right-0 p-12 opacity-10 rotate-12" aria-label="Toggle Admin Mode">
           <PawPrint size={350} />
-        </div>
+        </button>
       </div>
     </div>
   );

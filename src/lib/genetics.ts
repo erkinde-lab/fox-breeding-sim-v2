@@ -8,7 +8,8 @@ export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: (g
   G: { name: 'Burgundy', alleles: ['G', 'g'] }, // gg = Burgundy
   P: { name: 'Pearl', alleles: ['P', 'p'] }, // pp = Pearl
   Fire: { name: 'Fire', alleles: ['FI', 'fi'] }, // fi = Fire (Recessive)
-  W: { name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG', 'WP'],
+  W: {
+    name: 'White Markings', alleles: ['w', 'W', 'WM', 'WG', 'WP'],
     lethal: (alleles) => {
       const dominant = alleles.filter(a => a !== 'w');
       if (dominant.length < 2) return false;
@@ -726,4 +727,3 @@ export function calculateBreedingOutcomes(m: Fox, f: Fox, foxes: Record<string, 
   };
 }
 
-declare var process: any;

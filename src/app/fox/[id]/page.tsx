@@ -39,7 +39,6 @@ import {
   getActiveBoosts,
 } from "@/lib/genetics";
 import { GeneticTooltip } from "@/components/GeneticTooltip";
-import { FoxHistory } from "@/components/FoxHistory";
 import { useNotifications } from "@/components/NotificationProvider";
 
 export default function FoxProfilePage() {
@@ -829,13 +828,12 @@ function PedigreeTree({
               ? `Pedigree node: ${defaultName}`
               : "Unknown ancestor"
         }
-        className={`w-36 p-3 border-2 rounded-2xl shadow-sm transition-all flex flex-col items-center justify-center text-center ${
-          fox
-            ? "border-border bg-card hover:border-primary/30 group"
-            : defaultName
-              ? "border-border bg-muted/20"
-              : "border-border/30 bg-muted/20 text-muted-foreground/30 italic border-dashed"
-        }`}
+        className={`w-36 p-3 border-2 rounded-2xl shadow-sm transition-all flex flex-col items-center justify-center text-center ${fox
+          ? "border-border bg-card hover:border-primary/30 group"
+          : defaultName
+            ? "border-border bg-muted/20"
+            : "border-border/30 bg-muted/20 text-muted-foreground/30 italic border-dashed"
+          }`}
       >
         {fox ? (
           <Link

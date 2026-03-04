@@ -34,54 +34,55 @@
 }
 
 :root {
-  --background: #fdf8f3;
-  --foreground: #34495e;
-  --card: #ffffff;
-  --card-foreground: #34495e;
-  --popover: #ffffff;
-  --popover-foreground: #34495e;
-  --primary: #e6a57e;
-  --primary-foreground: #ffffff;
-  --secondary: #8fa08e;
-  --secondary-foreground: #ffffff;
-  --muted: #f5f1ed;
-  --muted-foreground: #5c4a3c;
-  --accent: #b59d85;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --background: #f2efe9;
+  --foreground: #3b4235;
+  --card: #e8e4db;
+  --card-foreground: #3b4235;
+  --popover: #e8e4db;
+  --popover-foreground: #3b4235;
+  --primary: #9e5b44;
+  --primary-foreground: #f2efe9;
+  --secondary: #4d5746;
+  --secondary-foreground: #f2efe9;
+  --muted: #d6d1c7;
+  --muted-foreground: #6c7565;
+  --accent: #8c6046;
+  --accent-foreground: #f2efe9;
+  --destructive: #df4b4b;
   --destructive-foreground: #ffffff;
-  --border: #d9c5b2;
-  --input: #d9c5b2;
-  --ring: #e6a57e;
-  --banner-overlay: rgba(253, 248, 243, 0.9);
-  --card-shadow: 0 10px 30px -10px rgba(181, 157, 133, 0.3);
-  --card-shadow-hover: 0 20px 40px -15px rgba(181, 157, 133, 0.4);
-  --shadow-primary: rgba(230, 165, 126, 0.35);
-  --shadow-secondary: rgba(143, 160, 142, 0.25);
+  --border: #b5ad9e;
+  --input: #b5ad9e;
+  --ring: #9e5b44;
+  --banner-overlay: rgba(242, 239, 233, 0.9);
+  --card-shadow: 0 10px 30px -10px rgba(77, 87, 70, 0.15);
+  --card-shadow-hover: 0 20px 40px -15px rgba(77, 87, 70, 0.25);
+  --shadow-primary: rgba(158, 91, 68, 0.3);
+  --shadow-secondary: rgba(77, 87, 70, 0.2);
 }
 
 .dark {
-  --background: #121612;
-  --foreground: #d1d5d1;
-  --card: #1c231c;
-  --card-foreground: #d1d5d1;
-  --popover: #1c231c;
-  --popover-foreground: #d1d5d1;
-  --primary: #c58c6a;
-  --primary-foreground: #121612;
-  --secondary: #8fa08e;
-  --secondary-foreground: #ffffff;
-  --muted: #242b24;
-  --muted-foreground: #7a8a7a;
-  --accent: #2c352c;
-  --accent-foreground: #f1f5f1;
-  --border: #243024;
-  --input: #243024;
-  --ring: #c58c6a;
-  --banner-overlay: rgba(18, 22, 18, 0.85);
-  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
-  --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-  /* Use near-opaque black so badge shadows don't glow in dark mode */
+  --background: #242821;
+  --foreground: #d1cbbd;
+  --card: #2e342a;
+  --card-foreground: #d1cbbd;
+  --popover: #2e342a;
+  --popover-foreground: #d1cbbd;
+  --primary: #ab6852;
+  --primary-foreground: #242821;
+  --secondary: #1e221c;
+  --secondary-foreground: #d1cbbd;
+  --muted: #3b4235;
+  --muted-foreground: #9ca693;
+  --accent: #8c6046;
+  --accent-foreground: #d1cbbd;
+  --destructive: #df4b4b;
+  --destructive-foreground: #d1cbbd;
+  --border: #3b4235;
+  --input: #3b4235;
+  --ring: #ab6852;
+  --banner-overlay: rgba(36, 40, 33, 0.85);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+  --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
   --shadow-primary: rgba(0, 0, 0, 0.4);
   --shadow-secondary: rgba(0, 0, 0, 0.3);
 }
@@ -237,13 +238,17 @@ h6 {
   display: none;
   /* Chrome, Safari and Opera */
 }
+
 /* Accessibility Themes */
 
 /* Universal Colorblind Theme (using a high-contrast palette often used for accessibility) */
 .colorblind-mode {
-  --primary: #0072b2; /* Vermillion */
-  --secondary: #009e73; /* Bluish Green */
-  --accent: #e69f00; /* Orange */
+  --primary: #0072b2;
+  /* Vermillion */
+  --secondary: #009e73;
+  /* Bluish Green */
+  --accent: #e69f00;
+  /* Orange */
   --ring: #0072b2;
   --shadow-primary: rgba(0, 114, 178, 0.35);
   --shadow-secondary: rgba(0, 158, 115, 0.25);
@@ -292,12 +297,15 @@ html.high-contrast * {
 .font-size-small {
   font-size: 14px;
 }
+
 .font-size-normal {
   font-size: 16px;
 }
+
 .font-size-large {
   font-size: 18px;
 }
+
 .font-size-xl {
   font-size: 20px;
 }
@@ -306,7 +314,7 @@ html.high-contrast * {
 @font-face {
   font-family: "OpenDyslexic";
   src: url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff2") format("woff2"),
-       url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff") format("woff");
+    url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;

@@ -68,6 +68,8 @@ export default function LayoutClient({
     simplifiedUI,
     textSpacing,
     broadcast,
+    bannerUrl,
+    bannerPosition,
   } = useGameStore();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -143,12 +145,10 @@ export default function LayoutClient({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const bannerUrl =
-    "https://images.unsplash.com/photo-1474511320721-9a6ee39b4c18?auto=format&fit=crop&q=80&w=2000";
-  const bannerPosition = "40%";
+
 
   return (
-    <div className="min-h-screen bg-oatmeal flex flex-col font-rounded selection:bg-apricot/30 transition-colors duration-500">
+    <div className="min-h-screen bg-background flex flex-col font-rounded selection:bg-primary/30 transition-colors duration-500">
       <ColorblindFilters />
       <TutorialTour />
       {/* Global Broadcast Banner */}
@@ -162,7 +162,7 @@ export default function LayoutClient({
       )}
       {/* Top Utility Bar */}
       <div
-        className="bg-stone-900 text-[10px] font-black uppercase tracking-[0.2em] text-white py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] shadow-sm"
+        className="bg-card text-[10px] font-black uppercase tracking-[0.2em] text-foreground py-2.5 px-4 sm:px-6 lg:px-8 flex justify-between items-center z-[60] border-b border-border"
         role="region"
         aria-label="User and Game Status"
       >
@@ -174,7 +174,7 @@ export default function LayoutClient({
           {isAdmin && (
             <button
               onClick={() => advanceTime()}
-              className="hover:bg-white/10 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 border border-white/20"
+              className="hover:bg-foreground/10 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 border border-foreground/20"
             >
               <FastForward size={12} /> Advance Season
             </button>
@@ -183,31 +183,31 @@ export default function LayoutClient({
         <div className="flex items-center gap-6">
           <div
             id="tutorial-currency"
-            className="flex items-center gap-4 border-white/20 sm:pr-6 sm:border-r"
+            className="flex items-center gap-4 border-foreground/20 sm:pr-6 sm:border-r"
           >
-            <span className="flex items-center gap-1.5">
-              <Coins size={12} className="text-yellow-200" />{" "}
+            <span className="flex items-center gap-1.5 hover:text-yellow-600 dark:hover:text-yellow-200 transition-colors">
+              <Coins size={12} className="text-yellow-500 dark:text-yellow-200" />{" "}
               {gold.toLocaleString()} Gold
             </span>
             <Link
               href="/shop/gems"
-              className="flex items-center gap-1.5 hover:text-cyan-200 transition-colors group"
+              className="flex items-center gap-1.5 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors group"
             >
               <Diamond
                 size={12}
-                className="text-cyan-200 group-hover:scale-110 transition-transform"
+                className="text-cyan-500 dark:text-cyan-200 group-hover:scale-110 transition-transform"
               />
               {gems.toLocaleString()} Gems
               <Plus
                 size={10}
-                className="bg-white/20 rounded-full p-0.5 ml-0.5"
+                className="bg-foreground/10 rounded-full p-0.5 ml-0.5"
               />
             </Link>
           </div>
           <div className="flex items-center gap-4">
             <button
               onClick={() => toggleDarkMode()}
-              className="p-1.5 rounded-full hover:bg-white/10 transition-colors border border-white/10"
+              className="p-1.5 rounded-full hover:bg-foreground/10 transition-colors border border-foreground/10"
               title={
                 isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
               }
@@ -240,30 +240,25 @@ export default function LayoutClient({
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
-            <div className="text-ink max-w-2xl">
-              <Link
-                href="/"
-                className="inline-flex items-center gap-4 group mb-4"
-              >
+            <div className="text-foreground max-w-2xl">
+              <div className="inline-flex items-center gap-4 group mb-4">
                 <div className="relative">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 group-hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
-                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} className="w-full h-full flex items-center justify-center">
-                      <PawPrint className="text-white -rotate-3 group-hover:-rotate-6 transition-transform" size={40} />
-                    </button>
-                  </div>
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg">
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} aria-label="Toggle Admin Mode" className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
+                    <PawPrint className="text-white -rotate-3 hover:-rotate-6 transition-transform" size={40} />
+                  </button>
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg pointer-events-none">
                     <Star className="text-white" size={12} />
                   </div>
                 </div>
-                <div>
+                <Link href="/" className="hover:opacity-80 transition-opacity">
                   <h1 className="text-4xl sm:text-6xl font-folksy tracking-tight leading-none">
                     Red Fox <span className="text-primary">Simulator</span>
                   </h1>
                   <p className="text-xs sm:text-sm font-black uppercase tracking-[0.3em] opacity-60 mt-2">
                     Est. {year} • Rare Genetics • Show Excellence
                   </p>
-                </div>
-              </Link>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -275,7 +270,7 @@ export default function LayoutClient({
       </div>
 
       {/* Main Navigation */}
-      <nav className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-sagebrush/10 z-50">
+      <nav className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             {/* Desktop Navigation */}
@@ -441,6 +436,14 @@ export default function LayoutClient({
                         Member since Year 1
                       </p>
                     </div>
+                    {isAdmin && (
+                      <DropdownLink
+                        href="/admin"
+                        icon={<Shield size={16} />}
+                        label="Admin Panel"
+                        onClick={() => setIsProfileOpen(false)}
+                      />
+                    )}
                     <DropdownLink
                       href="/kennel"
                       icon={<PawPrint size={16} />}
@@ -487,7 +490,7 @@ export default function LayoutClient({
       </main>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border py-12 sm:py-16">
+      <footer className="bg-secondary text-secondary-foreground border-t border-border py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-12">
             <div className="col-span-2 lg:col-span-2">
