@@ -19,6 +19,7 @@ import {
   Search,
   ArrowUpDown,
   Activity as ActivityIcon,
+  Users,
 } from "lucide-react";
 import { FoxIllustration } from "@/components/FoxIllustration";
 import { Dashboard } from "@/components/Dashboard";
@@ -31,7 +32,7 @@ type SortOption = "id" | "name" | "age" | "points";
 function KennelContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { foxes, kennelCapacity, expandKennel, season } = useGameStore();
+  const { foxes, kennelCapacity, expandKennel, season, year } = useGameStore();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("id");
@@ -40,7 +41,7 @@ function KennelContent() {
   const activeTab = useMemo(() => {
     if (
       tabParam &&
-      ["dashboard", "adult", "young", "retired", "hof"].includes(tabParam)
+      ["dashboard", "adult", "young", "retired", "hof", "npc"].includes(tabParam)
     ) {
       return tabParam;
     }
@@ -51,7 +52,7 @@ function KennelContent() {
     router.push(`/kennel?tab=${tab}`, { scroll: false });
   };
 
-  const foxList = Object.values(foxes);
+  const foxList = Object.values(foxes).filter(fox => fox.ownerId !== "player-0");
 
   const filteredAndSortedFoxes = useMemo(() => {
     return foxList
@@ -230,6 +231,65 @@ function KennelContent() {
           )}
         </motion.div>
       </AnimatePresence>
+    </div>
+  );
+}
+
+function NPCKennel({ foxes }: { foxes: Record<string, Fox> }) {
+  const npcFoxList = Object.values(foxes).filter(fox => fox.ownerId === "player-0");
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {npcFoxList.map((npc) => (
+        <div
+          key={npc.id}
+          className="folk-card border-2 border-border shadow-sm rounded-[32px] overflow-hidden bg-card"
+        >
+          <div className="p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                  <PawPrint size={20} className="text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-foreground">{npc.name}</h3>
+                  <p className="text-sm text-muted-foreground">{npc.phenotype}</p>
+                </div>
+              </div>
+              <Badge variant="outline" className="text-xs">
+                NPC
+              </Badge>
+            </div>
+            
+            <div className="flex items-center gap-2 text-muted-foreground text-xs">
+              <span>{npc.gender}</span>
+              <span className="w-1 h-1 rounded-full bg-border" />
+              <span>{npc.age} years old</span>
+              <span className="w-1 h-1 rounded-full bg-border" />
+              <span>Stud Fee: {npc.studFee} Gold</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Badge variant={npc.studFee > 0 ? "default" : "secondary"} className="text-xs">
+                {npc.studFee > 0 ? "Available for Breeding" : "Not Available"}
+              </Badge>
+              {npc.studFee === 0 && (
+                <Badge variant="outline" className="text-xs">
+                  Past Stud
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+      
+      {npcFoxList.length === 0 && (
+        <div className="col-span-full text-center py-12 text-muted-foreground">
+          <Users size={48} className="mx-auto mb-4 opacity-50" />
+          <p className="text-lg font-medium">No NPC studs available</p>
+          <p className="text-sm">NPC studs will appear here after their breeding year ends</p>
+        </div>
+      )}
     </div>
   );
 }

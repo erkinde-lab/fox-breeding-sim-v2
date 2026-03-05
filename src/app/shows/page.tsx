@@ -38,6 +38,7 @@ export default function ShowsPage() {
     enterFoxInShow,
     runShows,
     generateSeasonalShows,
+    showVisibilityMode,
   } = useGameStore();
 
   const [activeTab, setActiveTab] = useState<
@@ -64,6 +65,11 @@ export default function ShowsPage() {
       show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       show.type.toLowerCase().includes(searchQuery.toLowerCase())
     );
+  }).filter((show) => {
+    // Filter by visibility mode - only show shows matching current mode
+    const isMidweekShow = !show.isWeekend;
+    const isWeekendShow = show.isWeekend;
+    return showVisibilityMode === "midweek" ? isMidweekShow : isWeekendShow;
   });
 
   const selectedShow = shows.find((s) => s.id === selectedShowId);
@@ -73,7 +79,6 @@ export default function ShowsPage() {
           f,
           selectedShow.level,
           selectedShow.type as Variety,
-          season,
         ),
       )
     : [];
@@ -578,6 +583,14 @@ export default function ShowsPage() {
                                     className="bg-orange-100 text-orange-700 text-[8px] font-black border-none"
                                   >
                                     WEEKEND
+                                  </Badge>
+                                )}
+                                {!show.isWeekend && (
+                                  <Badge
+                                    variant="secondary"
+                                    className="bg-blue-100 text-blue-700 text-[8px] font-black border-none"
+                                  >
+                                    MIDWEEK
                                   </Badge>
                                 )}
                               </div>

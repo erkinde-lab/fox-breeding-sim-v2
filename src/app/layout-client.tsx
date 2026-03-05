@@ -36,6 +36,7 @@ import {
   Store,
   Star, Megaphone,
   Baby,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -280,13 +281,13 @@ export default function LayoutClient({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
                   pathname === "/kennel"
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                    : "text-foreground hover:bg-muted opacity-80 hover:opacity-100",
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                 )}
               >
-                <Home size={18} /> Kennel
+                <PawPrint size={16} />
+                My Kennel
               </Link>
-
               <div className="h-6 w-px bg-border mx-2" />
 
               <Dropdown
@@ -297,8 +298,8 @@ export default function LayoutClient({
                 dropdownRef={useRef(null)}
               >
                 <DropdownLink
-                  href="/shop/adoption"
-                  icon={<Baby size={16} />}
+                  href="/foundation-fox-store"
+                  icon={<ShoppingCart size={16} />}
                   label="Foundations"
                   onClick={() => setIsShopsOpen(false)}
                 />
@@ -529,7 +530,7 @@ export default function LayoutClient({
                     href="/kennel"
                     className="text-muted-foreground hover:text-primary transition-colors"
                   >
-                    Dashboard
+                    My Kennel
                   </Link>
                 </li>
                 <li>
@@ -890,6 +891,22 @@ function Dropdown({
   dropdownRef: React.RefObject<HTMLDivElement | null>;
   children: React.ReactNode;
 }) {
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isOpen, dropdownRef, setIsOpen]);
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button

@@ -218,6 +218,8 @@ export interface Fox {
   isAtStud: boolean;
   studFee: number;
   isNPC?: boolean;
+  ownerId: string; // "player-0" for game-owned, "player-1" for user-owned
+  isFoundation?: boolean; // true = available for purchase, false = NPC stud
   isAltered?: boolean;
   prefixTitle?: string;
   bisWins?: number;
@@ -354,13 +356,33 @@ export function calculateCOI(foxIdOrSireId: string, foxes: Record<string, { pare
 }
 
 export function createFox(data: Partial<Fox>, random: () => number = Math.random): Fox {
+  // Get next sequential ID from store if available
+  let foxId: string;
+  if (typeof window !== 'undefined') {
+    // Try to get from zustand store if in browser
+    try {
+      // Import store dynamically to avoid circular dependency
+      const { useGameStore } = require('../lib/store');
+      const store = useGameStore.getState();
+      const nextId = store.nextFoxId || 1;
+      store.nextFoxId = nextId + 1;
+      foxId = nextId.toString().padStart(7, '0');
+    } catch {
+      // Fallback for server-side or if store not available
+      foxId = Date.now().toString();
+    }
+  } else {
+    // Server-side fallback
+    foxId = Date.now().toString();
+  }
+
   const genotype = data.genotype || getInitialGenotype();
   const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(random() * 5) + 1 : 3);
   const phenotype = getPhenotype(genotype, silverIntensity, data.eyeColor);
   const name = data.name || (phenotype.name !== "Unknown Fox" ? phenotype.name : "Unnamed Fox");
 
   return {
-    id: data.id || (typeof window !== 'undefined' ? random().toString(36).substring(2, 9) : Date.now().toString()),
+    id: data.id || foxId,
     name: name,
     genotype,
     phenotype: phenotype.name,
@@ -385,6 +407,7 @@ export function createFox(data: Partial<Fox>, random: () => number = Math.random
     isAtStud: data.isAtStud ?? false,
     studFee: data.studFee ?? 0,
     isNPC: data.isNPC || false,
+    ownerId: data.ownerId || "player-1", // Default to player-1 owned
     lastFed: data.lastFed || Date.now(),
     boosts: data.boosts || {},
   };
@@ -462,19 +485,44 @@ export function createFoundationFoxCollection(random: () => number = Math.random
 
   const foxes: Fox[] = [];
 
+  // Generate gender distribution: 2-4 of each gender (no more than 4 of one sex)
+  const genderOptions: Array<"Dog" | "Vixen"> = [];
+  const dogCount = 2 + Math.floor(safeRandom() * 3); // 2, 3, or 4 dogs
+  const vixenCount = 6 - dogCount; // 4, 3, or 2 vixens
+
+  for (let i = 0; i < dogCount; i++) genderOptions.push("Dog");
+  for (let i = 0; i < vixenCount; i++) genderOptions.push("Vixen");
+
+  // Shuffle gender options
+  for (let i = genderOptions.length - 1; i > 0; i--) {
+    const j = Math.floor(safeRandom() * (i + 1));
+    [genderOptions[i], genderOptions[j]] = [genderOptions[j], genderOptions[i]];
+  }
+
   // Rule 1: Ensure at least one red base fox
   const redBaseGenotype = redBaseGenotypes[Math.floor(safeRandom() * redBaseGenotypes.length)];
-  foxes.push(createFoundationalFoxWithGenotype(redBaseGenotype, safeRandom));
+  const redFoxGender = genderOptions.pop()!;
+  foxes.push(createFoundationalFoxWithGenotype(redBaseGenotype, safeRandom, redFoxGender));
 
-  // Rule 2: Ensure at least one cross fox
+  // Rule 2: Ensure at least one gold base fox (different from the red one above)
+  let goldBaseGenotype;
+  do {
+    goldBaseGenotype = redBaseGenotypes[Math.floor(safeRandom() * redBaseGenotypes.length)];
+  } while (JSON.stringify(goldBaseGenotype) === JSON.stringify(redBaseGenotype)); // Ensure different genotype
+  const goldFoxGender = genderOptions.pop()!;
+  foxes.push(createFoundationalFoxWithGenotype(goldBaseGenotype, safeRandom, goldFoxGender));
+
+  // Rule 3: Ensure at least one cross fox
   const crossGenotype = crossGenotypes[Math.floor(safeRandom() * crossGenotypes.length)];
-  foxes.push(createFoundationalFoxWithGenotype(crossGenotype, safeRandom));
+  const crossFoxGender = genderOptions.pop()!;
+  foxes.push(createFoundationalFoxWithGenotype(crossGenotype, safeRandom, crossFoxGender));
 
-  // Generate remaining 4 foxes
-  for (let i = 0; i < 4; i++) {
+  // Generate remaining 3 foxes with assigned genders
+  for (let i = 0; i < 3; i++) {
     const allGenotypes = [...redBaseGenotypes, ...crossGenotypes, ...otherGenotypes];
     const genotype = allGenotypes[Math.floor(safeRandom() * allGenotypes.length)];
-    foxes.push(createFoundationalFoxWithGenotype(genotype, safeRandom));
+    const gender = genderOptions.pop()!;
+    foxes.push(createFoundationalFoxWithGenotype(genotype, safeRandom, gender));
   }
 
   // Rule 3: Ensure only one black fox (intensity 1)

@@ -11,12 +11,12 @@ import { FoxIllustration } from '@/components/FoxIllustration';
 import { calculateBreedingOutcomes, LOCI } from '@/lib/genetics';
 
 export default function StudBarnPage() {
-  const { foxes, npcStuds, breedFoxes, season, gold, hiredGeneticist, inventory } = useGameStore();
+  const { foxes, breedFoxes, season, gold, hiredGeneticist, inventory } = useGameStore();
   const [selectedVixenId, setSelectedVixenId] = useState<string | null>(null);
   const [selectedStudId, setSelectedStudId] = useState<string | null>(null);
 
   const ownedStuds = Object.values(foxes).filter(f => f.gender === 'Dog' && f.isAtStud && !f.isRetired);
-  const availableNPCs = Object.values(npcStuds);
+  const availableNPCs = Object.values(foxes).filter(f => f.isNPC);
   const eligibleVixens = Object.values(foxes).filter(f => f.gender === 'Vixen' && !f.isRetired && f.age >= 2);
 
   const hasCalculator = inventory['calculator-access'] > 0;
@@ -36,10 +36,10 @@ export default function StudBarnPage() {
   const outcomes = useMemo(() => {
     if (!selectedVixenId || !selectedStudId) return null;
     const vixen = foxes[selectedVixenId];
-    const stud = foxes[selectedStudId] || npcStuds[selectedStudId];
+    const stud = foxes[selectedStudId];
     if (!vixen || !stud) return null;
     return calculateBreedingOutcomes(stud, vixen, foxes);
-  }, [selectedVixenId, selectedStudId, foxes, npcStuds]);
+  }, [selectedVixenId, selectedStudId, foxes]);
 
   const isWinter = season === 'Winter';
 
@@ -99,7 +99,7 @@ export default function StudBarnPage() {
                   </div>
                   <Button
                     onClick={handleBreed}
-                    disabled={!isWinter || (npcStuds[selectedStudId] && gold < npcStuds[selectedStudId].studFee)}
+                    disabled={!isWinter || (foxes[selectedStudId] && foxes[selectedStudId].isNPC && gold < foxes[selectedStudId].studFee)}
                     className="bg-primary text-primary-foreground font-black uppercase tracking-widest px-8 rounded-xl"
                   >
                     Commit Breeding

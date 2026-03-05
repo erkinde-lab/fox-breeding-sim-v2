@@ -294,12 +294,17 @@ export default function HelpPage() {
                 color="bg-primary/10 text-primary border-primary/20"
                 title="How Shows Work"
               >
-                Shows follow a hierarchical structure:{" "}
-                <strong>Variety → Best of Sex → Best in Show</strong>. Players
-                enter foxes into Variety shows (Red, Gold, Silver, Cross,
-                Exotic, or White Mark). Winners automatically advance through
-                the hierarchy, with each stage evaluated independently using
-                fresh luck rolls.
+                Shows follow a <strong>4-stage hierarchical structure</strong>:
+                <br /><br />
+                <strong>Stage 1: Best of Category</strong> - Foxes compete within specific color/level/age groups. No points awarded, just organization.
+                <br /><br />
+                <strong>Stage 2: Best of Variety</strong> - Category winners compete by color and age group. Winners earn <strong>1 point</strong>.
+                <br /><br />
+                <strong>Stage 3: Best of Sex</strong> - Variety winners compete by circuit and age group. Winners earn <strong>1 additional point</strong>.
+                <br /><br />
+                <strong>Stage 4: Best in Show</strong> - All Sex winners compete together. <strong>BIS earns 2 points, RBIS earns 1 point</strong>.
+                <br /><br />
+                <strong>Points are cumulative</strong> - A fox that wins BIS earns 4 total points (1+1+2), while RBIS earns 3 total points (1+1+1).
               </InfoTile>
               <InfoTile
                 icon={Zap}
@@ -458,7 +463,7 @@ export default function HelpPage() {
                       </div>
                       <div className="flex justify-between px-2 text-xs text-primary font-bold italic">
                         <span>Best in Show (BIS/RBIS)</span>{" "}
-                        <span>+2 Pts (Major)</span>
+                        <span>BIS: +2 Pts, RBIS: +1 Pt (Major)</span>
                       </div>
                     </div>
                   </div>

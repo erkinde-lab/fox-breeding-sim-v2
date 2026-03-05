@@ -16,7 +16,7 @@ export function Dashboard() {
     hiredNutritionist, feedAllFoxes, hiredGroomer, groomAllFoxes, hiredTrainer, trainAllFoxes, kennelCapacity
   } = useGameStore();
 
-  const foxList = Object.values(foxes);
+  const foxList = Object.values(foxes).filter(fox => fox.ownerId === "player-1");
 
   const seasonalAwards = [
     { title: "Autumn Ghost", description: "Bred a Silver fox during the Hallow-season", year: 1, season: "Autumn", icon: Ghost, variant: "primary" },

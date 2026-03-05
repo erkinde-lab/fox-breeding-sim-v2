@@ -47,16 +47,21 @@ export default function FoxProfilePage() {
   const { addNotification } = useNotifications();
   const {
     foxes,
-    foundationFoxes,
-    npcStuds,
     applyItem,
     renameFox,
     retireFox,
-    toggleStudStatus,
-    season,
-    listFoxOnMarket,
     updateFox,
     spayNeuterFox,
+    gold,
+    inventory,
+    listFoxOnMarket,
+    toggleStudStatus,
+    season,
+    hiredGeneticist,
+    hiredGroomer,
+    hiredTrainer,
+    hiredVeterinarian,
+    hiredNutritionist,
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -68,8 +73,7 @@ export default function FoxProfilePage() {
 
   const fox =
     foxes[id as string] ||
-    foundationFoxes.find((f) => f.id === id) ||
-    Object.values(npcStuds).find((f) => f.id === id);
+    Object.values(foxes).find((f) => f.id === id && f.isFoundation);
   const isFoundational = !foxes[id as string];
   const [newName, setNewName] = useState(fox?.name || "");
 
@@ -366,53 +370,7 @@ export default function FoxProfilePage() {
         {/* Left Column: Illustration & Quick Stats */}
         <div className="xl:col-span-4 space-y-6">
           <div className="folk-card overflow-hidden bg-card border-2 border-border rounded-[48px] flex flex-col relative shadow-sm">
-            <div className="aspect-square flex items-center justify-center p-12 bg-muted/30">
-              <FoxIllustration
-                phenotype={fox.phenotype}
-                baseColor={fox.baseColor}
-                pattern={fox.pattern}
-                eyeColor={fox.eyeColor}
-                size={32}
-              />
-
-              {/* Status Badges */}
-              <div className="absolute top-6 right-6 flex flex-col gap-2">
-                <div
-                  className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm backdrop-blur-md ${hungry ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-primary/10 border-primary/20 text-primary"}`}
-                >
-                  <Utensils size={14} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {hungry ? "Hungry" : "Fed"}
-                  </span>
-                </div>
-                <div
-                  className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm backdrop-blur-md ${!groomed ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-secondary/10 border-secondary/20 text-secondary"}`}
-                >
-                  <Sparkles size={14} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {groomed ? "Groomed" : "Rough"}
-                  </span>
-                </div>
-                <div
-                  className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm backdrop-blur-md ${!trained ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-orange-500/10 border-orange-500/20 text-orange-500"}`}
-                >
-                  <Dumbbell size={14} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">
-                    {trained ? "Trained" : "Idle"}
-                  </span>
-                </div>
-                {fox.isAltered && (
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm backdrop-blur-md bg-purple-500/10 border-purple-500/20 text-purple-600">
-                    <ActivityIcon size={14} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">
-                      Altered
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="p-8 border-t border-border">
+            <div className="p-8">
               <div className="flex justify-between items-center mb-2">
                 {isEditing ? (
                   <div className="flex items-center gap-2 w-full">
@@ -472,7 +430,55 @@ export default function FoxProfilePage() {
                 <span>{fox.phenotype}</span>
                 <span className="w-1 h-1 rounded-full bg-border" />
                 <span>{fox.eyeColor} Eyes</span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span>Born Y{fox.birthYear || "Unknown"}</span>
               </div>
+            </div>
+
+            {/* Status Badges */}
+            <div className="px-8 pb-4 flex flex-wrap gap-2">
+              <div
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${hungry ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-primary/10 border-primary/20 text-primary"}`}
+              >
+                <Utensils size={14} />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  {hungry ? "Hungry" : "Fed"}
+                </span>
+              </div>
+              <div
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!groomed ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-secondary/10 border-secondary/20 text-secondary"}`}
+              >
+                <Sparkles size={14} />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  {groomed ? "Groomed" : "Rough"}
+                </span>
+              </div>
+              <div
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!trained ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-orange-500/10 border-orange-500/20 text-orange-500"}`}
+              >
+                <Dumbbell size={14} />
+                <span className="text-[10px] font-black uppercase tracking-widest">
+                  {trained ? "Trained" : "Idle"}
+                </span>
+              </div>
+              {fox.isAltered && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm bg-purple-500/10 border-purple-500/20 text-purple-600">
+                  <ActivityIcon size={14} />
+                  <span className="text-[10px] font-black uppercase tracking-widest">
+                    Altered
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="aspect-square flex items-center justify-center p-12 bg-muted/30">
+              <FoxIllustration
+                phenotype={fox.phenotype}
+                baseColor={fox.baseColor}
+                pattern={fox.pattern}
+                eyeColor={fox.eyeColor}
+                size={32}
+              />
             </div>
           </div>
 
@@ -580,25 +586,25 @@ export default function FoxProfilePage() {
             </CardHeader>
             <CardContent className="p-8 space-y-6">
               <div className="grid grid-cols-1 gap-5">
-                <StatBar label="Head" {...getStat("head")} />
-                <StatBar label="Topline" {...getStat("topline")} />
-                <StatBar label="Forequarters" {...getStat("forequarters")} />
-                <StatBar label="Hindquarters" {...getStat("hindquarters")} />
-                <StatBar label="Tail" {...getStat("tail")} />
+                <StatBar label="Head" {...getStat("head", hiredVeterinarian ? 1 : 0)} />
+                <StatBar label="Topline" {...getStat("topline", hiredVeterinarian ? 1 : 0)} />
+                <StatBar label="Forequarters" {...getStat("forequarters", hiredVeterinarian ? 1 : 0)} />
+                <StatBar label="Hindquarters" {...getStat("hindquarters", hiredVeterinarian ? 1 : 0)} />
+                <StatBar label="Tail" {...getStat("tail", hiredVeterinarian ? 1 : 0)} />
                 <StatBar
                   label="Coat Quality"
-                  {...getStat("coatQuality", groomed ? 5 : 0)}
+                  {...getStat("coatQuality", hiredGroomer ? 5 : 0)}
                 />
                 <StatBar
                   label="Temperament"
-                  {...getStat("temperament", trained ? 3 : 0)}
+                  {...getStat("temperament", hiredTrainer ? 3 : 0)}
                 />
                 <StatBar
                   label="Presence"
-                  {...getStat("presence", trained ? 3 : 0)}
+                  {...getStat("presence", hiredTrainer ? 3 : 0)}
                 />
                 <StatBar label="Luck" value={fox.stats.luck} />
-                <StatBar label="Fertility" value={fox.stats.fertility} />
+                <StatBar label="Fertility" {...getStat("fertility", hiredNutritionist ? 2 : 0)} />
               </div>
             </CardContent>
           </Card>
@@ -618,7 +624,7 @@ export default function FoxProfilePage() {
                     Genotype
                   </CardTitle>
                 </div>
-                {!fox.genotypeRevealed && !isFoundational && (
+                {!fox.genotypeRevealed && !isFoundational && !hiredGeneticist && (
                   <Button
                     onClick={handleReveal}
                     size="sm"
@@ -628,10 +634,18 @@ export default function FoxProfilePage() {
                     <ShoppingBag size={12} /> Reveal
                   </Button>
                 )}
+                {hiredGeneticist && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-700 text-[8px] font-black border-none"
+                  >
+                    AUTO-REVEALED
+                  </Badge>
+                )}
               </div>
             </CardHeader>
             <CardContent className="p-6">
-              {fox.genotypeRevealed ? (
+              {fox.genotypeRevealed || hiredGeneticist ? (
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(fox.genotype).map(([locus, alleles]) => (
                     <GeneticTooltip key={locus} locus={locus} alleles={alleles}>

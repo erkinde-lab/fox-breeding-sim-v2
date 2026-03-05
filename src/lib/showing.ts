@@ -34,19 +34,26 @@ export interface ScoreBreakdown {
   veterinary: number;
   luck: number;
   penalties: number;
+  staff?: {
+    groomer: number;
+    veterinarian: number;
+    trainer: number;
+    nutritionist: number;
+  };
 }
 
 export interface ShowResult {
   foxId: string;
   score: number;
   pointsAwarded: number;
-  title: string; // "BOV", "RBOV", "BOS", "RBOS", "BIS", "RBIS"
+  title: string; // "BOC", "RBOC", "BOV", "RBOV", "BOS", "RBOS", "BIS", "RBIS"
   variety: Variety;
   level: ShowLevel;
   gender: "Dog" | "Vixen";
   ageGroup: "Adult" | "Juvenile";
   breakdown?: ScoreBreakdown;
   isMajor?: boolean;
+  circuit?: "Pro" | "Amateur" | "Altered";
 }
 
 export interface ShowReport {
@@ -87,9 +94,12 @@ export function getFoxVariety(fox: Fox): Variety {
 
 export function calculateScore(
   fox: Fox,
-  hasGroomer: boolean = false,
-  hasTrainer: boolean = false,
-  hasVeterinarian: boolean = false,
+  staffBonuses: {
+    groomer: boolean;
+    veterinarian: boolean;
+    trainer: boolean;
+    nutritionist: boolean;
+  }
 ): { total: number; breakdown: ScoreBreakdown } {
   const { stats } = fox;
   const activeBoosts = getActiveBoosts(fox);
@@ -97,17 +107,17 @@ export function calculateScore(
 
   let groomingBonus = 0;
   let trainingBonus = 0;
-  let vetBonus = 0;
+  const vetBonus = 0;
   let penalties = 0;
 
-  const head = stats.head + (activeBoosts["head"] || 0);
-  const topline = stats.topline + (activeBoosts["topline"] || 0);
-  const forequarters = stats.forequarters + (activeBoosts["forequarters"] || 0);
-  const hindquarters = stats.hindquarters + (activeBoosts["hindquarters"] || 0);
-  const tail = stats.tail + (activeBoosts["tail"] || 0);
-  const coatQuality = stats.coatQuality + (activeBoosts["coatQuality"] || 0);
-  const temperament = stats.temperament + (activeBoosts["temperament"] || 0);
-  const presence = stats.presence + (activeBoosts["presence"] || 0);
+  const head = stats.head + (activeBoosts["head"] || 0) + (staffBonuses.veterinarian ? 1 : 0);
+  const topline = stats.topline + (activeBoosts["topline"] || 0) + (staffBonuses.veterinarian ? 1 : 0);
+  const forequarters = stats.forequarters + (activeBoosts["forequarters"] || 0) + (staffBonuses.veterinarian ? 1 : 0);
+  const hindquarters = stats.hindquarters + (activeBoosts["hindquarters"] || 0) + (staffBonuses.veterinarian ? 1 : 0);
+  const tail = stats.tail + (activeBoosts["tail"] || 0) + (staffBonuses.veterinarian ? 1 : 0);
+  const coatQuality = stats.coatQuality + (activeBoosts["coatQuality"] || 0) + (staffBonuses.groomer ? 5 : 0);
+  const temperament = stats.temperament + (activeBoosts["temperament"] || 0) + (staffBonuses.trainer ? 3 : 0);
+  const presence = stats.presence + (activeBoosts["presence"] || 0) + (staffBonuses.trainer ? 3 : 0);
 
   const rawBase =
     head +
@@ -121,7 +131,6 @@ export function calculateScore(
 
   if (isGroomed(fox)) groomingBonus += 5;
   if (isTrained(fox)) trainingBonus += 6;
-  if (hasVeterinarian) vetBonus += 5;
   if (hungry) penalties -= 40;
 
   const luckBonus = Math.floor(Math.random() * stats.luck) + 1;
@@ -139,6 +148,12 @@ export function calculateScore(
       veterinary: vetBonus,
       luck: luckBonus,
       penalties,
+      staff: {
+        groomer: staffBonuses.groomer ? 5 : 0,
+        veterinarian: staffBonuses.veterinarian ? 5 : 0, // +1 to each of 5 physical traits
+        trainer: staffBonuses.trainer ? 6 : 0, // +3 temp + 3 pres
+        nutritionist: staffBonuses.nutritionist ? 2 : 0, // +2 fertility (applied elsewhere)
+      },
     },
   };
 }
@@ -158,19 +173,20 @@ export function runHierarchicalShow(
   competitors: Competitor[],
   year: number,
   season: string,
-  hasGroomer: boolean = false,
-  hasTrainer: boolean = false,
-  hasVeterinarian: boolean = false,
+  showConfig: any,
+  hiredGroomer: boolean,
+  hiredTrainer: boolean,
+  hiredVeterinarian: boolean,
 ): ShowReport {
   const results: ShowResult[] = [];
 
   const rerollLuck = (c: Competitor) => {
-    const { total, breakdown } = calculateScore(
-      c.fox,
-      hasGroomer,
-      hasTrainer,
-      hasVeterinarian,
-    );
+    const { total, breakdown } = calculateScore(c.fox, {
+      groomer: hiredGroomer,
+      veterinarian: hiredVeterinarian,
+      trainer: hiredTrainer,
+      nutritionist: false,
+    });
     c.currentScore = total;
     c.currentBreakdown = breakdown;
   };
@@ -187,9 +203,10 @@ export function runHierarchicalShow(
     new Set(competitors.map((c) => c.level)),
   );
 
-  const varietyWinners: Competitor[] = [];
+  // Stage 1: Best of Category (BOC / RBOC) - Organization Only
+  const bocWinners: Competitor[] = [];
+  const rbocWinners: Competitor[] = [];
 
-  // Stage 1: Variety (BOV / RBOV)
   levels.forEach((lvl) => {
     varieties.forEach((v) => {
       ["Adult", "Juvenile"].forEach((ageGrp) => {
@@ -197,7 +214,7 @@ export function runHierarchicalShow(
           (c) =>
             c.variety === v &&
             c.level === lvl &&
-            c.ageGroup === (ageGrp as any),
+            c.ageGroup === ageGrp,
         );
         if (group.length === 0) return;
 
@@ -215,35 +232,40 @@ export function runHierarchicalShow(
 
         if (!bestDog && !bestVixen) return;
 
-        let bov: Competitor,
-          rbov: Competitor | null = null;
+        let boc: Competitor,
+          rboc: Competitor | null = null;
         if (
           bestDog &&
           (!bestVixen || bestDog.currentScore >= bestVixen.currentScore)
         ) {
-          bov = bestDog;
-          rbov = bestVixen || null;
+          boc = bestDog;
+          rboc = bestVixen || null;
         } else {
-          bov = bestVixen!;
-          rbov = bestDog || null;
+          boc = bestVixen!;
+          rboc = bestDog || null;
         }
 
-        results.push(createResult(bov, "BOV", 1));
-        varietyWinners.push(bov);
-        if (rbov) {
-          results.push(createResult(rbov, "RBOV", 1));
-          varietyWinners.push(rbov);
+        // BOC/RBOC get no points, just for organization
+        results.push(createResult(boc, "BOC", 0, false, circuit));
+        bocWinners.push(boc);
+        if (rboc) {
+          results.push(createResult(rboc, "RBOC", 0, false, circuit));
+          rbocWinners.push(rboc);
         }
       });
     });
   });
 
-  // Stage 2: Best of Sex (BOS / RBOS)
-  const bosWinners: Competitor[] = [];
-  levels.forEach((lvl) => {
+  // Stage 2: Best of Variety (BOV / RBOV) - 1 point each
+  const bovWinners: Competitor[] = [];
+  const rbovWinners: Competitor[] = [];
+
+  varieties.forEach((v) => {
     ["Adult", "Juvenile"].forEach((ageGrp) => {
-      const candidates = varietyWinners.filter(
-        (c) => c.level === lvl && c.ageGroup === (ageGrp as any),
+      const candidates = [...bocWinners, ...rbocWinners].filter(
+        (c) =>
+          c.variety === v &&
+          c.ageGroup === ageGrp,
       );
       if (candidates.length === 0) return;
 
@@ -261,37 +283,84 @@ export function runHierarchicalShow(
 
       if (!bestDog && !bestVixen) return;
 
-      let bos: Competitor,
-        rbos: Competitor | null = null;
+      let bov: Competitor,
+        rbov: Competitor | null = null;
       if (
         bestDog &&
         (!bestVixen || bestDog.currentScore >= bestVixen.currentScore)
       ) {
-        bos = bestDog;
-        rbos = bestVixen || null;
+        bov = bestDog;
+        rbov = bestVixen || null;
       } else {
-        bos = bestVixen!;
-        rbos = bestDog || null;
+        bov = bestVixen!;
+        rbov = bestDog || null;
       }
 
-      results.push(createResult(bos, "BOS", 1));
-      bosWinners.push(bos);
-      if (rbos) {
-        results.push(createResult(rbos, "RBOS", 1));
-        bosWinners.push(rbos);
+      results.push(createResult(bov, "BOV", 1, false, circuit));
+      bovWinners.push(bov);
+      if (rbov) {
+        results.push(createResult(rbov, "RBOV", 1, false, circuit));
+        rbovWinners.push(rbov);
       }
     });
   });
 
-  // Stage 3: Best in Show (BIS / RBIS)
+  // Stage 3: Best of Sex (BOS / RBOS) - 1 point each
+  const bosWinners: Competitor[] = [];
+  const rbosWinners: Competitor[] = [];
+
+  ["Adult", "Juvenile"].forEach((ageGrp) => {
+    const candidates = [...bovWinners, ...rbovWinners].filter(
+      (c) => c.ageGroup === ageGrp,
+    );
+    if (candidates.length === 0) return;
+
+    candidates.forEach(rerollLuck);
+
+    const dogs = candidates
+      .filter((c) => c.gender === "Dog")
+      .sort((a, b) => b.currentScore - a.currentScore);
+    const vixens = candidates
+      .filter((c) => c.gender === "Vixen")
+      .sort((a, b) => b.currentScore - a.currentScore);
+
+    const bestDog = dogs[0];
+    const bestVixen = vixens[0];
+
+    if (!bestDog && !bestVixen) return;
+
+    let bos: Competitor,
+      rbos: Competitor | null = null;
+    if (
+      bestDog &&
+      (!bestVixen || bestDog.currentScore >= bestVixen.currentScore)
+    ) {
+      bos = bestDog;
+      rbos = bestVixen || null;
+    } else {
+      bos = bestVixen!;
+      rbos = bestDog || null;
+    }
+
+    results.push(createResult(bos, "BOS", 1, false, circuit));
+    bosWinners.push(bos);
+    if (rbos) {
+      results.push(createResult(rbos, "RBOS", 1, false, circuit));
+      rbosWinners.push(rbos);
+    }
+  });
+
+  // Stage 4: Best in Show (BIS / RBIS) - 2/1 points
   if (bosWinners.length === 0)
     return { year, season, circuit, results, bisFoxId: null, rbisFoxId: null };
 
-  bosWinners.forEach(rerollLuck);
-  const finalDogs = bosWinners
+  const finalCandidates = [...bosWinners, ...rbosWinners];
+  finalCandidates.forEach(rerollLuck);
+  
+  const finalDogs = finalCandidates
     .filter((c) => c.gender === "Dog")
     .sort((a, b) => b.currentScore - a.currentScore);
-  const finalVixens = bosWinners
+  const finalVixens = finalCandidates
     .filter((c) => c.gender === "Vixen")
     .sort((a, b) => b.currentScore - a.currentScore);
 
@@ -309,9 +378,9 @@ export function runHierarchicalShow(
     rbis = finalDogs[0] || null;
   }
 
-  results.push(createResult(bis, "BIS", 2, true));
+  results.push(createResult(bis, "BIS", 2, true, circuit));
   if (rbis) {
-    results.push(createResult(rbis, "RBIS", 2, true));
+    results.push(createResult(rbis, "RBIS", 1, true, circuit));
   }
 
   return {
@@ -329,6 +398,7 @@ function createResult(
   title: string,
   points: number,
   isMajor: boolean = false,
+  circuit?: "Pro" | "Amateur" | "Altered",
 ): ShowResult {
   return {
     foxId: c.fox.id,
@@ -341,14 +411,14 @@ function createResult(
     ageGroup: c.ageGroup,
     breakdown: c.currentBreakdown,
     isMajor,
+    circuit,
   };
 }
 
 export function isFoxEligibleForShow(
   fox: Fox,
   level: ShowLevel,
-  variety: Variety,
-  season: string,
+  type: Variety,
 ): boolean {
   if (
     fox.isRetired ||
@@ -366,7 +436,7 @@ export function isFoxEligibleForShow(
   if (isAmateur && fox.age === 0) return false;
 
   const actualVariety = getFoxVariety(fox);
-  if (actualVariety !== variety) return false;
+  if (actualVariety !== type) return false;
 
   const baseLevel = level.replace("Amateur ", "").replace("Altered ", "");
   if (baseLevel === "Junior" && fox.pointsLifetime >= 5) return false;

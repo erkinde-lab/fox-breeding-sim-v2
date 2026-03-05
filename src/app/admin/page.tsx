@@ -3,6 +3,7 @@
 
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { useGameStore } from '@/lib/store';
 
@@ -74,6 +75,7 @@ const BANNER_URLS = [
 export default function AdminPanel() {
 
   const { showNotification, addNotification } = useNotifications();
+  const router = useRouter();
 
   const {
 
@@ -122,7 +124,23 @@ export default function AdminPanel() {
 
     adminUpdateMemberInventory,
 
-    adminRemoveItemFromInventory
+    adminRemoveItemFromInventory,
+
+    resetGame,
+
+    season,
+
+    year,
+
+    hiredGroomer,
+
+    hiredVeterinarian,
+
+    hiredTrainer,
+
+    hiredGeneticist,
+
+    hiredNutritionist,
 
   } = useGameStore();
 
@@ -306,7 +324,11 @@ export default function AdminPanel() {
 
             <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
 
+            <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
+
             <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
+
+            <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>
 
           </TabsList>
 
@@ -1234,6 +1256,333 @@ export default function AdminPanel() {
 
           </Card>
 
+        </TabsContent>
+
+        {/* Game Management */}
+        <TabsContent value="game" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <Card className="folk-card border-destructive-100 bg-destructive-50/10">
+
+              <CardHeader className="pb-2">
+
+                <CardTitle className="text-2xl font-black italic flex items-center gap-3">
+
+                  <Trash2 className="text-destructive-600" size={24} /> Reset Game State
+
+                </CardTitle>
+
+                <p className="text-xs text-muted-foreground font-medium">Reset the entire game to Year Zero / New Game state. This action cannot be undone.</p>
+
+              </CardHeader>
+
+              <CardContent className="space-y-4 pt-4">
+
+                <div className="p-4 bg-destructive-50 border border-destructive-200 rounded-xl">
+
+                  <div className="flex items-start gap-3">
+
+                    <AlertTriangle className="text-destructive-600 mt-0.5 flex-shrink-0" size={16} />
+
+                    <div>
+
+                      <p className="text-sm font-bold text-destructive-700">Warning: This will permanently delete:</p>
+
+                      <ul className="text-sm text-destructive-600 mt-2 space-y-1">
+
+                        <li>• All foxes in your kennel</li>
+
+                        <li>• All gold and gems</li>
+
+                        <li>• All inventory items</li>
+
+                        <li>• All progress and achievements</li>
+
+                        <li>• All show reports and history</li>
+
+                      </ul>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <Button 
+
+                  onClick={() => {
+
+                    showNotification({
+
+                      title: 'Confirm Game Reset',
+
+                      message: 'Are you absolutely sure you want to reset the entire game? This will delete ALL progress and cannot be undone. Type "RESET" to confirm.',
+
+                      type: 'destructive',
+
+                      confirmLabel: 'Reset Game',
+
+                      showInput: true,
+
+                      inputPlaceholder: 'Type "RESET" to confirm',
+
+                      onConfirm: (confirmation) => {
+
+                        if (confirmation === 'RESET') {
+
+                          resetGame();
+
+                          addNotification('Game has been reset to Year Zero.', 'destructive');
+
+                        } else {
+
+                          addNotification('Game reset cancelled.', 'error');
+
+                        }
+
+                      }
+
+                    });
+
+                  }}
+
+                  className="w-full bg-destructive hover:bg-destructive/90 font-black uppercase tracking-widest h-14 rounded-2xl shadow-lg"
+
+                >
+
+                  Reset to Year Zero
+
+                </Button>
+
+              </CardContent>
+
+            </Card>
+
+            <Card className="folk-card border-cyan-100 bg-cyan-50/10">
+
+              <CardHeader className="pb-2">
+
+                <CardTitle className="text-2xl font-black italic flex items-center gap-3">
+
+                  <Database className="text-cyan-600" size={24} /> Game State Info
+
+                </CardTitle>
+
+                <p className="text-xs text-muted-foreground font-medium">Current game state information and statistics.</p>
+
+              </CardHeader>
+
+              <CardContent className="space-y-4 pt-4">
+
+                <div className="space-y-3">
+
+                  <div className="flex justify-between items-center p-3 bg-card border border-border rounded-xl">
+
+                    <span className="text-sm font-bold text-foreground">Current Season</span>
+
+                    <Badge className="bg-cyan-500 border-none font-black px-3">{season} Y{year}</Badge>
+
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-card border border-border rounded-xl">
+
+                    <span className="text-sm font-bold text-foreground">Foxes Owned</span>
+
+                    <Badge className="bg-cyan-500 border-none font-black px-3">{Object.keys(foxes).length}</Badge>
+
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-card border border-border rounded-xl">
+
+                    <span className="text-sm font-bold text-foreground">Staff Hired</span>
+
+                    <Badge className="bg-cyan-500 border-none font-black px-3">
+
+                      {[hiredGroomer, hiredVeterinarian, hiredTrainer, hiredGeneticist, hiredNutritionist].filter(Boolean).length}/5
+
+                    </Badge>
+
+                  </div>
+
+                  <div className="flex justify-between items-center p-3 bg-card border border-border rounded-xl">
+
+                    <span className="text-sm font-bold text-foreground">Currency</span>
+
+                    <Badge className="bg-cyan-500 border-none font-black px-3">{gold} Gold, {gems} Gems</Badge>
+
+                  </div>
+
+                </div>
+
+              </CardContent>
+
+            </Card>
+
+          </div>
+
+        </TabsContent>
+
+        {/* Kennel Management */}
+        <TabsContent value="kennel" className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+          <div className="space-y-12 pb-20">
+            <div className="flex flex-col justify-between items-start gap-4">
+              <div>
+                <h2 className="text-5xl font-folksy text-foreground tracking-tight flex items-center gap-4" style={{ fontWeight: 400 }}>
+                  <Shield className="text-primary" size={40} /> NPC Kennel Admin
+                </h2>
+                <p className="text-muted-foreground mt-2">
+                  Historical archive of all NPC studs and foundation foxes
+                </p>
+              </div>
+            </div>
+
+            {/* Foundation Foxes Section */}
+            {(() => {
+              const foundationFoxes = Object.values(foxes).filter(fox => fox.ownerId === "player-0" && fox.isFoundation);
+              const npcStuds = Object.values(foxes).filter(fox => fox.ownerId === "player-0" && !fox.isFoundation);
+
+              return (
+                <>
+                  {foundationFoxes.length > 0 && (
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <Package className="text-green-600" size={24} />
+                        <h3 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
+                          Foundation Foxes - Available for Sale ({foundationFoxes.length})
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {foundationFoxes.map((fox) => (
+                          <div
+                            key={fox.id}
+                            className="folk-card border-2 border-green-200 bg-green-50/30 shadow-sm rounded-[32px] overflow-hidden bg-card"
+                          >
+                            <div className="p-6 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                                    <div className="text-xs font-bold text-muted-foreground">
+                                      {fox.phenotype.split(' ')[0]}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-black text-lg text-foreground">{fox.name}</h4>
+                                    <p className="text-sm text-muted-foreground font-medium">{fox.phenotype}</p>
+                                  </div>
+                                </div>
+                                <Badge variant="outline" className="bg-green-100 border-green-300 text-green-700">
+                                  For Sale - 1,000 Gold
+                                </Badge>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Gender</p>
+                                  <p className="font-bold text-foreground">{fox.gender}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Age</p>
+                                  <p className="font-bold text-foreground">{fox.age}y</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Base Color</p>
+                                  <p className="font-bold text-foreground">{fox.baseColor}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Pattern</p>
+                                  <p className="font-bold text-foreground">{fox.pattern}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* NPC Studs Section */}
+                  {npcStuds.length > 0 && (
+                    <div className="space-y-6">
+                      <div className="flex items-center gap-3">
+                        <Users className="text-primary" size={24} />
+                        <h3 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
+                          Historical NPC Studs ({npcStuds.length} total)
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {npcStuds.slice(0, 12).map((npc) => (
+                          <div
+                            key={npc.id}
+                            className="folk-card border-2 border-border shadow-sm rounded-[32px] overflow-hidden bg-card cursor-pointer hover:shadow-lg transition-shadow"
+                            onClick={() => router.push(`/fox/${npc.id}`)}
+                          >
+                            <div className="p-6 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                                    <div className="text-xs font-bold text-muted-foreground">
+                                      {npc.phenotype.split(' ')[0]}
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-black text-lg text-foreground">{npc.name}</h4>
+                                    <p className="text-sm text-muted-foreground font-medium">{npc.phenotype}</p>
+                                  </div>
+                                </div>
+                                <Badge variant="outline" className="bg-primary/10 border-primary/20 text-primary">
+                                  NPC Stud
+                                </Badge>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Gender</p>
+                                  <p className="font-bold text-foreground">{npc.gender}</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Age</p>
+                                  <p className="font-bold text-foreground">{npc.age}y</p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Stud Fee</p>
+                                  <p className="font-bold text-foreground flex items-center gap-1">
+                                    <Coins size={12} /> {npc.studFee}
+                                  </p>
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Pattern</p>
+                                  <p className="font-bold text-foreground">{npc.pattern}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {npcStuds.length > 12 && (
+                        <div className="text-center text-muted-foreground">
+                          Showing 12 of {npcStuds.length} historical NPC studs
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {(foundationFoxes.length === 0 && npcStuds.length === 0) && (
+                    <div className="text-center py-12">
+                      <Shield className="mx-auto text-muted-foreground mb-4" size={48} />
+                      <h3 className="text-xl font-semibold text-muted-foreground mb-2">No Game-Owned Foxes</h3>
+                      <p className="text-muted-foreground">
+                        NPC studs and foundation foxes will appear here after game reset or season advancement.
+                      </p>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </div>
         </TabsContent>
 
       </Tabs>
