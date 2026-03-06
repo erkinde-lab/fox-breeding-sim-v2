@@ -34,7 +34,8 @@ import {
   ShieldCheck,
   UserPlus,
   Store,
-  Star, Megaphone,
+  Star,
+  Megaphone,
   Baby,
   ShoppingCart,
 } from "lucide-react";
@@ -100,37 +101,62 @@ export default function LayoutClient({
 
     // Cleanup old classes
     const classesToRemove = [
-      'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly',
-      'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly',
-      'high-contrast', 'use-opendyslexic', 'reduced-motion',
-      'underline-links', 'high-visibility-focus', 'simplified-ui'
+      "protanopia",
+      "protanomaly",
+      "deuteranopia",
+      "deuteranomaly",
+      "tritanopia",
+      "tritanomaly",
+      "achromatopsia",
+      "achromatomaly",
+      "high-contrast",
+      "use-opendyslexic",
+      "reduced-motion",
+      "underline-links",
+      "high-visibility-focus",
+      "simplified-ui",
     ];
     root.classList.remove(...classesToRemove);
-    root.classList.remove('font-size-small', 'font-size-normal', 'font-size-large', 'font-size-xl');
-    root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
+    root.classList.remove(
+      "font-size-small",
+      "font-size-normal",
+      "font-size-large",
+      "font-size-xl",
+    );
+    root.classList.remove(
+      "text-spacing-normal",
+      "text-spacing-wide",
+      "text-spacing-extra",
+    );
 
     // Apply new classes
-    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
-    if (highContrast) root.classList.add('high-contrast');
-    if (useOpenDyslexic) root.classList.add('use-opendyslexic');
-    if (reducedMotion) root.classList.add('reduced-motion');
-    if (alwaysUnderlineLinks) root.classList.add('underline-links');
-    if (highVisibilityFocus) root.classList.add('high-visibility-focus');
-    if (simplifiedUI) root.classList.add('simplified-ui');
+    if (colorblindMode !== "none") root.classList.add(colorblindMode);
+    if (highContrast) root.classList.add("high-contrast");
+    if (useOpenDyslexic) root.classList.add("use-opendyslexic");
+    if (reducedMotion) root.classList.add("reduced-motion");
+    if (alwaysUnderlineLinks) root.classList.add("underline-links");
+    if (highVisibilityFocus) root.classList.add("high-visibility-focus");
+    if (simplifiedUI) root.classList.add("simplified-ui");
 
     root.classList.add(`font-size-${fontSize}`);
     root.classList.add(`text-spacing-${textSpacing}`);
 
     // Apply SVG filter for colorblindness
-    if (colorblindMode !== 'none') {
+    if (colorblindMode !== "none") {
       root.style.filter = `url(#${colorblindMode})`;
     } else {
-      root.style.filter = '';
+      root.style.filter = "";
     }
   }, [
-    colorblindMode, highContrast, fontSize, useOpenDyslexic,
-    reducedMotion, alwaysUnderlineLinks, highVisibilityFocus,
-    simplifiedUI, textSpacing
+    colorblindMode,
+    highContrast,
+    fontSize,
+    useOpenDyslexic,
+    reducedMotion,
+    alwaysUnderlineLinks,
+    highVisibilityFocus,
+    simplifiedUI,
+    textSpacing,
   ]);
 
   useEffect(() => {
@@ -154,8 +180,6 @@ export default function LayoutClient({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-rounded selection:bg-primary/30 transition-colors duration-500">
@@ -196,7 +220,10 @@ export default function LayoutClient({
             className="flex items-center gap-4 border-foreground/20 sm:pr-6 sm:border-r"
           >
             <span className="flex items-center gap-1.5 hover:text-gold dark:hover:text-yellow-200 transition-colors">
-              <Coins size={12} className="text-yellow-500 dark:text-yellow-200" />{" "}
+              <Coins
+                size={12}
+                className="text-yellow-500 dark:text-yellow-200"
+              />{" "}
               {gold.toLocaleString()} Gold
             </span>
             <Link
@@ -248,15 +275,31 @@ export default function LayoutClient({
           backgroundPosition: `center ${bannerYPosition}`,
         }}
         title={`Banner position: Y=${bannerYPosition}`}
-        onMouseEnter={() => console.log('Banner CSS applied:', { bannerYPosition, cssPosition: `center ${bannerYPosition}` })}
+        onMouseEnter={() =>
+          console.log("Banner CSS applied:", {
+            bannerYPosition,
+            cssPosition: `center ${bannerYPosition}`,
+          })
+        }
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-foreground max-w-2xl">
               <div className="inline-flex items-center gap-4 group mb-4">
                 <div className="relative">
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} aria-label="Toggle Admin Mode" className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
-                    <PawPrint className="text-white -rotate-3 hover:-rotate-6 transition-transform" size={40} />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleAdminMode();
+                    }}
+                    aria-label="Toggle Admin Mode"
+                    className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20"
+                  >
+                    <PawPrint
+                      className="text-white -rotate-3 hover:-rotate-6 transition-transform"
+                      size={40}
+                    />
                   </button>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg pointer-events-none">
                     <Star className="text-white" size={12} />
@@ -293,7 +336,7 @@ export default function LayoutClient({
                   "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
                   pathname === "/kennel"
                     ? "bg-primary text-primary-foreground shadow-btn-primary"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/10",
                 )}
               >
                 <PawPrint size={16} />
@@ -911,15 +954,18 @@ function Dropdown({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }
   }, [isOpen, dropdownRef, setIsOpen]);
@@ -998,10 +1044,10 @@ function MobileCategory({
   const router = useRouter();
 
   const handleHeaderClick = () => {
-    console.log('MobileCategory header clicked:', { label, href, isOpen });
+    console.log("MobileCategory header clicked:", { label, href, isOpen });
     console.log(`About to toggle ${label} dropdown, current state: ${isOpen}`);
     if (href) {
-      console.log('Navigating to:', href);
+      console.log("Navigating to:", href);
       router.push(href);
       setIsMobileMenuOpen(false);
     } else {
@@ -1030,11 +1076,7 @@ function MobileCategory({
           />
         )}
       </button>
-      {isOpen && !href && (
-        <div className="bg-muted/30 pb-2">
-          {children}
-        </div>
-      )}
+      {isOpen && !href && <div className="bg-muted/30 pb-2">{children}</div>}
     </div>
   );
 }

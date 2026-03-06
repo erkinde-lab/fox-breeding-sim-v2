@@ -347,16 +347,27 @@ html.high-contrast * {
 }
 
 /* Font Size Presets */
-.font-size-small { font-size: 14px; }
-.font-size-normal { font-size: 16px; }
-.font-size-large { font-size: 18px; }
-.font-size-xl { font-size: 20px; }
+.font-size-small {
+  font-size: 14px;
+}
+.font-size-normal {
+  font-size: 16px;
+}
+.font-size-large {
+  font-size: 18px;
+}
+.font-size-xl {
+  font-size: 20px;
+}
 
 /* OpenDyslexic Support */
 @font-face {
   font-family: "OpenDyslexic";
-  src: url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff2") format("woff2"),
-    url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff") format("woff");
+  src:
+    url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff2")
+      format("woff2"),
+    url("https://cdn.jsdelivr.net/npm/@fontsource/opendyslexic/files/opendyslexic-latin-400-normal.woff")
+      format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -400,6 +411,18 @@ html.use-opendyslexic * {
 }
 
 /* Text Spacing Presets */
-.text-spacing-normal { letter-spacing: normal; word-spacing: normal; line-height: 1.5; }
-.text-spacing-wide { letter-spacing: 0.1em; word-spacing: 0.2em; line-height: 1.8; }
-.text-spacing-extra { letter-spacing: 0.15em; word-spacing: 0.3em; line-height: 2; }
+.text-spacing-normal {
+  letter-spacing: normal;
+  word-spacing: normal;
+  line-height: 1.5;
+}
+.text-spacing-wide {
+  letter-spacing: 0.1em;
+  word-spacing: 0.2em;
+  line-height: 1.8;
+}
+.text-spacing-extra {
+  letter-spacing: 0.15em;
+  word-spacing: 0.3em;
+  line-height: 2;
+}
