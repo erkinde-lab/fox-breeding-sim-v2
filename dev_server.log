@@ -2,13 +2,18 @@
 > fox-sim@0.1.0 dev
 > next dev
 
-⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.1.6 (Turbopack)
-- Local:         http://localhost:3001
-- Network:       http://192.168.0.2:3001
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
 
 ✓ Starting...
-⨯ Unable to acquire lock at  GET /help 200 in 3.1s (compile: 2.7s, render: 310ms)
-unning?
-  Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
-[?25h
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✓ Ready in 1104ms
+○ Compiling /admin ...
+ GET /admin 200 in 9.4s (compile: 8.3s, render: 1056ms)
+ GET /admin 200 in 142ms (compile: 7ms, render: 134ms)
+ GET /admin 200 in 117ms (compile: 5ms, render: 112ms)
