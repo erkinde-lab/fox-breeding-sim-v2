@@ -89,7 +89,39 @@ const generateNPCStuds = (
 
   while (Object.keys(nextNpcStuds).length < 4) {
 
-    const stud = createFoundationalFox(npcSeededRandom, "Dog");
+    let stud = createFoundationalFox(npcSeededRandom, "Dog");
+
+    // NPC Studs can express Opal phenotypes (20% chance)
+    if (npcSeededRandom() < 0.20) {
+      const opalGenotypes: (Genotype)[] = [
+        { R: ['r', 'r'] },
+        { R: ['ra', 'ra'] },
+        { R: ['r', 'ra'] }
+      ];
+      const selectedOpal = opalGenotypes[Math.floor(npcSeededRandom() * opalGenotypes.length)];
+      stud = createFox({
+         genotype: { ...stud.genotype, ...selectedOpal },
+         gender: 'Dog',
+         isNPC: true
+      }, npcSeededRandom);
+    }
+
+    // NPC Studs can express Fawn Spotting or Star Spotting (20% chance)
+    if (npcSeededRandom() < 0.20) {
+      const extraGenotypes: (Genotype)[] = [
+        { T: ['t', 't'] },
+        { T: ['T', 't'] },
+        { S: ['S', 'S'] },
+        { S: ['s', 'S'] },
+        { T: ['t', 't'], S: ['S', 'S'] }
+      ];
+      const selectedExtra = extraGenotypes[Math.floor(npcSeededRandom() * extraGenotypes.length)];
+      stud = createFox({
+         genotype: { ...stud.genotype, ...selectedExtra },
+         gender: 'Dog',
+         isNPC: true
+      }, npcSeededRandom);
+    }
 
     if (usedPhenotypes.has(stud.phenotype)) continue;
 

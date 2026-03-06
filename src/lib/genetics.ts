@@ -21,6 +21,9 @@ export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: (g
     }
   },
   L: { name: 'Leucistic', alleles: ['L', 'l'] }, // ll = Leucistic
+  R: { name: 'Opal', alleles: ['R', 'r', 'ra'] },
+  T: { name: 'Fawn Spotting', alleles: ['T', 't'] },
+  S: { name: 'Star Spotting', alleles: ['s', 'S'] },
 };
 
 export function getInitialGenotype(): Genotype {
@@ -40,6 +43,9 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const P = genotype.P || ['P', 'P'];
   const Fire = genotype.Fire || ['FI', 'FI'];
   const L = genotype.L || ['L', 'L'];
+  const R = genotype.R || ['R', 'R'];
+  const T = genotype.T || ['T', 'T'];
+  const S = genotype.S || ['s', 's'];
   const W = [...(genotype.W || ['w', 'w'])].sort();
 
   // Lethal check
@@ -60,6 +66,14 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const hasP = P.filter(x => x === 'p').length === 2;
   const isFifi = Fire.filter(x => x === 'fi').length === 2;
   const isAmber = hasG && hasP;
+
+  const isOpal = R.filter(x => x === 'r').length === 2;
+  const isRadium = R.filter(x => x === 'ra').length === 2;
+  const isPaleGlow = (R.includes('r') && R.includes('ra'));
+
+  const isFawnSpotted = T.includes('t');
+  const isStar = S.filter(x => x === 'S').length === 1;
+  const isPiebald = S.filter(x => x === 'S').length === 2;
 
   // Base Color Logic
   let baseColorName = 'Red';
@@ -127,6 +141,71 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
       }
     }
   }
+  // Opal Locus overrides
+  if (isOpal || isRadium || isPaleGlow) {
+    if (isFifi) {
+      if (isPaleGlow) {
+        underlyingName = 'Pale Sun Glow';
+      } else if (isOpal) {
+        if (underlyingName === 'Wildfire' || underlyingName === 'Autumn Fire') underlyingName = 'Gold Glow';
+        else if (underlyingName === 'Golden Sunrise') underlyingName = 'Golden Glow';
+        else if (underlyingName === 'Cinnamon Fire') underlyingName = 'Cinnamon Glow';
+        else if (underlyingName === 'Colicott' || underlyingName === 'Fawn Glow') underlyingName = 'Sapphire Fawn Glow';
+        else if (underlyingName === 'Moon Glow') underlyingName = 'Moon Opal';
+        else if (underlyingName === 'Fire and Ice') underlyingName = 'Glacier Glow';
+        else if (underlyingName === 'Champagne') underlyingName = 'Champagne Opal';
+        else if (underlyingName === 'Snow Glow') underlyingName = 'Golden Snow Glow';
+        else if (underlyingName === 'Fire Cross') underlyingName = 'Opal Cross Glow';
+        else if (underlyingName === 'Champagne Cross') underlyingName = 'Champagne Moonstone';
+        else if (underlyingName === '') underlyingName = 'Opal';
+      } else if (isRadium) {
+        if (underlyingName === 'Wildfire' || underlyingName === 'Autumn Fire') underlyingName = 'Sun Glow';
+        else if (underlyingName === 'Golden Sunrise') underlyingName = 'Arctic Snow Glow';
+        else if (underlyingName === 'Cinnamon Fire') underlyingName = 'Amber Glow';
+        else if (underlyingName === 'Colicott' || underlyingName === 'Fawn Glow') underlyingName = 'Slate Fawn';
+        else if (underlyingName === 'Champagne') underlyingName = 'Champagne Sun Glow';
+        else if (underlyingName === 'Moon Glow') underlyingName = 'Dark Snow Glow';
+        else if (underlyingName === 'Snow Glow') underlyingName = 'Pure Snow Glow';
+        else if (underlyingName === 'Fire Cross') underlyingName = 'Sun Cross';
+        else if (underlyingName === 'Fire and Ice') underlyingName = 'Arctic Fire Glow';
+        else if (underlyingName === 'Champagne Cross') underlyingName = 'Champagne Snow Cross';
+        else if (underlyingName === '') underlyingName = 'Radium';
+      }
+    } else {
+      const isCross = baseColorName.includes('Cross');
+      const isRedGold = baseColorName === 'Red' || baseColorName === 'Gold';
+      const isSilver = baseColorName.includes('Silver') || underlyingName === 'Silver' || underlyingName === 'Black';
+
+      if (isOpal) {
+        if (isRedGold) {
+          if (hasP) underlyingName = 'Sapphire Sun Glow';
+          else if (hasG) underlyingName = 'Amber Sun Glow';
+          else underlyingName = 'Red Opal';
+        } else if (isCross) {
+          if (hasP) underlyingName = 'Moonstone Glow';
+          else underlyingName = 'Opal Cross';
+        } else if (isSilver) {
+          if (hasP) underlyingName = 'Sapphire Glow';
+          else if (hasG) underlyingName = 'Amber Glow';
+          else underlyingName = 'Opal';
+        }
+      } else if (isRadium) {
+        if (isRedGold) {
+          if (hasP) underlyingName = 'Pearl Sun Glow';
+          else underlyingName = 'Sun Glow';
+        } else if (isCross) {
+          underlyingName = 'Radium Cross';
+        } else if (isSilver) {
+          if (hasP) underlyingName = 'Platinum Glow';
+          else underlyingName = 'Radium';
+        }
+      } else if (isPaleGlow) {
+        if (isRedGold) underlyingName = 'Pale Sun Glow';
+        else if (isCross) underlyingName = 'Pale Cross';
+        else if (isSilver) underlyingName = 'Pale Glow';
+      }
+    }
+  }
 
   let finalName = "";
   if (isLethal) finalName = 'Stillborn';
@@ -136,6 +215,10 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
 
   // Pattern Logic
   const patterns: string[] = [];
+  if (isFawnSpotted) patterns.push('Fawn Spotted');
+  if (isPiebald) patterns.push('Piebald');
+  else if (isStar) patterns.push('Star');
+
   if (W.includes('WM')) patterns.push('Marble');
   if (W.includes('WP')) patterns.push('Platinum');
   if (W.includes('WG')) patterns.push('Georgian');
@@ -150,6 +233,26 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   if (!eyeColor) {
     let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
     eyeColor = getRandomEyeColor(eyePoolName);
+  }
+
+  // Opal Eye Logic Override
+  const opalPhenotypes = [
+    'Opal', 'Radium', 'Pale Glow', 'Red Opal', 'Sun Glow', 'Pale Sun Glow', 'Opal Cross', 'Radium Cross', 'Pale Cross',
+    'Gold Glow', 'Golden Glow', 'Arctic Snow Glow', 'Cinnamon Glow', 'Amber Glow', 'Sapphire Fawn Glow', 'Slate Fawn',
+    'Moon Opal', 'Champagne Opal', 'Champagne Sun Glow', 'Dark Snow Glow', 'Golden Snow Glow', 'Pure Snow Glow',
+    'Opal Cross Glow', 'Sun Cross', 'Glacier Glow', 'Arctic Fire Glow', 'Champagne Moonstone', 'Champagne Snow Cross',
+    'Moonstone Glow', 'Sapphire Sun Glow', 'Amber Sun Glow', 'Pearl Sun Glow', 'Platinum Glow', 'Sapphire Glow'
+  ];
+
+  if (opalPhenotypes.includes(finalName) && !providedEyeColor) {
+     eyeColor = getRandomEyeColor(finalName);
+  }
+
+  // SS Piebald Eye Logic
+  if (isPiebald && !providedEyeColor && finalName !== 'Albino') {
+    const rand = Math.random();
+    if (rand < 0.25) eyeColor = 'Blue';
+    else if (rand < 0.50) eyeColor = `${eyeColor} - Blue Heterochromia`;
   }
 
   // W locus logic
@@ -174,7 +277,8 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
     isLethal,
     healthIssues: [
       ...(hasC ? ['Photosensitivity and reduced vision'] : []),
-      ...(hasL ? ['Higher incidence of deafness and vision irregularities'] : [])
+      ...(hasL ? ['Higher incidence of deafness and vision irregularities'] : []),
+      ...(isPiebald ? ['Potential sight and hearing issues'] : [])
     ],
   };
 }
@@ -434,7 +538,7 @@ export function createFoundationalFox(random: () => number = Math.random, gender
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
   const rareRand = safeRandom();
-  const rareGenes = ["G", "C", "P", "Fire", "L"];
+  const rareGenes = ["G", "C", "P", "Fire", "L", "R", "T", "S"];
   if (rareRand < 0.5) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
@@ -451,6 +555,12 @@ export function createFoundationalFox(random: () => number = Math.random, gender
       const rare = alleles[Math.floor(safeRandom() * alleles.length)];
       genotype[gene] = [locus.alleles[0], rare];
     }
+  }
+
+
+  // Fawn spotting restriction: Foundation foxes can only be TT or Tt
+  if (genotype['T'] && genotype['T'][0] === 't' && genotype['T'][1] === 't') {
+    genotype['T'] = ['T', 't'];
   }
 
   return createFox({
@@ -554,7 +664,7 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
   Object.assign(genotype, baseGenotype);
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
-  const rareGenes = ['G', 'C', 'P', 'Fire', 'L'];
+  const rareGenes = ['G', 'C', 'P', 'Fire', 'L', 'R', 'T', 'S'];
   if (safeRandom() > 0.75) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
@@ -563,6 +673,12 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
       const rare = alleles[Math.floor(safeRandom() * alleles.length)];
       genotype[gene] = [locus.alleles[0], rare];
     }
+  }
+
+
+  // Fawn spotting restriction: Foundation foxes can only be TT or Tt
+  if (genotype['T'] && genotype['T'][0] === 't' && genotype['T'][1] === 't') {
+    genotype['T'] = ['T', 't'];
   }
 
   return createFox({
@@ -641,6 +757,40 @@ export const PHENOTYPE_EYE_COLORS: Record<string, string[]> = {
   'Moon Glow': ['Brown', 'Light Brown', 'Amber', 'Grey'],
   'Autumn Fire': ['Amber', 'Grey', 'Blue'],
   'Champagne Cross': ['Blue'],
+  'Opal': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Radium': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pale Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Red Opal': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Sun Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pale Sun Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Opal Cross': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Radium Cross': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pale Cross': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Gold Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Golden Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Arctic Snow Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Cinnamon Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Amber Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Sapphire Fawn Glow': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Slate Fawn': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Moon Opal': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Champagne Opal': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Champagne Sun Glow': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Dark Snow Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Golden Snow Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pure Snow Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Opal Cross Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Sun Cross': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Glacier Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Arctic Fire Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Champagne Moonstone': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Champagne Snow Cross': ['Blue', 'Amber', 'Grey', 'Green'],
+  'Moonstone Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Sapphire Sun Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Amber Sun Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Pearl Sun Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Platinum Glow': ['Amber', 'Grey', 'Green', 'Blue'],
+  'Sapphire Glow': ['Amber', 'Grey', 'Green', 'Blue'],
 };
 
 export function getRandomEyeColor(phenotypeName: string): string {
