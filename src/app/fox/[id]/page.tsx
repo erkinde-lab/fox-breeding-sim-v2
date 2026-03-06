@@ -318,9 +318,9 @@ export default function FoxProfilePage() {
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                       {listCurrency === "gold" ? (
-                        <Coins size={20} className="text-yellow-600" />
+                        <Coins size={20} className="text-gold" />
                       ) : (
-                        <Diamond size={20} className="text-cyan-600" />
+                        <Diamond size={20} className="text-gems" />
                       )}
                     </div>
                   </div>
@@ -350,7 +350,7 @@ export default function FoxProfilePage() {
               <div className="flex gap-3">
                 <Button
                   onClick={handleList}
-                  className="flex-1 h-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20"
+                  className="flex-1 h-12 bg-primary text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-btn-primary"
                 >
                   List on Market
                 </Button>
@@ -413,7 +413,7 @@ export default function FoxProfilePage() {
                 )}
                 <Badge
                   variant="outline"
-                  className={`font-black uppercase tracking-widest ${fox.gender === "Dog" ? "text-blue-500" : "text-rose-500"}`}
+                  className={`font-black uppercase tracking-widest ${fox.gender === "Dog" ? "text-info" : "text-rose-500"}`}
                 >
                   {fox.gender}
                 </Badge>
@@ -462,7 +462,7 @@ export default function FoxProfilePage() {
                 </span>
               </div>
               {fox.isAltered && (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm bg-purple-500/10 border-purple-500/20 text-purple-600">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm bg-info/50/10 border-purple-500/20 text-info">
                   <ActivityIcon size={14} />
                   <span className="text-[10px] font-black uppercase tracking-widest">
                     Altered
@@ -617,7 +617,7 @@ export default function FoxProfilePage() {
             <CardHeader className="bg-muted/30">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500">
+                  <div className="p-2 bg-info/10 rounded-lg text-info">
                     <Dna size={16} />
                   </div>
                   <CardTitle className="text-sm font-black uppercase tracking-widest">
@@ -629,7 +629,7 @@ export default function FoxProfilePage() {
                     onClick={handleReveal}
                     size="sm"
                     variant="ghost"
-                    className="text-[10px] font-black uppercase tracking-widest gap-1 hover:text-blue-500 p-0 h-auto"
+                    className="text-[10px] font-black uppercase tracking-widest gap-1 hover:text-info p-0 h-auto"
                   >
                     <ShoppingBag size={12} /> Reveal
                   </Button>
@@ -637,7 +637,7 @@ export default function FoxProfilePage() {
                 {hiredGeneticist && (
                   <Badge
                     variant="secondary"
-                    className="bg-green-100 text-green-700 text-[8px] font-black border-none"
+                    className="bg-success/20 text-success text-[8px] font-black border-none"
                   >
                     AUTO-REVEALED
                   </Badge>
@@ -649,7 +649,7 @@ export default function FoxProfilePage() {
                 <div className="grid grid-cols-2 gap-2">
                   {Object.entries(fox.genotype).map(([locus, alleles]) => (
                     <GeneticTooltip key={locus} locus={locus} alleles={alleles}>
-                      <div className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-blue-500/30 transition-colors w-full cursor-help">
+                      <div className="px-3 py-2 rounded-xl bg-muted/50 border border-border/50 flex justify-between items-center group hover:border-info/50/30 transition-colors w-full cursor-help">
                         <span className="text-[10px] font-black text-muted-foreground/60 uppercase">
                           {locus}
                         </span>
@@ -799,7 +799,7 @@ function StatBar({
         <span className="flex items-center gap-1 font-mono text-xs text-foreground">
           {baseValue}
           {bonus > 0 && (
-            <span className="text-green-500 font-black">+{bonus}</span>
+            <span className="text-success font-black">+{bonus}</span>
           )}
         </span>
       </div>

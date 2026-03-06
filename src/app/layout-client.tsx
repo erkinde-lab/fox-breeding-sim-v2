@@ -195,17 +195,17 @@ export default function LayoutClient({
             id="tutorial-currency"
             className="flex items-center gap-4 border-foreground/20 sm:pr-6 sm:border-r"
           >
-            <span className="flex items-center gap-1.5 hover:text-yellow-600 dark:hover:text-yellow-200 transition-colors">
+            <span className="flex items-center gap-1.5 hover:text-gold dark:hover:text-yellow-200 transition-colors">
               <Coins size={12} className="text-yellow-500 dark:text-yellow-200" />{" "}
               {gold.toLocaleString()} Gold
             </span>
             <Link
               href="/shop/gems"
-              className="flex items-center gap-1.5 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors group"
+              className="flex items-center gap-1.5 hover:text-gems dark:hover:text-cyan-200 transition-colors group"
             >
               <Diamond
                 size={12}
-                className="text-cyan-500 dark:text-cyan-200 group-hover:scale-110 transition-transform"
+                className="text-gems dark:text-cyan-200 group-hover:scale-110 transition-transform"
               />
               {gems.toLocaleString()} Gems
               <Plus
@@ -292,7 +292,7 @@ export default function LayoutClient({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
                   pathname === "/kennel"
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+                    ? "bg-primary text-primary-foreground shadow-btn-primary"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                 )}
               >
@@ -475,7 +475,7 @@ export default function LayoutClient({
                       onClick={() => setIsProfileOpen(false)}
                     />
                     <div className="my-2 border-t border-border mx-4" />
-                    <button className="w-full flex items-center gap-3 px-6 py-3 text-red-500 hover:bg-red-50 transition-colors">
+                    <button className="w-full flex items-center gap-3 px-6 py-3 text-destructive hover:bg-destructive/5 transition-colors">
                       <LogOut size={16} />
                       <span className="text-xs font-black uppercase tracking-wide">
                         Logout
@@ -487,7 +487,7 @@ export default function LayoutClient({
 
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"
+                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-btn-primary"
               >
                 <Menu size={24} />
               </button>
@@ -879,7 +879,7 @@ export default function LayoutClient({
                 {isAdmin && (
                   <button
                     onClick={() => advanceTime()}
-                    className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-lg shadow-primary/20"
+                    className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-btn-primary"
                   >
                     Advance
                   </button>
@@ -947,7 +947,7 @@ function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card border border-border py-2 overflow-hidden ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] !opacity-100 shadow-2xl shadow-black/25 mb-4">
+        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card/ui-blur border border-border py-2 overflow-hidden backdrop-blur-ui ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] !opacity-100 shadow-popover mb-4">
           {children}
         </div>
       )}

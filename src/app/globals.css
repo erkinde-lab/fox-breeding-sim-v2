@@ -26,6 +26,17 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-gold: var(--gold);
+  --color-gems: var(--gems);
+
   --font-folksy: var(--font-alice), Georgia, serif;
   --font-rounded: var(--font-quicksand), sans-serif;
 
@@ -58,6 +69,19 @@
   --card-shadow-hover: 0 20px 40px -15px rgba(77, 87, 70, 0.25);
   --shadow-primary: rgba(158, 91, 68, 0.3);
   --shadow-secondary: rgba(77, 87, 70, 0.2);
+
+  --success: #22c55e;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --error: #ef4444;
+  --error-foreground: #ffffff;
+  --gold: #d4af37;
+  --gems: #8b5cf6;
+  --popover-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
+  --ui-blur: blur(12px);
 }
 
 .dark {
@@ -85,12 +109,22 @@
   --card-shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.8);
   --shadow-primary: rgba(0, 0, 0, 0.4);
   --shadow-secondary: rgba(0, 0, 0, 0.3);
+
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+  --error: #dc2626;
+  --error-foreground: #ffffff;
+  --gold: #f59e0b;
+  --gems: #a78bfa;
+  --popover-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --ui-blur: blur(16px);
 }
 
-/* Override: In dark mode, Tailwind shadow-primary/* glows because --color-primary is warm orange.
-   We intercept by rewriting the composed shadow for elements that would receive a primary-colored shadow.
-   This targets the Tailwind v4 shadow composition: --tw-shadow is derived from --tw-shadow-color.
-   By setting --tw-shadow-color to a dark neutral, the glow becomes a proper shadow. */
+/* Override: In dark mode, Tailwind shadow-primary/* glows because --color-primary is warm orange. */
 .dark [class*="shadow-primary"] {
   --tw-shadow-color: rgba(0, 0, 0, 0.5);
   --tw-shadow: var(--tw-shadow-colored);
@@ -173,7 +207,6 @@ h6 {
 }
 
 /* Theme-safe badge/button shadow utilities */
-/* Replaces shadow-primary/* which glows orange in dark mode */
 .shadow-badge-primary {
   box-shadow: 0 4px 12px -2px var(--shadow-primary);
 }
@@ -188,6 +221,16 @@ h6 {
 
 .shadow-btn-secondary {
   box-shadow: 0 8px 20px -6px var(--shadow-secondary);
+}
+
+/* Popover and UI Effect Utilities */
+.shadow-popover {
+  box-shadow: var(--popover-shadow);
+}
+
+.backdrop-blur-ui {
+  backdrop-filter: var(--ui-blur);
+  -webkit-backdrop-filter: var(--ui-blur);
 }
 
 /* Custom Scrollbar Styles */
@@ -229,29 +272,27 @@ h6 {
 
 .scrollbar-hide {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari and Opera */
 }
 
 /* Accessibility Themes */
 
-/* Universal Colorblind Theme (using a high-contrast palette often used for accessibility) */
+/* Universal Colorblind Theme */
 .colorblind-mode {
   --primary: #0072b2;
-  /* Vermillion */
   --secondary: #009e73;
-  /* Bluish Green */
   --accent: #e69f00;
-  /* Orange */
   --ring: #0072b2;
   --shadow-primary: rgba(0, 114, 178, 0.35);
   --shadow-secondary: rgba(0, 158, 115, 0.25);
+  --success: #009e73;
+  --warning: #f0e442;
+  --info: #56b4e9;
+  --error: #d55e00;
 }
 
 /* High Contrast Theme */
@@ -281,6 +322,18 @@ html.high-contrast main {
   --card-shadow-hover: none !important;
   --shadow-primary: rgba(255, 255, 0, 0.5) !important;
   --shadow-secondary: rgba(0, 255, 255, 0.5) !important;
+  --success: #00ff00 !important;
+  --success-foreground: #000000 !important;
+  --warning: #ffff00 !important;
+  --warning-foreground: #000000 !important;
+  --info: #00ffff !important;
+  --info-foreground: #000000 !important;
+  --error: #ff0000 !important;
+  --error-foreground: #ffffff !important;
+  --gold: #ffff00 !important;
+  --gems: #00ffff !important;
+  --popover-shadow: none !important;
+  --ui-blur: 0 !important;
   background-color: #000000 !important;
   color: #ffffff !important;
   background-image: none !important;
@@ -294,21 +347,10 @@ html.high-contrast * {
 }
 
 /* Font Size Presets */
-.font-size-small {
-  font-size: 14px;
-}
-
-.font-size-normal {
-  font-size: 16px;
-}
-
-.font-size-large {
-  font-size: 18px;
-}
-
-.font-size-xl {
-  font-size: 20px;
-}
+.font-size-small { font-size: 14px; }
+.font-size-normal { font-size: 16px; }
+.font-size-large { font-size: 18px; }
+.font-size-xl { font-size: 20px; }
 
 /* OpenDyslexic Support */
 @font-face {
@@ -358,20 +400,6 @@ html.use-opendyslexic * {
 }
 
 /* Text Spacing Presets */
-.text-spacing-normal {
-  letter-spacing: normal;
-  word-spacing: normal;
-  line-height: 1.5;
-}
-
-.text-spacing-wide {
-  letter-spacing: 0.1em;
-  word-spacing: 0.2em;
-  line-height: 1.8;
-}
-
-.text-spacing-extra {
-  letter-spacing: 0.15em;
-  word-spacing: 0.3em;
-  line-height: 2;
-}
+.text-spacing-normal { letter-spacing: normal; word-spacing: normal; line-height: 1.5; }
+.text-spacing-wide { letter-spacing: 0.1em; word-spacing: 0.2em; line-height: 1.8; }
+.text-spacing-extra { letter-spacing: 0.15em; word-spacing: 0.3em; line-height: 2; }

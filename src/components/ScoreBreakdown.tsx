@@ -47,7 +47,7 @@ export function ScoreBreakdown({ fox, children }: { fox: Fox; children?: React.R
                     <span className="font-bold text-muted-foreground">{s.label}</span>
                     <span className="font-mono font-black text-foreground">
                       {s.value.toFixed(1)}
-                      {s.bonus ? <span className="text-green-500 ml-1">+{s.bonus}</span> : ''}
+                      {s.bonus ? <span className="text-success ml-1">+{s.bonus}</span> : ''}
                     </span>
                   </div>
                 ))}
