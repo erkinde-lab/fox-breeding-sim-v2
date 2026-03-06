@@ -105,9 +105,11 @@ export default function AdminPanel() {
 
     broadcast,
     bannerUrl,
-    bannerPosition,
+    bannerXPosition,
+    bannerYPosition,
     setBannerUrl,
-    setBannerPosition,
+    setBannerXPosition,
+    setBannerYPosition,
     news,
 
     addNews,
@@ -121,6 +123,8 @@ export default function AdminPanel() {
     deleteForumReply,
 
     showConfig,
+
+    setShowConfig,
 
     adminUpdateMemberInventory,
 
@@ -156,11 +160,36 @@ export default function AdminPanel() {
 
 
 
-  const [targetMemberId, setTargetMemberId] = useState('player-1');
+  const [targetMemberId, setTargetMemberId] = useState(members[0]?.id || "");
 
-  const [itemToAdd, setItemToAdd] = useState('gene_test');
+  const [itemToAdd, setItemToAdd] = useState("gene_test");
 
   const [itemCount, setItemCount] = useState(1);
+
+
+
+  const [editingLevel, setEditingLevel] = useState<string | null>(null);
+
+  const [prizeForm, setPrizeForm] = useState({
+
+    bis: { amount: 0, currency: 'gold' },
+
+    rbis: { amount: 0, currency: 'gold' },
+
+    bov: { amount: 0, currency: 'gold' },
+
+    rbov: { amount: 0, currency: 'gold' },
+
+    bos: { amount: 0, currency: 'gold' },
+
+    rbos: { amount: 0, currency: 'gold' },
+
+    boc: { amount: 0, currency: 'gold' },
+
+    rboc: { amount: 0, currency: 'gold' }
+
+  });
+
 
 
 
@@ -258,6 +287,82 @@ export default function AdminPanel() {
 
 
 
+  const handleEditPrizes = (level: string) => {
+
+    const config = showConfig[level];
+
+    setPrizeForm({
+
+      bis: { amount: config.bis, currency: 'gold' },
+
+      rbis: { amount: config.rbis, currency: 'gold' },
+
+      bov: { amount: config.bov, currency: 'gold' },
+
+      rbov: { amount: config.rbov, currency: 'gold' },
+
+      bos: { amount: config.bos, currency: 'gold' },
+
+      rbos: { amount: config.rbos, currency: 'gold' },
+
+      boc: { amount: config.boc, currency: 'gold' },
+
+      rboc: { amount: config.rboc, currency: 'gold' }
+
+    });
+
+    setEditingLevel(level);
+
+  };
+
+
+
+  const handleSavePrizes = () => {
+
+    if (!editingLevel) return;
+
+
+
+    // Convert the form back to the expected format
+
+    const updatedConfig = {
+
+      ...showConfig,
+
+      [editingLevel]: {
+
+        bis: prizeForm.bis.amount,
+
+        rbis: prizeForm.rbis.amount,
+
+        bov: prizeForm.bov.amount,
+
+        rbov: prizeForm.rbov.amount,
+
+        bos: prizeForm.bos.amount,
+
+        rbos: prizeForm.rbos.amount,
+
+        boc: prizeForm.boc.amount,
+
+        rboc: prizeForm.rboc.amount
+
+      }
+
+    };
+
+
+
+    setShowConfig(updatedConfig);
+
+    addNotification(`${editingLevel} prize tiers updated successfully`, 'success');
+
+    setEditingLevel(null);
+
+  };
+
+
+
   return (
 
     <div className="max-w-6xl mx-auto space-y-10 pb-20">
@@ -314,21 +419,21 @@ export default function AdminPanel() {
 
           <TabsList className="bg-card p-1.5 rounded-2xl border-2 border-border shadow-sm flex w-max sm:w-full">
 
-            <TabsTrigger value="site" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>
+            <TabsTrigger value="site" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>
 
-            <TabsTrigger value="news" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Megaphone size={14} /> News</TabsTrigger>
+            <TabsTrigger value="news" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Megaphone size={14} /> News</TabsTrigger>
 
-            <TabsTrigger value="members" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Users size={14} /> Members</TabsTrigger>
+            <TabsTrigger value="members" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Users size={14} /> Members</TabsTrigger>
 
-            <TabsTrigger value="forum" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><MessageSquare size={14} /> Forum</TabsTrigger>
+            <TabsTrigger value="forum" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><MessageSquare size={14} /> Forum</TabsTrigger>
 
-            <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
+            <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
 
-            <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
+            <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
 
-            <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
+            <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
 
-            <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>
+            <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>
 
           </TabsList>
 
@@ -370,10 +475,8 @@ export default function AdminPanel() {
 
                 />
 
-                <Button onClick={handleUpdateBroadcast} className="w-full bg-fire-600 hover:bg-fire-500 font-black uppercase tracking-widest h-14 rounded-2xl shadow-lg shadow-fire-200">
-
+                <Button onClick={handleUpdateBroadcast} className="w-full font-black uppercase tracking-widest h-14 rounded-2xl shadow-lg">
                   Update Live Broadcast
-
                 </Button>
 
               </CardContent>
@@ -414,17 +517,27 @@ export default function AdminPanel() {
                     </button>
                   ))}
                 </div>
-                <div className="flex gap-2 pt-2">
-                  {["0% 50%", "50% 50%", "100% 50%"].map((pos, i) => (
-                    <Button
-                      key={pos}
-                      variant={bannerPosition === pos ? "default" : "outline"}
-                      onClick={() => setBannerPosition(pos)}
-                      className="flex-1 h-10 rounded-xl font-bold uppercase tracking-widest text-[9px] border-purple-200 hover:bg-purple-50"
-                    >
-                      {i === 0 ? "Top" : i === 1 ? "Center" : "Bottom"}
-                    </Button>
-                  ))}
+                <div className="space-y-4 pt-2">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-purple-700">
+                        Vertical Position
+                      </label>
+                      <span className="text-xs text-muted-foreground">{bannerYPosition}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={parseInt(bannerYPosition)}
+                      onChange={(e) => {
+                        const newPos = `${e.target.value}%`;
+                        console.log(`Banner Y position changing from ${bannerYPosition} to ${newPos}`);
+                        setBannerYPosition(newPos);
+                      }}
+                      className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -459,7 +572,7 @@ export default function AdminPanel() {
 
                     <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Genetic API</span>
 
-                    <Badge className="bg-moss-500 border-none font-black px-3">v2.4-STABLE</Badge>
+                    <Badge className="bg-foreground text-background border-none font-black px-3">v2.4-STABLE</Badge>
 
                   </div>
 
@@ -563,10 +676,8 @@ export default function AdminPanel() {
 
               </div>
 
-              <Button onClick={handlePostNews} className="w-full md:w-auto px-12 bg-fire-600 hover:bg-fire-500 font-black uppercase tracking-widest h-14 rounded-2xl shadow-xl shadow-fire-100">
-
+              <Button onClick={handlePostNews} className="w-full md:w-auto px-12 font-black uppercase tracking-widest h-14 rounded-2xl shadow-xl">
                 Publish Update <Plus className="ml-2" size={18} />
-
               </Button>
 
             </CardContent>
@@ -703,7 +814,7 @@ export default function AdminPanel() {
 
                 </div>
 
-                <Button className="w-full bg-moss-600 hover:bg-moss-500 font-black uppercase tracking-widest h-12 rounded-xl mt-2 shadow-lg shadow-moss-100" onClick={() => {
+                <Button className="w-full font-black uppercase tracking-widest h-12 rounded-xl mt-2 shadow-lg" onClick={() => {
 
                   adminUpdateMemberInventory(targetMemberId, itemToAdd, itemCount);
 
@@ -1080,7 +1191,7 @@ export default function AdminPanel() {
 
                   {Object.entries(showConfig).map(([level, config]) => (
 
-                    <div key={level} className="flex items-center justify-between p-4 bg-card border border-border rounded-2xl group hover:border-primary/20 transition-all">
+                    <div key={level} className="flex items-center justify-between p-4 bg-card border border-border rounded-2xl group hover:bg-primary/10 hover:border-primary transition-all cursor-pointer">
 
                       <div>
 
@@ -1088,15 +1199,27 @@ export default function AdminPanel() {
 
                         <div className="flex gap-3 mt-1 text-[10px] font-bold text-muted-foreground uppercase">
 
-                          <span>BIS: <span className="text-moss-600">{config.bis}g</span></span>
+                          <span>BIS: <span className="text-foreground">{config.bis}g</span></span>
 
-                          <span>1st: <span className="text-moss-600">{config.first}g</span></span>
+                          <span>RBIS: <span className="text-foreground">{config.rbis}g</span></span>
+
+                          <span>BOV: <span className="text-foreground">{config.bov}g</span></span>
+
+                          <span>RBOV: <span className="text-foreground">{config.rbov}g</span></span>
+
+                          <span>BOS: <span className="text-foreground">{config.bos}g</span></span>
+
+                          <span>RBOS: <span className="text-foreground">{config.rbos}g</span></span>
+
+                          <span>Best of Category: <span className="text-foreground">{config.boc}g</span></span>
+
+                          <span>Reserve Best of Category: <span className="text-foreground">{config.rboc}g</span></span>
 
                         </div>
 
                       </div>
 
-                      <Button variant="ghost" size="sm" className="rounded-lg h-8 w-8 p-0 text-muted-foreground/30 hover:text-primary">
+                      <Button variant="ghost" size="sm" className="rounded-lg h-8 w-8 p-0 text-muted-foreground/30 hover:text-primary" onClick={() => handleEditPrizes(level)}>
 
                         <Plus size={16} />
 
@@ -1586,6 +1709,120 @@ export default function AdminPanel() {
         </TabsContent>
 
       </Tabs>
+
+
+
+      {/* Prize Editing Modal */}
+
+      {editingLevel && (
+
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+
+          <div className="bg-card border-2 border-border rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+
+            <h3 className="text-2xl font-black text-foreground mb-6">Edit {editingLevel} Circuit Prizes</h3>
+
+            <div className="space-y-4">
+
+              {Object.entries(prizeForm).map(([position, prize]) => {
+
+                const positionLabels: Record<string, string> = {
+
+                  bis: 'BIS',
+
+                  rbis: 'RBIS',
+
+                  bov: 'BOV',
+
+                  rbov: 'RBOV',
+
+                  bos: 'BOS',
+
+                  rbos: 'RBOS',
+
+                  boc: 'Best of Category',
+
+                  rboc: 'Reserve Best of Category'
+
+                };
+
+                return (
+
+                <div key={position} className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl">
+
+                  <span className="font-black text-foreground uppercase text-sm w-20">{positionLabels[position]}</span>
+
+                  <input
+
+                    type="number"
+
+                    value={prize.amount}
+
+                    onChange={(e) => setPrizeForm(prev => ({
+
+                      ...prev,
+
+                      [position]: { ...prev[position as keyof typeof prizeForm], amount: parseInt(e.target.value) || 0 }
+
+                    }))}
+
+                    className="flex-1 p-3 bg-card border border-border rounded-xl font-bold"
+
+                    placeholder="Amount"
+
+                  />
+
+                  <select
+
+                    value={prize.currency}
+
+                    onChange={(e) => setPrizeForm(prev => ({
+
+                      ...prev,
+
+                      [position]: { ...prev[position as keyof typeof prizeForm], currency: e.target.value }
+
+                    }))}
+
+                    className="p-3 bg-card border border-border rounded-xl font-bold"
+
+                  >
+
+                    <option value="gold">Gold</option>
+
+                    <option value="gems">Gems</option>
+
+                  </select>
+
+                </div>
+
+                );
+
+              })}
+
+            </div>
+
+            <div className="flex gap-4 mt-8">
+
+              <Button onClick={handleSavePrizes} className="flex-1 font-black uppercase tracking-widest">
+
+                Save Changes
+
+              </Button>
+
+              <Button variant="outline" onClick={() => setEditingLevel(null)} className="flex-1 font-black uppercase tracking-widest">
+
+                Cancel
+
+              </Button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </div>
 

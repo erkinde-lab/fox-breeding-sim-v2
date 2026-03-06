@@ -70,7 +70,8 @@ export default function LayoutClient({
     textSpacing,
     broadcast,
     bannerUrl,
-    bannerPosition,
+    bannerXPosition,
+    bannerYPosition,
   } = useGameStore();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -81,6 +82,14 @@ export default function LayoutClient({
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  // Mobile-specific dropdown states
+  const [isMobileKennelOpen, setIsMobileKennelOpen] = useState(false);
+  const [isMobileBreedingOpen, setIsMobileBreedingOpen] = useState(false);
+  const [isMobileShowsOpen, setIsMobileShowsOpen] = useState(false);
+  const [isMobileShopsOpen, setIsMobileShopsOpen] = useState(false);
+  const [isMobileCommunityOpen, setIsMobileCommunityOpen] = useState(false);
+  const [isMobileSupportOpen, setIsMobileSupportOpen] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -233,11 +242,13 @@ export default function LayoutClient({
 
       {/* Site Banner */}
       <div
-        className="w-full h-[220px] sm:h-[320px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-sagebrush/20"
+        className="w-full h-[320px] sm:h-[420px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-sagebrush/20"
         style={{
           backgroundImage: `url(${bannerUrl})`,
-          backgroundPosition: `center ${bannerPosition}`,
+          backgroundPosition: `center ${bannerYPosition}`,
         }}
+        title={`Banner position: Y=${bannerYPosition}`}
+        onMouseEnter={() => console.log('Banner CSS applied:', { bannerYPosition, cssPosition: `center ${bannerYPosition}` })}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
@@ -689,7 +700,7 @@ export default function LayoutClient({
             </div>
 
             {/* Drawer Content */}
-            <div className="flex-grow overflow-y-auto custom-scrollbar">
+            <div className="flex-grow overflow-y-auto relative z-[90]">
               <div className="p-4 space-y-2">
                 {isAdmin && (
                   <MobileNavLink
@@ -703,8 +714,9 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Kennel"
                   icon={<Home size={18} />}
-                  isOpen={isKennelOpen}
-                  setIsOpen={setIsKennelOpen}
+                  isOpen={isMobileKennelOpen}
+                  setIsOpen={setIsMobileKennelOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
                     href="/kennel"
@@ -723,8 +735,9 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Breeding"
                   icon={<Heart size={18} />}
-                  isOpen={isBreedingOpen}
-                  setIsOpen={setIsBreedingOpen}
+                  isOpen={isMobileBreedingOpen}
+                  setIsOpen={setIsMobileBreedingOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
                     href="/breeding"
@@ -743,8 +756,9 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Shows"
                   icon={<Trophy size={18} />}
-                  isOpen={isShowsOpen}
-                  setIsOpen={setIsShowsOpen}
+                  isOpen={isMobileShowsOpen}
+                  setIsOpen={setIsMobileShowsOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
                     href="/shows"
@@ -763,13 +777,14 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Shops"
                   icon={<ShoppingBag size={18} />}
-                  isOpen={isShopsOpen}
-                  setIsOpen={setIsShopsOpen}
+                  isOpen={isMobileShopsOpen}
+                  setIsOpen={setIsMobileShopsOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
-                    href="/shop/adoption"
-                    icon={<Baby size={18} />}
-                    label="Foundation Adoption"
+                    href="/foundation-fox-store"
+                    icon={<ShoppingCart size={18} />}
+                    label="Foundations"
                     onClick={() => setIsMobileMenuOpen(false)}
                   />
                   <MobileNavLink
@@ -801,8 +816,9 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Community"
                   icon={<Users size={18} />}
-                  isOpen={isCommunityOpen}
-                  setIsOpen={setIsCommunityOpen}
+                  isOpen={isMobileCommunityOpen}
+                  setIsOpen={setIsMobileCommunityOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
                     href="/forum"
@@ -821,8 +837,9 @@ export default function LayoutClient({
                 <MobileCategory
                   label="Support"
                   icon={<LifeBuoy size={18} />}
-                  isOpen={isSupportOpen}
-                  setIsOpen={setIsSupportOpen}
+                  isOpen={isMobileSupportOpen}
+                  setIsOpen={setIsMobileSupportOpen}
+                  setIsMobileMenuOpen={setIsMobileMenuOpen}
                 >
                   <MobileNavLink
                     href="/help"
@@ -967,32 +984,57 @@ function MobileCategory({
   isOpen,
   setIsOpen,
   children,
+  href,
+  setIsMobileMenuOpen,
 }: {
   label: string;
   icon: React.ReactNode;
   isOpen: boolean;
   setIsOpen: (v: boolean) => void;
   children: React.ReactNode;
+  href?: string;
+  setIsMobileMenuOpen: (v: boolean) => void;
 }) {
+  const router = useRouter();
+
+  const handleHeaderClick = () => {
+    console.log('MobileCategory header clicked:', { label, href, isOpen });
+    console.log(`About to toggle ${label} dropdown, current state: ${isOpen}`);
+    if (href) {
+      console.log('Navigating to:', href);
+      router.push(href);
+      setIsMobileMenuOpen(false);
+    } else {
+      console.log(`Toggling ${label} dropdown, new state: ${!isOpen}`);
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
     <div className="border-t border-border">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleHeaderClick}
         className="w-full flex items-center justify-between px-4 py-4 text-xs font-black uppercase tracking-widest text-foreground/70 hover:bg-muted transition-colors"
       >
         <div className="flex items-center gap-3">
           {icon}
           <span>{label}</span>
         </div>
-        <ChevronDown
-          size={14}
-          className={cn(
-            "transition-transform duration-200",
-            isOpen ? "rotate-180" : "",
-          )}
-        />
+        {!href && (
+          <ChevronDown
+            size={14}
+            className={cn(
+              "transition-transform duration-200",
+              isOpen ? "rotate-180" : "",
+            )}
+          />
+        )}
       </button>
-      {isOpen && <div className="bg-muted/30 pb-2">{children}</div>}
+      {isOpen && !href && (
+        <div className="bg-muted/30 pb-2">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
@@ -1008,10 +1050,15 @@ function MobileNavLink({
   label: string;
   onClick: () => void;
 }) {
+  const handleClick = () => {
+    console.log(`MobileNavLink clicked: ${label} -> ${href}`);
+    onClick();
+  };
+
   return (
     <Link
       href={href}
-      onClick={onClick}
+      onClick={handleClick}
       className="flex items-center gap-3 px-8 py-3 rounded-lg hover:bg-muted transition-colors text-foreground/80 hover:text-primary"
     >
       {icon}

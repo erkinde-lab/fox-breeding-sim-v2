@@ -259,13 +259,17 @@ export interface ShowConfig {
 
   rbis: number;
 
-  first: number;
+  bov: number;
 
-  second: number;
+  rbov: number;
 
-  third: number;
+  bos: number;
 
-  champion: number;
+  rbos: number;
+
+  boc: number;
+
+  rboc: number;
 
 }
 
@@ -479,6 +483,8 @@ interface GameState {
 
   showConfig: Record<string, ShowConfig>;
 
+  setShowConfig: (config: Record<string, ShowConfig>) => void;
+
   marketListings: MarketListing[];
 
   unlockedAchievements: string[];
@@ -495,7 +501,9 @@ interface GameState {
 
   bannerUrl: string;
 
-  bannerPosition: string;
+  bannerXPosition: string;
+
+  bannerYPosition: string;
 
   lastAdoptionReset: string;
 
@@ -580,7 +588,9 @@ interface GameState {
 
   setBannerUrl: (url: string) => void;
 
-  setBannerPosition: (pos: string) => void;
+  setBannerXPosition: (pos: string) => void;
+
+  setBannerYPosition: (pos: string) => void;
 
   toggleColorblindMode: (mode: string) => void;
 
@@ -828,9 +838,9 @@ export const useGameStore = create<GameState>()(
       isAdmin: false,
 
       showConfig: {
-        Pro: { bis: 2000, rbis: 800, first: 1000, second: 500, third: 250, champion: 300 },
-        Amateur: { bis: 1000, rbis: 400, first: 500, second: 250, third: 125, champion: 150 },
-        Altered: { bis: 1500, rbis: 600, first: 750, second: 375, third: 188, champion: 225 },
+        Pro: { bis: 2000, rbis: 800, bov: 1000, rbov: 500, bos: 600, rbos: 300, boc: 400, rboc: 200 },
+        Amateur: { bis: 1000, rbis: 400, bov: 500, rbov: 250, bos: 300, rbos: 150, boc: 200, rboc: 100 },
+        Altered: { bis: 1500, rbis: 600, bov: 750, rbov: 375, bos: 450, rbos: 225, boc: 300, rboc: 150 },
       },
 
       marketListings: [],
@@ -851,7 +861,9 @@ export const useGameStore = create<GameState>()(
 
         "https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=2070&auto=format&fit=crop",
 
-      bannerPosition: "50% 50%",
+      bannerXPosition: "50%",
+
+      bannerYPosition: "50%",
 
       lastAdoptionReset: new Date().toISOString(),
 
@@ -1344,7 +1356,11 @@ export const useGameStore = create<GameState>()(
 
       setBannerUrl: (url) => set({ bannerUrl: url }),
 
-      setBannerPosition: (pos) => set({ bannerPosition: pos }),
+      setBannerXPosition: (pos: string) => set({ bannerXPosition: pos }),
+
+      setBannerYPosition: (pos: string) => set({ bannerYPosition: pos }),
+
+      setShowConfig: (config) => set({ showConfig: config }),
 
 
 
@@ -1699,17 +1715,26 @@ export const useGameStore = create<GameState>()(
                   fox.bisWins = (fox.bisWins || 0) + 1;
                   newGold += showConfig[res.level]?.bis || 1000;
                 }
-                if (res.title === "BOV") {
-                  newGold += showConfig[res.level]?.first || 500;
-                }
-                if (res.title === "BOS") {
-                  newGold += showConfig[res.level]?.second || 200;
-                }
                 if (res.title === "RBIS") {
                   newGold += showConfig[res.level]?.rbis || 800;
                 }
+                if (res.title === "BOV") {
+                  newGold += showConfig[res.level]?.bov || 500;
+                }
+                if (res.title === "RBOV") {
+                  newGold += showConfig[res.level]?.rbov || 250;
+                }
+                if (res.title === "BOS") {
+                  newGold += showConfig[res.level]?.bos || 300;
+                }
+                if (res.title === "RBOS") {
+                  newGold += showConfig[res.level]?.rbos || 150;
+                }
                 if (res.title === "BOC") {
-                  newGold += showConfig[res.level]?.champion || 300;
+                  newGold += showConfig[res.level]?.boc || 200;
+                }
+                if (res.title === "RBOC") {
+                  newGold += showConfig[res.level]?.rboc || 100;
                 }
               }
             });
@@ -1881,9 +1906,9 @@ export const useGameStore = create<GameState>()(
             },
           ],
           showConfig: {
-            Pro: { bis: 2000, rbis: 800, first: 1000, second: 500, third: 250, champion: 300 },
-            Amateur: { bis: 1000, rbis: 400, first: 500, second: 250, third: 125, champion: 150 },
-            Altered: { bis: 1500, rbis: 600, first: 750, second: 375, third: 188, champion: 225 },
+            Pro: { bis: 2000, rbis: 800, bov: 1000, rbov: 500, bos: 600, rbos: 300, boc: 400, rboc: 200 },
+            Amateur: { bis: 1000, rbis: 400, bov: 500, rbov: 250, bos: 300, rbos: 150, boc: 200, rboc: 100 },
+            Altered: { bis: 1500, rbis: 600, bov: 750, rbov: 375, bos: 450, rbos: 225, boc: 300, rboc: 150 },
           },
           marketListings: [],
           unlockedAchievements: [],
@@ -1893,7 +1918,8 @@ export const useGameStore = create<GameState>()(
           hiredGeneticist: false,
           hiredNutritionist: false,
           bannerUrl: "https://images.unsplash.com/photo-1470093851219-69951fcbb533?q=80&w=2070&auto=format&fit=crop",
-          bannerPosition: "50% 50%",
+          bannerXPosition: "50%",
+          bannerYPosition: "50%",
           isDarkMode: false,
         }));
 
