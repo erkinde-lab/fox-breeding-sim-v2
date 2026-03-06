@@ -30,7 +30,7 @@ export function Dashboard() {
         <h2 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Kennel Dashboard</h2>
         <div className="flex flex-wrap gap-4">
           {hiredNutritionist && (
-            <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-primary/20 gap-2">
+            <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-btn-primary gap-2">
               <Utensils size={16} /> Feed All Foxes
             </Button>
           )}
@@ -40,7 +40,7 @@ export function Dashboard() {
             </Button>
           )}
           {hiredTrainer && (
-            <Button onClick={trainAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-primary/20 gap-2">
+            <Button onClick={trainAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-btn-primary gap-2">
               <Dumbbell size={16} /> Train All Foxes
             </Button>
           )}

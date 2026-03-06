@@ -40,7 +40,7 @@ export default function NPCKennelPage() {
       {foundationFoxes.length > 0 && (
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <ShoppingCart className="text-green-600" size={24} />
+            <ShoppingCart className="text-success" size={24} />
             <h2 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
               Foundation Foxes - Available for Adoption
             </h2>
@@ -50,7 +50,7 @@ export default function NPCKennelPage() {
             {foundationFoxes.map((fox) => (
               <div
                 key={fox.id}
-                className="folk-card border-2 border-green-200 bg-green-50/30 shadow-sm rounded-[32px] overflow-hidden bg-card"
+                className="folk-card border-2 border-success/30 bg-success/5/30 shadow-sm rounded-[32px] overflow-hidden bg-card"
               >
                 <div className="p-6 space-y-4">
                   <div className="flex items-center justify-between">
@@ -69,7 +69,7 @@ export default function NPCKennelPage() {
                         <p className="text-sm text-muted-foreground font-medium">{fox.phenotype}</p>
                       </div>
                     </div>
-                    <Badge variant="outline" className="bg-green-100 border-green-300 text-green-700">
+                    <Badge variant="outline" className="bg-success/20 border-success/50 text-success">
                       For Sale
                     </Badge>
                   </div>
@@ -104,7 +104,7 @@ export default function NPCKennelPage() {
                     <Button
                       onClick={() => buyFoundationFox(fox.id)}
                       disabled={gold < 1000}
-                      className="w-full bg-green-600 hover:bg-green-500 text-white font-bold"
+                      className="w-full bg-success hover:bg-success/50 text-white font-bold"
                     >
                       Adopt for 1,000 Gold
                     </Button>

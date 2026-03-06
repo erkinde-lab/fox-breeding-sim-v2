@@ -34,7 +34,8 @@ import {
   ShieldCheck,
   UserPlus,
   Store,
-  Star, Megaphone,
+  Star,
+  Megaphone,
   Baby,
   ShoppingCart,
 } from "lucide-react";
@@ -100,37 +101,62 @@ export default function LayoutClient({
 
     // Cleanup old classes
     const classesToRemove = [
-      'protanopia', 'protanomaly', 'deuteranopia', 'deuteranomaly',
-      'tritanopia', 'tritanomaly', 'achromatopsia', 'achromatomaly',
-      'high-contrast', 'use-opendyslexic', 'reduced-motion',
-      'underline-links', 'high-visibility-focus', 'simplified-ui'
+      "protanopia",
+      "protanomaly",
+      "deuteranopia",
+      "deuteranomaly",
+      "tritanopia",
+      "tritanomaly",
+      "achromatopsia",
+      "achromatomaly",
+      "high-contrast",
+      "use-opendyslexic",
+      "reduced-motion",
+      "underline-links",
+      "high-visibility-focus",
+      "simplified-ui",
     ];
     root.classList.remove(...classesToRemove);
-    root.classList.remove('font-size-small', 'font-size-normal', 'font-size-large', 'font-size-xl');
-    root.classList.remove('text-spacing-normal', 'text-spacing-wide', 'text-spacing-extra');
+    root.classList.remove(
+      "font-size-small",
+      "font-size-normal",
+      "font-size-large",
+      "font-size-xl",
+    );
+    root.classList.remove(
+      "text-spacing-normal",
+      "text-spacing-wide",
+      "text-spacing-extra",
+    );
 
     // Apply new classes
-    if (colorblindMode !== 'none') root.classList.add(colorblindMode);
-    if (highContrast) root.classList.add('high-contrast');
-    if (useOpenDyslexic) root.classList.add('use-opendyslexic');
-    if (reducedMotion) root.classList.add('reduced-motion');
-    if (alwaysUnderlineLinks) root.classList.add('underline-links');
-    if (highVisibilityFocus) root.classList.add('high-visibility-focus');
-    if (simplifiedUI) root.classList.add('simplified-ui');
+    if (colorblindMode !== "none") root.classList.add(colorblindMode);
+    if (highContrast) root.classList.add("high-contrast");
+    if (useOpenDyslexic) root.classList.add("use-opendyslexic");
+    if (reducedMotion) root.classList.add("reduced-motion");
+    if (alwaysUnderlineLinks) root.classList.add("underline-links");
+    if (highVisibilityFocus) root.classList.add("high-visibility-focus");
+    if (simplifiedUI) root.classList.add("simplified-ui");
 
     root.classList.add(`font-size-${fontSize}`);
     root.classList.add(`text-spacing-${textSpacing}`);
 
     // Apply SVG filter for colorblindness
-    if (colorblindMode !== 'none') {
+    if (colorblindMode !== "none") {
       root.style.filter = `url(#${colorblindMode})`;
     } else {
-      root.style.filter = '';
+      root.style.filter = "";
     }
   }, [
-    colorblindMode, highContrast, fontSize, useOpenDyslexic,
-    reducedMotion, alwaysUnderlineLinks, highVisibilityFocus,
-    simplifiedUI, textSpacing
+    colorblindMode,
+    highContrast,
+    fontSize,
+    useOpenDyslexic,
+    reducedMotion,
+    alwaysUnderlineLinks,
+    highVisibilityFocus,
+    simplifiedUI,
+    textSpacing,
   ]);
 
   useEffect(() => {
@@ -154,8 +180,6 @@ export default function LayoutClient({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-rounded selection:bg-primary/30 transition-colors duration-500">
@@ -195,17 +219,20 @@ export default function LayoutClient({
             id="tutorial-currency"
             className="flex items-center gap-4 border-foreground/20 sm:pr-6 sm:border-r"
           >
-            <span className="flex items-center gap-1.5 hover:text-yellow-600 dark:hover:text-yellow-200 transition-colors">
-              <Coins size={12} className="text-yellow-500 dark:text-yellow-200" />{" "}
+            <span className="flex items-center gap-1.5 hover:text-gold dark:hover:text-yellow-200 transition-colors">
+              <Coins
+                size={12}
+                className="text-yellow-500 dark:text-yellow-200"
+              />{" "}
               {gold.toLocaleString()} Gold
             </span>
             <Link
               href="/shop/gems"
-              className="flex items-center gap-1.5 hover:text-cyan-600 dark:hover:text-cyan-200 transition-colors group"
+              className="flex items-center gap-1.5 hover:text-gems dark:hover:text-cyan-200 transition-colors group"
             >
               <Diamond
                 size={12}
-                className="text-cyan-500 dark:text-cyan-200 group-hover:scale-110 transition-transform"
+                className="text-gems dark:text-cyan-200 group-hover:scale-110 transition-transform"
               />
               {gems.toLocaleString()} Gems
               <Plus
@@ -248,15 +275,31 @@ export default function LayoutClient({
           backgroundPosition: `center ${bannerYPosition}`,
         }}
         title={`Banner position: Y=${bannerYPosition}`}
-        onMouseEnter={() => console.log('Banner CSS applied:', { bannerYPosition, cssPosition: `center ${bannerYPosition}` })}
+        onMouseEnter={() =>
+          console.log("Banner CSS applied:", {
+            bannerYPosition,
+            cssPosition: `center ${bannerYPosition}`,
+          })
+        }
       >
         <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-foreground max-w-2xl">
               <div className="inline-flex items-center gap-4 group mb-4">
                 <div className="relative">
-                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleAdminMode(); }} aria-label="Toggle Admin Mode" className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20">
-                    <PawPrint className="text-white -rotate-3 hover:-rotate-6 transition-transform" size={40} />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      toggleAdminMode();
+                    }}
+                    aria-label="Toggle Admin Mode"
+                    className="w-16 h-16 sm:w-20 sm:h-20 bg-primary rounded-[2rem] rotate-3 hover:rotate-6 transition-transform flex items-center justify-center shadow-xl shadow-primary/20"
+                  >
+                    <PawPrint
+                      className="text-white -rotate-3 hover:-rotate-6 transition-transform"
+                      size={40}
+                    />
                   </button>
                   <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-lg rotate-12 flex items-center justify-center shadow-lg pointer-events-none">
                     <Star className="text-white" size={12} />
@@ -292,8 +335,8 @@ export default function LayoutClient({
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-bold text-sm",
                   pathname === "/kennel"
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    ? "bg-primary text-primary-foreground shadow-btn-primary"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/10",
                 )}
               >
                 <PawPrint size={16} />
@@ -475,7 +518,7 @@ export default function LayoutClient({
                       onClick={() => setIsProfileOpen(false)}
                     />
                     <div className="my-2 border-t border-border mx-4" />
-                    <button className="w-full flex items-center gap-3 px-6 py-3 text-red-500 hover:bg-red-50 transition-colors">
+                    <button className="w-full flex items-center gap-3 px-6 py-3 text-destructive hover:bg-destructive/5 transition-colors">
                       <LogOut size={16} />
                       <span className="text-xs font-black uppercase tracking-wide">
                         Logout
@@ -487,7 +530,7 @@ export default function LayoutClient({
 
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20"
+                className="xl:hidden p-3 rounded-2xl bg-primary text-white shadow-btn-primary"
               >
                 <Menu size={24} />
               </button>
@@ -879,7 +922,7 @@ export default function LayoutClient({
                 {isAdmin && (
                   <button
                     onClick={() => advanceTime()}
-                    className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-lg shadow-primary/20"
+                    className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-btn-primary"
                   >
                     Advance
                   </button>
@@ -911,15 +954,18 @@ function Dropdown({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }
   }, [isOpen, dropdownRef, setIsOpen]);
@@ -947,7 +993,7 @@ function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card border border-border py-2 overflow-hidden ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] !opacity-100 shadow-2xl shadow-black/25 mb-4">
+        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card/ui-blur border border-border py-2 overflow-hidden backdrop-blur-ui ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] !opacity-100 shadow-popover mb-4">
           {children}
         </div>
       )}
@@ -998,10 +1044,10 @@ function MobileCategory({
   const router = useRouter();
 
   const handleHeaderClick = () => {
-    console.log('MobileCategory header clicked:', { label, href, isOpen });
+    console.log("MobileCategory header clicked:", { label, href, isOpen });
     console.log(`About to toggle ${label} dropdown, current state: ${isOpen}`);
     if (href) {
-      console.log('Navigating to:', href);
+      console.log("Navigating to:", href);
       router.push(href);
       setIsMobileMenuOpen(false);
     } else {
@@ -1030,11 +1076,7 @@ function MobileCategory({
           />
         )}
       </button>
-      {isOpen && !href && (
-        <div className="bg-muted/30 pb-2">
-          {children}
-        </div>
-      )}
+      {isOpen && !href && <div className="bg-muted/30 pb-2">{children}</div>}
     </div>
   );
 }

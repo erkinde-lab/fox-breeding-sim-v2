@@ -401,7 +401,7 @@ export default function AdminPanel() {
 
           </div>
 
-          <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+          <div className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-btn-primary">
 
             <Shield size={24} />
 
@@ -483,10 +483,10 @@ export default function AdminPanel() {
 
             </Card>
 
-            <Card className="folk-card border-purple-100 bg-purple-50/10">
+            <Card className="folk-card border-info/30 bg-info/5">
               <CardHeader className="pb-2">
                 <CardTitle className="text-2xl font-black italic flex items-center gap-3">
-                  <Package className="text-purple-600" size={24} /> Site-Wide Banner
+                  <Package className="text-info" size={24} /> Site-Wide Banner
                 </CardTitle>
                 <p className="text-xs text-muted-foreground font-medium">Change the decorative header banner visible to all players.</p>
               </CardHeader>
@@ -520,7 +520,7 @@ export default function AdminPanel() {
                 <div className="space-y-4 pt-2">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-purple-700">
+                      <label className="text-xs font-bold uppercase tracking-widest text-info">
                         Vertical Position
                       </label>
                       <span className="text-xs text-muted-foreground">{bannerYPosition}</span>
@@ -535,20 +535,20 @@ export default function AdminPanel() {
                         console.log(`Banner Y position changing from ${bannerYPosition} to ${newPos}`);
                         setBannerYPosition(newPos);
                       }}
-                      className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-info/20 rounded-lg appearance-none cursor-pointer slider"
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="folk-card border-cyan-100 bg-cyan-50/10">
+            <Card className="folk-card border-info/30 bg-gems/5/10">
 
               <CardHeader className="pb-2">
 
                 <CardTitle className="text-2xl font-black italic flex items-center gap-3">
 
-                  <Database className="text-cyan-600" size={24} /> System Health
+                  <Database className="text-info" size={24} /> System Health
 
                 </CardTitle>
 
@@ -564,7 +564,7 @@ export default function AdminPanel() {
 
                     <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Store Version</span>
 
-                    <Badge className="bg-cyan-500 border-none font-black px-3">v7.0.0</Badge>
+                    <Badge variant="info" className="border-none font-black px-3">v7.0.0</Badge>
 
                   </div>
 
@@ -578,7 +578,7 @@ export default function AdminPanel() {
 
                 </div>
 
-                <Button variant="outline" className="w-full border-2 border-cyan-200 text-cyan-700 font-black uppercase tracking-widest h-14 rounded-2xl hover:bg-cyan-50">
+                <Button variant="outline" className="w-full border-2 border-gems/50 text-gems font-black uppercase tracking-widest h-14 rounded-2xl hover:bg-gems/5">
 
                   Refresh State Persistence
 
@@ -880,7 +880,7 @@ export default function AdminPanel() {
 
                           ) : member.warnings.length > 0 ? (
 
-                            <Badge variant="outline" className="text-amber-600 border-amber-200 bg-amber-50 font-black px-3 uppercase tracking-tighter text-[10px]">WARNED ({member.warnings.length})</Badge>
+                            <Badge variant="outline" className="text-gold border-gold/50 bg-gold/5 font-black px-3 uppercase tracking-tighter text-[10px]">WARNED ({member.warnings.length})</Badge>
 
                           ) : (
 
@@ -1083,13 +1083,13 @@ export default function AdminPanel() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-            <Card className="folk-card border-amber-100 bg-amber-50/10">
+            <Card className="folk-card border-gold/30 bg-gold/5">
 
               <CardHeader className="pb-2">
 
                 <CardTitle className="text-2xl font-black italic flex items-center gap-3">
 
-                  <Coins className="text-amber-600" size={24} /> Currency Control
+                  <Coins className="text-gold" size={24} /> Currency Control
 
                 </CardTitle>
 
@@ -1101,19 +1101,19 @@ export default function AdminPanel() {
 
                 <div className="grid grid-cols-2 gap-4">
 
-                  <div className="p-4 bg-card border-2 border-amber-100 rounded-2xl text-center space-y-1">
+                  <div className="p-4 bg-card border-2 border-gold/30 rounded-2xl text-center space-y-1">
 
                     <p className="text-[10px] font-black uppercase text-muted-foreground">Gold Supply</p>
 
-                    <p className="text-2xl font-black text-amber-600">{gold.toLocaleString()}</p>
+                    <p className="text-2xl font-black text-gold">{gold.toLocaleString()}</p>
 
                   </div>
 
-                  <div className="p-4 bg-card border-2 border-cyan-100 rounded-2xl text-center space-y-1">
+                  <div className="p-4 bg-card border-2 border-info/30 rounded-2xl text-center space-y-1">
 
                     <p className="text-[10px] font-black uppercase text-muted-foreground">Gem Supply</p>
 
-                    <p className="text-2xl font-black text-cyan-600">{gems.toLocaleString()}</p>
+                    <p className="text-2xl font-black text-info">{gems.toLocaleString()}</p>
 
                   </div>
 
@@ -1121,13 +1121,13 @@ export default function AdminPanel() {
 
                 <div className="flex gap-3">
 
-                  <Button variant="outline" className="flex-1 border-2 border-amber-200 text-amber-700 font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => adminSetCurrency({ gold: gold + 100000 })}>
+                  <Button variant="outline" className="flex-1 border-2 border-gold/50 text-gold font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => adminSetCurrency({ gold: gold + 100000 })}>
 
                     +100k Gold
 
                   </Button>
 
-                  <Button variant="outline" className="flex-1 border-2 border-cyan-200 text-cyan-700 font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => adminSetCurrency({ gems: gems + 1000 })}>
+                  <Button variant="outline" className="flex-1 border-2 border-gems/50 text-gems font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => adminSetCurrency({ gems: gems + 1000 })}>
 
                     +1k Gems
 
@@ -1269,7 +1269,7 @@ export default function AdminPanel() {
 
 
 
-            <Card className="folk-card p-10 text-center border-amber-100 bg-amber-50/10 relative overflow-hidden group">
+            <Card className="folk-card p-10 text-center border-gold/30 bg-gold/5 relative overflow-hidden group">
 
                <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
 
@@ -1349,7 +1349,7 @@ export default function AdminPanel() {
 
                          log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle className="text-fire-600" /> :
 
-                         <History className="text-cyan-600" />}
+                         <History className="text-info" />}
 
                       </div>
 
@@ -1482,13 +1482,13 @@ export default function AdminPanel() {
 
             </Card>
 
-            <Card className="folk-card border-cyan-100 bg-cyan-50/10">
+            <Card className="folk-card border-info/30 bg-gems/5/10">
 
               <CardHeader className="pb-2">
 
                 <CardTitle className="text-2xl font-black italic flex items-center gap-3">
 
-                  <Database className="text-cyan-600" size={24} /> Game State Info
+                  <Database className="text-info" size={24} /> Game State Info
 
                 </CardTitle>
 
@@ -1504,7 +1504,7 @@ export default function AdminPanel() {
 
                     <span className="text-sm font-bold text-foreground">Current Season</span>
 
-                    <Badge className="bg-cyan-500 border-none font-black px-3">{season} Y{year}</Badge>
+                    <Badge variant="info" className="border-none font-black px-3">{season} Y{year}</Badge>
 
                   </div>
 
@@ -1512,7 +1512,7 @@ export default function AdminPanel() {
 
                     <span className="text-sm font-bold text-foreground">Foxes Owned</span>
 
-                    <Badge className="bg-cyan-500 border-none font-black px-3">{Object.keys(foxes).length}</Badge>
+                    <Badge variant="info" className="border-none font-black px-3">{Object.keys(foxes).length}</Badge>
 
                   </div>
 
@@ -1520,7 +1520,7 @@ export default function AdminPanel() {
 
                     <span className="text-sm font-bold text-foreground">Staff Hired</span>
 
-                    <Badge className="bg-cyan-500 border-none font-black px-3">
+                    <Badge variant="info" className="border-none font-black px-3">
 
                       {[hiredGroomer, hiredVeterinarian, hiredTrainer, hiredGeneticist, hiredNutritionist].filter(Boolean).length}/5
 
@@ -1532,7 +1532,7 @@ export default function AdminPanel() {
 
                     <span className="text-sm font-bold text-foreground">Currency</span>
 
-                    <Badge className="bg-cyan-500 border-none font-black px-3">{gold} Gold, {gems} Gems</Badge>
+                    <Badge variant="info" className="border-none font-black px-3">{gold} Gold, {gems} Gems</Badge>
 
                   </div>
 
@@ -1570,7 +1570,7 @@ export default function AdminPanel() {
                   {foundationFoxes.length > 0 && (
                     <div className="space-y-6">
                       <div className="flex items-center gap-3">
-                        <Package className="text-green-600" size={24} />
+                        <Package className="text-success" size={24} />
                         <h3 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
                           Foundation Foxes - Available for Sale ({foundationFoxes.length})
                         </h3>
@@ -1580,7 +1580,7 @@ export default function AdminPanel() {
                         {foundationFoxes.map((fox) => (
                           <div
                             key={fox.id}
-                            className="folk-card border-2 border-green-200 bg-green-50/30 shadow-sm rounded-[32px] overflow-hidden bg-card"
+                            className="folk-card border-2 border-success/30 bg-success/5 shadow-sm rounded-[32px] overflow-hidden bg-card"
                           >
                             <div className="p-6 space-y-4">
                               <div className="flex items-center justify-between">
@@ -1595,7 +1595,7 @@ export default function AdminPanel() {
                                     <p className="text-sm text-muted-foreground font-medium">{fox.phenotype}</p>
                                   </div>
                                 </div>
-                                <Badge variant="outline" className="bg-green-100 border-green-300 text-green-700">
+                                <Badge variant="outline" className="bg-success/20 border-success/50 text-success">
                                   For Sale - 1,000 Gold
                                 </Badge>
                               </div>

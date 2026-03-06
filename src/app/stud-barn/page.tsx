@@ -229,7 +229,7 @@ function StudCard({ fox, isSelected, onSelect, onBreed, disabled }: { fox: impor
               disabled={disabled}
               className={cn(
                 "w-full mt-3 rounded-xl font-black uppercase tracking-widest text-[9px] h-8 transition-all",
-                !disabled ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20" : "bg-muted text-muted-foreground opacity-50"
+                !disabled ? "bg-primary hover:bg-primary/90 text-primary-foreground shadow-btn-primary" : "bg-muted text-muted-foreground opacity-50"
               )}
             >
               Commit Breeding

@@ -131,12 +131,12 @@ export default function MarketplacePage() {
                               onChange={(e) => setEditPrice(parseInt(e.target.value) || 0)}
                               className="w-24 bg-muted border border-border rounded px-2 py-1 text-xs font-black"
                             />
-                            <button onClick={handleSaveEdit} className="text-green-500 hover:text-green-600 transition-colors"><Check size={16}/></button>
-                            <button onClick={() => setEditingId(null)} className="text-destructive hover:text-red-600 transition-colors"><X size={16}/></button>
+                            <button onClick={handleSaveEdit} className="text-success hover:text-success transition-colors"><Check size={16}/></button>
+                            <button onClick={() => setEditingId(null)} className="text-destructive hover:text-destructive transition-colors"><X size={16}/></button>
                          </div>
                       ) : (
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs font-black text-yellow-600 flex items-center gap-0.5">
+                          <span className="text-xs font-black text-gold flex items-center gap-0.5">
                             {l.currency === 'gold' ? <Coins size={12} /> : <Diamond size={12} />}
                             {l.price.toLocaleString()}
                           </span>
@@ -206,7 +206,7 @@ function ListingCard({ listing, onAction, canAfford }: { listing: MarketListing,
       <div className="px-4 pb-4 pt-2 border-t border-border flex items-center justify-between gap-4 bg-muted/20">
         <div className={cn(
           "text-lg font-black flex items-center gap-1",
-          listing.currency === 'gold' ? "text-yellow-600" : "text-cyan-600"
+          listing.currency === 'gold' ? "text-gold" : "text-gems"
         )}>
           {listing.currency === 'gold' ? <Coins size={18} /> : <Diamond size={18} />}
           {listing.price.toLocaleString()}
@@ -217,7 +217,7 @@ function ListingCard({ listing, onAction, canAfford }: { listing: MarketListing,
           disabled={!canAfford}
           className={cn(
             "font-black px-6 rounded-xl uppercase text-[10px] tracking-widest",
-            listing.currency === 'gold' ? "bg-yellow-600 hover:bg-yellow-500 text-white" : "bg-primary hover:bg-primary/90 text-primary-foreground"
+            listing.currency === 'gold' ? "bg-gold hover:bg-gold/50 text-white" : "bg-primary hover:bg-primary/90 text-primary-foreground"
           )}
         >
           Buy Now

@@ -92,7 +92,7 @@ export default function InventoryPage() {
                       onChange={(e) => setListPrice(parseInt(e.target.value))}
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                      {listCurrency === 'gold' ? <Coins className="text-amber-500" /> : <Diamond className="text-cyan-500" />}
+                      {listCurrency === 'gold' ? <Coins className="text-amber-500" /> : <Diamond className="text-gems" />}
                     </div>
                   </div>
                 </div>
@@ -100,14 +100,14 @@ export default function InventoryPage() {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    className={`flex-1 h-12 rounded-xl font-bold border-2 transition-all ${listCurrency === 'gold' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'border-earth-100 text-earth-400 opacity-50'}`}
+                    className={`flex-1 h-12 rounded-xl font-bold border-2 transition-all ${listCurrency === 'gold' ? 'bg-gold/5 border-gold/50 text-gold' : 'border-earth-100 text-earth-400 opacity-50'}`}
                     onClick={() => setListCurrency('gold')}
                   >
                     Gold
                   </Button>
                   <Button
                     variant="outline"
-                    className={`flex-1 h-12 rounded-xl font-bold border-2 transition-all ${listCurrency === 'gems' ? 'bg-cyan-50 border-cyan-200 text-cyan-700' : 'border-earth-100 text-earth-400 opacity-50'}`}
+                    className={`flex-1 h-12 rounded-xl font-bold border-2 transition-all ${listCurrency === 'gems' ? 'bg-gems/5 border-gems/50 text-gems' : 'border-earth-100 text-earth-400 opacity-50'}`}
                     onClick={() => setListCurrency('gems')}
                   >
                     Gems

@@ -26,10 +26,10 @@ import { useNotifications } from "@/components/NotificationProvider";
 
 const AVATAR_COLORS = [
   "bg-fire-500",
-  "bg-amber-500",
+  "bg-gold/50",
   "bg-moss-500",
-  "bg-cyan-500",
-  "bg-purple-500",
+  "bg-gems/50",
+  "bg-info/50",
   "bg-rose-500",
   "bg-earth-600",
   "bg-slate-700",
@@ -448,7 +448,7 @@ export default function SettingsPage() {
         </Button>
         <Button variant="ghost" className="px-6 rounded-xl font-bold text-muted-foreground hover:text-primary" onClick={() => window.location.reload()}>Refresh App</Button>
         <Button
-          className="px-12 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-lg shadow-primary/20 h-12"
+          className="px-12 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest rounded-xl shadow-btn-primary h-12"
           onClick={handleSave}
         >
           Save All Settings

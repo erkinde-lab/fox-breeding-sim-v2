@@ -139,7 +139,7 @@ export default function ShowsPage() {
         </div>
         <Button
           onClick={runShows}
-          className="gap-3 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-8 h-12 rounded-xl shadow-lg shadow-primary/20"
+          className="gap-3 bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-8 h-12 rounded-xl shadow-btn-primary"
         >
           <Trophy size={18} /> Run All Shows
         </Button>
@@ -177,7 +177,7 @@ export default function ShowsPage() {
                     className={cn(
                       "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-black uppercase tracking-widest transition-all",
                       activeTab === tab.id
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 translate-x-2"
+                        ? "bg-primary text-primary-foreground shadow-btn-primary translate-x-2"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground",
                       tab.disabled && "opacity-30 cursor-not-allowed grayscale",
                     )}
@@ -588,7 +588,7 @@ export default function ShowsPage() {
                                 {!show.isWeekend && (
                                   <Badge
                                     variant="secondary"
-                                    className="bg-blue-100 text-blue-700 text-[8px] font-black border-none"
+                                    className="bg-blue-100 text-info text-[8px] font-black border-none"
                                   >
                                     MIDWEEK
                                   </Badge>
@@ -625,7 +625,7 @@ export default function ShowsPage() {
                             size={14}
                             className="text-blue-600 shrink-0 mt-0.5"
                           />
-                          <p className="text-[10px] text-blue-700 leading-relaxed font-bold">
+                          <p className="text-[10px] text-info leading-relaxed font-bold">
                             Qualification Required: 16 pts this year or a major
                             win (BIS/RBIS).
                           </p>
@@ -651,7 +651,7 @@ export default function ShowsPage() {
                                   className={cn(
                                     "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left overflow-visible relative",
                                     isEntered
-                                      ? "bg-green-500/10 border-green-500/30 text-green-700"
+                                      ? "bg-success/50/10 border-success/50/30 text-success"
                                       : "bg-card border-border hover:border-primary/50 hover:bg-primary/5",
                                   )}
                                 >
