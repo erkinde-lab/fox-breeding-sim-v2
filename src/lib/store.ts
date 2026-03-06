@@ -106,6 +106,23 @@ const generateNPCStuds = (
       }, npcSeededRandom);
     }
 
+    // NPC Studs can express Fawn Spotting or Star Spotting (20% chance)
+    if (npcSeededRandom() < 0.20) {
+      const extraGenotypes: (Genotype)[] = [
+        { T: ['t', 't'] },
+        { T: ['T', 't'] },
+        { S: ['S', 'S'] },
+        { S: ['s', 'S'] },
+        { T: ['t', 't'], S: ['S', 'S'] }
+      ];
+      const selectedExtra = extraGenotypes[Math.floor(npcSeededRandom() * extraGenotypes.length)];
+      stud = createFox({
+         genotype: { ...stud.genotype, ...selectedExtra },
+         gender: 'Dog',
+         isNPC: true
+      }, npcSeededRandom);
+    }
+
     if (usedPhenotypes.has(stud.phenotype)) continue;
 
 

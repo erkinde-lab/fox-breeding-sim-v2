@@ -22,6 +22,8 @@ export const LOCI: Record<string, { name: string; alleles: Allele[]; lethal?: (g
   },
   L: { name: 'Leucistic', alleles: ['L', 'l'] }, // ll = Leucistic
   R: { name: 'Opal', alleles: ['R', 'r', 'ra'] },
+  T: { name: 'Fawn Spotting', alleles: ['T', 't'] },
+  S: { name: 'Star Spotting', alleles: ['s', 'S'] },
 };
 
 export function getInitialGenotype(): Genotype {
@@ -42,6 +44,8 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const Fire = genotype.Fire || ['FI', 'FI'];
   const L = genotype.L || ['L', 'L'];
   const R = genotype.R || ['R', 'R'];
+  const T = genotype.T || ['T', 'T'];
+  const S = genotype.S || ['s', 's'];
   const W = [...(genotype.W || ['w', 'w'])].sort();
 
   // Lethal check
@@ -66,6 +70,10 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   const isOpal = R.filter(x => x === 'r').length === 2;
   const isRadium = R.filter(x => x === 'ra').length === 2;
   const isPaleGlow = (R.includes('r') && R.includes('ra'));
+
+  const isFawnSpotted = T.includes('t');
+  const isStar = S.filter(x => x === 'S').length === 1;
+  const isPiebald = S.filter(x => x === 'S').length === 2;
 
   // Base Color Logic
   let baseColorName = 'Red';
@@ -205,6 +213,10 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
 
   // Pattern Logic
   const patterns: string[] = [];
+  if (isFawnSpotted) patterns.push('Fawn Spotted');
+  if (isPiebald) patterns.push('Piebald');
+  else if (isStar) patterns.push('Star');
+
   if (W.includes('WM')) patterns.push('Marble');
   if (W.includes('WP')) patterns.push('Platinum');
   if (W.includes('WG')) patterns.push('Georgian');
@@ -234,6 +246,13 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
      eyeColor = getRandomEyeColor(finalName);
   }
 
+  // SS Piebald Eye Logic
+  if (isPiebald && !providedEyeColor && finalName !== 'Albino') {
+    const rand = Math.random();
+    if (rand < 0.25) eyeColor = 'Blue';
+    else if (rand < 0.50) eyeColor = `${eyeColor} - Blue Heterochromia`;
+  }
+
   // W locus logic
   const whiteAllelesCount = W.filter(a => a !== 'w').length;
   if (whiteAllelesCount > 0 && !providedEyeColor && finalName !== "Albino") {
@@ -256,7 +275,8 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
     isLethal,
     healthIssues: [
       ...(hasC ? ['Photosensitivity and reduced vision'] : []),
-      ...(hasL ? ['Higher incidence of deafness and vision irregularities'] : [])
+      ...(hasL ? ['Higher incidence of deafness and vision irregularities'] : []),
+      ...(isPiebald ? ['Potential sight and hearing issues'] : [])
     ],
   };
 }
@@ -516,7 +536,7 @@ export function createFoundationalFox(random: () => number = Math.random, gender
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
   const rareRand = safeRandom();
-  const rareGenes = ["G", "C", "P", "Fire", "L", "R"];
+  const rareGenes = ["G", "C", "P", "Fire", "L", "R", "T", "S"];
   if (rareRand < 0.5) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
@@ -533,6 +553,12 @@ export function createFoundationalFox(random: () => number = Math.random, gender
       const rare = alleles[Math.floor(safeRandom() * alleles.length)];
       genotype[gene] = [locus.alleles[0], rare];
     }
+  }
+
+
+  // Fawn spotting restriction: Foundation foxes can only be TT or Tt
+  if (genotype['T'] && genotype['T'][0] === 't' && genotype['T'][1] === 't') {
+    genotype['T'] = ['T', 't'];
   }
 
   return createFox({
@@ -636,7 +662,7 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
   Object.assign(genotype, baseGenotype);
 
   // Possible rare recessive (excluding W since it's visible in heterozygous form)
-  const rareGenes = ['G', 'C', 'P', 'Fire', 'L', 'R'];
+  const rareGenes = ['G', 'C', 'P', 'Fire', 'L', 'R', 'T', 'S'];
   if (safeRandom() > 0.75) {
     const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
     const locus = LOCI[gene];
@@ -645,6 +671,12 @@ function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string,
       const rare = alleles[Math.floor(safeRandom() * alleles.length)];
       genotype[gene] = [locus.alleles[0], rare];
     }
+  }
+
+
+  // Fawn spotting restriction: Foundation foxes can only be TT or Tt
+  if (genotype['T'] && genotype['T'][0] === 't' && genotype['T'][1] === 't') {
+    genotype['T'] = ['T', 't'];
   }
 
   return createFox({
