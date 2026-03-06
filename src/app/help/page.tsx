@@ -127,7 +127,27 @@ const loci = [
       "ll (homozygous recessive) produces a white coat with blue eyes — the Leucistic phenotype. Unlike Albino, pigment cells are present but non-functional in the skin, so eye color can be blue or grey. Leucism masks base coat colors but allows White Markings to express.",
     health:
       "Leucistic foxes may have a higher incidence of deafness and vision irregularities associated with the absence of melanocytes in the inner ear and eye.",
-    healthSeverity: "minor",
+    healthSeverity: 'minor',
+  },
+  {
+    key: 'R',
+    name: 'Opal (R)',
+    alleles: 'R (standard) / r (Opal) / ra (Radium)',
+    effect: 'rr produces the Opal phenotype, while rara produces Radium. rra results in Pale Glow. These loci create soft, shimmering coat dilutions and have unique combined names when paired with Fire Factor (e.g., Gold Glow, Arctic Snow Glow).'
+  },
+  {
+    key: 'T',
+    name: 'Fawn Spotting (T)',
+    alleles: 'T (dominant) / t (recessive)',
+    effect: 'Controls the presence of small white spots on the coat. TT has no effect, Tt adds a light amount of spotting, and tt adds the maximum amount of spotting. Both Tt and tt are named Fawn Spotted.'
+  },
+  {
+    key: 'S',
+    name: 'Star Spotting (S)',
+    alleles: 's (no effect) / S (dominant)',
+    effect: 'Ss produces the Star phenotype (small white star on the head), while SS produces the Piebald phenotype (large white patches). Piebald foxes have a chance for blue or heterochromic eyes.',
+    health: 'Piebald foxes (SS) may have potential sight and hearing issues.',
+    healthSeverity: 'minor'
   },
 ];
 
