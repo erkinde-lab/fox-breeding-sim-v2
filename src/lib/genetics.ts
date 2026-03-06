@@ -157,6 +157,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
         else if (underlyingName === 'Snow Glow') underlyingName = 'Golden Snow Glow';
         else if (underlyingName === 'Fire Cross') underlyingName = 'Opal Cross Glow';
         else if (underlyingName === 'Champagne Cross') underlyingName = 'Champagne Moonstone';
+        else if (underlyingName === '') underlyingName = 'Opal';
       } else if (isRadium) {
         if (underlyingName === 'Wildfire' || underlyingName === 'Autumn Fire') underlyingName = 'Sun Glow';
         else if (underlyingName === 'Golden Sunrise') underlyingName = 'Arctic Snow Glow';
@@ -168,6 +169,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
         else if (underlyingName === 'Fire Cross') underlyingName = 'Sun Cross';
         else if (underlyingName === 'Fire and Ice') underlyingName = 'Arctic Fire Glow';
         else if (underlyingName === 'Champagne Cross') underlyingName = 'Champagne Snow Cross';
+        else if (underlyingName === '') underlyingName = 'Radium';
       }
     } else {
       const isCross = baseColorName.includes('Cross');
