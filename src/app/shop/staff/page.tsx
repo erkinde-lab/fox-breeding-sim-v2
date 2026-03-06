@@ -103,7 +103,7 @@ export default function StaffPage() {
                 </div>
                 <div className="w-full md:w-auto">
                   {member.hired ? (
-                    <div className="bg-green-100 text-green-700 font-black px-8 py-4 rounded-xl border-2 border-green-200 flex items-center justify-center gap-2">
+                    <div className="bg-success/20 text-success font-black px-8 py-4 rounded-xl border-2 border-success/30 flex items-center justify-center gap-2">
                       <Check size={20} /> Currently Hired
                     </div>
                   ) : (

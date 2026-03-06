@@ -15,12 +15,12 @@ export default function CreditsPage() {
     },
     {
       title: "Design & Development",
-      icon: <Code className="text-cyan-600" />,
+      icon: <Code className="text-gems" />,
       members: ["The Red Fox Simulator Team"]
     },
     {
       title: "Art & Assets",
-      icon: <Palette className="text-amber-600" />,
+      icon: <Palette className="text-gold" />,
       members: ["Community Contributors", "Creative Commons Resources"]
     },
     {

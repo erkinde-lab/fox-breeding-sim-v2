@@ -99,10 +99,10 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
               className={`flex items-start gap-3 p-4 rounded-2xl border-2 shadow-lg backdrop-blur-md ${
-                t.type === 'success' ? 'bg-green-500/10 border-green-500/20 text-green-700' :
+                t.type === 'success' ? 'bg-success/50/10 border-success/50/20 text-success' :
                 t.type === 'destructive' || t.type === 'error' ? 'bg-destructive/10 border-destructive/20 text-destructive' :
-                t.type === 'warning' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-700' :
-                'bg-blue-500/10 border-blue-500/20 text-blue-700'
+                t.type === 'warning' ? 'bg-gold/50/10 border-gold/50/20 text-gold' :
+                'bg-info/10 border-info/50/20 text-info'
               }`}
             >
               <div className="shrink-0 mt-0.5">
@@ -132,13 +132,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
             >
               <div className={`p-6 flex flex-col items-center text-center gap-4 ${
                 dialogParams.type === 'error' || dialogParams.type === 'destructive' ? 'bg-destructive/5' :
-                dialogParams.type === 'warning' ? 'bg-amber-500/5' :
-                dialogParams.type === 'success' ? 'bg-primary/5' : 'bg-blue-500/5'
+                dialogParams.type === 'warning' ? 'bg-gold/50/5' :
+                dialogParams.type === 'success' ? 'bg-primary/5' : 'bg-info/5'
               }`}>
                 <div className={`p-4 rounded-3xl ${
                   dialogParams.type === 'error' || dialogParams.type === 'destructive' ? 'bg-destructive/10 text-destructive' :
-                  dialogParams.type === 'warning' ? 'bg-amber-500/10 text-amber-500' :
-                  dialogParams.type === 'success' ? 'bg-primary/10 text-primary' : 'bg-blue-500/10 text-blue-500'
+                  dialogParams.type === 'warning' ? 'bg-gold/50/10 text-amber-500' :
+                  dialogParams.type === 'success' ? 'bg-primary/10 text-primary' : 'bg-info/10 text-info'
                 }`}>
                   {(dialogParams.type === 'error' || dialogParams.type === 'destructive') && <XCircle size={32} />}
                   {dialogParams.type === 'warning' && <AlertTriangle size={32} />}
@@ -178,7 +178,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
                       onClick={handleConfirm}
                       className={`flex-1 h-12 rounded-xl font-black uppercase tracking-widest text-xs shadow-lg ${
                         dialogParams.type === 'error' || dialogParams.type === 'destructive' ? 'bg-destructive hover:bg-destructive/90 shadow-destructive/20' :
-                        dialogParams.type === 'warning' ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20' :
+                        dialogParams.type === 'warning' ? 'bg-gold/50 hover:bg-gold/90 shadow-gold/20' :
                         'bg-primary hover:bg-primary/90 shadow-primary/20'
                       }`}
                     >

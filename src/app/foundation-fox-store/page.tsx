@@ -99,7 +99,7 @@ export default function FoundationFoxStorePage() {
       {displayItems.length > 0 && (
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <ShoppingCart className="text-green-600" size={24} />
+            <ShoppingCart className="text-success" size={24} />
             <h2 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
               Foundation Foxes - Available for Adoption
             </h2>
@@ -113,7 +113,7 @@ export default function FoundationFoxStorePage() {
                 return (
                   <div
                     key={fox.id}
-                    className="folk-card overflow-hidden border-2 border-green-200 bg-green-50/30 shadow-sm rounded-[32px] bg-card relative"
+                    className="folk-card overflow-hidden border-2 border-success/30 bg-success/5/30 shadow-sm rounded-[32px] bg-card relative"
                   >
                     <div className="folk-card overflow-hidden border-2 border-border bg-card rounded-[32px] flex flex-col sm:flex-row h-full">
                       <div className="w-full sm:w-44 flex-shrink-0 bg-muted/40 flex items-center justify-center relative p-4">
@@ -125,7 +125,7 @@ export default function FoundationFoxStorePage() {
                           size={10}
                         />
                         <div className="absolute top-2 right-2">
-                          <Badge variant="outline" className="bg-green-100 border-green-300 text-green-700 text-[8px] uppercase font-black px-1.5 h-4">
+                          <Badge variant="outline" className="bg-success/20 border-success/50 text-success text-[8px] uppercase font-black px-1.5 h-4">
                             For Sale
                           </Badge>
                         </div>
@@ -162,7 +162,7 @@ export default function FoundationFoxStorePage() {
                           <Button
                             onClick={() => handlePurchase(fox.id)}
                             disabled={gold < 1000}
-                            className="bg-green-600 hover:bg-green-700 text-white rounded-xl font-black uppercase tracking-widest text-xs px-4 h-8"
+                            className="bg-success hover:bg-green-700 text-white rounded-xl font-black uppercase tracking-widest text-xs px-4 h-8"
                             size="sm"
                           >
                             Adopt

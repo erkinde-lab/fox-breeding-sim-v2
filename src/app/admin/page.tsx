@@ -477,7 +477,7 @@ export default function AdminPanel() {
               </CardContent>
             </Card>
 
-            <Card className="folk-card border-purple-100 bg-purple-50/10">
+            <Card className="folk-card border-info/30 bg-info/5">
               <CardHeader className="pb-2">
                 <CardTitle className="text-2xl font-black italic flex items-center gap-3">
                   <Package className="text-purple-600" size={24} /> Site-Wide
@@ -507,15 +507,72 @@ export default function AdminPanel() {
                   ))}
                 </div>
                 <div className="space-y-4 pt-2">
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={parseInt(bannerYPosition)}
-                    onChange={(e) => setBannerYPosition(`${e.target.value}%`)}
-                    className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer slider"
-                  />
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-info">
+                        Vertical Position
+                      </label>
+                      <span className="text-xs text-muted-foreground">{bannerYPosition}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={parseInt(bannerYPosition)}
+                      onChange={(e) => {
+                        const newPos = `${e.target.value}%`;
+                        console.log(`Banner Y position changing from ${bannerYPosition} to ${newPos}`);
+                        setBannerYPosition(newPos);
+                      }}
+                      className="w-full h-2 bg-info/20 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                  </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card className="folk-card border-info/30 bg-gems/5/10">
+
+              <CardHeader className="pb-2">
+
+                <CardTitle className="text-2xl font-black italic flex items-center gap-3">
+
+                  <Database className="text-info" size={24} /> System Health
+
+                </CardTitle>
+
+                <p className="text-xs text-muted-foreground font-medium">Monitor and manage the global simulation state.</p>
+
+              </CardHeader>
+
+              <CardContent className="space-y-4 pt-4">
+
+                <div className="space-y-2">
+
+                  <div className="flex justify-between items-center p-4 bg-card border border-border rounded-2xl">
+
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Store Version</span>
+
+                    <Badge variant="info" className="border-none font-black px-3">v7.0.0</Badge>
+
+                  </div>
+
+                  <div className="flex justify-between items-center p-4 bg-card border border-border rounded-2xl">
+
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Genetic API</span>
+
+                    <Badge className="bg-foreground text-background border-none font-black px-3">v2.4-STABLE</Badge>
+
+                  </div>
+
+                </div>
+
+                <Button variant="outline" className="w-full border-2 border-gems/50 text-gems font-black uppercase tracking-widest h-14 rounded-2xl hover:bg-gems/5">
+
+                  Refresh State Persistence
+
+                </Button>
+
               </CardContent>
             </Card>
           </div>

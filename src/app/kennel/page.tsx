@@ -392,7 +392,7 @@ function FoxCard({ fox, season }: { fox: Fox; season: string }) {
           <div className="absolute bottom-4 left-4">
             <Badge
               variant="outline"
-              className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === "Dog" ? "text-blue-500" : "text-rose-500"}`}
+              className={`font-black text-[9px] uppercase tracking-widest bg-background/80 backdrop-blur-sm border-border/50 ${fox.gender === "Dog" ? "text-info" : "text-rose-500"}`}
             >
               {fox.gender === "Dog" ? "Dog" : "Vixen"}
             </Badge>

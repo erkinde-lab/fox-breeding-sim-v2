@@ -32,7 +32,7 @@ const SPECIALTY_ITEMS = [
     description: "Reveals the full genotype of a fox.",
     price: 500,
     currency: "gold" as const,
-    icon: <Microscope className="w-8 h-8 text-blue-500" />,
+    icon: <Microscope className="w-8 h-8 text-info" />,
   },
   {
     id: "medicine",
@@ -40,7 +40,7 @@ const SPECIALTY_ITEMS = [
     description: "Helps manage health issues and complications.",
     price: 200,
     currency: "gold" as const,
-    icon: <Pill className="w-8 h-8 text-red-500" />,
+    icon: <Pill className="w-8 h-8 text-destructive" />,
   },
   {
     id: "calculator-access",
@@ -213,7 +213,7 @@ export default function SuppliesPage() {
                       Owned: {inventory[item.id] || 0}
                     </span>
                     <span className="font-black text-foreground flex items-center gap-1">
-                      <Coins size={14} className="text-yellow-600" />{" "}
+                      <Coins size={14} className="text-gold" />{" "}
                       {item.price}
                     </span>
                   </div>
@@ -310,7 +310,7 @@ export default function SuppliesPage() {
                     <span className="truncate">
                       Held: {inventory[feed.id] || 0}
                     </span>
-                    <span className="text-yellow-600 flex items-center gap-0.5 shrink-0">
+                    <span className="text-gold flex items-center gap-0.5 shrink-0">
                       <Coins size={12} /> 150
                     </span>
                   </div>
@@ -398,7 +398,7 @@ function KibbleCard({
             <span className="text-[10px] font-black text-muted-foreground uppercase block tracking-widest">
               Price
             </span>
-            <span className="text-xl font-black text-yellow-600 flex items-center gap-1 justify-end">
+            <span className="text-xl font-black text-gold flex items-center gap-1 justify-end">
               <Coins size={18} /> {price}
             </span>
           </div>

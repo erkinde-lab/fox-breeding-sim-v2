@@ -14,8 +14,8 @@ const GEM_PACKS = [
         amount: 100,
         price: '$4.99',
         bonus: null,
-        icon: <Diamond className="text-cyan-400" size={32} />,
-        color: 'bg-cyan-500/10'
+        icon: <Diamond className="text-gems" size={32} />,
+        color: 'bg-gems/50/10'
     },
     {
         id: 'pack-2',
@@ -24,7 +24,7 @@ const GEM_PACKS = [
         price: '$9.99',
         bonus: '+10% Bonus Included',
         icon: <Zap className="text-yellow-400" size={32} />,
-        color: 'bg-yellow-500/10'
+        color: 'bg-gold/50/10'
     },
     {
         id: 'pack-3',

@@ -169,14 +169,14 @@ export default function CustomFoxPage() {
                                                         (currentGenotype[key]?.slice().sort().join('') === [a1, a2].slice().sort().join(''))
                                                             ? "bg-primary border-primary text-primary-foreground shadow-md scale-105"
                                                             : locus.lethal?.([a1, a2])
-                                                            ? "bg-red-50 border-red-200 text-red-400 cursor-not-allowed opacity-60"
+                                                            ? "bg-destructive/5 border-destructive/30 text-red-400 cursor-not-allowed opacity-60"
                                                             : "bg-card border-border hover:border-primary/40 text-muted-foreground cursor-pointer"
                                                     )}
                                                 >
                                                     <span className="relative z-10">{formatAlleles(a1, a2)}</span>
                                                     {locus.lethal?.([a1, a2]) && (
                                                         <div className="absolute top-0 right-0 p-1">
-                                                            <div className="w-2 h-2 bg-red-500 rounded-full" />
+                                                            <div className="w-2 h-2 bg-destructive/50 rounded-full" />
                                                         </div>
                                                     )}
                                                 </button>
@@ -377,7 +377,7 @@ export default function CustomFoxPage() {
                         </div>
                         <div className="flex items-center gap-4 w-full md:w-auto">
                             {showSuccess && (
-                                <span className="text-green-600 font-bold flex items-center gap-2 animate-bounce">
+                                <span className="text-success font-bold flex items-center gap-2 animate-bounce">
                                     <Check size={24} /> Created!
                                 </span>
                             )}

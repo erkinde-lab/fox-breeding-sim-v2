@@ -39,14 +39,14 @@ const steps = [
     title: "Your First Foxes",
     content:
       "Start your breeding program at the Adoption Kennel. Here you can find 'Foundational' foxes with known pedigrees to get you started.",
-    icon: <Heart className="text-red-500" size={24} />,
+    icon: <Heart className="text-destructive" size={24} />,
     path: "/shop/adoption",
   },
   {
     title: "The Custom Designer",
     content:
       "Want a specific look or genetic trait? Use your Gems here to design a fox from scratch with a precise genetic blueprint.",
-    icon: <Diamond className="text-cyan-500" size={24} />,
+    icon: <Diamond className="text-gems" size={24} />,
     path: "/shop/custom",
   },
   {
@@ -88,7 +88,7 @@ const steps = [
     title: "Help & Resources",
     content:
       "Genetics and showing can be complex. If you have questions, our Help Center and FAQ contain detailed guides on everything from loci to show classes.",
-    icon: <HelpCircle className="text-blue-500" size={24} />,
+    icon: <HelpCircle className="text-info" size={24} />,
     path: "/help",
   },
 ];
@@ -146,7 +146,7 @@ export function TutorialTour() {
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-lg"
       >
-        <div className="bg-card border-2 border-primary/20 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+        <div className="bg-card border-2 border-primary/20 rounded-[2.5rem] shadow-popover overflow-hidden">
           <div className="bg-primary/5 px-8 py-5 flex items-center justify-between border-b border-primary/10">
             <div className="flex items-center gap-4">
               <div className="p-2.5 bg-background rounded-2xl border border-primary/20 shadow-inner">
@@ -210,7 +210,7 @@ export function TutorialTour() {
               <Button
                 size="sm"
                 onClick={handleNext}
-                className="rounded-2xl font-black uppercase tracking-widest px-8 h-10 gap-2 shadow-lg shadow-primary/20"
+                className="rounded-2xl font-black uppercase tracking-widest px-8 h-10 gap-2 shadow-btn-primary"
               >
                 {tutorialStep === steps.length - 1 ? "Finish" : "Next"}{" "}
                 <ChevronRight size={16} />
