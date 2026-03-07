@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { User, Trophy, Star, Calendar, Search, AlertTriangle } from 'lucide-react';
+import { User, Trophy, Star, Calendar, Search, AlertTriangle, Flag, Shield, Crown, MoreVertical } from 'lucide-react';
 
 export default function MembersPage() {
-  const { members } = useGameStore();
+  const { members, addReport, currentMemberId } = useGameStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredMembers = (members || []).filter(member => 
@@ -42,7 +43,11 @@ export default function MembersPage() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
                   <CardTitle className="text-lg">{member.name}</CardTitle>
+                  {member.role === 'administrator' && <Crown size={14} className="text-gold" />}
+                  {member.role === 'moderator' && <Shield size={14} className="text-info" />}
+                </div>
                   <Badge variant="outline" className="text-[10px] uppercase">Lvl {member.level}</Badge>
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
@@ -57,6 +62,24 @@ export default function MembersPage() {
                   <span className="font-bold">{member.points.toLocaleString()} pts</span>
                 </div>
                 <div className="flex gap-2 items-center">
+                  {member.id !== currentMemberId && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => addReport({
+                        reporterId: currentMemberId,
+                        reporterName: members.find(m => m.id === currentMemberId)?.name || "Player",
+                        targetId: member.id,
+                        targetType: "member",
+                        reason: "Reported from Directory",
+                        content: `User: ${member.name}`
+                      })}
+                      title="Report Member"
+                    >
+                      <Flag size={14} />
+                    </Button>
+                  )}
                   {member.warnings.length > 0 && (
                     <div className="text-amber-500 flex items-center gap-1" title={`${member.warnings.length} Warnings`}>
                       <AlertTriangle size={14} />

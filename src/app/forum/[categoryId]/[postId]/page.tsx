@@ -6,12 +6,16 @@ import { useParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, User, Clock, Send, Smile, Plus, MessageSquare } from 'lucide-react';
+import { ArrowLeft, User, Clock, Send, Smile, Plus, MessageSquare, Lock, Trash2, Flag } from 'lucide-react';
 
 export default function TopicPage() {
     const { categoryId, postId } = useParams();
     const router = useRouter();
-    const { forumCategories, forumPosts, addForumReply, isAdmin, togglePinPost } = useGameStore();
+    const { forumCategories, forumPosts, addForumReply, isAdmin, togglePinPost, lockForumPost, deleteForumPost, deleteForumReply, addReport, members, currentMemberId } = useGameStore();
+
+
+    const currentPlayer = members.find(m => m.id === currentMemberId);
+    const isStaff = isAdmin || currentPlayer?.role === "administrator" || currentPlayer?.role === "moderator";
 
     const category = forumCategories.find(c => c.id === categoryId);
     const post = (forumPosts || []).find(p => p.id === postId);
@@ -47,7 +51,7 @@ export default function TopicPage() {
                     </div>
                     <h2 className="text-3xl font-bold text-foreground tracking-tight">{post.title}</h2>
                 </div>
-                {isAdmin && (
+                {isStaff && (
                     <Button
                         variant="outline"
                         size="sm"
@@ -67,12 +71,32 @@ export default function TopicPage() {
                                 <User size={20} className="text-primary" />
                             </div>
                             <div>
+                                <div className="flex items-center gap-2">
+                            {isStaff && (
+                                <>
+                                    <Button variant="ghost" size="icon" onClick={() => lockForumPost(post.id)} title={post.isLocked ? "Unlock" : "Lock"}>
+                                        <Lock size={16} className={post.isLocked ? "text-primary" : "text-muted-foreground"} />
+                                    </Button>
+                                    <Button variant="ghost" size="icon" onClick={() => { deleteForumPost(post.id); router.push(`/forum/${categoryId}`); }} className="text-destructive">
+                                        <Trash2 size={16} />
+                                    </Button>
+                                </>
+                            )}
+                            <Button variant="ghost" size="icon" onClick={() => addReport({ reporterId: currentMemberId, reporterName: currentPlayer?.name || "Player", targetId: post.id, targetType: "post", reason: "Manual Report", content: post.content })} title="Report Post">
+                                <Flag size={16} className="text-muted-foreground hover:text-destructive" />
+                            </Button>
+                        </div>
                                 <div className="font-black text-foreground">{post.author}</div>
                                 <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-1">
                                     <Clock size={10} /> {new Date(post.createdAt).toLocaleString()}
                                 </div>
                             </div>
                         </div>
+                        {post.isLocked && (
+                            <Badge variant="outline" className="text-destructive border-destructive/30 h-6 px-2 gap-1.5 uppercase text-[10px] tracking-widest bg-destructive/5">
+                                <Lock size={12} /> Locked
+                            </Badge>
+                        )}
                         {post.isPinned && (
                             <Badge variant="default" className="bg-primary hover:bg-primary/90 h-6 px-2 gap-1.5 uppercase text-[10px] tracking-widest">
                                 <Plus className="rotate-45" size={14} /> Pinned
@@ -103,6 +127,16 @@ export default function TopicPage() {
                                         </div>
                                         <span className="text-xs font-black text-foreground uppercase tracking-wide">{reply.author}</span>
                                     </div>
+                                    <div className="flex items-center gap-2">
+                                        {isStaff && (
+                                            <Button variant="ghost" size="icon" onClick={() => deleteForumReply(post.id, reply.id)} className="h-8 w-8 text-destructive">
+                                                <Trash2 size={14} />
+                                            </Button>
+                                        )}
+                                        <Button variant="ghost" size="icon" onClick={() => addReport({ reporterId: currentMemberId, reporterName: currentPlayer?.name || "Player", targetId: reply.id, targetType: "reply", reason: "Manual Report", content: reply.content })} className="h-8 w-8" title="Report Reply">
+                                            <Flag size={14} className="text-muted-foreground hover:text-destructive" />
+                                        </Button>
+                                    </div>
                                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{new Date(reply.createdAt).toLocaleString()}</span>
                                 </div>
                                 <p className="text-foreground/80 whitespace-pre-wrap leading-relaxed">{reply.content}</p>
@@ -127,10 +161,11 @@ export default function TopicPage() {
                                     <div className="flex-1"></div>
                                 </div>
                                 <textarea
+                                    disabled={post.isLocked && !isStaff}
                                     value={replyContent}
                                     onChange={(e) => setReplyContent(e.target.value)}
                                     className="w-full p-4 border border-border rounded-xl bg-card text-foreground h-32 focus:ring-2 focus:ring-primary focus:outline-none transition-all"
-                                    placeholder="What are your thoughts?"
+                                    placeholder={post.isLocked ? "This topic is locked." : "What are your thoughts?"}
                                     required
                                 />
                             </div>
@@ -148,7 +183,7 @@ export default function TopicPage() {
                                         </button>
                                     ))}
                                 </div>
-                                <Button type="submit" className="bg-primary hover:bg-primary/90 h-12 px-8 font-black uppercase tracking-widest shadow-lg shadow-primary/10">
+                                <Button type="submit" disabled={post.isLocked && !isStaff} className="bg-primary hover:bg-primary/90 h-12 px-8 font-black uppercase tracking-widest shadow-lg shadow-primary/10">
                                     <Send size={18} className="mr-2" /> Post Reply
                                 </Button>
                             </div>

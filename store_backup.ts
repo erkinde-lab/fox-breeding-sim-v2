@@ -978,7 +978,6 @@ export const useGameStore = create<GameState>()(
           bannerYPosition: "50%",
           isDarkMode: false,
           currentMemberId: "player-1",
-      reports: [],
           reports: [],
 
       advanceTime: () => {
@@ -1079,83 +1078,29 @@ export const useGameStore = create<GameState>()(
 
       },
 
-      setCurrentMemberId: (id) => set({ currentMemberId: id }),
-      updateMemberRole: (memberId, role) =>
+      warnMember: (memberId, reason) =>
+
         set((state) => ({
+
           members: state.members.map((m) =>
-            m.id === memberId ? { ...m, role } : m
+
+            m.id === memberId ? { ...m, warnings: [...m.warnings, reason] } : m,
+
           ),
-        })),
-      addReport: (report) =>
-        set((state) => ({
-          reports: [
-            ...state.reports,
-            {
-              ...report,
-              id: Math.random().toString(36).substr(2, 9),
-              status: "pending",
-              createdAt: new Date().toISOString(),
-            },
-          ],
-        })),
-      resolveReport: (reportId, action) =>
-        set((state) => ({
-          reports: state.reports.map((r) =>
-            r.id === reportId ? { ...r, status: action } : r
-          ),
-        })),
-      lockForumPost: (postId) =>
-        set((state) => ({
-          forumPosts: (state.forumPosts || []).map((p) =>
-            p.id === postId ? { ...p, isLocked: true } : p
-          ),
-        })),
-      addAdminLog: (action, details) =>
-        set((state) => ({
-          adminLogs: [
-            {
-              id: Math.random().toString(36).substr(2, 9),
-              action,
-              details,
-              timestamp: new Date().toISOString(),
-            },
-            ...state.adminLogs,
-          ],
-        })),
-            warnMember: (memberId, reason) => {
-        set((state) => {
-          const member = state.members.find((m) => m.id === memberId);
-          if (!member) return state;
 
-          const newWarnings = [...member.warnings, reason];
-          const shouldBan = newWarnings.length >= 3;
+        })),
 
-          return {
-            members: state.members.map((m) =>
-              m.id === memberId
-                ? { ...m, warnings: newWarnings, isBanned: shouldBan }
-                : m
-            ),
-          };
-        });
+      banMember: (memberId) =>
 
-        const member = get().members.find(m => m.id === memberId);
-        if (member?.isBanned) {
-           get().addAdminLog("Auto-Ban", `Member ${member.name} (${memberId}) banned after 3rd warning: ${reason}`);
-        } else {
-           get().addAdminLog("Warn Member", `Member ${member?.name} (${memberId}) warned: ${reason}`);
-        }
-      },
-
-            banMember: (memberId) => {
         set((state) => ({
+
           members: state.members.map((m) =>
-            m.id === memberId ? { ...m, isBanned: true } : m
+
+            m.id === memberId ? { ...m, isBanned: true } : m,
+
           ),
-        }));
-        const member = get().members.find(m => m.id === memberId);
-        get().addAdminLog("Manual Ban", `Member ${member?.name} (${memberId}) manually banned.`);
-      },
+
+        })),
 
       toggleColorblindMode: (mode) =>
 
@@ -1172,7 +1117,7 @@ export const useGameStore = create<GameState>()(
       resetGame: () => {
         // Generate initial NPC studs and foundation foxes as owned foxes
         const initialFoxes: Record<string, Fox> = {};
-        
+
         // Generate NPC studs
         const npcStuds = generateNPCStuds(1, "Spring");
         Object.values(npcStuds).forEach((stud) => {
@@ -1275,7 +1220,6 @@ export const useGameStore = create<GameState>()(
           bannerYPosition: "50%",
           isDarkMode: false,
           currentMemberId: "player-1",
-      reports: [],
           reports: [],
         }));
 
@@ -1437,7 +1381,6 @@ export const useGameStore = create<GameState>()(
           bannerYPosition: "50%",
           isDarkMode: false,
           currentMemberId: "player-1",
-      reports: [],
           reports: [],
         }));
 
@@ -1797,9 +1740,9 @@ export const useGameStore = create<GameState>()(
 
           });
 
-          return { 
+          return {
 
-            gems: state.gems - 100, 
+            gems: state.gems - 100,
 
             hiredGeneticist: true,
 
@@ -2022,4 +1965,3 @@ export const useGameStore = create<GameState>()(
   ),
 
 );
-

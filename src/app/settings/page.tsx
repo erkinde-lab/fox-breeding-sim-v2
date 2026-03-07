@@ -63,9 +63,11 @@ export default function SettingsPage() {
     toggleSimplifiedUI,
     setTextSpacing,
     toggleDarkMode,
+    updateMemberRole,
+    currentMemberId,
   } = useGameStore();
 
-  const player = members[0];
+  const player = members.find(m => m.id === currentMemberId) || members[0];
   const [activeTab, setActiveTab] = useState<"profile" | "accessibility">(
     "profile",
   );
@@ -115,6 +117,51 @@ export default function SettingsPage() {
       {activeTab === "profile" ? (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
+
+
+                    <Card className="folk-card border-gold/30">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg italic flex items-center gap-2">
+                <Shield className="text-gold" size={18} /> Identity Debug Switcher
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Debug Tool: Switch your current identity to test role-based permissions.
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { id: "player-1", label: "Angmar (Admin)", color: "gold" },
+                  { id: "player-2", label: "Shield (Mod)", color: "info" },
+                  { id: "player-3", label: "FoxFan (Player)", color: "success" },
+                ].map((m) => (
+                  <Button
+                    key={m.id}
+                    variant={currentMemberId === m.id ? "default" : "outline"}
+                    className={cn(
+                      "rounded-xl font-bold h-10 transition-all",
+                      currentMemberId === m.id && `bg-${m.color} hover:bg-${m.color}/90 border-${m.color} text-white`
+                    )}
+                    onClick={() => {
+                      setCurrentMemberId(m.id);
+                      addNotification(`Switched to ${m.label}`, "info");
+                    }}
+                  >
+                    {m.label.split(" (")[0]}
+                  </Button>
+                ))}
+              </div>
+              <div className="pt-2 flex items-center justify-between">
+                <Badge variant="outline" className="text-[10px] uppercase font-black">
+                  Current: {player?.name} ({player?.role})
+                </Badge>
+                <div className="flex gap-2">
+                   {player?.role === 'administrator' && <Badge className="bg-gold text-white">Admin Access</Badge>}
+                   {player?.role === 'moderator' && <Badge className="bg-info text-white">Mod Access</Badge>}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card className="folk-card bg-muted/30 border-dashed border-2">
             <CardContent className="p-8 text-center space-y-4">

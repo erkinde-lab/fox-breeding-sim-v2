@@ -61,7 +61,7 @@ export default function FoxProfilePage() {
     hiredGroomer,
     hiredTrainer,
     hiredVeterinarian,
-    hiredNutritionist,
+    hiredNutritionist, addReport, currentMemberId, members,
   } = useGameStore();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -401,6 +401,15 @@ export default function FoxProfilePage() {
                     <h1 className="text-3xl font-black italic text-foreground tracking-tight uppercase">
                       {fox.name}
                     </h1>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => addReport({ reporterId: currentMemberId, reporterName: "Current User", targetId: fox.id, targetType: "post", reason: "Manual Report", content: `Reported fox profile: ${fox.name} (${fox.id})` })}
+                      title="Report Fox"
+                    >
+                      <Flag size={14} />
+                    </Button>
                     {!isFoundational && !fox.hasBeenRenamed && (
                       <button
                         onClick={() => setIsEditing(true)}

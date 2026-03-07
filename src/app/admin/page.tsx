@@ -43,7 +43,7 @@ import {
 
   Trophy,
 
-  AlertTriangle
+  AlertTriangle, CheckCircle
 
 } from 'lucide-react';
 
@@ -145,6 +145,9 @@ export default function AdminPanel() {
     hiredGeneticist,
 
     hiredNutritionist,
+    reports,
+    currentMemberId,
+    resolveReport,
 
   } = useGameStore();
 
@@ -195,11 +198,27 @@ export default function AdminPanel() {
 
   // Allow access in development even if not admin
 
-  const hasAccess = isAdmin || process.env.NODE_ENV === 'development';
+
+  const currentMember = members.find(m => m.id === currentMemberId);
+  const userRole = currentMember?.role || 'player';
+  const isSuperAdmin = userRole === 'administrator' || isAdmin;
+  const isStaff = userRole === 'administrator' || userRole === 'moderator' || isAdmin;
+
+  if (!isStaff && process.env.NODE_ENV !== 'development') {
+    return (
+      <div className="py-20 text-center space-y-4">
+        <Shield size={48} className="mx-auto text-destructive" />
+        <h1 className="text-4xl font-black text-foreground">Access Denied</h1>
+        <p className="text-muted-foreground">You do not have permission to access the Command Center.</p>
+        <Button onClick={() => router.push('/')} variant="outline" className="rounded-xl font-black uppercase tracking-widest">Return Home</Button>
+      </div>
+    );
+  }
 
 
 
-  if (!hasAccess) {
+
+  if (false) { // Handled by isStaff check above
 
     return (
 
@@ -417,31 +436,112 @@ export default function AdminPanel() {
 
         <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
 
+
           <TabsList className="bg-card p-1.5 rounded-2xl border-2 border-border shadow-sm flex w-max sm:w-full">
-
-            <TabsTrigger value="site" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>
-
+            {isSuperAdmin && <TabsTrigger value="site" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>}
             <TabsTrigger value="news" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Megaphone size={14} /> News</TabsTrigger>
-
             <TabsTrigger value="members" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Users size={14} /> Members</TabsTrigger>
-
             <TabsTrigger value="forum" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><MessageSquare size={14} /> Forum</TabsTrigger>
-
-            <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
-
-            <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
-
-            <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
-
-            <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>
-
+            {isSuperAdmin && (
+              <>
+                <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
+                <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
+                <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
+              </>
+            )}
+            {isSuperAdmin && <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>}
+            <TabsTrigger value="reports" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><AlertTriangle, CheckCircle size={14} /> Reports</TabsTrigger>
           </TabsList>
+
 
         </div>
 
 
 
-        {/* Site Management */}
+
+        {/* Reports Management */}
+        <TabsContent value="reports" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-3xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>
+                Pending Reports ({reports.filter(r => r.status === 'pending').length})
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {reports.filter(r => r.status === 'pending').map((report) => {
+                const reporter = members.find(m => m.id === report.reporterId);
+                const target = report.targetType === 'member' ? members.find(m => m.id === report.targetId) : null;
+
+                return (
+                  <Card key={report.id} className="folk-card border-2 border-border shadow-sm overflow-hidden bg-card">
+                    <div className="p-6 flex flex-col md:flex-row justify-between gap-6">
+                      <div className="space-y-3 flex-1">
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline" className="bg-destructive/10 border-destructive/20 text-destructive text-[10px] uppercase tracking-widest font-black">
+                            {report.targetType} Report
+                          </Badge>
+                          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+                            ID: {report.id} • {new Date(report.createdAt).toLocaleString()}
+                          </span>
+                        </div>
+                        <h4 className="text-lg font-black text-foreground">
+                          {report.targetType === 'member' && `Reported User: ${target?.name || 'Unknown'}`}
+                          {report.targetType === 'post' && `Reported Post: ${report.targetId}`}
+                          {report.targetType === 'reply' && `Reported Reply: ${report.targetId}`}
+                        </h4>
+                        <div className="p-3 bg-muted/50 rounded-xl border border-border">
+                          <p className="text-sm font-bold text-foreground">Reason: <span className="font-medium text-muted-foreground">{report.reason}</span></p>
+                        </div>
+                        <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                          Reporter: <span className="text-primary">{reporter?.name || 'Anonymous'}</span>
+                        </p>
+                      </div>
+
+                      <div className="flex flex-row md:flex-col gap-2 justify-center">
+                        <Button
+                          onClick={() => {
+                            if (report.targetType === 'member' && target) {
+                              const reason = prompt("Enter warning reason:");
+                              if (reason) {
+                                warnMember(target.id, reason);
+                                resolveReport(report.id, 'resolved');
+                                addNotification(`Member ${target.name} warned and report resolved.`, "success");
+                              }
+                            } else {
+                              resolveReport(report.id, 'resolved');
+                              addNotification("Report marked as resolved.", "success");
+                            }
+                          }}
+                          className="bg-primary hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest gap-2"
+                        >
+                          <CheckCircle size={14} className="text-white" /> Resolve & Warn
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            resolveReport(report.id, 'dismissed');
+                            addNotification("Report dismissed.", "info");
+                          }}
+                          className="text-[10px] font-black uppercase tracking-widest gap-2"
+                        >
+                          <Trash2 size={14} /> Dismiss
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+              {reports.filter(r => r.status === 'pending').length === 0 && (
+                <div className="text-center py-20 bg-muted/30 border-2 border-dashed border-border rounded-[40px]">
+                  <Shield size={48} className="mx-auto text-muted-foreground/30 mb-4" />
+                  <p className="text-xl font-black italic text-muted-foreground/50">No pending reports. Everything is quiet...</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+{/* Site Management */}
 
         <TabsContent value="site" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -841,6 +941,7 @@ export default function AdminPanel() {
                       <th className="p-6 text-[10px] font-black uppercase text-muted-foreground tracking-widest">Member</th>
 
                       <th className="p-6 text-[10px] font-black uppercase text-muted-foreground tracking-widest">Status</th>
+                      <th className="p-6 text-[10px] font-black uppercase text-muted-foreground tracking-widest">IP History</th>
 
                       <th className="p-6 text-[10px] font-black uppercase text-muted-foreground tracking-widest text-right">Actions</th>
 
@@ -889,7 +990,11 @@ export default function AdminPanel() {
                           )}
 
                         </td>
-
+                        <td className="p-6">
+                          <span className="text-xs font-mono text-muted-foreground">
+                            {isSuperAdmin ? (member.ipHistory?.[0] || "N/A") : "[HIDDEN]"}
+                          </span>
+                        </td>
                         <td className="p-6 text-right space-x-2">
 
                           <Button
@@ -930,7 +1035,7 @@ export default function AdminPanel() {
 
                           </Button>
 
-                          <Button
+                          {isSuperAdmin && <Button
 
                             variant="destructive"
 
@@ -946,7 +1051,7 @@ export default function AdminPanel() {
 
                             Ban
 
-                          </Button>
+                          </Button>}
 
                         </td>
 
@@ -1297,7 +1402,7 @@ export default function AdminPanel() {
 
                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Active Reports</p>
 
-               <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">0</h2>
+               <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">{reports.filter(r => r.status === "pending").length}</h2>
 
                <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10 italic">System is Secure</p>
 
@@ -1347,7 +1452,7 @@ export default function AdminPanel() {
 
                         {log.action.includes('Spawn') ? <Plus className="text-moss-500" /> :
 
-                         log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle className="text-fire-600" /> :
+                         log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle, CheckCircle className="text-fire-600" /> :
 
                          <History className="text-info" />}
 
@@ -1406,7 +1511,7 @@ export default function AdminPanel() {
 
                   <div className="flex items-start gap-3">
 
-                    <AlertTriangle className="text-destructive-600 mt-0.5 flex-shrink-0" size={16} />
+                    <AlertTriangle, CheckCircle className="text-destructive-600 mt-0.5 flex-shrink-0" size={16} />
 
                     <div>
 
