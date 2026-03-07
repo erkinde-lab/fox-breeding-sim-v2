@@ -12,7 +12,9 @@ import { ArrowLeft, MessageSquare, Plus, User, Clock, Send, X, Smile } from 'luc
 export default function CategoryPage() {
   const { categoryId } = useParams();
   const router = useRouter();
-  const { forumCategories, forumPosts, addForumPost, togglePinPost, isAdmin } = useGameStore();
+  const { forumCategories, forumPosts, currentMemberId, members, addForumPost, togglePinPost, isAdmin } = useGameStore();
+  const currentPlayer = members.find(m => m.id === currentMemberId);
+  const isStaff = isAdmin || currentPlayer?.role === "administrator" || currentPlayer?.role === "moderator";
 
   const category = forumCategories.find(c => c.id === categoryId);
   const posts = (forumPosts || []).filter(p => p.categoryId === categoryId).sort((a, b) => {
@@ -168,7 +170,7 @@ export default function CategoryPage() {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                  {isAdmin && (
+                  {isStaff && (
                     <Button
                       variant="ghost"
                       size="sm"

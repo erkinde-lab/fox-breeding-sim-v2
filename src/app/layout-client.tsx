@@ -24,7 +24,7 @@ import {
   MessageSquare,
   User,
   Info,
-  Shield,
+  Shield, Crown,
   LifeBuoy,
   LogOut,
   FastForward,
@@ -73,7 +73,13 @@ export default function LayoutClient({
     bannerUrl,
     bannerXPosition,
     bannerYPosition,
+    members,
+    currentMemberId,
   } = useGameStore();
+  const currentPlayer = members.find((m) => m.id === currentMemberId);
+  const isStaff = isAdmin || currentPlayer?.role === "administrator" || currentPlayer?.role === "moderator";
+  const isActualAdmin = isAdmin || currentPlayer?.role === "administrator";
+
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isKennelOpen, setIsKennelOpen] = useState(false);
@@ -205,7 +211,7 @@ export default function LayoutClient({
             <Calendar size={12} className="opacity-70" /> Year {year},{" "}
             <span className="font-bold">{season}</span>
           </span>
-          {isAdmin && (
+          {isActualAdmin && (
             <button
               onClick={() => advanceTime()}
               className="hover:bg-foreground/10 px-3 py-1 rounded-full transition-all flex items-center gap-1.5 border border-foreground/20"
@@ -278,6 +284,8 @@ export default function LayoutClient({
         onMouseEnter={() =>
           console.log("Banner CSS applied:", {
             bannerYPosition,
+    members,
+    currentMemberId,
             cssPosition: `center ${bannerYPosition}`,
           })
         }
@@ -465,11 +473,15 @@ export default function LayoutClient({
                     <User size={20} />
                   </div>
                   <div className="hidden sm:block text-left">
-                    <p className="text-xs font-black uppercase tracking-wider leading-none">
-                      Kennel #123
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-xs font-black uppercase tracking-wider leading-none">
+                        {currentPlayer?.name || "Kennel #123"}
+                      </p>
+                      {currentPlayer?.role === "administrator" && <Crown size={12} className="text-gold" />}
+                      {currentPlayer?.role === "moderator" && <Shield size={12} className="text-info" />}
+                    </div>
                     <p className="text-[10px] text-muted-foreground font-bold mt-1 uppercase">
-                      Pro Member
+                      {currentPlayer?.role || "Player"} Member
                     </p>
                   </div>
                   <ChevronDown
@@ -491,7 +503,7 @@ export default function LayoutClient({
                         Member since Year 1
                       </p>
                     </div>
-                    {isAdmin && (
+                    {isStaff && (
                       <DropdownLink
                         href="/admin"
                         icon={<Shield size={16} />}
@@ -745,7 +757,7 @@ export default function LayoutClient({
             {/* Drawer Content */}
             <div className="flex-grow overflow-y-auto relative z-[90]">
               <div className="p-4 space-y-2">
-                {isAdmin && (
+                {isStaff && (
                   <MobileNavLink
                     href="/admin"
                     icon={<Settings size={18} />}
@@ -919,7 +931,7 @@ export default function LayoutClient({
                   <Calendar size={12} className="text-secondary" /> Year {year},{" "}
                   {season}
                 </span>
-                {isAdmin && (
+                {isActualAdmin && (
                   <button
                     onClick={() => advanceTime()}
                     className="px-3 py-1.5 bg-primary rounded-full transition text-primary-foreground font-black hover:bg-primary/80 shadow-btn-primary"

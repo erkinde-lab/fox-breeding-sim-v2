@@ -19,7 +19,9 @@ const ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 export default function ForumPage() {
-  const { forumCategories, forumPosts, isAdmin, addForumCategory } = useGameStore();
+  const { forumCategories, forumPosts, currentMemberId, members, isAdmin, addForumCategory } = useGameStore();
+  const currentPlayer = members.find(m => m.id === currentMemberId);
+  const isStaff = isAdmin || currentPlayer?.role === "administrator" || currentPlayer?.role === "moderator";
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCatName, setNewCatName] = useState('');
   const [newCatDesc, setNewCatDesc] = useState('');
@@ -39,7 +41,7 @@ export default function ForumPage() {
         <h2 className="text-4xl font-folksy text-foreground tracking-tight flex items-center gap-3">
           <MessageSquare className="text-primary" /> Community Forum
         </h2>
-        {isAdmin && (
+        {isStaff && (
           <Button onClick={() => setShowAddCategory(true)} variant="outline" size="sm" className="gap-2">
             <Plus size={16} /> New Category
           </Button>

@@ -8,7 +8,6 @@
 - Network:       http://192.168.0.2:3001
 
 ✓ Starting...
-⨯ Unable to acquire lock at  GET /help 200 in 3.1s (compile: 2.7s, render: 310ms)
-unning?
+⨯ Unable to acquire lock at /app/.next/dev/lock, is another instance of next dev running?
   Suggestion: If you intended to restart next dev, terminate the other process, and then try again.
 [?25h
