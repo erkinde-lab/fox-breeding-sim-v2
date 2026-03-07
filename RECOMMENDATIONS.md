@@ -50,3 +50,14 @@ Based on the project's evolution towards a multiplayer, automated simulation, th
 | **Tinybird** | Upkeep | Real-time game balance and breeding trends. |
 | **Linear** | Upkeep | Manages the biweekly release schedule. |
 | **Stitch** | Dev | Orchestrates background automation tasks. |
+
+## 🧠 Clarification on "Memory"
+
+There are four distinct types of "memory" your project will benefit from. It is important to note that **Linear and Tinybird do not use your browser's local storage (Website Memory).**
+
+| Memory Type | Recommended Tool | Role in Red Fox Sim |
+| :--- | :--- | :--- |
+| **AI Context Memory** | **Context7 (Upstash)** | **Solves "Jules errors."** Stores persistent rules (genetics, code patterns) that AI agents retrieve to stay consistent. |
+| **Project History** | **Linear** | **Schedule Consistency.** Remembers what tasks were finished and what's next for your biweekly releases. |
+| **Game Data Memory** | **Tinybird** | **Game Balance.** Tracks millions of breeding/show events to identify trends (e.g., "Silver fox birthrate is too high"). |
+| **Player State** | **Supabase** | **Multiplayer.** Replaces local storage (Website Memory) so players can log in from any device. |
