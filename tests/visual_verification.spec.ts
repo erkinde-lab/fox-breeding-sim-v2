@@ -8,7 +8,7 @@ test('Normal Light Mode', async ({ page }) => {
     localStorage.clear();
   }, STORAGE_KEY);
   await page.reload();
-  await page.screenshot({ path: '/home/jules/verification/normal_light.png' });
+  await page.screenshot({ path: 'verification/normal_light.png' });
 });
 
 test('High Contrast Light Mode', async ({ page }) => {
@@ -25,7 +25,7 @@ test('High Contrast Light Mode', async ({ page }) => {
   }, STORAGE_KEY);
   await page.reload();
   await page.waitForSelector('html.high-contrast', { timeout: 10000 });
-  await page.screenshot({ path: '/home/jules/verification/light_high_contrast_v3.png' });
+  await page.screenshot({ path: 'verification/light_high_contrast_v3.png' });
 });
 
 test('OpenDyslexic Test', async ({ page }) => {
@@ -41,12 +41,12 @@ test('OpenDyslexic Test', async ({ page }) => {
   }, STORAGE_KEY);
   await page.reload();
   await page.waitForSelector('html.use-opendyslexic', { timeout: 10000 });
-  await page.screenshot({ path: '/home/jules/verification/opendyslexic_v3.png' });
+  await page.screenshot({ path: 'verification/opendyslexic_v3.png' });
 });
 
 test('Shop Tabs order', async ({ page }) => {
   await page.goto('http://localhost:3000/shop/supplies');
-  await page.screenshot({ path: '/home/jules/verification/shop_tabs_v3.png' });
+  await page.screenshot({ path: 'verification/shop_tabs_v3.png' });
 });
 
 test('Tutorial Step 8 debug', async ({ page }) => {
@@ -66,7 +66,7 @@ test('Tutorial Step 8 debug', async ({ page }) => {
   await page.reload();
 
   // Take a full page screenshot to see what's happening
-  await page.screenshot({ path: '/home/jules/verification/tutorial_debug_full.png', fullPage: true });
+  await page.screenshot({ path: 'verification/tutorial_debug_full.png', fullPage: true });
 
   // Log all h3 text
   const h3s = await page.$$eval('h3', nodes => nodes.map(n => n.textContent));

@@ -1,3 +1,4 @@
+import { test, expect } from '@playwright/test';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPhenotype } from '../src/lib/genetics';
 import { getFoxVariety } from '../src/lib/showing';
@@ -36,3 +37,7 @@ assert(getFoxVariety(mockFox({ A: ['A', 'a'], B: ['B', 'b'] })) === 'Cross', 'Cr
 assert(getFoxVariety(mockFox({ A: ['A', 'A'], B: ['b', 'b'], G: ['g', 'g'] })) === 'Exotic', 'Burgundy Standard Silver (Exotic)');
 
 console.log('\nAll smoke tests passed!');
+
+test('Logic Smoke Test', async () => {
+ // Logic executed on import or below
+ });

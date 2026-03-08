@@ -1,3 +1,4 @@
+import { test, expect } from '@playwright/test';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fox, getInitialGenotype } from '../src/lib/genetics';
 import { runHierarchicalShow, Competitor } from '../src/lib/showing';
@@ -28,6 +29,8 @@ const mockFox = (id: string, gender: 'Dog' | 'Vixen', variety: string): Fox => (
   isAtStud: false,
   studFee: 0,
   lastFed: Date.now(),
+  ownerId: "player-1",
+  history: [],
 });
 
 const competitors: Competitor[] = [
@@ -37,7 +40,7 @@ const competitors: Competitor[] = [
   { fox: mockFox('4', 'Vixen', 'Gold'), variety: 'Gold', level: 'Open', gender: 'Vixen', ageGroup: 'Adult', currentScore: 0, currentBreakdown: {} as any },
 ];
 
-const report = runHierarchicalShow('Pro', competitors, 1, 'Spring');
+const report = runHierarchicalShow('Pro', competitors, 1, 'Spring', false, 'Judge', 'Show', 'Region');
 
 console.log('--- Show Report ---');
 console.log('Circuit:', report.circuit);
@@ -52,3 +55,7 @@ report.results.forEach(res => {
 // Basic Assertions
 if (report.results.length < 6) throw new Error('Expected at least 6 results (4 BOV/RBOV, 2 BOS/RBOS)');
 if (!report.bisFoxId) throw new Error('Expected a BIS winner');
+
+test('Show Hierarchy Test', async () => {
+ // Logic executed on import or below
+ });

@@ -1,3 +1,4 @@
+import { test, expect } from '@playwright/test';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPhenotype } from '../src/lib/genetics';
 
@@ -48,6 +49,7 @@ tests.forEach((t, i) => {
   }
 });
 
+test("Logic Regression", async () => {
 if (failed > 0) {
   process.exit(1);
 } else {
@@ -55,3 +57,5 @@ if (failed > 0) {
 }
 
 declare const process: { exit: (code: number) => void };
+
+});

@@ -10,8 +10,8 @@ Based on the project's evolution towards a multiplayer, automated simulation, th
 - **Use Case:** Redesigning the Kennel or Shop interfaces.
 
 ### **Context7 (Upstash)**
-- **Purpose:** Long-term memory for AI agents (like Jules).
-- **Why it fits:** Addresses the "Jules errors" pain point. By storing genetic rules, project constraints, and historical bug fixes in a persistent vector store, agents can maintain consistency across tasks without re-learning the genetics logic every time.
+- **Purpose:** Long-term memory for AI agents.
+- **Why it fits:** Addresses the "agent performance issues" pain point. By storing genetic rules, project constraints, and historical bug fixes in a persistent vector store, agents can maintain consistency across tasks without re-learning the genetics logic every time.
 - **Use Case:** Preventing regressions in complex allele interactions (e.g., White Markings lethal combinations).
 
 ### **Stitch (Google)**
