@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Fox, getInitialGenotype } from '../src/lib/genetics';
 import { runHierarchicalShow, Competitor } from '../src/lib/showing';
 

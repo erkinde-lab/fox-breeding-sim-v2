@@ -28,6 +28,7 @@ import {
   Activity as ActivityIcon,
   Coins,
   Diamond,
+  Flag,
 } from "lucide-react";
 import { FoxIllustration } from "@/components/FoxIllustration";
 import {

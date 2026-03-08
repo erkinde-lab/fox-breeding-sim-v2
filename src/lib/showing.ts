@@ -173,7 +173,7 @@ export function runHierarchicalShow(
   competitors: Competitor[],
   year: number,
   season: string,
-  showConfig: any,
+  showConfig: Record<string, Record<string, number>>,
   hiredGroomer: boolean,
   hiredTrainer: boolean,
   hiredVeterinarian: boolean,

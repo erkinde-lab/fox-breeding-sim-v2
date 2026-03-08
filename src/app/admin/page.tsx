@@ -450,7 +450,7 @@ export default function AdminPanel() {
               </>
             )}
             {isSuperAdmin && <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>}
-            <TabsTrigger value="reports" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><AlertTriangle, CheckCircle size={14} /> Reports</TabsTrigger>
+            <TabsTrigger value="reports" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><AlertTriangle size={14} /> Reports</TabsTrigger>
           </TabsList>
 
 
@@ -515,7 +515,7 @@ export default function AdminPanel() {
                           }}
                           className="bg-primary hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest gap-2"
                         >
-                          <CheckCircle size={14} className="text-white" /> Resolve & Warn
+                          <CheckCircle size={14} className="text-white" /> Resolve &amp; Warn
                         </Button>
                         <Button
                           variant="outline"
@@ -1109,7 +1109,7 @@ export default function AdminPanel() {
 
                       <div className="space-y-1">
 
-                        <h4 className="text-xl font-black text-foreground tracking-tight italic">"{post.title}"</h4>
+                        <h4 className="text-xl font-black text-foreground tracking-tight italic">&quot;{post.title}&quot;</h4>
 
                         <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">By <span className="text-primary">{post.author}</span> • {new Date(post.createdAt).toLocaleDateString()}</p>
 
@@ -1132,7 +1132,7 @@ export default function AdminPanel() {
 
                     <div className="p-4 bg-card border border-border rounded-2xl italic text-muted-foreground text-sm shadow-inner">
 
-                      "{post.content}"
+                      &quot;{post.content}&quot;
 
                     </div>
 
@@ -1450,9 +1450,9 @@ export default function AdminPanel() {
 
                       <div className="mt-1">
 
-                        {log.action.includes('Spawn') ? <Plus className="text-moss-500" /> :
+                        {log.action.includes("Spawn") ? <Plus className="text-moss-500" /> :
 
-                         log.action.includes('Ban') || log.action.includes('Warn') ? <AlertTriangle, CheckCircle className="text-fire-600" /> :
+                         log.action.includes("Ban") || log.action.includes("Warn") ? <AlertTriangle className="text-fire-600" /> :
 
                          <History className="text-info" />}
 
@@ -1511,7 +1511,7 @@ export default function AdminPanel() {
 
                   <div className="flex items-start gap-3">
 
-                    <AlertTriangle, CheckCircle className="text-destructive-600 mt-0.5 flex-shrink-0" size={16} />
+                    <AlertTriangle className="text-destructive-600 mt-0.5 flex-shrink-0" size={16} />
 
                     <div>
 

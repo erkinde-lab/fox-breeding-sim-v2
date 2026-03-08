@@ -1,153 +1,84 @@
 'use client';
 
-import React from 'react';
-import { Shield, Eye, Lock, Globe, UserCheck, Mail, Cookie } from 'lucide-react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import React from "react";
+import { Shield, Eye, Lock, Globe, UserCheck, Mail, Cookie } from "lucide-react";
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4 space-y-12">
-      <div className="text-center space-y-4">
-        <div className="inline-flex p-4 bg-moss-100 rounded-2xl text-moss-600 mb-2">
-          <Shield size={40} />
+    <div className="min-h-screen bg-stone-50 py-12 px-4 sm:px-6 lg:px-8 font-serif">
+      <div className="max-auto max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <Shield className="mx-auto h-16 w-16 text-moss-600 mb-4" />
+          <h1 className="text-4xl font-black text-earth-900 uppercase tracking-tighter">Privacy Policy</h1>
+          <p className="mt-2 text-earth-600 italic">How we protect your data in the kennel.</p>
         </div>
-        <h1 className="text-5xl font-black text-earth-900 tracking-tight">Privacy Policy</h1>
-        <p className="text-earth-500 font-medium italic">Last Updated: February 2025</p>
-      </div>
 
-      <div className="space-y-8">
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Eye className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">1. Information We Collect</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
-              <p>To provide the best breeding experience, we collect limited personal data:</p>
-              <ul className="space-y-2 list-disc pl-5">
-                <li><span className="font-bold">Account Data:</span> Email and username.</li>
-                <li><span className="font-bold">Transaction Data:</span> Payments via Stripe/PayPal (we do not store card numbers).</li>
-                <li><span className="font-bold">Usage Data:</span> We collect anonymous usage data (like page views and game actions) to improve your experience.</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
+        <div className="space-y-12">
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Lock className="h-6 w-6 text-fire-600" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">1. Our Commitment</h2>
+            </div>
+            <p className="text-earth-700 leading-relaxed">
+              At Fox Sim, we take your privacy seriously. This policy explains what information we collect, how we use it, and your rights regarding your data. By using Fox Sim, you agree to the practices described here.
+            </p>
+          </section>
 
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Cookie className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">2. Cookies & Analytics</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
-              <p>
-                We value your privacy and aim to be as transparent as possible. We use <span className="font-bold">Umami Analytics</span> to help us understand how players interact with the game.
-              </p>
-              <ul className="space-y-2 list-disc pl-5">
-                <li><span className="font-bold">No Cookies:</span> Umami does not use cookies and does not collect any personally identifiable information.</li>
-                <li><span className="font-bold">Privacy First:</span> All data is anonymized. We do not track you across other websites.</li>
-                <li><span className="font-bold">Compliance:</span> This setup is fully compliant with <span className="font-bold">GDPR</span>, <span className="font-bold">CCPA (CPRA)</span>, and other international privacy laws without requiring a cookie banner.</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Eye className="h-6 w-6 text-moss-600" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">2. Information We Collect</h2>
+            </div>
+            <ul className="space-y-4 text-earth-700 leading-relaxed list-disc pl-5">
+              <li><span className="font-bold">Account Data:</span> Email address, username, and password.</li>
+              <li><span className="font-bold">Gameplay Data:</span> Your kennel names, foxes, forum posts, and trade history.</li>
+              <li><span className="font-bold">Technical Data:</span> IP address, browser type, and device information for security and analytics.</li>
+            </ul>
+          </section>
 
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Lock className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">3. How We Use Data</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 space-y-2 text-earth-700">
-              <p>We use your information to:</p>
-              <ul className="space-y-1 list-disc pl-5">
-                <li>Manage your account and game state.</li>
-                <li>Process virtual currency purchases.</li>
-                <li>Analyze game balance and improve features.</li>
-                <li>Ensure a safe environment for all players.</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </section>
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Globe className="h-6 w-6 text-earth-600" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">3. How We Use Your Data</h2>
+            </div>
+            <p className="text-earth-700 leading-relaxed">
+              We use your data to provide the game service, maintain site security, and communicate important updates. We do <span className="font-bold uppercase underline">not</span> sell your personal data to third parties.
+            </p>
+          </section>
 
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Globe className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">4. Your Rights (GDPR & CCPA)</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 text-earth-700 leading-relaxed">
-              <p>
-                Regardless of your location, we aim to provide high standards of data privacy. You have the right to <span className="font-bold">access</span>, <span className="font-bold">correct</span>, or <span className="font-bold">delete</span> your personal data. To exercise these rights or request a data export, please contact us via the email below.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Cookie className="h-6 w-6 text-fire-500" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">4. Cookies &amp; Storage</h2>
+            </div>
+            <p className="text-earth-700 leading-relaxed">
+              We use &quot;local storage&quot; and cookies to keep you logged in and remember your game preferences (like dark mode or colorblind filters).
+            </p>
+          </section>
 
-        <section id="do-not-sell" className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Shield className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">5. CCPA: Do Not Sell My Info</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 text-earth-700 leading-relaxed">
-              <p>
-                Under the California Consumer Privacy Act (CCPA), California residents have the right to opt-out of the "sale" of their personal information.
-                <span className="font-bold">Red Fox Breeding Simulator does not sell your personal information</span> to third parties for money or other valuable consideration.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <UserCheck className="h-6 w-6 text-moss-500" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">5. Your Rights</h2>
+            </div>
+            <p className="text-earth-700 leading-relaxed">
+              You have the right to access, correct, or delete your personal data. To delete your account and all associated personal data, please contact the site administrators via the Help Center.
+            </p>
+          </section>
 
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Lock className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">6. Right to Erasure & Portability</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 space-y-4 text-earth-700 leading-relaxed">
-              <p>
-                You have the right to request that we <span className="font-bold uppercase tracking-wide">delete</span> your account and all associated data.
-                Additionally, you may request a machine-readable <span className="font-bold uppercase tracking-wide">export</span> of your data.
-                To initiate either process, please send an email to the support address below with the subject "Data Request".
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+          <section className="bg-white p-8 rounded-3xl border-4 border-earth-100 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <Mail className="h-6 w-6 text-earth-500" />
+              <h2 className="text-2xl font-bold text-earth-900 uppercase">6. Contact Us</h2>
+            </div>
+            <p className="text-earth-700 leading-relaxed">
+              If you have questions about this policy, please reach out to us at <span className="font-bold text-earth-900 underline">support@foxsim.com</span>.
+            </p>
+          </section>
+        </div>
 
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <UserCheck className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">7. Children's Privacy</h2>
-          </div>
-          <Card className="folk-card">
-            <CardContent className="pt-6 text-earth-700 leading-relaxed text-sm">
-              We do not knowingly collect data from children under <span className="font-bold">16 years of age</span>. If we discover an account belongs to a user under 16, it will be terminated and their data deleted in accordance with international laws.
-            </CardContent>
-          </Card>
-        </section>
-
-        <section className="space-y-4">
-          <div className="flex items-center gap-3 text-earth-900">
-            <Mail className="text-moss-600" size={24} />
-            <h2 className="text-2xl font-bold">8. Contact Information</h2>
-          </div>
-          <Card className="folk-card border-moss-100 bg-moss-50/30">
-            <CardContent className="pt-6 text-center">
-              <p className="text-earth-900 font-bold mb-1">[GAME_OWNER_ENTITY]</p>
-              <p className="text-moss-700 font-medium">[CONTACT_EMAIL]</p>
-            </CardContent>
-          </Card>
-        </section>
-
-        <div className="pt-8 text-center">
-          <Link href="/">
-            <Button variant="outline" className="border-earth-200 text-earth-600 hover:bg-earth-50 font-bold px-8">
-              Return to Dashboard
-            </Button>
-          </Link>
+        <div className="mt-12 text-center text-earth-400 text-sm italic">
+          Last Updated: March 2026
         </div>
       </div>
     </div>

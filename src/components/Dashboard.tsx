@@ -130,7 +130,7 @@ export function Dashboard() {
         <div className="flex items-center gap-3"><div className="p-2 bg-secondary/10 rounded-lg"><Award className="text-secondary" size={20} /></div><h3 className="text-2xl font-black italic text-foreground tracking-tight">Seasonal Challenge Awards</h3></div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {seasonalAwards.map((award, i) => (
-            <ChallengeAward key={i} title={award.title} description={award.description} year={award.year} season={award.season} icon={award.icon} variant={award.variant as any} />
+            <ChallengeAward key={i} title={award.title} description={award.description} year={award.year} season={award.season} icon={award.icon} variant={award.variant as "primary" | "secondary"} />
           ))}
         </div>
       </section>

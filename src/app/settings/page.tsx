@@ -65,6 +65,7 @@ export default function SettingsPage() {
     toggleDarkMode,
     updateMemberRole,
     currentMemberId,
+    setCurrentMemberId,
   } = useGameStore();
 
   const player = members.find(m => m.id === currentMemberId) || members[0];
@@ -316,7 +317,7 @@ export default function SettingsPage() {
                     {["small", "normal", "large", "xl"].map((size) => (
                       <button
                         key={size}
-                        onClick={() => setFontSize(size as any)}
+                        onClick={() => setFontSize(size as "small" | "normal" | "large" | "xl")}
                         className={cn(
                           "py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all",
                           fontSize === size
@@ -367,7 +368,7 @@ export default function SettingsPage() {
                     {["normal", "wide", "extra"].map((spacing) => (
                       <button
                         key={spacing}
-                        onClick={() => setTextSpacing(spacing as any)}
+                        onClick={() => setTextSpacing(spacing as "normal" | "wide" | "extra")}
                         className={cn(
                           "py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all",
                           textSpacing === spacing

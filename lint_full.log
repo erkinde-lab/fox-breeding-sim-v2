@@ -1,0 +1,284 @@
+
+> fox-sim@0.1.0 lint
+> eslint
+
+
+/app/src/app/admin/page.tsx
+    90:5    warning  'inventory' is assigned a value but never used                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+   102:5    warning  'adminAddItem' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   108:5    warning  'bannerXPosition' is assigned a value but never used                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   111:5    warning  'setBannerXPosition' is assigned a value but never used                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   131:5    warning  'adminRemoveItemFromInventory' is assigned a value but never used                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   607:23   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1112:98   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1112:111  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1135:23   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+  1135:38   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+
+/app/src/app/breeding/page.tsx
+   7:3  warning  'getPhenotype' is defined but never used  @typescript-eslint/no-unused-vars
+   8:3  warning  'breed' is defined but never used         @typescript-eslint/no-unused-vars
+   9:3  warning  'calculateCOI' is defined but never used  @typescript-eslint/no-unused-vars
+  10:3  warning  'LOCI' is defined but never used          @typescript-eslint/no-unused-vars
+
+/app/src/app/coming-soon/page.tsx
+  10:11  warning  Image elements must have an alt prop, either with meaningful text, or an empty string for decorative images  jsx-a11y/alt-text
+
+/app/src/app/forum/[categoryId]/[postId]/page.tsx
+  6:28  warning  'CardTitle' is defined but never used  @typescript-eslint/no-unused-vars
+  9:40  warning  'Smile' is defined but never used      @typescript-eslint/no-unused-vars
+
+/app/src/app/forum/[categoryId]/page.tsx
+  9:42  warning  'User' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/foundation-fox-store/page.tsx
+   2:10  warning  'cn' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   5:10  warning  'Card' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   5:16  warning  'CardHeader' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   5:28  warning  'CardTitle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+   5:39  warning  'CardContent' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  26:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/app/src/app/foundation-fox-store/page.tsx:26:7
+  24 |     if (prevFoundationCount > 0 && currentCount > prevFoundationCount) {
+  25 |       // Foundation foxes were repopulated (count increased), clear sold slots
+> 26 |       setSoldSlots(new Set());
+     |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |     }
+  28 |     setPrevFoundationCount(currentCount);
+  29 |   }, [foundationFoxes.length, prevFoundationCount]);  react-hooks/set-state-in-effect
+
+/app/src/app/fox/[id]/page.tsx
+  21:3   warning  'Activity' is defined but never used            @typescript-eslint/no-unused-vars
+  24:3   warning  'Info' is defined but never used                @typescript-eslint/no-unused-vars
+  56:5   warning  'gold' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  57:5   warning  'inventory' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  65:52  warning  'members' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+/app/src/app/kennel/page.tsx
+   35:56  warning  'year' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  238:10  warning  'NPCKennel' is defined but never used      @typescript-eslint/no-unused-vars
+
+/app/src/app/layout-client.tsx
+  39:3   warning  'Baby' is defined but never used                       @typescript-eslint/no-unused-vars
+  42:10  warning  'Button' is defined but never used                     @typescript-eslint/no-unused-vars
+  74:5   warning  'bannerXPosition' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  85:10  warning  'isKennelOpen' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  85:24  warning  'setIsKennelOpen' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  90:10  warning  'isSupportOpen' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  90:25  warning  'setIsSupportOpen' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/members/page.tsx
+  8:84  warning  'MoreVertical' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/npc-kennel/page.tsx
+  2:10  warning  'cn' is defined but never used           @typescript-eslint/no-unused-vars
+  5:10  warning  'Card' is defined but never used         @typescript-eslint/no-unused-vars
+  5:16  warning  'CardHeader' is defined but never used   @typescript-eslint/no-unused-vars
+  5:28  warning  'CardTitle' is defined but never used    @typescript-eslint/no-unused-vars
+  5:39  warning  'CardContent' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/privacy/page.tsx
+   97:121  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   97:126  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  114:112  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  114:125  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  123:59   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/app/src/app/quests/page.tsx
+  7:51  warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/settings/page.tsx
+   14:3   warning  'Bell' is defined but never used                       @typescript-eslint/no-unused-vars
+   15:3   warning  'Palette' is defined but never used                    @typescript-eslint/no-unused-vars
+   16:3   warning  'Camera' is defined but never used                     @typescript-eslint/no-unused-vars
+   18:3   warning  'ChevronRight' is defined but never used               @typescript-eslint/no-unused-vars
+   19:3   warning  'Monitor' is defined but never used                    @typescript-eslint/no-unused-vars
+   21:3   warning  'MousePointer2' is defined but never used              @typescript-eslint/no-unused-vars
+   27:7   warning  'AVATAR_COLORS' is assigned a value but never used     @typescript-eslint/no-unused-vars
+   66:5   warning  'updateMemberRole' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  320:60  error    Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+  371:66  error    Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+
+/app/src/app/shop/custom/page.tsx
+   5:10  warning  'Badge' is defined but never used                 @typescript-eslint/no-unused-vars
+  10:40  warning  'getValidEyeColors' is defined but never used     @typescript-eslint/no-unused-vars
+  18:12  warning  'eyeColor' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  18:22  warning  'setEyeColor' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/shop/gems/page.tsx
+   4:16  warning  'CardContent' is defined but never used    @typescript-eslint/no-unused-vars
+   4:29  warning  'CardHeader' is defined but never used     @typescript-eslint/no-unused-vars
+   4:41  warning  'CardTitle' is defined but never used      @typescript-eslint/no-unused-vars
+   4:52  warning  'CardFooter' is defined but never used     @typescript-eslint/no-unused-vars
+  51:13  warning  'gems' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/shop/marketplace/page.tsx
+  8:10  warning  'Badge' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/shop/supplies/page.tsx
+   2:10  warning  'cn' is defined but never used        @typescript-eslint/no-unused-vars
+  25:3   warning  'Utensils' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/src/app/shows/page.tsx
+  173:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  389:76  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  417:63  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/app/stud-barn/page.tsx
+   9:50  warning  'AlertCircle' is defined but never used  @typescript-eslint/no-unused-vars
+  11:37  warning  'LOCI' is defined but never used         @typescript-eslint/no-unused-vars
+
+/app/src/app/tos/page.tsx
+   44:249  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+   44:266  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  110:206  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  110:214  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/app/src/components/Dashboard.tsx
+  133:173  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/components/FoxIllustration.tsx
+   4:10  warning  'PawPrint' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  49:7   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/app/src/lib/genetics.ts
+  234:9   error    'eyePoolName' is never reassigned. Use 'const' instead  prefer-const
+  469:32  error    A `require()` style import is forbidden                 @typescript-eslint/no-require-imports
+  824:9   warning  'W' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  825:9   warning  'L' is assigned a value but never used                  @typescript-eslint/no-unused-vars
+  832:7   error    'eyePoolName' is never reassigned. Use 'const' instead  prefer-const
+  859:9   warning  'whiteOptions' is assigned a value but never used       @typescript-eslint/no-unused-vars
+
+/app/src/lib/showing.ts
+  176:15  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/src/lib/store.ts
+   15:3   warning  'createFoundationFoxCollection' is defined but never used  @typescript-eslint/no-unused-vars
+   17:3   warning  'calculateSilverIntensity' is defined but never used       @typescript-eslint/no-unused-vars
+   19:3   warning  'calculateCOI' is defined but never used                   @typescript-eslint/no-unused-vars
+   21:3   warning  'generateStats' is defined but never used                  @typescript-eslint/no-unused-vars
+   23:3   warning  'getInitialGenotype' is defined but never used             @typescript-eslint/no-unused-vars
+   25:3   warning  'getPhenotype' is defined but never used                   @typescript-eslint/no-unused-vars
+   27:3   warning  'LOCI' is defined but never used                           @typescript-eslint/no-unused-vars
+   35:3   warning  'breed' is defined but never used                          @typescript-eslint/no-unused-vars
+   43:3   warning  'ShowResult' is defined but never used                     @typescript-eslint/no-unused-vars
+   44:3   warning  'ScoreBreakdown' is defined but never used                 @typescript-eslint/no-unused-vars
+   45:3   warning  'Competitor' is defined but never used                     @typescript-eslint/no-unused-vars
+   46:3   warning  'runHierarchicalShow' is defined but never used            @typescript-eslint/no-unused-vars
+   47:3   warning  'isFoxEligibleForShow' is defined but never used           @typescript-eslint/no-unused-vars
+   52:7   warning  'generateNPCStuds' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  799:13  warning  'get' is defined but never used                            @typescript-eslint/no-unused-vars
+  872:20  warning  '_dogId' is defined but never used                         @typescript-eslint/no-unused-vars
+  872:28  warning  '_vixenId' is defined but never used                       @typescript-eslint/no-unused-vars
+  882:42  warning  'quantity' is assigned a value but never used              @typescript-eslint/no-unused-vars
+  883:26  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  884:34  warning  'genotype' is defined but never used                       @typescript-eslint/no-unused-vars
+  884:44  warning  'gender' is defined but never used                         @typescript-eslint/no-unused-vars
+  884:52  warning  'name' is defined but never used                           @typescript-eslint/no-unused-vars
+  884:58  warning  'eyeColor' is defined but never used                       @typescript-eslint/no-unused-vars
+  885:19  warning  'itemId' is defined but never used                         @typescript-eslint/no-unused-vars
+  885:27  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  886:19  warning  'id' is defined but never used                             @typescript-eslint/no-unused-vars
+  886:23  warning  'newName' is defined but never used                        @typescript-eslint/no-unused-vars
+  888:23  warning  'id' is defined but never used                             @typescript-eslint/no-unused-vars
+  905:24  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  905:31  warning  'showId' is defined but never used                         @typescript-eslint/no-unused-vars
+  906:17  warning  'show' is defined but never used                           @typescript-eslint/no-unused-vars
+  907:20  warning  'showId' is defined but never used                         @typescript-eslint/no-unused-vars
+  908:20  warning  'showId' is defined but never used                         @typescript-eslint/no-unused-vars
+  908:28  warning  'updates' is defined but never used                        @typescript-eslint/no-unused-vars
+  915:26  warning  'gold' is defined but never used                           @typescript-eslint/no-unused-vars
+  915:32  warning  'gems' is defined but never used                           @typescript-eslint/no-unused-vars
+  918:26  warning  '_memberId' is defined but never used                      @typescript-eslint/no-unused-vars
+  918:37  warning  '_role' is defined but never used                          @typescript-eslint/no-unused-vars
+  919:19  warning  'report' is defined but never used                         @typescript-eslint/no-unused-vars
+  920:23  warning  'reportId' is defined but never used                       @typescript-eslint/no-unused-vars
+  920:33  warning  'action' is defined but never used                         @typescript-eslint/no-unused-vars
+  921:23  warning  'postId' is defined but never used                         @typescript-eslint/no-unused-vars
+  922:22  warning  'itemId' is defined but never used                         @typescript-eslint/no-unused-vars
+  922:30  warning  'count' is defined but never used                          @typescript-eslint/no-unused-vars
+  923:23  warning  'name' is defined but never used                           @typescript-eslint/no-unused-vars
+  923:29  warning  'gender' is defined but never used                         @typescript-eslint/no-unused-vars
+  923:37  warning  'genotype' is defined but never used                       @typescript-eslint/no-unused-vars
+  924:29  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  924:36  warning  'stats' is defined but never used                          @typescript-eslint/no-unused-vars
+  925:21  warning  'action' is defined but never used                         @typescript-eslint/no-unused-vars
+  925:29  warning  'details' is defined but never used                        @typescript-eslint/no-unused-vars
+  926:20  warning  '_memberId' is defined but never used                      @typescript-eslint/no-unused-vars
+  926:31  warning  '_reason' is defined but never used                        @typescript-eslint/no-unused-vars
+  927:19  warning  'memberId' is defined but never used                       @typescript-eslint/no-unused-vars
+  928:26  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  928:33  warning  'fee' is defined but never used                            @typescript-eslint/no-unused-vars
+  934:29  warning  '_foxId' is defined but never used                         @typescript-eslint/no-unused-vars
+  934:37  warning  '_feedId' is defined but never used                        @typescript-eslint/no-unused-vars
+  936:18  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  937:18  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  940:26  warning  'name' is defined but never used                           @typescript-eslint/no-unused-vars
+  940:32  warning  'description' is defined but never used                    @typescript-eslint/no-unused-vars
+  940:45  warning  'icon' is defined but never used                           @typescript-eslint/no-unused-vars
+  941:22  warning  'categoryId' is defined but never used                     @typescript-eslint/no-unused-vars
+  941:34  warning  'author' is defined but never used                         @typescript-eslint/no-unused-vars
+  941:42  warning  'title' is defined but never used                          @typescript-eslint/no-unused-vars
+  941:49  warning  'content' is defined but never used                        @typescript-eslint/no-unused-vars
+  942:23  warning  'postId' is defined but never used                         @typescript-eslint/no-unused-vars
+  942:31  warning  'author' is defined but never used                         @typescript-eslint/no-unused-vars
+  942:39  warning  'content' is defined but never used                        @typescript-eslint/no-unused-vars
+  943:25  warning  'postId' is defined but never used                         @typescript-eslint/no-unused-vars
+  944:26  warning  'postId' is defined but never used                         @typescript-eslint/no-unused-vars
+  944:34  warning  'replyId' is defined but never used                        @typescript-eslint/no-unused-vars
+  945:23  warning  'postId' is defined but never used                         @typescript-eslint/no-unused-vars
+  947:17  warning  'title' is defined but never used                          @typescript-eslint/no-unused-vars
+  947:24  warning  'content' is defined but never used                        @typescript-eslint/no-unused-vars
+  947:33  warning  'category' is defined but never used                       @typescript-eslint/no-unused-vars
+  948:20  warning  'id' is defined but never used                             @typescript-eslint/no-unused-vars
+  949:36  warning  '_memberId' is defined but never used                      @typescript-eslint/no-unused-vars
+  949:47  warning  '_itemId' is defined but never used                        @typescript-eslint/no-unused-vars
+  949:56  warning  '_count' is defined but never used                         @typescript-eslint/no-unused-vars
+  950:38  warning  'memberId' is defined but never used                       @typescript-eslint/no-unused-vars
+  950:48  warning  'itemId' is defined but never used                         @typescript-eslint/no-unused-vars
+  951:23  warning  'listingId' is defined but never used                      @typescript-eslint/no-unused-vars
+  952:23  warning  'listingId' is defined but never used                      @typescript-eslint/no-unused-vars
+  953:29  warning  'listingId' is defined but never used                      @typescript-eslint/no-unused-vars
+  953:40  warning  'updates' is defined but never used                        @typescript-eslint/no-unused-vars
+  954:26  warning  'type' is defined but never used                           @typescript-eslint/no-unused-vars
+  954:32  warning  'targetId' is defined but never used                       @typescript-eslint/no-unused-vars
+  954:42  warning  'price' is defined but never used                          @typescript-eslint/no-unused-vars
+  954:49  warning  'currency' is defined but never used                       @typescript-eslint/no-unused-vars
+  955:25  warning  'foxId' is defined but never used                          @typescript-eslint/no-unused-vars
+  955:32  warning  'price' is defined but never used                          @typescript-eslint/no-unused-vars
+  955:39  warning  'currency' is defined but never used                       @typescript-eslint/no-unused-vars
+
+/app/tests/logic_smoke_test_script.ts
+  13:56  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  18:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  23:62  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  27:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/tests/phenotype_test.ts
+  41:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  56:1   error  Unexpected var, use let or const instead  no-var
+  56:22  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/tests/show_hierarchy.test.ts
+  33:144  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  34:148  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  35:146  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  36:150  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/app/tests/theme_verification.spec.ts
+  1:16  warning  'expect' is defined but never used  @typescript-eslint/no-unused-vars
+
+/app/tests/visual_verification.spec.ts
+  1:16  warning  'expect' is defined but never used  @typescript-eslint/no-unused-vars
+  7:24  warning  'key' is defined but never used     @typescript-eslint/no-unused-vars
+
+✖ 200 problems (36 errors, 164 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
