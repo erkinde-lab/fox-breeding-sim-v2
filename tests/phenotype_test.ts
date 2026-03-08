@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getPhenotype } from '../src/lib/genetics';
 
 const tests = [
@@ -53,4 +54,4 @@ if (failed > 0) {
   console.log("All regression tests passed!");
 }
 
-declare var process: any;
+declare const process: { exit: (code: number) => void };

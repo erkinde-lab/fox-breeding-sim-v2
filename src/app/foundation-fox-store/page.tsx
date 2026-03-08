@@ -14,19 +14,22 @@ export default function FoundationFoxStorePage() {
   const [soldSlots, setSoldSlots] = useState<Set<string>>(new Set());
 
   // Track previous foundation fox count to detect repopulation
-  const [prevFoundationCount, setPrevFoundationCount] = useState(0);
+
 
   const foundationFoxes = Object.values(foxes).filter(fox => fox.isFoundation);
+
+  // Track previous foundation fox count to detect repopulation
+  const prevCountRef = React.useRef(foundationFoxes.length);
 
   // Clear soldSlots when foundation foxes are repopulated (count INCREASES)
   useEffect(() => {
     const currentCount = foundationFoxes.length;
-    if (prevFoundationCount > 0 && currentCount > prevFoundationCount) {
+    if (prevCountRef.current > 0 && currentCount > prevCountRef.current) {
       // Foundation foxes were repopulated (count increased), clear sold slots
-      setSoldSlots(new Set());
+      setTimeout(() => setSoldSlots(new Set()), 0);
     }
-    setPrevFoundationCount(currentCount);
-  }, [foundationFoxes.length, prevFoundationCount]);
+    prevCountRef.current = currentCount;
+  }, [foundationFoxes.length]);
 
   // Hourly repopulation scheduler
   useEffect(() => {

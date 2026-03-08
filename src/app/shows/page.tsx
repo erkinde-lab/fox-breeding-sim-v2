@@ -170,7 +170,7 @@ export default function ShowsPage() {
                   <button
                     key={tab.id}
                     onClick={() => {
-                      setActiveTab(tab.id as any);
+                      setActiveTab(tab.id as "history" | "available" | "amateur" | "altered" | "manage");
                       setSelectedShowId(null);
                     }}
                     disabled={tab.disabled}
@@ -386,7 +386,7 @@ export default function ShowsPage() {
                       </label>
                       <select
                         value={newShowLevel}
-                        onChange={(e) => setNewShowLevel(e.target.value as any)}
+                        onChange={(e) => setNewShowLevel(e.target.value as ShowLevel)}
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >
                         {[
@@ -414,7 +414,7 @@ export default function ShowsPage() {
                       <select
                         value={newShowVariety}
                         onChange={(e) =>
-                          setNewShowVariety(e.target.value as any)
+                          setNewShowVariety(e.target.value as Variety)
                         }
                         className="w-full bg-muted/50 border border-border p-3 rounded-xl"
                       >

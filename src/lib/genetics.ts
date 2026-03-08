@@ -231,7 +231,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   // Eye Color Logic
   let eyeColor = providedEyeColor;
   if (!eyeColor) {
-    let eyePoolName = finalName === "Albino" ? "Albino" : finalName;
+    const eyePoolName = finalName === "Albino" ? "Albino" : finalName;
     eyeColor = getRandomEyeColor(eyePoolName);
   }
 
@@ -331,6 +331,7 @@ export interface Fox {
   lastFed?: number; lastGroomed?: number; lastTrained?: number; isStillborn?: boolean;
   boosts?: Record<string, number>;
   preferredFeed?: string;
+  history: { date: string; event: string; details: string; }[];
 }
 
 export function generateStats(p1?: Stats, p2?: Stats, coi: number = 0, random: () => number = Math.random): Stats {
@@ -459,65 +460,60 @@ export function calculateCOI(foxIdOrSireId: string, foxes: Record<string, { pare
   return Math.round(coi * 1000) / 10;
 }
 
-export function createFox(data: Partial<Fox>, random: () => number = Math.random): Fox {
-  // Get next sequential ID from store if available
-  let foxId: string;
-  if (typeof window !== 'undefined') {
-    // Try to get from zustand store if in browser
-    try {
-      // Import store dynamically to avoid circular dependency
-      const { useGameStore } = require('../lib/store');
-      const store = useGameStore.getState();
-      const nextId = store.nextFoxId || 1;
-      store.nextFoxId = nextId + 1;
-      foxId = nextId.toString().padStart(7, '0');
-    } catch {
-      // Fallback for server-side or if store not available
-      foxId = Date.now().toString();
-    }
-  } else {
-    // Server-side fallback
-    foxId = Date.now().toString();
-  }
-
+export function createFox(data: Partial<Fox>, random: () => number = Math.random, forcedId?: string): Fox {
   const genotype = data.genotype || getInitialGenotype();
-  const silverIntensity = data.silverIntensity || (typeof window !== 'undefined' ? Math.floor(random() * 5) + 1 : 3);
+  const silverIntensity = data.silverIntensity || 3;
   const phenotype = getPhenotype(genotype, silverIntensity, data.eyeColor);
-  const name = data.name || (phenotype.name !== "Unknown Fox" ? phenotype.name : "Unnamed Fox");
 
   return {
-    id: data.id || foxId,
-    name: name,
+    id: forcedId || data.id || Date.now().toString(),
+    name: data.name || 'Unnamed Fox',
+    gender: data.gender || (random() > 0.5 ? 'Dog' : 'Vixen'),
     genotype,
     phenotype: phenotype.name,
-    baseColor: phenotype.baseColor,
-    pattern: phenotype.pattern,
+    baseColor: phenotype.baseColor || "Red",
+    pattern: phenotype.pattern || "Solid",
     eyeColor: phenotype.eyeColor,
-    gender: data.gender || (typeof window !== 'undefined' && Math.random() > 0.5 ? "Dog" : "Vixen"),
-    age: data.age ?? 2,
-    stats: data.stats || generateStats(),
-    genotypeRevealed: data.genotypeRevealed || false,
-    pedigreeAnalyzed: data.pedigreeAnalyzed ?? (data.parents ? (data.parents[0] === null && data.parents[1] === null) : true),
-    isRetired: data.isRetired || false,
-    hasBeenRenamed: data.hasBeenRenamed || false,
-    silverIntensity: silverIntensity,
-    healthIssues: phenotype.healthIssues,
+    silverIntensity,
+    age: 0,
+    stats: data.stats || {
+      head: 10,
+      topline: 10,
+      forequarters: 10,
+      hindquarters: 10,
+      tail: 10,
+      coatQuality: 10,
+      temperament: 10,
+      presence: 10,
+      luck: 10,
+      fertility: 10
+    },
+    genotypeRevealed: false,
+    pedigreeAnalyzed: false,
+    isRetired: false,
+    hasBeenRenamed: false,
+    healthIssues: [],
     pointsYear: 0,
     pointsLifetime: 0,
-    parents: data.parents ?? [null, null],
-    parentNames: data.parentNames ?? [null, null],
-    birthYear: data.birthYear ?? 0,
-    coi: data.coi ?? 0,
-    isAtStud: data.isAtStud ?? false,
-    studFee: data.studFee ?? 0,
-    isNPC: data.isNPC || false,
-    ownerId: data.ownerId || "player-1", // Default to player-1 owned
-    lastFed: data.lastFed || Date.now(),
-    boosts: data.boosts || {},
+    parents: [null, null],
+    parentNames: [null, null],
+    birthYear: 0,
+    coi: 0,
+    isAtStud: false,
+    studFee: 0,
+    ownerId: data.ownerId || 'system',
+    lastFed: Date.now(),
+    boosts: {},
+    history: data.history || [{
+      date: new Date().toISOString(),
+      event: 'Born',
+      details: 'Foundation fox created'
+    }],
+    ...data
   };
 }
 
-export function createFoundationalFox(random: () => number = Math.random, gender?: "Dog" | "Vixen"): Fox {
+export function createFoundationalFox(random: () => number = Math.random, gender?: "Dog" | "Vixen", forcedId?: string): Fox {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
 
@@ -568,12 +564,14 @@ export function createFoundationalFox(random: () => number = Math.random, gender
     coi: 0,
     pedigreeAnalyzed: true,
     gender,
-  }, safeRandom);
+  }, random, forcedId);
+
 }
 
-export function createFoundationFoxCollection(random: () => number = Math.random): Fox[] {
+export function createFoundationFoxCollection(random: () => number = Math.random, startId?: number): Fox[] {
   // Only use random on client side to avoid hydration issues
   const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
+  let currentId = startId || 1;
 
   const redBaseGenotypes: Record<string, [string, string]>[] = [
     { A: ['A', 'A'] as [string, string], B: ['B', 'B'] as [string, string] }, // Red
@@ -612,7 +610,7 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   // Rule 1: Ensure at least one red base fox
   const redBaseGenotype = redBaseGenotypes[Math.floor(safeRandom() * redBaseGenotypes.length)];
   const redFoxGender = genderOptions.pop()!;
-  foxes.push(createFoundationalFoxWithGenotype(redBaseGenotype, safeRandom, redFoxGender));
+  foxes.push(createFoundationalFoxWithGenotype(redBaseGenotype, safeRandom, redFoxGender, (currentId++).toString().padStart(7, "0")));
 
   // Rule 2: Ensure at least one gold base fox (different from the red one above)
   let goldBaseGenotype;
@@ -620,12 +618,12 @@ export function createFoundationFoxCollection(random: () => number = Math.random
     goldBaseGenotype = redBaseGenotypes[Math.floor(safeRandom() * redBaseGenotypes.length)];
   } while (JSON.stringify(goldBaseGenotype) === JSON.stringify(redBaseGenotype)); // Ensure different genotype
   const goldFoxGender = genderOptions.pop()!;
-  foxes.push(createFoundationalFoxWithGenotype(goldBaseGenotype, safeRandom, goldFoxGender));
+  foxes.push(createFoundationalFoxWithGenotype(goldBaseGenotype, safeRandom, goldFoxGender, (currentId++).toString().padStart(7, "0")));
 
   // Rule 3: Ensure at least one cross fox
   const crossGenotype = crossGenotypes[Math.floor(safeRandom() * crossGenotypes.length)];
   const crossFoxGender = genderOptions.pop()!;
-  foxes.push(createFoundationalFoxWithGenotype(crossGenotype, safeRandom, crossFoxGender));
+  foxes.push(createFoundationalFoxWithGenotype(crossGenotype, safeRandom, crossFoxGender, (currentId++).toString().padStart(7, "0")));
 
   // Generate remaining 3 foxes with assigned genders
   for (let i = 0; i < 3; i++) {
@@ -657,36 +655,18 @@ export function createFoundationFoxCollection(random: () => number = Math.random
   return foxes;
 }
 
-function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Dog" | "Vixen"): Fox {
-  const safeRandom = typeof window !== 'undefined' ? random : () => 0.5;
-
+function createFoundationalFoxWithGenotype(baseGenotype: Record<string, [string, string]>, random: () => number, gender?: "Dog" | "Vixen", forcedId?: string): Fox {
   const genotype = getInitialGenotype();
-  Object.assign(genotype, baseGenotype);
-
-  // Possible rare recessive (excluding W since it's visible in heterozygous form)
-  const rareGenes = ['G', 'C', 'P', 'Fire', 'L', 'R', 'T', 'S'];
-  if (safeRandom() > 0.75) {
-    const gene = rareGenes[Math.floor(safeRandom() * rareGenes.length)];
-    const locus = LOCI[gene];
-    const alleles = locus.alleles.filter(a => a !== locus.alleles[0]);
-    if (alleles.length > 0) {
-      const rare = alleles[Math.floor(safeRandom() * alleles.length)];
-      genotype[gene] = [locus.alleles[0], rare];
-    }
-  }
-
-
-  // Fawn spotting restriction: Foundation foxes can only be TT or Tt
-  if (genotype['T'] && genotype['T'][0] === 't' && genotype['T'][1] === 't') {
-    genotype['T'] = ['T', 't'];
-  }
+  Object.keys(baseGenotype).forEach(gene => {
+    genotype[gene] = [...baseGenotype[gene]];
+  });
 
   return createFox({
     genotype,
     coi: 0,
     pedigreeAnalyzed: true,
     gender,
-  }, safeRandom);
+  }, random, forcedId);
 }
 
 export function getActiveBoosts(fox: Fox): Record<string, number> {
@@ -829,7 +809,7 @@ export function getBaseEyeColors(genotype: Genotype, silverIntensity: number = 3
   delete tempGenotype.L;
 
   const phenotype = getPhenotype(tempGenotype, silverIntensity);
-  let eyePoolName = phenotype.baseColor === "Albino" ? "Albino" : phenotype.baseColor;
+  const eyePoolName = phenotype.baseColor === "Albino" ? "Albino" : phenotype.baseColor;
 
   return [...(PHENOTYPE_EYE_COLORS[eyePoolName] || ['Brown'])];
 }
