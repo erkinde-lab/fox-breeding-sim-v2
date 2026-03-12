@@ -39,6 +39,8 @@ export default function ShowsPage() {
     runShows,
     generateSeasonalShows,
     showVisibilityMode,
+    hiredHandler,
+    currentMemberId,
   } = useGameStore();
 
   const [activeTab, setActiveTab] = useState<
@@ -75,12 +77,12 @@ export default function ShowsPage() {
   const selectedShow = shows.find((s) => s.id === selectedShowId);
   const eligibleFoxes = selectedShow
     ? Object.values(foxes).filter((f) =>
-        isFoxEligibleForShow(
-          f,
-          selectedShow.level,
-          selectedShow.type as Variety,
-        ),
-      )
+      isFoxEligibleForShow(
+        f,
+        selectedShow.level,
+        selectedShow.type as Variety,
+      ),
+    )
     : [];
 
   const handleAddShow = () => {
@@ -244,17 +246,17 @@ export default function ShowsPage() {
                                   r.foxId === report.bisFoxId &&
                                   r.title === "BIS",
                               ) && (
-                                <span className="text-xs font-black text-muted-foreground">
-                                  {
-                                    report.results.find(
-                                      (r) =>
-                                        r.foxId === report.bisFoxId &&
-                                        r.title === "BIS",
-                                    )?.score
-                                  }{" "}
-                                  pts
-                                </span>
-                              )}
+                                  <span className="text-xs font-black text-muted-foreground">
+                                    {
+                                      report.results.find(
+                                        (r) =>
+                                          r.foxId === report.bisFoxId &&
+                                          r.title === "BIS",
+                                      )?.score
+                                    }{" "}
+                                    pts
+                                  </span>
+                                )}
                             </div>
                             {report.rbisFoxId && (
                               <div className="flex justify-between items-center bg-background/30 p-4 rounded-2xl border border-primary/5">
@@ -271,17 +273,17 @@ export default function ShowsPage() {
                                     r.foxId === report.rbisFoxId &&
                                     r.title === "RBIS",
                                 ) && (
-                                  <span className="text-xs font-black text-muted-foreground">
-                                    {
-                                      report.results.find(
-                                        (r) =>
-                                          r.foxId === report.rbisFoxId &&
-                                          r.title === "RBIS",
-                                      )?.score
-                                    }{" "}
-                                    pts
-                                  </span>
-                                )}
+                                    <span className="text-xs font-black text-muted-foreground">
+                                      {
+                                        report.results.find(
+                                          (r) =>
+                                            r.foxId === report.rbisFoxId &&
+                                            r.title === "RBIS",
+                                        )?.score
+                                      }{" "}
+                                      pts
+                                    </span>
+                                  )}
                               </div>
                             )}
                           </div>
@@ -601,7 +603,7 @@ export default function ShowsPage() {
                             className={cn(
                               "text-muted-foreground transition-transform",
                               selectedShowId === show.id &&
-                                "translate-x-1 text-primary",
+                              "translate-x-1 text-primary",
                             )}
                           />
                         </div>
@@ -639,20 +641,33 @@ export default function ShowsPage() {
                         ) : (
                           <div className="flex flex-col gap-2">
                             {eligibleFoxes.map((fox) => {
-                              const isEntered = selectedShow.entries.includes(
-                                fox.id,
-                              );
+                              const isEnteredInThisShow = selectedShow.entries.includes(fox.id);
+
+                              const isEnteredElsewhere = shows.some(s => s.id !== selectedShow.id && s.entries.includes(fox.id));
+
+                              let isRestrictedByCategory = false;
+                              if (!hiredHandler && !isEnteredInThisShow) {
+                                isRestrictedByCategory = shows.some(s =>
+                                  s.level === selectedShow.level &&
+                                  s.type === selectedShow.type &&
+                                  s.entries.some(id => foxes[id]?.ownerId === currentMemberId)
+                                );
+                              }
+
+                              const isDisabled = !isEnteredInThisShow && (isEnteredElsewhere || isRestrictedByCategory);
+
                               return (
                                 <button
                                   key={fox.id}
-                                  onClick={() =>
-                                    enterFoxInShow(fox.id, selectedShow.id)
-                                  }
+                                  onClick={() => !isDisabled && enterFoxInShow(fox.id, selectedShow.id)}
+                                  disabled={isDisabled}
                                   className={cn(
                                     "flex items-center justify-between p-3 rounded-xl border-2 transition-all text-left overflow-visible relative",
-                                    isEntered
-                                      ? "bg-success/50/10 border-success/50/30 text-success"
-                                      : "bg-card border-border hover:border-primary/50 hover:bg-primary/5",
+                                    isEnteredInThisShow
+                                      ? "bg-success/10 border-success/30 text-success"
+                                      : isDisabled
+                                        ? "bg-muted/50 border-border opacity-50 cursor-not-allowed"
+                                        : "bg-card border-border hover:border-primary/50 hover:bg-primary/5",
                                   )}
                                 >
                                   <div className="flex flex-col">
@@ -660,20 +675,28 @@ export default function ShowsPage() {
                                       {fox.name}
                                     </span>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                      <ScoreBreakdown fox={fox}>
-                                        <Info
-                                          size={10}
-                                          className="text-primary cursor-help"
-                                        />
-                                      </ScoreBreakdown>
-                                      <span className="text-[9px] font-bold text-muted-foreground uppercase">
-                                        View Stats Breakdown
-                                      </span>
+                                      {isDisabled ? (
+                                        <span className="text-[9px] font-black uppercase text-destructive flex items-center gap-1">
+                                          <Info size={10} /> {isEnteredElsewhere ? "In another show" : "Category limit"}
+                                        </span>
+                                      ) : (
+                                        <>
+                                          <ScoreBreakdown fox={fox}>
+                                            <Info
+                                              size={10}
+                                              className="text-primary cursor-help"
+                                            />
+                                          </ScoreBreakdown>
+                                          <span className="text-[9px] font-bold text-muted-foreground uppercase">
+                                            View Stats Breakdown
+                                          </span>
+                                        </>
+                                      )}
                                     </div>
                                   </div>
-                                  {isEntered ? (
+                                  {isEnteredInThisShow ? (
                                     <Check size={14} />
-                                  ) : (
+                                  ) : isDisabled ? null : (
                                     <Plus size={14} />
                                   )}
                                 </button>

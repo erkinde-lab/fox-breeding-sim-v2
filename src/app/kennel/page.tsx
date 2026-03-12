@@ -120,7 +120,7 @@ function KennelContent() {
               onClick={() => expandKennel()}
               className="text-xs font-black uppercase tracking-widest text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
             >
-              Expand Kennel ({kennelCapacity} slots) <ArrowRight size={10} />
+              Expand Kennel +5 <ArrowRight size={10} />
             </button>
           </div>
         </div>
@@ -174,11 +174,10 @@ function KennelContent() {
                 onClick={() => handleTabChange(tab.id)}
                 role="tab"
                 aria-selected={activeTab === tab.id}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? "bg-card text-foreground shadow-sm border border-border/50"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id
+                  ? "bg-card text-foreground shadow-sm border border-border/50"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 <tab.icon size={14} />
                 {tab.label}
@@ -237,7 +236,7 @@ function KennelContent() {
 
 function NPCKennel({ foxes }: { foxes: Record<string, Fox> }) {
   const npcFoxList = Object.values(foxes).filter(fox => fox.ownerId === "player-0");
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {npcFoxList.map((npc) => (
@@ -260,7 +259,7 @@ function NPCKennel({ foxes }: { foxes: Record<string, Fox> }) {
                 NPC
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-2 text-muted-foreground text-xs">
               <span>{npc.gender}</span>
               <span className="w-1 h-1 rounded-full bg-border" />
@@ -268,7 +267,7 @@ function NPCKennel({ foxes }: { foxes: Record<string, Fox> }) {
               <span className="w-1 h-1 rounded-full bg-border" />
               <span>Stud Fee: {npc.studFee} Gold</span>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Badge variant={npc.studFee > 0 ? "default" : "secondary"} className="text-xs">
                 {npc.studFee > 0 ? "Available for Breeding" : "Not Available"}
@@ -282,7 +281,7 @@ function NPCKennel({ foxes }: { foxes: Record<string, Fox> }) {
           </div>
         </div>
       ))}
-      
+
       {npcFoxList.length === 0 && (
         <div className="col-span-full text-center py-12 text-muted-foreground">
           <Users size={48} className="mx-auto mb-4 opacity-50" />
@@ -372,15 +371,11 @@ function FoxCard({ fox, season }: { fox: Fox; season: string }) {
               />
               <Sparkles
                 size={12}
-                className={
-                  !groomed ? "text-muted-foreground/20" : "text-secondary"
-                }
+                className={!groomed ? "text-muted-foreground/20" : "text-primary"}
               />
               <Dumbbell
                 size={12}
-                className={
-                  !trained ? "text-muted-foreground/20" : "text-orange-500"
-                }
+                className={!trained ? "text-muted-foreground/20" : "text-primary"}
               />
               {fox.isAltered && (
                 <ActivityIcon size={12} className="text-purple-500" />

@@ -66,6 +66,7 @@ export default function SettingsPage() {
     updateMemberRole,
     currentMemberId,
     setCurrentMemberId,
+    setAdminMode,
   } = useGameStore();
 
   const player = members.find(m => m.id === currentMemberId) || members[0];
@@ -120,7 +121,7 @@ export default function SettingsPage() {
 
 
 
-                    <Card className="folk-card border-gold/30">
+          <Card className="folk-card border-gold/30">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg italic flex items-center gap-2">
                 <Shield className="text-gold" size={18} /> Identity Debug Switcher
@@ -144,6 +145,7 @@ export default function SettingsPage() {
                       currentMemberId === m.id && `bg-${m.color} hover:bg-${m.color}/90 border-${m.color} text-white`
                     )}
                     onClick={() => {
+                      setAdminMode(false);
                       setCurrentMemberId(m.id);
                       addNotification(`Switched to ${m.label}`, "info");
                     }}
@@ -157,8 +159,8 @@ export default function SettingsPage() {
                   Current: {player?.name} ({player?.role})
                 </Badge>
                 <div className="flex gap-2">
-                   {player?.role === 'administrator' && <Badge className="bg-gold text-white">Admin Access</Badge>}
-                   {player?.role === 'moderator' && <Badge className="bg-info text-white">Mod Access</Badge>}
+                  {player?.role === 'administrator' && <Badge className="bg-gold text-white">Admin Access</Badge>}
+                  {player?.role === 'moderator' && <Badge className="bg-info text-white">Mod Access</Badge>}
                 </div>
               </div>
             </CardContent>

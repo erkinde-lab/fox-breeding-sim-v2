@@ -187,6 +187,18 @@ export default function LayoutClient({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Reset mobile dropdowns when mobile menu closes
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      setIsMobileKennelOpen(false);
+      setIsMobileBreedingOpen(false);
+      setIsMobileShowsOpen(false);
+      setIsMobileShopsOpen(false);
+      setIsMobileCommunityOpen(false);
+      setIsMobileSupportOpen(false);
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <div className="min-h-screen bg-background flex flex-col font-rounded selection:bg-primary/30 transition-colors duration-500">
       <ColorblindFilters />
@@ -275,7 +287,7 @@ export default function LayoutClient({
 
       {/* Site Banner */}
       <div
-        className="w-full h-[320px] sm:h-[420px] bg-cover relative shadow-inner overflow-hidden border-b-8 border-sagebrush/20"
+        className="w-full h-[320px] bg-cover relative shadow-inner border-b-8 border-sagebrush/20"
         style={{
           backgroundImage: `url(${bannerUrl})`,
           backgroundPosition: `center ${bannerYPosition}`,
@@ -284,13 +296,13 @@ export default function LayoutClient({
         onMouseEnter={() =>
           console.log("Banner CSS applied:", {
             bannerYPosition,
-    members,
-    currentMemberId,
+            members,
+            currentMemberId,
             cssPosition: `center ${bannerYPosition}`,
           })
         }
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
+        <div className="absolute inset-x-0 top-0 bottom-[-8px] bg-gradient-to-r from-[var(--banner-overlay)] via-[var(--banner-overlay)]/40 to-transparent flex items-end pb-8">
           <div className="w-full px-4 sm:px-6 lg:px-8 text-left">
             <div className="text-foreground max-w-2xl">
               <div className="inline-flex items-center gap-4 group mb-4">
@@ -333,7 +345,7 @@ export default function LayoutClient({
       </div>
 
       {/* Main Navigation */}
-      <nav className="sticky top-0 bg-card/90 backdrop-blur-md border-b border-border z-50 shadow-sm">
+      <nav className="sticky top-0 bg-card border-b border-border z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20">
             {/* Desktop Navigation */}
@@ -494,7 +506,7 @@ export default function LayoutClient({
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-3 w-64 rounded-[2rem] bg-card border-2 border-primary/10 py-3 shadow-2xl z-[60] animate-in fade-in zoom-in slide-in-from-top-4">
+                  <div className="absolute right-0 mt-3 w-64 rounded-[2rem] bg-card border-2 border-primary/10 py-3 shadow-2xl z-[60] opacity-100 animate-in fade-in zoom-in slide-in-from-top-4">
                     <div className="px-6 py-4 border-b border-border mb-2">
                       <p className="text-xs font-black uppercase text-primary">
                         Your Account
@@ -732,7 +744,7 @@ export default function LayoutClient({
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[70] animate-in fade-in"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="fixed inset-y-0 right-0 w-[320px] bg-card z-[80] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+          <div className="fixed inset-y-0 right-0 w-[320px] bg-card z-[80] shadow-2xl flex flex-col opacity-100 animate-in slide-in-from-right duration-300">
             {/* Drawer Header */}
             <div className="p-6 border-b border-border flex items-center justify-between bg-primary/5">
               <div className="flex items-center gap-3">
@@ -1005,7 +1017,7 @@ function Dropdown({
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card/ui-blur border border-border py-2 overflow-hidden backdrop-blur-ui ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] !opacity-100 shadow-popover mb-4">
+        <div className="absolute left-0 mt-2 w-56 rounded-xl bg-card border border-border py-2 overflow-hidden ring-1 ring-black ring-opacity-10 animate-in fade-in zoom-in duration-150 origin-top-left z-[60] opacity-100 shadow-popover mb-4">
           {children}
         </div>
       )}

@@ -17,6 +17,9 @@ export function Dashboard() {
   } = useGameStore();
 
   const foxList = Object.values(foxes).filter(fox => fox.ownerId === "player-1");
+  const allFed = foxList.length > 0 && foxList.every(f => f.lastFed);
+  const allGroomed = foxList.length > 0 && foxList.every(f => f.lastGroomed);
+  const allTrained = foxList.length > 0 && foxList.every(f => f.lastTrained);
 
   const seasonalAwards = [
     { title: "Autumn Ghost", description: "Bred a Silver fox during the Hallow-season", year: 1, season: "Autumn", icon: Ghost, variant: "primary" },
@@ -30,18 +33,39 @@ export function Dashboard() {
         <h2 className="text-4xl font-folksy text-foreground tracking-tight" style={{ fontWeight: 400 }}>Kennel Dashboard</h2>
         <div className="flex flex-wrap gap-4">
           {hiredNutritionist && (
-            <Button onClick={feedAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-btn-primary gap-2">
-              <Utensils size={16} /> Feed All Foxes
+            <Button
+              onClick={feedAllFoxes}
+              disabled={allFed}
+              className={cn(
+                "font-black uppercase tracking-widest px-6 rounded-2xl gap-2 transition-all",
+                allFed ? "bg-muted text-muted-foreground shadow-none" : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-btn-primary"
+              )}
+            >
+              <Utensils size={16} /> {allFed ? "All Fed" : "Feed All Foxes"}
             </Button>
           )}
           {hiredGroomer && (
-            <Button onClick={groomAllFoxes} className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-lg shadow-secondary/20 gap-2">
-              <Sparkles size={16} /> Groom All Foxes
+            <Button
+              onClick={groomAllFoxes}
+              disabled={allGroomed}
+              className={cn(
+                "font-black uppercase tracking-widest px-6 rounded-2xl gap-2 transition-all",
+                allGroomed ? "bg-muted text-muted-foreground shadow-none" : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-btn-primary"
+              )}
+            >
+              <Sparkles size={16} /> {allGroomed ? "All Groomed" : "Groom All Foxes"}
             </Button>
           )}
           {hiredTrainer && (
-            <Button onClick={trainAllFoxes} className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-widest px-6 rounded-2xl shadow-btn-primary gap-2">
-              <Dumbbell size={16} /> Train All Foxes
+            <Button
+              onClick={trainAllFoxes}
+              disabled={allTrained}
+              className={cn(
+                "font-black uppercase tracking-widest px-6 rounded-2xl gap-2 transition-all",
+                allTrained ? "bg-muted text-muted-foreground shadow-none" : "bg-primary hover:bg-primary/90 text-primary-foreground shadow-btn-primary"
+              )}
+            >
+              <Dumbbell size={16} /> {allTrained ? "All Trained" : "Train All Foxes"}
             </Button>
           )}
         </div>

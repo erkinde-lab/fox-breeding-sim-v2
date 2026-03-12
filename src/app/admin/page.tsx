@@ -434,23 +434,23 @@ export default function AdminPanel() {
 
       <Tabs defaultValue="site" className="space-y-8">
 
-        <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+        <div className="pb-2">
 
 
-          <TabsList className="bg-card p-1.5 rounded-2xl border-2 border-border shadow-sm flex w-max sm:w-full">
-            {isSuperAdmin && <TabsTrigger value="site" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>}
-            <TabsTrigger value="news" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Megaphone size={14} /> News</TabsTrigger>
-            <TabsTrigger value="members" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Users size={14} /> Members</TabsTrigger>
-            <TabsTrigger value="forum" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><MessageSquare size={14} /> Forum</TabsTrigger>
+          <TabsList className="bg-card p-1.5 rounded-[2rem] border-2 border-border shadow-sm flex flex-wrap justify-center sm:justify-start w-full h-auto gap-1.5">
+            {isSuperAdmin && <TabsTrigger value="site" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Settings size={14} /> Site</TabsTrigger>}
+            <TabsTrigger value="news" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Megaphone size={14} /> News</TabsTrigger>
+            <TabsTrigger value="members" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Users size={14} /> Members</TabsTrigger>
+            <TabsTrigger value="forum" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><MessageSquare size={14} /> Forum</TabsTrigger>
             {isSuperAdmin && (
               <>
-                <TabsTrigger value="economy" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
-                <TabsTrigger value="game" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
-                <TabsTrigger value="analytics" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
+                <TabsTrigger value="economy" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Coins size={14} /> Economy</TabsTrigger>
+                <TabsTrigger value="game" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Database size={14} /> Game</TabsTrigger>
+                <TabsTrigger value="analytics" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><TrendingUp size={14} /> Stats</TabsTrigger>
               </>
             )}
-            {isSuperAdmin && <TabsTrigger value="kennel" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>}
-            <TabsTrigger value="reports" className="flex-1 gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><AlertTriangle size={14} /> Reports</TabsTrigger>
+            {isSuperAdmin && <TabsTrigger value="kennel" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><Shield size={14} /> Kennel</TabsTrigger>}
+            <TabsTrigger value="reports" className="flex-1 sm:flex-none gap-2 font-black uppercase tracking-widest text-[10px] h-10 px-3 sm:px-6 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-4 data-[state=active]:border-primary rounded-xl transition-all"><AlertTriangle size={14} /> Reports</TabsTrigger>
           </TabsList>
 
 
@@ -541,7 +541,7 @@ export default function AdminPanel() {
             </div>
           </div>
         </TabsContent>
-{/* Site Management */}
+        {/* Site Management */}
 
         <TabsContent value="site" className="animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -600,8 +600,8 @@ export default function AdminPanel() {
                         addNotification(`Site banner changed to ${b.name}`, 'success');
                       }}
                       className={`relative h-16 rounded-xl overflow-hidden border-2 transition-all ${bannerUrl === b.url
-                          ? "border-primary shadow-md scale-[0.98]"
-                          : "border-transparent opacity-70 hover:opacity-100"
+                        ? "border-primary shadow-md scale-[0.98]"
+                        : "border-transparent opacity-70 hover:opacity-100"
                         }`}
                     >
                       <img
@@ -1242,31 +1242,31 @@ export default function AdminPanel() {
 
                 <Button className="w-full bg-foreground text-background font-black uppercase tracking-widest h-12 rounded-xl" onClick={() => {
 
-                   showNotification({
+                  showNotification({
 
-                     title: 'Set Balances',
+                    title: 'Set Balances',
 
-                     message: 'Set specific currency values (Staff Only):',
+                    message: 'Set specific currency values (Staff Only):',
 
-                     showInput: true,
+                    showInput: true,
 
-                     inputPlaceholder: 'Gold, Gems (e.g. 500, 10)',
+                    inputPlaceholder: 'Gold, Gems (e.g. 500, 10)',
 
-                     onConfirm: (val) => {
+                    onConfirm: (val) => {
 
-                       const [go, ge] = (val || "").split(',').map(s => parseInt(s.trim()));
+                      const [go, ge] = (val || "").split(',').map(s => parseInt(s.trim()));
 
-                       if (!isNaN(go) && !isNaN(ge)) {
+                      if (!isNaN(go) && !isNaN(ge)) {
 
-                         adminSetCurrency({ gold: go, gems: ge });
+                        adminSetCurrency({ gold: go, gems: ge });
 
-                         addNotification('Balances updated.', 'info');
+                        addNotification('Balances updated.', 'info');
 
-                       }
+                      }
 
-                     }
+                    }
 
-                   });
+                  });
 
                 }}>Override Total Balances</Button>
 
@@ -1354,21 +1354,21 @@ export default function AdminPanel() {
 
             <Card className="folk-card p-10 text-center border-moss-100 bg-moss-50/10 relative overflow-hidden group">
 
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
 
-                  <History size={120} />
+                <History size={120} />
 
-               </div>
+              </div>
 
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Total Fox Population</p>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Total Fox Population</p>
 
-               <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Object.keys(foxes).length}</h2>
+              <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Object.keys(foxes).length}</h2>
 
-               <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-moss-100 rounded-full text-moss-700 font-black text-[10px] uppercase tracking-widest relative z-10">
+              <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-moss-100 rounded-full text-moss-700 font-black text-[10px] uppercase tracking-widest relative z-10">
 
-                  <TrendingUp size={12} /> Stable Growth
+                <TrendingUp size={12} /> Stable Growth
 
-               </div>
+              </div>
 
             </Card>
 
@@ -1376,17 +1376,17 @@ export default function AdminPanel() {
 
             <Card className="folk-card p-10 text-center border-gold/30 bg-gold/5 relative overflow-hidden group">
 
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
 
-                  <Coins size={120} />
+                <Coins size={120} />
 
-               </div>
+              </div>
 
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Economic Velocity</p>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Economic Velocity</p>
 
-               <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Math.floor(gold / 1000)}k</h2>
+              <h2 className="text-6xl font-black text-foreground mt-4 tracking-tighter relative z-10 italic">{Math.floor(gold / 1000)}k</h2>
 
-               <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10">Total Circulating Gold</p>
+              <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10">Total Circulating Gold</p>
 
             </Card>
 
@@ -1394,17 +1394,17 @@ export default function AdminPanel() {
 
             <Card className="folk-card p-10 text-center border-fire-100 bg-fire-50/10 relative overflow-hidden group">
 
-               <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
+              <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:scale-125 transition-transform duration-700">
 
-                  <Shield size={120} />
+                <Shield size={120} />
 
-               </div>
+              </div>
 
-               <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Active Reports</p>
+              <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest relative z-10">Active Reports</p>
 
-               <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">{reports.filter(r => r.status === "pending").length}</h2>
+              <h2 className="text-6xl font-black text-destructive mt-4 tracking-tighter relative z-10 italic">{reports.filter(r => r.status === "pending").length}</h2>
 
-               <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10 italic">System is Secure</p>
+              <p className="text-[10px] font-black text-muted-foreground mt-2 uppercase tracking-widest relative z-10 italic">System is Secure</p>
 
             </Card>
 
@@ -1452,9 +1452,9 @@ export default function AdminPanel() {
 
                         {log.action.includes("Spawn") ? <Plus className="text-moss-500" /> :
 
-                         log.action.includes("Ban") || log.action.includes("Warn") ? <AlertTriangle className="text-fire-600" /> :
+                          log.action.includes("Ban") || log.action.includes("Warn") ? <AlertTriangle className="text-fire-600" /> :
 
-                         <History className="text-info" />}
+                            <History className="text-info" />}
 
                       </div>
 
@@ -1537,7 +1537,7 @@ export default function AdminPanel() {
 
                 </div>
 
-                <Button 
+                <Button
 
                   onClick={() => {
 
@@ -1853,53 +1853,53 @@ export default function AdminPanel() {
 
                 return (
 
-                <div key={position} className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl">
+                  <div key={position} className="flex items-center gap-4 p-4 bg-muted/30 rounded-2xl">
 
-                  <span className="font-black text-foreground uppercase text-sm w-20">{positionLabels[position]}</span>
+                    <span className="font-black text-foreground uppercase text-sm w-20">{positionLabels[position]}</span>
 
-                  <input
+                    <input
 
-                    type="number"
+                      type="number"
 
-                    value={prize.amount}
+                      value={prize.amount}
 
-                    onChange={(e) => setPrizeForm(prev => ({
+                      onChange={(e) => setPrizeForm(prev => ({
 
-                      ...prev,
+                        ...prev,
 
-                      [position]: { ...prev[position as keyof typeof prizeForm], amount: parseInt(e.target.value) || 0 }
+                        [position]: { ...prev[position as keyof typeof prizeForm], amount: parseInt(e.target.value) || 0 }
 
-                    }))}
+                      }))}
 
-                    className="flex-1 p-3 bg-card border border-border rounded-xl font-bold"
+                      className="flex-1 p-3 bg-card border border-border rounded-xl font-bold"
 
-                    placeholder="Amount"
+                      placeholder="Amount"
 
-                  />
+                    />
 
-                  <select
+                    <select
 
-                    value={prize.currency}
+                      value={prize.currency}
 
-                    onChange={(e) => setPrizeForm(prev => ({
+                      onChange={(e) => setPrizeForm(prev => ({
 
-                      ...prev,
+                        ...prev,
 
-                      [position]: { ...prev[position as keyof typeof prizeForm], currency: e.target.value }
+                        [position]: { ...prev[position as keyof typeof prizeForm], currency: e.target.value }
 
-                    }))}
+                      }))}
 
-                    className="p-3 bg-card border border-border rounded-xl font-bold"
+                      className="p-3 bg-card border border-border rounded-xl font-bold"
 
-                  >
+                    >
 
-                    <option value="gold">Gold</option>
+                      <option value="gold">Gold</option>
 
-                    <option value="gems">Gems</option>
+                      <option value="gems">Gems</option>
 
-                  </select>
+                    </select>
 
-                </div>
+                  </div>
 
                 );
 

@@ -245,7 +245,7 @@ export function getPhenotype(genotype: Genotype, silverIntensity?: number, provi
   ];
 
   if (opalPhenotypes.includes(finalName) && !providedEyeColor) {
-     eyeColor = getRandomEyeColor(finalName);
+    eyeColor = getRandomEyeColor(finalName);
   }
 
   // SS Piebald Eye Logic
@@ -630,7 +630,7 @@ export function createFoundationFoxCollection(random: () => number = Math.random
     const allGenotypes = [...redBaseGenotypes, ...crossGenotypes, ...otherGenotypes];
     const genotype = allGenotypes[Math.floor(safeRandom() * allGenotypes.length)];
     const gender = genderOptions.pop()!;
-    foxes.push(createFoundationalFoxWithGenotype(genotype, safeRandom, gender));
+    foxes.push(createFoundationalFoxWithGenotype(genotype, safeRandom, gender, (currentId++).toString().padStart(7, "0")));
   }
 
   // Rule 3: Ensure only one black fox (intensity 1)

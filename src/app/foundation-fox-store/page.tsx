@@ -10,26 +10,15 @@ import { FoxIllustration } from '@/components/FoxIllustration';
 import Link from 'next/link';
 
 export default function FoundationFoxStorePage() {
-  const { foxes, gold, buyFoundationFox, repopulateFoundationFoxes } = useGameStore();
+  const { foxes, gold, buyFoundationFox, repopulateFoundationFoxes, lastAdoptionReset } = useGameStore();
   const [soldSlots, setSoldSlots] = useState<Set<string>>(new Set());
-
-  // Track previous foundation fox count to detect repopulation
-
 
   const foundationFoxes = Object.values(foxes).filter(fox => fox.isFoundation);
 
-  // Track previous foundation fox count to detect repopulation
-  const prevCountRef = React.useRef(foundationFoxes.length);
-
-  // Clear soldSlots when foundation foxes are repopulated (count INCREASES)
+  // Clear soldSlots when foundation foxes are repopulated (detected via lastAdoptionReset)
   useEffect(() => {
-    const currentCount = foundationFoxes.length;
-    if (prevCountRef.current > 0 && currentCount > prevCountRef.current) {
-      // Foundation foxes were repopulated (count increased), clear sold slots
-      setTimeout(() => setSoldSlots(new Set()), 0);
-    }
-    prevCountRef.current = currentCount;
-  }, [foundationFoxes.length]);
+    setSoldSlots(new Set());
+  }, [lastAdoptionReset]);
 
   // Hourly repopulation scheduler
   useEffect(() => {
@@ -115,7 +104,7 @@ export default function FoundationFoxStorePage() {
                 // Available fox card
                 return (
                   <div
-                    key={fox.id}
+                    key={`fox-${fox.id}`}
                     className="folk-card overflow-hidden border-2 border-success/30 bg-success/5/30 shadow-sm rounded-[32px] bg-card relative"
                   >
                     <div className="folk-card overflow-hidden border-2 border-border bg-card rounded-[32px] flex flex-col sm:flex-row h-full">
@@ -179,7 +168,7 @@ export default function FoundationFoxStorePage() {
                 // Sold placeholder card
                 return (
                   <div
-                    key={item.id}
+                    key={`sold-${item.id}`}
                     className="folk-card overflow-hidden border-2 border-gray-300 bg-gray-50/30 opacity-60 rounded-[32px] flex flex-col sm:flex-row h-full"
                   >
                     <div className="w-full sm:w-44 flex-shrink-0 bg-gray-200/50 flex items-center justify-center relative p-4">

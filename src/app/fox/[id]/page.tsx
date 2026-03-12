@@ -448,7 +448,7 @@ export default function FoxProfilePage() {
             {/* Status Badges */}
             <div className="px-8 pb-4 flex flex-wrap gap-2">
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${hungry ? "bg-destructive/10 border-destructive/20 text-destructive" : "bg-primary/10 border-primary/20 text-primary"}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${hungry ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-primary/10 border-primary/20 text-primary"}`}
               >
                 <Utensils size={14} />
                 <span className="text-[10px] font-black uppercase tracking-widest">
@@ -456,7 +456,7 @@ export default function FoxProfilePage() {
                 </span>
               </div>
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!groomed ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-secondary/10 border-secondary/20 text-secondary"}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!groomed ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-primary/10 border-primary/20 text-primary"}`}
               >
                 <Sparkles size={14} />
                 <span className="text-[10px] font-black uppercase tracking-widest">
@@ -464,7 +464,7 @@ export default function FoxProfilePage() {
                 </span>
               </div>
               <div
-                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!trained ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-orange-500/10 border-orange-500/20 text-orange-500"}`}
+                className={`flex items-center gap-2 px-3 py-2 rounded-2xl border shadow-sm ${!trained ? "bg-muted/50 border-border/50 text-muted-foreground" : "bg-primary/10 border-primary/20 text-primary"}`}
               >
                 <Dumbbell size={14} />
                 <span className="text-[10px] font-black uppercase tracking-widest">

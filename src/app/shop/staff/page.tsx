@@ -5,7 +5,7 @@ import { useGameStore } from '@/lib/store';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Check, Diamond, Activity, Trophy, Microscope, Utensils } from 'lucide-react';
+import { UserPlus, Check, Diamond, Activity, Trophy, Microscope, Utensils, Briefcase } from 'lucide-react';
 
 export default function StaffPage() {
   const {
@@ -14,6 +14,7 @@ export default function StaffPage() {
     hiredTrainer, hireTrainer,
     hiredGeneticist, hireGeneticist,
     hiredNutritionist, hireNutritionist,
+    hiredHandler, hireHandler,
     gems
   } = useGameStore();
 
@@ -72,6 +73,17 @@ export default function StaffPage() {
       icon: <Utensils size={48} />,
       color: 'orange',
       bonus: '+2 Health Stats'
+    },
+    {
+      id: 'handler',
+      name: 'Professional Handler',
+      description: 'Expertly manage multiple entries in the show ring. Removes the limit of only one fox per show category, allowing you to enter as many as you want.',
+      cost: 75,
+      hired: hiredHandler,
+      onHire: hireHandler,
+      icon: <Briefcase size={48} />,
+      color: 'amber',
+      bonus: 'Unlimited Entries'
     }
   ];
 
