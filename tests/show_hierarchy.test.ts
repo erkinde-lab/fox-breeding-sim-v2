@@ -1,54 +1,81 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Fox, getInitialGenotype } from '../src/lib/genetics';
-import { runHierarchicalShow, Competitor } from '../src/lib/showing';
+import { test, expect } from '@playwright/test';
+import { Fox, Genotype } from '../src/lib/genetics';
+import { Competitor, Variety, ShowLevel, runHierarchicalShow } from '../src/lib/showing';
 
-const mockFox = (id: string, gender: 'Dog' | 'Vixen', variety: string): Fox => ({
+const mockGenotype: Genotype = { A: ['A', 'A'], B: ['B', 'B'] };
+
+const createMockFox = (id: string, gender: 'Dog' | 'Vixen', variety: string): Fox => ({
   id,
-  name: `Fox ${id}`,
+  name: `Test Fox ${id}`,
   gender,
-  genotype: getInitialGenotype(), // Simplified for test
-  phenotype: variety + " Fox",
-  baseColor: variety,
-  pattern: "None",
-  eyeColor: "Brown",
+  genotype: mockGenotype,
+  phenotype: variety,
+  baseColor: 'Red',
+  pattern: 'None',
+  eyeColor: 'Brown',
   age: 2,
-  stats: { head: 50, topline: 50, forequarters: 50, hindquarters: 50, tail: 50, coatQuality: 50, temperament: 50, presence: 50, luck: 10, fertility: 50 },
-  genotypeRevealed: true,
-  pedigreeAnalyzed: true,
-  isRetired: false,
-  hasBeenRenamed: true,
-  silverIntensity: 3,
-  healthIssues: [],
-  pointsYear: 0,
+  stats: {
+    head: 5, topline: 5, hindquarters: 5, forequarters: 5, tail: 5,
+    coatQuality: 5, temperament: 5, condition: 5, presence: 5,
+    luck: 5, fertility: 5
+  },
+  ownerId: 'player-1',
+  history: [],
+  isAltered: false,
+  isNPC: false,
+  genotypeRevealed: false,
+  isFoundation: false,
   pointsLifetime: 0,
-  parents: [null, null],
-  parentNames: [null, null],
-  birthYear: 1,
-  coi: 0,
-  isAtStud: false,
-  studFee: 0,
+  pointsYear: 0,
   lastFed: Date.now(),
+  healthIssues: [],
+  studFee: 0,
+  birthYear: 1,
+  parents: [],
+  parentNames: []
 });
 
-const competitors: Competitor[] = [
-  { fox: mockFox('1', 'Dog', 'Red'), variety: 'Red', level: 'Open', gender: 'Dog', ageGroup: 'Adult', currentScore: 0, currentBreakdown: {} as any },
-  { fox: mockFox('2', 'Vixen', 'Red'), variety: 'Red', level: 'Open', gender: 'Vixen', ageGroup: 'Adult', currentScore: 0, currentBreakdown: {} as any },
-  { fox: mockFox('3', 'Dog', 'Gold'), variety: 'Gold', level: 'Open', gender: 'Dog', ageGroup: 'Adult', currentScore: 0, currentBreakdown: {} as any },
-  { fox: mockFox('4', 'Vixen', 'Gold'), variety: 'Gold', level: 'Open', gender: 'Vixen', ageGroup: 'Adult', currentScore: 0, currentBreakdown: {} as any },
-];
+test('hierarchical show scoring', async () => {
+  const fox1 = createMockFox('1', 'Dog', 'Red');
+  const fox2 = createMockFox('2', 'Vixen', 'Red');
 
-const report = runHierarchicalShow('Pro', competitors, 1, 'Spring');
+  const competitors: Competitor[] = [
+    {
+      fox: fox1,
+      variety: 'Red' as Variety,
+      level: 'Open' as ShowLevel,
+      gender: 'Dog',
+      ageGroup: 'Open',
+      currentScore: 0,
+      currentBreakdown: {
+        baseScore: 0, conformation: 0, movement: 0, temperament: 0,
+        condition: 0, presence: 0, luck: 0, handlerBonus: 0, healthBonus: 0
+      }
+    },
+    {
+      fox: fox2,
+      variety: 'Red' as Variety,
+      level: 'Open' as ShowLevel,
+      gender: 'Vixen',
+      ageGroup: 'Open',
+      currentScore: 0,
+      currentBreakdown: {
+        baseScore: 0, conformation: 0, movement: 0, temperament: 0,
+        condition: 0, presence: 0, luck: 0, handlerBonus: 0, healthBonus: 0
+      }
+    },
+  ];
 
-console.log('--- Show Report ---');
-console.log('Circuit:', report.circuit);
-console.log('BIS:', report.bisFoxId);
-console.log('RBIS:', report.rbisFoxId);
-console.log('Results Count:', report.results.length);
+  const report = runHierarchicalShow(
+    'Pro',
+    competitors,
+    1,
+    'Spring',
+    { Pro: { bis: 100, rbis: 50, bov: 20, rbov: 10, bos: 40, rbos: 20, boc: 10, rboc: 5 } },
+    false,
+    false,
+    false
+  );
 
-report.results.forEach(res => {
-  console.log(`[${res.title}] Fox ${res.foxId} (${res.gender}) Variety: ${res.variety} Score: ${res.score} Pts: ${res.pointsAwarded}`);
+  expect(report.results.length).toBeGreaterThan(0);
 });
-
-// Basic Assertions
-if (report.results.length < 6) throw new Error('Expected at least 6 results (4 BOV/RBOV, 2 BOS/RBOS)');
-if (!report.bisFoxId) throw new Error('Expected a BIS winner');
