@@ -28,21 +28,35 @@ export const useGameStore = create<RootState>()(
         if (Object.keys(state.foxes).length === 0) {
            state.repopulateFoundationFoxes();
         }
+        // Refresh NPC listings on init
+        if (state.refreshNPCListings) {
+            state.refreshNPCListings();
+        }
       },
       checkAchievements: () => {}
     }),
     {
-      name: "red-fox-sim-storage",
-      version: 12,
+      name: "red-fox-sim-storage-v12",
+      version: 1,
       migrate: (persistedState: any, version: number) => {
-        let state = persistedState as Partial<GameState>;
-        if (version < 12) {
-          if (state.members) {
-            state.members = state.members.map(m =>
-              m.id === "player-1" ? { ...m, role: "administrator" as Role } : m
-            );
+        // Consolidate all historical migrations (v1-v12 legacy) into a fresh v1
+        let state = persistedState as any;
+
+        // Ensure critical fields exist
+        if (!state.adminLogs) state.adminLogs = [];
+        if (!state.reports) state.reports = [];
+        if (!state.whelpingReports) state.whelpingReports = [];
+        if (!state.pregnancyList) state.pregnancyList = [];
+        if (!state.inventory) state.inventory = {};
+
+        // Ensure at least one admin exists
+        if (state.members) {
+          const hasAdmin = state.members.some((m: any) => m.role === "administrator");
+          if (!hasAdmin && state.members.length > 0) {
+            state.members[0].role = "administrator";
           }
         }
+
         return state;
       },
     }

@@ -157,10 +157,7 @@ const OpalRadiumHandler = (ctx: PhenotypeContext) => {
   }
 };
 
-export function getPhenotype(...args: any[]) {
-  const genotype = args[0] as Genotype;
-  const silverIntensity = args[1] || 3;
-
+export function getPhenotype(genotype: Genotype, silverIntensity: number = 3) {
   const Fire = genotype.Fire || ['FI', 'FI'];
   const G = genotype.G || ['G', 'G'];
   const P = genotype.P || ['P', 'P'];
@@ -202,7 +199,7 @@ export function getPhenotype(...args: any[]) {
 
   return {
     name: ctx.finalName,
-    variety: 'Red' as Variety,
+    variety: 'Red' as Variety, // Simplified for now
     description: 'A beautiful ' + ctx.finalName,
     baseColor: ctx.baseColorName,
     pattern: 'None',
@@ -211,26 +208,85 @@ export function getPhenotype(...args: any[]) {
   };
 }
 
-export function breed(...args: any[]): Fox[] {
+export function breed(dog: Fox, vixen: Fox, safeRandom: () => number = Math.random, startId: number): Fox[] {
+  const kitCount = Math.floor(safeRandom() * 4) + 1;
   const kits: Fox[] = [];
-  const safeRandom = Math.random;
-  const count = Math.floor(safeRandom() * 4) + 1;
-  for (let i = 0; i < count; i++) {
-    kits.push(createFox({ ownerId: "system" }, safeRandom));
+
+  for (let i = 0; i < kitCount; i++) {
+    const genotype: Genotype = {};
+    for (const locus in LOCI) {
+      const dogAlleles = dog.genotype[locus] || ['?', '?'];
+      const vixenAlleles = vixen.genotype[locus] || ['?', '?'];
+
+      const dogInherit = dogAlleles[safeRandom() > 0.5 ? 0 : 1];
+      const vixenInherit = vixenAlleles[safeRandom() > 0.5 ? 0 : 1];
+
+      genotype[locus] = [dogInherit, vixenInherit];
+    }
+
+    const phenotype = getPhenotype(genotype);
+
+    // Simple stat inheritance: average of parents with slight random variation
+    const stats: Stats = {} as Stats;
+    for (const stat in dog.stats) {
+      const parentAvg = ((dog.stats as any)[stat] + (vixen.stats as any)[stat]) / 2;
+      const variation = (safeRandom() - 0.5) * 2; // -1 to +1
+      (stats as any)[stat] = Math.max(0, Math.min(10, Math.round(parentAvg + variation)));
+    }
+
+    kits.push({
+      id: (startId + i).toString(),
+      name: "Kit " + (startId + i),
+      gender: safeRandom() > 0.5 ? "Dog" : "Vixen",
+      genotype,
+      phenotype: phenotype.name,
+      baseColor: phenotype.baseColor,
+      pattern: phenotype.pattern,
+      eyeColor: phenotype.eyeColor,
+      age: 0,
+      stats,
+      ownerId: vixen.ownerId,
+      isFoundation: false,
+      isNPC: false,
+      history: [{ date: new Date().toISOString(), event: 'Born', details: 'Whelped into the world.' }],
+      pointsLifetime: 0,
+      pointsYear: 0,
+      healthIssues: phenotype.healthIssues,
+      studFee: 0,
+      birthYear: 1, // Will be updated by store
+      parents: [dog.id, vixen.id],
+      parentNames: [dog.name, vixen.name]
+    });
   }
+
   return kits;
 }
 
-export function createFox(overrides: Partial<Fox> = {}, safeRandom: any = Math.random, extra?: any): Fox {
+export function createFox(overrides: Partial<Fox> = {}, safeRandom: () => number = Math.random): Fox {
+  const defaultGenotype: Genotype = {
+    A: ['A', 'A'],
+    B: ['B', 'B'],
+    C: ['C', 'C'],
+    G: ['G', 'G'],
+    P: ['P', 'P'],
+    Fire: ['FI', 'FI'],
+    L: ['L', 'L'],
+    R: ['R', 'R'],
+    W: ['w', 'w']
+  };
+
+  const genotype = overrides.genotype || defaultGenotype;
+  const phenotype = getPhenotype(genotype);
+
   return {
     id: Math.random().toString(),
     name: "New Fox",
     gender: safeRandom() > 0.5 ? "Dog" : "Vixen",
-    genotype: { A: ['A', 'a'], B: ['B', 'b'] },
-    phenotype: "Red",
-    baseColor: "Red",
-    pattern: "None",
-    eyeColor: "Brown",
+    genotype,
+    phenotype: phenotype.name,
+    baseColor: phenotype.baseColor,
+    pattern: phenotype.pattern,
+    eyeColor: phenotype.eyeColor,
     age: 0,
     stats: { head: 5, topline: 5, forequarters: 5, hindquarters: 5, tail: 5, coatQuality: 5, temperament: 5, condition: 5, presence: 5, luck: 5, fertility: 5 },
     ownerId: "system",
@@ -248,14 +304,33 @@ export function createFox(overrides: Partial<Fox> = {}, safeRandom: any = Math.r
   };
 }
 
-export function createFoundationalFox(...args: any[]): Fox {
-  return createFox({ ownerId: 'system', isFoundation: true });
+export function createFoundationalFox(safeRandom: () => number = Math.random, gender?: "Dog" | "Vixen"): Fox {
+  return createFox({
+    ownerId: 'system',
+    isFoundation: true,
+    gender: gender || (safeRandom() > 0.5 ? "Dog" : "Vixen")
+  }, safeRandom);
 }
 
-export function createFoundationFoxCollection(safeRandom: any, startId: number): Fox[] {
+export function createFoundationFoxCollection(safeRandom: () => number, startId: number): Fox[] {
   const foxes: Fox[] = [];
+  // Ensure at least one Red (AABB) and one Gold (AABb) per cycle
+  const fixedGens: Genotype[] = [
+    { A: ['A', 'A'], B: ['B', 'B'], C: ['C', 'C'], G: ['G', 'G'], P: ['P', 'P'], Fire: ['FI', 'FI'], L: ['L', 'L'], R: ['R', 'R'], W: ['w', 'w'] }, // Red
+    { A: ['A', 'A'], B: ['B', 'b'], C: ['C', 'C'], G: ['G', 'G'], P: ['P', 'P'], Fire: ['FI', 'FI'], L: ['L', 'L'], R: ['R', 'R'], W: ['w', 'w'] }, // Gold
+  ];
+
   for (let i = 0; i < 6; i++) {
-    foxes.push(createFoundationalFox(safeRandom));
+    const genotype = i < 2 ? fixedGens[i] : undefined;
+    const f = createFoundationalFox(safeRandom);
+    f.id = (startId + i).toString();
+    if (genotype) {
+      f.genotype = genotype;
+      const p = getPhenotype(genotype);
+      f.phenotype = p.name;
+      f.baseColor = p.baseColor;
+    }
+    foxes.push(f);
   }
   return foxes;
 }
